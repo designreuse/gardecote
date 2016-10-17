@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion de tickets</title>
+	<!-- BOOTSTRAP STYLES-->
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+     <!-- FONTAWESOME STYLES-->
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <link href="js/angucomplete-alt.css" rel="stylesheet" />
+    <link href="js/ngprogress.css" rel="stylesheet" />
+   
+        <!-- CUSTOM STYLES-->
+    <link href="assets/css/custom.css" rel="stylesheet" />
+   
+    <link href="css/print.css" rel="stylesheet" />
+    <link href="css/style1.css" rel="stylesheet" /> 
+   
+ 
+</head>
+<body ng-app="myzfApp" >
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Garde Côte Maritime</a>
+        </div>
+        <ul class="nav navbar-nav">
+
+            <li>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Journal de peche
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Saisie des JP</a></li>
+                        <li><a href="#">Consultation</a></li>
+                        <li><a href="#">Indicateurs de Quotas</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Contrôle
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">....</a></li>
+                        <li><a href="#">.....</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Amendes
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">....</a></li>
+                        <li><a href="#">.....</a></li>
+                        <li><a href="#">.....</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a>Utilisateur actuel:<label th:text="${infos.username}"></label></a> </li>
+            <li><a href="logout"><span class="glyphicon glyphicon-log-in"></span> Deconnextion</a></li>
+        </ul>
+    </div>
+
+</nav>
+<div class="jumbotron col-xs-12"  ng-controller="gcJPController">
+
+        <div class="form-inline col-xs-6">
+<div class="radio col-xs-3">
+    <label ><input type="radio" name="modeJP" class="form-control input-sm" value="RE" ng-model="$parent.selectedChoiseJP" ng-change="validateJPChoise()" />Regime Etranger</label>
+</div>
+
+<div class="radio col-xs-3">
+    <label ><input type="radio" name="modeJP" value="RN" class="form-control input-sm"  ng-model="$parent.selectedChoiseJP" ng-change="validateJPChoise()" />Regime National</label>
+</div>
+        </div>
+
+
+    <div  ng-if="$parent.selectedChoiseJP!=null" class="form-group col-xs-4">
+
+        <div ng-if="$parent.selectedChoiseJP=='RE'" >
+    <input type="text" class="form-control input-sm" placeholder="Nom du bâteau" ng-model="$parent.nomnav" typeahead-editable="true" typeahead-min-length="1"  uib-typeahead="searchbat for searchbat in getSuggBat($viewValue)" typeahead-loading="loadingBats" typeahead-no-results="noResults" />
+            <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+            <div ng-show="noResults">
+                <i class="glyphicon glyphicon-remove"></i> Pas de bâteaux trouvé
+            </div>
+        </div>
+        <div ng-if="$parent.selectedChoiseJP=='RN'">
+    <input type="text" class="form-control input-sm" placeholder="Réf de concession" ng-model="$parent.nomnav" typeahead-editable="true" typeahead-min-length="1"  uib-typeahead="searchbat for searchbat in getSuggBat($viewValue)" typeahead-loading="loadingBats" typeahead-no-results="noResults" />
+
+        </div>
+
+    </div>
+    <div  ng-if="$parent.selectedChoiseJP!=null" class="form-group col-xs-2">
+        <div ng-if="$parent.selectedChoiseJP=='RE'" ><button type="submit" class="btn btn-primary" ng-click="saisirJPRE()">OK </button> </div>
+        <div ng-if="$parent.selectedChoiseJP=='RN'" > <button type="submit" class="btn btn-primary" ng-click="saisirJPRN()">OK </button> </div>
+    </div>
+</div>
+    
+    <script src="assets/js/jquery-1.10.2.js"></script>
+   
+      <!-- BOOTSTRAP SCRIPTS -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- METISMENU SCRIPTS -->
+    <script src="assets/js/jquery.metisMenu.js"></script>
+ 
+      <!-- CUSTOM SCRIPTS -->
+     
+     <script src="angular/angular.js"></script>
+      <script src="js/angucomplete-alt.js"></script>
+    
+      
+      <script src="js/ui-bootstrap-tpls-1.3.2.min.js"></script>
+    <script src="angular/angular-route.js"></script>
+    <script src="angular/angular-animate.min.js"></script>
+    <script src="js/ngprogress.js"></script>
+    
+      <script src="angular/underscore.js"></script>
+    <script src="js/myApp.js"></script>
+   
+</body>
+</html>
