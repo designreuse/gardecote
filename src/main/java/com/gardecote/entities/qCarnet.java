@@ -39,7 +39,7 @@ public class qCarnet implements Serializable
     @Column(name="IdCarnet", nullable=false)
     private Long       idcarnet     ;
 
-
+    private enumTypeDoc  typeDoc;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    

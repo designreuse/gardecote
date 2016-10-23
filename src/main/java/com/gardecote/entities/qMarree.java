@@ -51,6 +51,8 @@ public class qMarree implements Serializable
     private Integer    nbrpages     ;
     @Column(name="NumeroDebut", nullable=false)
     private String    numeroDebut     ;
+    private enumTypeDoc typeDoc;
+
 
     @OneToOne
     private qConcession concession;
@@ -61,6 +63,13 @@ public class qMarree implements Serializable
     @OneToMany(mappedBy="qmarree", targetEntity=qPageCarnet.class)
     private List<qPageCarnet> pages;
 
+    public enumTypeDoc getTypeDoc() {
+        return typeDoc;
+    }
+
+    public void setTypeDoc(enumTypeDoc typeDoc) {
+        this.typeDoc = typeDoc;
+    }
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)

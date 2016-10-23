@@ -38,7 +38,8 @@ public class qLicenceBatLast implements Serializable
     @Column(name="id_lic", nullable=false)
     private Long idLic        ;
 
-
+     @ManyToOne
+     private qRegistreNavire qnavire;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
