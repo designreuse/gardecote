@@ -27,6 +27,7 @@ import java.util.List;
 @NamedQueries ( {
   @NamedQuery ( name="qCarnet.countAll", query="SELECT COUNT(x) FROM qCarnet x" )
 } )
+@IdClass(qCarnetPK.class)
 public class qCarnet implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -35,25 +36,24 @@ public class qCarnet implements Serializable
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="IdCarnet", nullable=false)
-    private Long       idcarnet     ;
+    @Column(name="PrefixNum", nullable=false, length=2)
+    private enumPrefix     prefixNumerotation    ;
+    @Id
+    @Column(name="DebutPage", nullable=false)
+    private Long       numeroDebutPage    ;
+
 
     private enumTypeDoc  typeDoc;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @OneToOne
-    private qCategRessource     categRessource     ;
 
-    @Column(name="PrefixNum", nullable=false, length=2)
-    private String     prefixNumerotation    ;
 
-    @Column(name="DebutPage", nullable=false)
-    private Long       numeroDebutPage    ;
 
-    @Column(name="Nbrages", nullable=false)
+    @Column(name="NbrPages", nullable=false)
     private Integer    nbrPages      ;
+    @Column(name="NbrLigne", nullable=false)
+    private Integer    nbrLigneParPage      ;
 
     @Column(name="refLicencement", nullable=true)
     private qConcession      qconcession  ;
@@ -75,8 +75,16 @@ public class qCarnet implements Serializable
 		super();
     }
 
-    public qCarnet(qCategRessource categRessource, String prefixNumerotation, Long numeroDebutPage, Integer nbrPages) {
-        this.categRessource = categRessource;
+    public Integer getNbrLigneParPage() {
+        return nbrLigneParPage;
+    }
+
+    public void setNbrLigneParPage(Integer nbrLigneParPage) {
+        this.nbrLigneParPage = nbrLigneParPage;
+    }
+
+    public qCarnet(qCategRessource categRessource, enumPrefix prefixNumerotation, Long numeroDebutPage, Integer nbrPages) {
+
         this.prefixNumerotation = prefixNumerotation;
         this.numeroDebutPage = numeroDebutPage;
         this.nbrPages = nbrPages;
@@ -86,11 +94,11 @@ public class qCarnet implements Serializable
         // ajouter des pages du carnet encours
         qPageCarnet qpcrn=new qPageCarnet();
         qpcrn.setCarnet(this);
-        qpcrn.setCategRessource(this.categRessource);
+
         List<qPageCarnet> lstPgs=new ArrayList<qPageCarnet>();
         for(int i=0;i<this.nbrPages;i++) {
             qPageCarnet  qp= new qPageCarnet();
-            qp.setCategRessource(this.categRessource);
+
             qp.setCarnet(this);
 
             qp.setNumeroPage(this.prefixNumerotation.toString()+Long.toString(this.numeroDebutPage+i));
@@ -105,13 +113,7 @@ public class qCarnet implements Serializable
     this.qconcession = refConcession;
     }
 
-    public Long getIdcarnet() {
-        return idcarnet;
-    }
 
-    public void setIdcarnet(Long idcarnet) {
-        this.idcarnet = idcarnet;
-    }
 
     public enumTypeDoc getTypeDoc() {
         return typeDoc;
@@ -121,19 +123,11 @@ public class qCarnet implements Serializable
         this.typeDoc = typeDoc;
     }
 
-    public qCategRessource getCategRessource() {
-        return categRessource;
-    }
-
-    public void setCategRessource(qCategRessource categRessource) {
-        this.categRessource = categRessource;
-    }
-
-    public String getPrefixNumerotation() {
+    public enumPrefix getPrefixNumerotation() {
         return prefixNumerotation;
     }
 
-    public void setPrefixNumerotation(String prefixNumerotation) {
+    public void setPrefixNumerotation(enumPrefix prefixNumerotation) {
         this.prefixNumerotation = prefixNumerotation;
     }
 
