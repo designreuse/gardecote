@@ -7,13 +7,14 @@ import java.io.Serializable;
 /**
  * Created by Dell on 25/10/2016.
  */
+
 public class qCarnetPK implements Serializable {
 
-    private enumPrefix     prefixNumerotation    ;
+       private enumPrefix     prefixNumerotation    ;
 
        private Long       numeroDebutPage    ;
 
-    public qCarnetPK() {
+       public qCarnetPK() {
         super();
     }
 

@@ -42,8 +42,17 @@ public class qCapture implements Serializable
 
     @ManyToOne
     private qJourMere jourMere;
+
     @ManyToOne
     private qJourDeb jourDeb;
+
+    public qEspeceTypee getEspeceTypee() {
+        return especeTypee;
+    }
+
+    public void setEspeceTypee(qEspeceTypee especeTypee) {
+        this.especeTypee = especeTypee;
+    }
 
     public Long getIdCapture() {
         return idCapture;
