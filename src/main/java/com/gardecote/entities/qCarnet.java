@@ -83,7 +83,7 @@ public class qCarnet implements Serializable
         this.nbrLigneParPage = nbrLigneParPage;
     }
 
-    public qCarnet(qCategRessource categRessource, enumPrefix prefixNumerotation, Long numeroDebutPage, Integer nbrPages) {
+    public qCarnet(enumPrefix prefixNumerotation, Long numeroDebutPage, Integer nbrPages) {
 
         this.prefixNumerotation = prefixNumerotation;
         this.numeroDebutPage = numeroDebutPage;

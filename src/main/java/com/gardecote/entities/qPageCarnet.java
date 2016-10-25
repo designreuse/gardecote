@@ -48,11 +48,7 @@ public class qPageCarnet implements Serializable
     @JoinColumn(name="IdCarnet", referencedColumnName="IdCarnet")
     private qCarnet carnet;
 
-    @OneToOne
-    private qCategRessource     categRessource;
 
-    @OneToOne
-    private qRegistreNavire    qnavire;
 
     public String getNumeroPage() {
         return numeroPage;
@@ -70,19 +66,5 @@ public class qPageCarnet implements Serializable
         this.carnet = carnet;
     }
 
-    public qCategRessource getCategRessource() {
-        return categRessource;
-    }
 
-    public void setCategRessource(qCategRessource categRessource) {
-        this.categRessource = categRessource;
-    }
-
-    public qRegistreNavire getQnavire() {
-        return qnavire;
-    }
-
-    public void setQnavire(qRegistreNavire qnavire) {
-        this.qnavire = qnavire;
-    }
 }
