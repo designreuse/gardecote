@@ -10,7 +10,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
-import com.gardecote.entities.qCategRessourcePK;
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
 

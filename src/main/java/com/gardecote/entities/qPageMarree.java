@@ -25,9 +25,8 @@ public class qPageMarree extends qPageCarnet implements Serializable {
 
     // "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
 
+    private  Integer  nbrLigne=10;
 
-    @OneToOne
-    private qRegistreNavire    qnavire;
     @OneToOne
     private qMarree     qmarree;
     //----------------------------------------------------------------------
@@ -40,8 +39,6 @@ public class qPageMarree extends qPageCarnet implements Serializable {
     @OneToMany(mappedBy = "pages",targetEntity = qJourMere.class)
     private List<qJourMere> listJours;
    //----------------------------------------------------------------------
-
-
 
 
 

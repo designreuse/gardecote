@@ -2,21 +2,32 @@ package com.gardecote.entities;
 
 import java.io.Serializable;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
+
 /**
  * Created by Dell on 23/10/2016.
  */
+@IdClass(qSeqPK.class)
 public class qSeq implements Serializable {
     @Id
-    Long idqlistseq;
+    String  prefix;
+    @Id
     Long debut;
+
     Long Fin;
 
-    public Long getIdqlistseq() {
-        return idqlistseq;
+    public qSeq(String prefix, Long debut, Long fin) {
+        this.prefix = prefix;
+        this.debut = debut;
+        Fin = fin;
     }
 
-    public void setIdqlistseq(Long idqlistseq) {
-        this.idqlistseq = idqlistseq;
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     public Long getDebut() {

@@ -9,5 +9,6 @@ public enum enumPrefix {
    DEM,
    CRUS,
    PC,
-   PA
+   PA,
+   TRQITEMENT
 }

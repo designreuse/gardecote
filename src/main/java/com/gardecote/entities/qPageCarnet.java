@@ -38,6 +38,7 @@ public class qPageCarnet implements Serializable
     @Id
     @Column(name="numPage", nullable=false, length=50)
     private String     numeroPage      ;
+    private Integer  nbrLigne ;
 
 	// "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link 
 

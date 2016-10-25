@@ -1,14 +1,16 @@
 package com.gardecote.entities;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+
 /**
  * Created by Dell on 23/10/2016.
  */
+@Entity
+@Inheritance(strategy=InheritanceType.JOINED)
+
 public class qDoc implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -17,17 +19,9 @@ public class qDoc implements Serializable {
 
     enumTypeDoc enumtypedoc;
 
-    qConcession qconcessionconcernee;
-
-    qCategRessource qcategconcernee;
-
     List<qSeq>  qlistseq;
 
-
-
-
-
-    public Integer getIdDoc() {
+     public Integer getIdDoc() {
         return IdDoc;
     }
 

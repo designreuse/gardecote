@@ -30,6 +30,7 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
+    private Integer  nbrLigne=10;
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
@@ -39,8 +40,7 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
 
 	// "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link 
 
-    @OneToOne
-    private qRegistreNavire    qnavire;
+
 
     @OneToOne
     private qDebarquement    qdebarquement;

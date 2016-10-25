@@ -4,9 +4,6 @@
  */
 package com.gardecote.business.service.impl;
 
-import com.gardecote.business.service.qCapturesService;
-import com.gardecote.data.repository.jpa.qCapturesRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import com.gardecote.business.service.qCategRessourceService;
 import com.gardecote.data.repository.jpa.qCategRessourceRepository;
-import com.gardecote.entities.qCategRessourcePK;
 /**
  * Implementation of ActivitebatService
  */

@@ -54,11 +54,6 @@ public class qLicence implements Serializable
     @Column(name="id_nation", nullable=false)
     private qNation    qNation     ;
 
-    @Column(name="typauto", length=255)
-    private enumAuthorisation    modeAuto      ;
-
-
-
     // Ca c'est pour le format de nouvelle strategie
 
     @OneToMany(mappedBy = "categressource",targetEntity =qCategRessource.class)
@@ -75,7 +70,7 @@ public class qLicence implements Serializable
     private qRegistreNavire qnavire;
 
     @Column(name="id_consignataire", length=50)
-    private qConsignataire    qconsignataire ;
+    private qConsignataire    qconcessionaire ;
 
 
     @OneToOne

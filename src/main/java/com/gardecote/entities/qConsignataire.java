@@ -15,11 +15,8 @@ import java.util.List;
         @NamedQuery ( name="qConsignataire.countAll", query="SELECT COUNT(x) FROM qConsignataire x" )
 } )
 public class qConsignataire implements Serializable {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="IdConsignataire", nullable=false)
-    private Integer IdConsignataire;
 
+    @Id
     private String Consignataire;
     @OneToMany(mappedBy ="concessionaire" ,targetEntity =qConcession.class )
     private List<qConcession> concession;
@@ -36,13 +33,7 @@ public class qConsignataire implements Serializable {
         Consignataire = consignataire;
     }
 
-    public Integer getIdConsignataire() {
-        return IdConsignataire;
-    }
 
-    public void setIdConsignataire(Integer idConsignataire) {
-        IdConsignataire = idConsignataire;
-    }
 
     public String getConsignataire() {
         return Consignataire;

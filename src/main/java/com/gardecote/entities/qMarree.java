@@ -21,28 +21,37 @@ import java.util.Date;
  */
 
 @Entity
+@DiscriminatorValue("MARREE")
 @Table(name="qMarree", schema="dbo", catalog="DSPCM_DB" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qMarree.countAll", query="SELECT COUNT(x) FROM qMarree x" )
 } )
+
 @IdClass(qMarreePK.class)
+
 public class qMarree extends qDoc implements Serializable
 {
     private static final long serialVersionUID = 1L;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
-    //----------------------------------------------------------------------    
-
-
-
-
+    //----------------------------------------------------------------------
     @Id
     @Column(name="Depart", nullable=false, length=10)
-    private Date     depart       ;
+    private Date depart       ;
 
     @Column(name="Retour", nullable=false, length=10)
     private Date     retour       ;
+
+    qConcession qconcessionconcernee;
+
+    @OneToOne
+    private qRegistreNavire    qnavire;
+
+    qCategRessource qcategconcernee;
+
+
+
 
     List<qPageMarree> pages;
 
@@ -63,44 +72,16 @@ public class qMarree extends qDoc implements Serializable
     //----------------------------------------------------------------------
 
 
-    //----------------------------------------------------------------------
-    // GETTERS & SETTERS FOR FIELDS
-    //----------------------------------------------------------------------
-    //--- DATABASE MAPPING : RefConcession ( varchar ) 
-
-
-
     public qMarreePK  getqMareePK(){
     qMarreePK qMarree=new qMarreePK();
-    qMarree.setDepart(this.depart);
+
 
     return qMarree;
 }
 
 
-
-
-
-
     //--- DATABASE MAPPING : Depart ( date )
-    public void setDepart( Date depart )
-    {
-        this.depart = depart;
-    }
-    public Date getDepart()
-    {
-        return this.depart;
-    }
 
-    //--- DATABASE MAPPING : Retour ( date ) 
-    public void setRetour( Date retour )
-    {
-        this.retour = retour;
-    }
-    public Date getRetour()
-    {
-        return this.retour;
-    }
 
 
     //----------------------------------------------------------------------
@@ -115,9 +96,7 @@ public class qMarree extends qDoc implements Serializable
         sb.append("|");
 
         sb.append("|");
-        sb.append(depart);
-        sb.append("|");
-        sb.append(retour);
+
 
         sb.append("|");
 

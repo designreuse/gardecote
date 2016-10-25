@@ -5,7 +5,7 @@
 package com.gardecote.business.service;
 import com.gardecote.entities.qCategRessource;
 import java.util.List;
-import com.gardecote.entities.qCategRessourcePK;
+
 /**
  * Business Service Interface for entity AutorisEntity.
  */

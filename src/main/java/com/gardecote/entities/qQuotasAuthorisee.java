@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
  * Created by Dell on 23/10/2016.
  */
 @IdClass(qQuotasAuthPK.class)
-public class qQuotasAuthorisees {
+public class qQuotasAuthorisee {
     @Id
     qCategRessource qcategressource;
     @Id

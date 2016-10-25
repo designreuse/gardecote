@@ -6,7 +6,6 @@ package com.gardecote.business.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.gardecote.entities.qCategRessourcePK;
 import javax.annotation.Resource;
 
 import com.gardecote.business.service.qModelJPService;
@@ -14,7 +13,6 @@ import com.gardecote.business.service.qModelJPService;
 import com.gardecote.data.repository.jpa.qModelJPRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.gardecote.business.service.qModelJPService;
 import com.gardecote.entities.qModelJP;
 
 

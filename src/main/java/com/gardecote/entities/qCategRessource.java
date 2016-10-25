@@ -17,54 +17,32 @@ import java.util.List;
         @NamedQuery ( name="qCategRessource.countAll", query="SELECT COUNT(x) FROM qCategRessource x" )
 } )
 
-@IdClass(qCategRessourcePK.class)
+
 public class qCategRessource implements Serializable {
     @Id
     @NotNull
-    private enumSegPeche segPeche;
-    @Id
-    @NotNull
-    private enumCategRessource categorie;
-
-    private String typeConcession;
+    private qTypeConcession typeConcession;
 
     private enumSupport typeSupport;
 
     @OneToMany(mappedBy = "categressource",targetEntity =qEnginPeche.class)
     private List<qEnginPeche> Engins;
 
-
     @ManyToOne
    // @JoinColumn(name = "ref_concession", nullable = false)
     private qConcession concession;
 
-    public qCategRessourcePK getIdCR(){
-        qCategRessourcePK gcr=new qCategRessourcePK();
-        gcr.setCategorie(categorie);
-        gcr.setSegPeche(segPeche);
-        return gcr;
-    }
-    public enumSegPeche getSegPeche() {
-        return segPeche;
+    public qCategRessource(qTypeConcession typeConcession, enumSupport typeSupport, List<qEnginPeche> engins) {
+        this.typeConcession = typeConcession;
+        this.typeSupport = typeSupport;
+        Engins = engins;
     }
 
-    public void setSegPeche(enumSegPeche segPeche) {
-        this.segPeche = segPeche;
-    }
-
-    public enumCategRessource getCategorie() {
-        return categorie;
-    }
-
-    public void setCategorie(enumCategRessource categorie) {
-        this.categorie = categorie;
-    }
-
-    public String getTypeConcession() {
+    public qTypeConcession getTypeConcession() {
         return typeConcession;
     }
 
-    public void setTypeConcession(String typeConcession) {
+    public void setTypeConcession(qTypeConcession typeConcession) {
         this.typeConcession = typeConcession;
     }
 
@@ -86,18 +64,6 @@ public class qCategRessource implements Serializable {
 
     public qConcession getConcession() {
         return concession;
-    }
-
-    public qCategRessource(enumSegPeche segPeche, enumCategRessource categorie,  enumSupport typeSupport) {
-        this.segPeche = segPeche;
-        this.categorie = categorie;
-        this.typeConcession = "segPeche" + "-"+ "categorie";
-        this.typeSupport = typeSupport;
-
-
-    }
-
-    public qCategRessource() { super();
     }
 
     public void setConcession(qConcession concession) {
