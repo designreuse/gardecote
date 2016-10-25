@@ -17,7 +17,9 @@ public class qEnginPeche implements Serializable {
    private Integer IdEngin;
 
     private String Engin;
-@ManyToOne
+    private Integer maillage;
+
+    @ManyToOne
     private qCategRessource categressource;
 
     public Integer getIdEngin() {
@@ -42,5 +44,13 @@ public class qEnginPeche implements Serializable {
 
     public void setCategressource(qCategRessource categressource) {
         this.categressource = categressource;
+    }
+
+    public Integer getMaillage() {
+        return maillage;
+    }
+
+    public void setMaillage(Integer maillage) {
+        this.maillage = maillage;
     }
 }

@@ -21,12 +21,12 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qPageCarnet", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qPageDebarquement", schema="dbo", catalog="DSPCM_DB" )
 // Define named queries here
 @NamedQueries ( {
-  @NamedQuery ( name="qPageCarnet.countAll", query="SELECT COUNT(x) FROM qPageCarnet x" )
+  @NamedQuery ( name="qPageDebarquement.countAll", query="SELECT COUNT(x) FROM qPageDebarquement x" )
 } )
-public class qPageCarnet implements Serializable
+public class qPageDebarquement extends qPageCarnet implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
@@ -35,54 +35,50 @@ public class qPageCarnet implements Serializable
     //----------------------------------------------------------------------
      // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
-    @Id
-    @Column(name="numPage", nullable=false, length=50)
-    private String     numeroPage      ;
+
 
 	// "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link 
 
-     //----------------------------------------------------------------------
+
+
+    @OneToOne
+    private qDebarquement    qdebarquement;
+    //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
     @ManyToOne
     @JoinColumn(name="IdCarnet", referencedColumnName="IdCarnet")
     private qCarnet carnet;
 
-    @OneToOne
-    private qCategRessource     categRessource;
+    @OneToMany(mappedBy = "pages",targetEntity = qJourDeb.class)
+    private List<qJourDeb>  listJours;
 
-    @OneToOne
-    private qRegistreNavire    qnavire;
 
-    public String getNumeroPage() {
-        return numeroPage;
+
+
+    public qDebarquement getQdebarquement() {
+        return qdebarquement;
     }
 
-    public void setNumeroPage(String numeroPage) {
-        this.numeroPage = numeroPage;
+    public void setQdebarquement(qDebarquement qdebarquement) {
+        this.qdebarquement = qdebarquement;
     }
 
+    @Override
     public qCarnet getCarnet() {
         return carnet;
     }
 
+    @Override
     public void setCarnet(qCarnet carnet) {
         this.carnet = carnet;
     }
 
-    public qCategRessource getCategRessource() {
-        return categRessource;
+    public List<qJourDeb> getListJours() {
+        return listJours;
     }
 
-    public void setCategRessource(qCategRessource categRessource) {
-        this.categRessource = categRessource;
-    }
-
-    public qRegistreNavire getQnavire() {
-        return qnavire;
-    }
-
-    public void setQnavire(qRegistreNavire qnavire) {
-        this.qnavire = qnavire;
+    public void setListJours(List<qJourDeb> listJours) {
+        this.listJours = listJours;
     }
 }

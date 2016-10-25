@@ -8,9 +8,9 @@ import java.util.List;
 /**
  * Created by Dell on 22/10/2016.
  */
+
 public class qRegistreNavire implements Serializable {
     private static final long serialVersionUID = 1L;
-
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
@@ -19,9 +19,10 @@ public class qRegistreNavire implements Serializable {
     @Column(name="numimm", nullable=false)
     private String     numimm;
 
-    private qLicenceBatLast qlicencebatlastdernier;
-    @OneToMany(mappedBy="qnavire", targetEntity=qLicenceBatLast.class)
-    private List<qLicenceBatLast>  qlicences;
+    private qLicence qlicencedernier;
+
+    @OneToMany(mappedBy="qnavire", targetEntity=qLicence.class)
+    private List<qLicence>  qlicences;
 
     public String getNumimm() {
         return numimm;
@@ -31,19 +32,19 @@ public class qRegistreNavire implements Serializable {
         this.numimm = numimm;
     }
 
-    public qLicenceBatLast getQlicencebatlastdernier() {
-        return qlicencebatlastdernier;
+    public qLicence getQlicencebatlastdernier() {
+        return qlicencedernier;
     }
 
-    public void setQlicencebatlastdernier(qLicenceBatLast qlicencebatlastdernier) {
-        this.qlicencebatlastdernier = qlicencebatlastdernier;
+    public void setQlicencebatlastdernier(qLicence qlicencedernier) {
+        this.qlicencedernier = qlicencedernier;
     }
 
-    public List<qLicenceBatLast> getQlicences() {
+    public List<qLicence> getQlicences() {
         return qlicences;
     }
 
-    public void setQlicences(List<qLicenceBatLast> qlicences) {
+    public void setQlicences(List<qLicence> qlicences) {
         this.qlicences = qlicences;
     }
 }

@@ -27,19 +27,16 @@ import java.util.Date;
   @NamedQuery ( name="qMarree.countAll", query="SELECT COUNT(x) FROM qMarree x" )
 } )
 @IdClass(qMarreePK.class)
-public class qMarree implements Serializable
+public class qMarree extends qDoc implements Serializable
 {
     private static final long serialVersionUID = 1L;
-
-
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name="modeMaree", nullable=false, length=50)
-    private enumModeMaree     modeMaree ;
-    @Id
-    @Column(name="refBase", nullable=false, length=50)
-    private String     refBase   ;
+
+
+
+
     @Id
     @Column(name="Depart", nullable=false, length=10)
     private Date     depart       ;
@@ -47,29 +44,11 @@ public class qMarree implements Serializable
     @Column(name="Retour", nullable=false, length=10)
     private Date     retour       ;
 
-    @Column(name="NbrPages", nullable=false)
-    private Integer    nbrpages     ;
-    @Column(name="NumeroDebut", nullable=false)
-    private String    numeroDebut     ;
-    private enumTypeDoc typeDoc;
-
-
-    @OneToOne
-    private qConcession concession;
+    List<qPageMarree> pages;
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(mappedBy="qmarree", targetEntity=qPageCarnet.class)
-    private List<qPageCarnet> pages;
-
-    public enumTypeDoc getTypeDoc() {
-        return typeDoc;
-    }
-
-    public void setTypeDoc(enumTypeDoc typeDoc) {
-        this.typeDoc = typeDoc;
-    }
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
@@ -89,36 +68,19 @@ public class qMarree implements Serializable
     //----------------------------------------------------------------------
     //--- DATABASE MAPPING : RefConcession ( varchar ) 
 
-    public String getNumeroDebut() {
-        return numeroDebut;
-    }
 
-    public void setNumeroDebut(String numeroDebut) {
-        this.numeroDebut = numeroDebut;
-    }
 
     public qMarreePK  getqMareePK(){
     qMarreePK qMarree=new qMarreePK();
     qMarree.setDepart(this.depart);
-    qMarree.setRefBase(this.refBase);
+
     return qMarree;
 }
 
-    public enumModeMaree getModeMaree() {
-        return modeMaree;
-    }
 
-    public void setModeMaree(enumModeMaree modeMaree) {
-        this.modeMaree = modeMaree;
-    }
 
-    public String getRefBase() {
-        return refBase;
-    }
 
-    public void setRefBase(String refBase) {
-        this.refBase = refBase;
-    }
+
 
     //--- DATABASE MAPPING : Depart ( date )
     public void setDepart( Date depart )
@@ -140,38 +102,6 @@ public class qMarree implements Serializable
         return this.retour;
     }
 
-    //--- DATABASE MAPPING : NbrPages ( int ) 
-    public void setNbrpages( Integer nbrpages )
-    {
-        this.nbrpages = nbrpages;
-    }
-    public Integer getNbrpages()
-    {
-        return this.nbrpages;
-    }
-
-    //--- DATABASE MAPPING : SegmentPeche ( varchar ) 
-
-    //----------------------------------------------------------------------
-    // GETTERS & SETTERS FOR LINKS
-    //----------------------------------------------------------------------
-
-
-    public qConcession getConcession() {
-        return concession;
-    }
-
-    public void setConcession(qConcession concession) {
-        this.concession = concession;
-    }
-
-    public List<qPageCarnet> getPages() {
-        return pages;
-    }
-
-    public void setPages(List<qPageCarnet> pages) {
-        this.pages = pages;
-    }
 
     //----------------------------------------------------------------------
     // toString METHOD
@@ -188,8 +118,7 @@ public class qMarree implements Serializable
         sb.append(depart);
         sb.append("|");
         sb.append(retour);
-        sb.append("|");
-        sb.append(nbrpages);
+
         sb.append("|");
 
         return sb.toString(); 

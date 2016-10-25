@@ -43,9 +43,6 @@ public class qConcession implements Serializable
     @OneToOne(cascade = CascadeType.ALL)
     private qConsignataire     concessionaire ;
 
-    @Column(name="AddressConcessionaire", nullable=false, length=50)
-    private String     addressconcessionaire ;
-
     @Column(name="NumLicence", nullable=false, length=50)
     private String     numlicence   ;
 
@@ -58,13 +55,14 @@ public class qConcession implements Serializable
     @Column(name="date_fin", nullable=false, length=10)
     private Date     dateFin      ;
 
-
-
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(mappedBy="concession", targetEntity=qLicenceBatLast.class)
-    private List<qLicenceBatLast> qLicenceBatLastList;
+
+    @OneToMany(mappedBy="concession", targetEntity=qLicence.class)
+    private List<qLicence>     qLicenceBatLastList;
+
+
 
     @OneToMany(mappedBy = "concession",targetEntity =qCategRessource.class )
     private List<qCategRessource>     categoriesRessources ;
@@ -73,6 +71,7 @@ public class qConcession implements Serializable
    //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
+
     public qConcession()
     {
 		super();
@@ -116,17 +115,7 @@ public class qConcession implements Serializable
         return this.concessionaire;
     }
 
-    //--- DATABASE MAPPING : AddressConcessionaire ( varchar ) 
-    public void setAddressconcessionaire( String addressconcessionaire )
-    {
-        this.addressconcessionaire = addressconcessionaire;
-    }
-    public String getAddressconcessionaire()
-    {
-        return this.addressconcessionaire;
-    }
-
-    //--- DATABASE MAPPING : NumLicence ( varchar ) 
+    //--- DATABASE MAPPING : NumLicence ( varchar )
     public void setNumlicence( String numlicence )
     {
         this.numlicence = numlicence;
@@ -172,11 +161,11 @@ public class qConcession implements Serializable
     //----------------------------------------------------------------------
 
 
-    public List<qLicenceBatLast> getqLicenceBatLastList() {
+    public List<qLicence> getqLicenceBatLastList() {
         return qLicenceBatLastList;
     }
 
-    public void setqLicenceBatLastList(List<qLicenceBatLast> qLicenceBatLastList) {
+    public void setqLicenceBatLastList(List<qLicence> qLicenceBatLastList) {
         this.qLicenceBatLastList = qLicenceBatLastList;
     }
 
@@ -193,8 +182,7 @@ public class qConcession implements Serializable
         sb.append(categoriesRessources );
         sb.append("|");
         sb.append(concessionaire);
-        sb.append("|");
-        sb.append(addressconcessionaire);
+
         sb.append("|");
         sb.append(numlicence);
         sb.append("|");

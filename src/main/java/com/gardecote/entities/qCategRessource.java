@@ -37,6 +37,7 @@ public class qCategRessource implements Serializable {
     @ManyToOne
    // @JoinColumn(name = "ref_concession", nullable = false)
     private qConcession concession;
+
     public qCategRessourcePK getIdCR(){
         qCategRessourcePK gcr=new qCategRessourcePK();
         gcr.setCategorie(categorie);

@@ -44,7 +44,6 @@ public class qCarnet implements Serializable
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
     @OneToOne
-
     private qCategRessource     categRessource     ;
 
     @Column(name="PrefixNum", nullable=false, length=2)
@@ -56,12 +55,8 @@ public class qCarnet implements Serializable
     @Column(name="Nbrages", nullable=false)
     private Integer    nbrPages      ;
 
-    @Column(name="modeCarnet", nullable=true)
-    @Enumerated(EnumType.STRING)
-    private enumModeCarnet      modeCarnet  ;
-
     @Column(name="refLicencement", nullable=true)
-    private String      refLicencement  ;
+    private qConcession      qconcession  ;
 
 
 
@@ -99,71 +94,31 @@ public class qCarnet implements Serializable
             qp.setCarnet(this);
 
             qp.setNumeroPage(this.prefixNumerotation.toString()+Long.toString(this.numeroDebutPage+i));
-            qp.setListJours(null);
-            qp.setQmarree(null);
+
             lstPgs.add(qp);
         }
      this.pages=lstPgs;
     }
-    public void distribuer(enumModeCarnet mode,String refAutorisation){
-    this.modeCarnet = mode;
-    this.refLicencement = refAutorisation;
+
+    public void distribuer(qConcession refConcession){
+
+    this.qconcession = refConcession;
     }
 
-    //----------------------------------------------------------------------
-    // GETTER & SETTER FOR THE KEY FIELD
-    //----------------------------------------------------------------------
-    public void setIdcarnet( Long idcarnet )
-    {
-        this.idcarnet = idcarnet ;
-    }
-    public Long getIdcarnet()
-    {
-        return this.idcarnet;
+    public Long getIdcarnet() {
+        return idcarnet;
     }
 
-    //----------------------------------------------------------------------
-    // GETTERS & SETTERS FOR FIELDS
-    //----------------------------------------------------------------------
-
-    //--- DATABASE MAPPING : PrefixNum ( varchar ) 
-    public void setPrefixnum( String prefixnum )
-    {
-        this.prefixNumerotation = prefixnum;
-    }
-    public String getPrefixnum()
-    {
-        return this.prefixNumerotation;
+    public void setIdcarnet(Long idcarnet) {
+        this.idcarnet = idcarnet;
     }
 
-    //--- DATABASE MAPPING : DebutPage ( bigint ) 
-    public void setDebutpage( Long debutpage )
-    {
-        this.numeroDebutPage = debutpage;
-    }
-    public Long getDebutpage()
-    {
-        return this.numeroDebutPage;
+    public enumTypeDoc getTypeDoc() {
+        return typeDoc;
     }
 
-    //--- DATABASE MAPPING : Nbrages ( int ) 
-    public void setNbrages( Integer nbrages )
-    {
-        this.nbrPages = nbrages;
-    }
-    public Integer getNbrages()
-    {
-        return this.nbrPages;
-    }
-
-    //--- DATABASE MAPPING : LicEtranger ( bigint ) 
-    public void setRefLicencement( String licetranger )
-    {
-        this.refLicencement = licetranger;
-    }
-    public String getRefLicencement()
-    {
-        return this.refLicencement;
+    public void setTypeDoc(enumTypeDoc typeDoc) {
+        this.typeDoc = typeDoc;
     }
 
     public qCategRessource getCategRessource() {
@@ -198,47 +153,19 @@ public class qCarnet implements Serializable
         this.nbrPages = nbrPages;
     }
 
-    public enumModeCarnet getModeCarnet() {
-        return modeCarnet;
+    public qConcession getQconcession() {
+        return qconcession;
     }
 
-    public void setModeCarnet(enumModeCarnet modeCarnet) {
-        this.modeCarnet = modeCarnet;
+    public void setQconcession(qConcession qconcession) {
+        this.qconcession = qconcession;
     }
 
-    //----------------------------------------------------------------------
-    // GETTERS & SETTERS FOR LINKS
-    //----------------------------------------------------------------------
-    public void setPages( List<qPageCarnet> pages )
-    {
+    public List<qPageCarnet> getPages() {
+        return pages;
+    }
+
+    public void setPages(List<qPageCarnet> pages) {
         this.pages = pages;
     }
-    public List<qPageCarnet> getPages()
-    {
-        return this.pages;
-    }
-
-
-    //----------------------------------------------------------------------
-    // toString METHOD
-    //----------------------------------------------------------------------
-    public String toString() { 
-        StringBuffer sb = new StringBuffer(); 
-        sb.append("["); 
-        sb.append(idcarnet);
-        sb.append("]:"); 
-
-        sb.append("|");
-        sb.append(prefixNumerotation);
-        sb.append("|");
-        sb.append(numeroDebutPage);
-        sb.append("|");
-        sb.append(nbrPages);
-        sb.append("|");
-        sb.append(modeCarnet);
-        sb.append("|");
-        sb.append(refLicencement);
-        return sb.toString(); 
-    } 
-
 }

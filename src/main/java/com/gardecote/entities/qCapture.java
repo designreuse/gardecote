@@ -41,47 +41,9 @@ public class qCapture implements Serializable
     private Integer quantite;
 
     @ManyToOne
-    private qJour jour;
-
-    public qJour getJour() {
-        return jour;
-    }
-
-    public void setJour(qJour jour) {
-        this.jour = jour;
-    }
-//----------------------------------------------------------------------
-    // ENTITY LINKS ( RELATIONSHIP )
-    //----------------------------------------------------------------------
-
-
-    public qCapture(qEspece espece, Integer quantite, qJour jour) {
-        this.espece = espece;
-        this.quantite = quantite;
-        this.jour = jour;
-    }
-
-    //----------------------------------------------------------------------
-    // CONSTRUCTOR(S)
-    //----------------------------------------------------------------------
-    public qCapture()
-    {
-		super();
-    }
-    
-    //----------------------------------------------------------------------
-    // GETTER & SETTER FOR THE KEY FIELD
-    //----------------------------------------------------------------------
-
-
-    //----------------------------------------------------------------------
-    // GETTERS & SETTERS FOR FIELDS
-    //----------------------------------------------------------------------
-
-    //----------------------------------------------------------------------
-    // GETTERS & SETTERS FOR LINKS
-    //----------------------------------------------------------------------
-
+    private qJourMere jourMere;
+    @ManyToOne
+    private qJourDeb jourDeb;
 
     public Long getIdCapture() {
         return idCapture;
@@ -107,15 +69,19 @@ public class qCapture implements Serializable
         this.quantite = quantite;
     }
 
-    //----------------------------------------------------------------------
-    // toString METHOD
-    //----------------------------------------------------------------------
-    public String toString() { 
-        StringBuffer sb = new StringBuffer(); 
-        sb.append("["); 
+    public qJourMere getJourMere() {
+        return jourMere;
+    }
 
-        sb.append("]:"); 
-        return sb.toString(); 
-    } 
+    public void setJourMere(qJourMere jourMere) {
+        this.jourMere = jourMere;
+    }
 
+    public qJourDeb getJourDeb() {
+        return jourDeb;
+    }
+
+    public void setJourDeb(qJourDeb jourDeb) {
+        this.jourDeb = jourDeb;
+    }
 }
