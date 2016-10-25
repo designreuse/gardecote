@@ -26,7 +26,7 @@ import java.util.List;
 @NamedQueries ( {
   @NamedQuery ( name="qModelJP.countAll", query="SELECT COUNT(x) FROM qModelJP x" )
 } )
-@IdClass(qCategRessourcePK.class)
+
 public class qModelJP implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -36,18 +36,12 @@ public class qModelJP implements Serializable
     //----------------------------------------------------------------------
     @Id
     @NotNull
-    private enumSegPeche segPeche;
-    @Id
-    @NotNull
-    private enumCategRessource categorie;
-
+    private qTypeConcession qtypeconcession;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
 	// "codeesp" (column "CodeEsp") is not defined by itself because used as FK in a link 
 	// "typeconcession" (column "typeConcession") is not defined by itself because used as FK in a link 
-
-
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -55,12 +49,6 @@ public class qModelJP implements Serializable
     private List<qEspece> especes;
 
 
-    public qCategRessourcePK getIdMJP(){
-        qCategRessourcePK gcr=new qCategRessourcePK();
-        gcr.setCategorie(categorie);
-        gcr.setSegPeche(segPeche);
-        return gcr;
-    }
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
@@ -70,21 +58,6 @@ public class qModelJP implements Serializable
 		super();
     }
 
-    public enumSegPeche getSegPeche() {
-        return segPeche;
-    }
-
-    public void setSegPeche(enumSegPeche segPeche) {
-        this.segPeche = segPeche;
-    }
-
-    public enumCategRessource getCategorie() {
-        return categorie;
-    }
-
-    public void setCategorie(enumCategRessource categorie) {
-        this.categorie = categorie;
-    }
 
     public List<qEspece> getEspeces() {
         return especes;

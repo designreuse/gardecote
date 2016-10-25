@@ -5,5 +5,6 @@ package com.gardecote.entities;
  */
 public enum enumTypeDoc {
     Fiche_Debarquement,
-    Journal_Peche
+    Journal_Peche,
+    Fiche_Traitement
 }

@@ -37,13 +37,15 @@ public class qEspece implements Serializable
     @Column(name="Code_Esp", nullable=false)
     private Integer    codeEsp      ;
 
+
+
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "modelesp_segment", referencedColumnName = "segPeche"),
             @JoinColumn(name = "modelesp_categorie", referencedColumnName = "categorie")
 
     })
-    private qModelJP modelesp;
+
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
@@ -72,20 +74,14 @@ public class qEspece implements Serializable
         this.nomAr = nomAr;
         this.nomFr = nomFr;
         this.numOrdre=numOrdre;
-        this.modelesp=qm;
+
     }
 
     public Integer getNumOrdre() {
         return numOrdre;
     }
 
-    public qModelJP getModelesp() {
-        return modelesp;
-    }
 
-    public void setModelesp(qModelJP modelesp) {
-        this.modelesp = modelesp;
-    }
 
     public void setNumOrdre(Integer numOrdre) {
         this.numOrdre = numOrdre;

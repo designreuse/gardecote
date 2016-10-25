@@ -26,6 +26,8 @@ public class qPageTraitement extends qPageCarnet {
         return nbrLigne;
     }
 
+    private List<enumAuthorisation> segs;
+
     @OneToOne
     private qTraitement     qtraitement;
     //----------------------------------------------------------------------
@@ -38,8 +40,5 @@ public class qPageTraitement extends qPageCarnet {
     @OneToMany(mappedBy = "pages",targetEntity = qJourMere.class)
     private List<qUniteTraitement> opTraitements;
     //----------------------------------------------------------------------
-
-
-
 
 }

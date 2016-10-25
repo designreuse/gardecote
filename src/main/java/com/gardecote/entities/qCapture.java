@@ -37,7 +37,7 @@ public class qCapture implements Serializable
     @Column(name="idCapture", nullable=false)
     private Long      idCapture ;
 
-    private qEspece espece;
+    private qEspeceTypee especeTypee;
     private Integer quantite;
 
     @ManyToOne
@@ -53,13 +53,6 @@ public class qCapture implements Serializable
         this.idCapture = idCapture;
     }
 
-    public qEspece getEspece() {
-        return espece;
-    }
-
-    public void setEspece(qEspece espece) {
-        this.espece = espece;
-    }
 
     public Integer getQuantite() {
         return quantite;
