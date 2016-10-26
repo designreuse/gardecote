@@ -10,6 +10,11 @@ public class qTypeNav {
     private String idqTypeNav;
     private String descr;
 
+    public qTypeNav(String idqTypeNav, String descr) {
+        this.idqTypeNav = idqTypeNav;
+        this.descr = descr;
+    }
+
     public String getIdqTypeNav() {
         return idqTypeNav;
     }

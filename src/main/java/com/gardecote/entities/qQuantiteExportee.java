@@ -6,4 +6,25 @@ package com.gardecote.entities;
 public class qQuantiteExportee {
     private enumZonOrientation enumZonOrientationPeche;
     private Integer qte;
+
+    public qQuantiteExportee(enumZonOrientation enumZonOrientationPeche, Integer qte) {
+        this.enumZonOrientationPeche = enumZonOrientationPeche;
+        this.qte = qte;
+    }
+
+    public enumZonOrientation getEnumZonOrientationPeche() {
+        return enumZonOrientationPeche;
+    }
+
+    public void setEnumZonOrientationPeche(enumZonOrientation enumZonOrientationPeche) {
+        this.enumZonOrientationPeche = enumZonOrientationPeche;
+    }
+
+    public Integer getQte() {
+        return qte;
+    }
+
+    public void setQte(Integer qte) {
+        this.qte = qte;
+    }
 }

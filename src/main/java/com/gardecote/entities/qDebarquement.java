@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Created by Dell on 23/10/2016.
  */
+
 @Entity
 @DiscriminatorValue("DEBARQUEMENT")
 
@@ -27,11 +28,17 @@ public class qDebarquement extends qDoc {
     @OneToOne
     private qRegistreNavire    qnavire;
 
-    qCategRessource qcategconcernee;
+    private qCategRessource    qcategconcernee;
 
+    private List<qPageDebarquement> pages;
 
-
-    List<qPageDebarquement> pages;
+    public qDebarquement(Date depart, Date retour, qConcession qconcessionconcernee, qRegistreNavire qnavire, qCategRessource qcategconcernee) {
+        this.depart = depart;
+        this.retour = retour;
+        this.qconcessionconcernee = qconcessionconcernee;
+        this.qnavire = qnavire;
+        this.qcategconcernee = qcategconcernee;
+    }
 
     public Date getDepart() {
         return depart;

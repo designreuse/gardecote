@@ -15,6 +15,12 @@ public class qQuotasAuthorisee {
 
     Double qQuantiteAuthorisee;
 
+    public qQuotasAuthorisee(qCategRessource qcategressource, qConcession qconcession, Double qQuantiteAuthorisee) {
+        this.qcategressource = qcategressource;
+        this.qconcession = qconcession;
+        this.qQuantiteAuthorisee = qQuantiteAuthorisee;
+    }
+
     public qCategRessource getQcategressource() {
         return qcategressource;
     }

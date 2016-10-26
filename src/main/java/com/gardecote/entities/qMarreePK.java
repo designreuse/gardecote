@@ -11,17 +11,11 @@ import java.util.Date;
 @IdClass(qMarreePK.class)
 public class qMarreePK implements Serializable {
 
-    private String     refBase   ;
+    private qRegistreNavire     qnavire   ;
 
     private Date    depart       ;
 
-    public String getRefBase() {
-        return refBase;
-    }
 
-    public void setRefBase(String refBase) {
-        this.refBase = refBase;
-    }
 
     public Date getDepart() {
         return depart;
@@ -38,20 +32,20 @@ public class qMarreePK implements Serializable {
 
         qMarreePK qMarreePK = (qMarreePK) o;
 
-        if (!refBase.equals(qMarreePK.refBase)) return false;
-        return depart.equals(qMarreePK.depart);
+        if (qnavire != null ? !qnavire.equals(qMarreePK.qnavire) : qMarreePK.qnavire != null) return false;
+        return !(depart != null ? !depart.equals(qMarreePK.depart) : qMarreePK.depart != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = refBase.hashCode();
-        result = 31 * result + depart.hashCode();
+        int result = qnavire != null ? qnavire.hashCode() : 0;
+        result = 31 * result + (depart != null ? depart.hashCode() : 0);
         return result;
     }
 
-    public qMarreePK(String refBase, Date depart) {
-        this.refBase = refBase;
+    public qMarreePK(qRegistreNavire refBase, Date depart) {
+        this.qnavire = refBase;
         this.depart = depart;
     }
 

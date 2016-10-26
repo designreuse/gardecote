@@ -1,5 +1,10 @@
 package com.gardecote.entities;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
 /**
  * Created by Dell on 25/10/2016.
  */
@@ -8,6 +13,12 @@ public class qEspeceTypee {
     private qEspece qespece;
     private enumEspType enumesptype;
     private qTypeConcession qtypeconcession;
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "modelesp_segment", referencedColumnName = "segPeche"),
+            @JoinColumn(name = "modelesp_categorie", referencedColumnName = "categorie")
+    })
+
     private qModelJP modelesp;
 
     public qEspeceTypee(qEspece qespece, enumEspType enumesptype, qTypeConcession qtypeconcession) {

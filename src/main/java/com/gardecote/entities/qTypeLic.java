@@ -11,6 +11,12 @@ public class qTypeLic {
   private char codeaut;
   private String descr;
 
+  public qTypeLic(char codelic, char codeaut, String descr) {
+    this.codelic = codelic;
+    this.codeaut = codeaut;
+    this.descr = descr;
+  }
+
   public char getCodelic() {
     return codelic;
   }

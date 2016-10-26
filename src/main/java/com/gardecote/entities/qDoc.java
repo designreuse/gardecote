@@ -21,7 +21,12 @@ public class qDoc implements Serializable {
 
     List<qSeq>  qlistseq;
 
-     public Integer getIdDoc() {
+    public qDoc(enumTypeDoc enumtypedoc, List<qSeq> qlistseq) {
+        this.enumtypedoc = enumtypedoc;
+        this.qlistseq = qlistseq;
+    }
+
+    public Integer getIdDoc() {
         return IdDoc;
     }
 

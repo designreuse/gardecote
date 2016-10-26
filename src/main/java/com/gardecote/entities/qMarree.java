@@ -39,16 +39,17 @@ public class qMarree extends qDoc implements Serializable
     @Id
     @Column(name="Depart", nullable=false, length=10)
     private Date depart       ;
+    @Id
+    @OneToOne
+    private qRegistreNavire    qnavire;
 
     @Column(name="Retour", nullable=false, length=10)
     private Date     retour       ;
 
     qConcession qconcessionconcernee;
 
-    @OneToOne
-    private qRegistreNavire    qnavire;
 
-    qCategRessource qcategconcernee;
+    private qCategRessource qcategconcernee;
 
 
 
@@ -62,15 +63,25 @@ public class qMarree extends qDoc implements Serializable
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
-    public qMarree()
-    {
-		super();
+
+    public qMarree(enumTypeDoc enumtypedoc, List<qSeq> qlistseq) {
+        super(enumtypedoc, qlistseq);
     }
-    
+
+
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
 
+
+    public qMarree(enumTypeDoc enumtypedoc, List<qSeq> qlistseq, Date depart, Date retour, qConcession qconcessionconcernee, qRegistreNavire qnavire, qCategRessource qcategconcernee) {
+        super(enumtypedoc, qlistseq);
+        this.depart = depart;
+        this.retour = retour;
+        this.qconcessionconcernee = qconcessionconcernee;
+        this.qnavire = qnavire;
+        this.qcategconcernee = qcategconcernee;
+    }
 
     public qMarreePK  getqMareePK(){
     qMarreePK qMarree=new qMarreePK();

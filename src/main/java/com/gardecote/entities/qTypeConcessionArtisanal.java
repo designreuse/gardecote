@@ -5,4 +5,16 @@ package com.gardecote.entities;
  */
 public class qTypeConcessionArtisanal extends qTypeConcession {
     private enumTypeConcessionArtisanal enumTypeConcessionArtisanal;
+
+    public qTypeConcessionArtisanal(com.gardecote.entities.enumTypeConcessionArtisanal enumTypeConcessionArtisanal) {
+        this.enumTypeConcessionArtisanal = enumTypeConcessionArtisanal;
+    }
+
+    public com.gardecote.entities.enumTypeConcessionArtisanal getEnumTypeConcessionArtisanal() {
+        return enumTypeConcessionArtisanal;
+    }
+
+    public void setEnumTypeConcessionArtisanal(com.gardecote.entities.enumTypeConcessionArtisanal enumTypeConcessionArtisanal) {
+        this.enumTypeConcessionArtisanal = enumTypeConcessionArtisanal;
+    }
 }

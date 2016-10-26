@@ -39,12 +39,7 @@ public class qEspece implements Serializable
 
 
 
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "modelesp_segment", referencedColumnName = "segPeche"),
-            @JoinColumn(name = "modelesp_categorie", referencedColumnName = "categorie")
 
-    })
 
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 

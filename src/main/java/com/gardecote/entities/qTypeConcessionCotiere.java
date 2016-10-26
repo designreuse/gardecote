@@ -8,6 +8,11 @@ public class qTypeConcessionCotiere extends qTypeConcession {
     private enumTypeConcessionCotiere enumTypeConcessionCotiere;
     private enumTypePechCotiere enumTypePecheCotiere;
 
+    public qTypeConcessionCotiere(com.gardecote.entities.enumTypeConcessionCotiere enumTypeConcessionCotiere, enumTypePechCotiere enumTypePecheCotiere) {
+        this.enumTypeConcessionCotiere = enumTypeConcessionCotiere;
+        this.enumTypePecheCotiere = enumTypePecheCotiere;
+    }
+
     public enumTypeConcessionCotiere getEnumSegPecheCotiere() {
         return enumTypeConcessionCotiere;
     }

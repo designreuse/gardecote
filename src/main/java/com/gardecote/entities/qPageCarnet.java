@@ -49,7 +49,21 @@ public class qPageCarnet implements Serializable
     @JoinColumn(name="IdCarnet", referencedColumnName="IdCarnet")
     private qCarnet carnet;
 
+    public qPageCarnet() {
+    }
 
+    public qPageCarnet(String numeroPage, Integer nbrLigne) {
+        this.numeroPage = numeroPage;
+        this.nbrLigne = nbrLigne;
+    }
+
+    public Integer getNbrLigne() {
+        return nbrLigne;
+    }
+
+    public void setNbrLigne(Integer nbrLigne) {
+        this.nbrLigne = nbrLigne;
+    }
 
     public String getNumeroPage() {
         return numeroPage;

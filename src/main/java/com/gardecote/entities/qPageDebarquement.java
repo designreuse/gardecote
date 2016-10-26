@@ -43,7 +43,7 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
 
 
     @OneToOne
-    private qDebarquement    qdebarquement;
+    private qDebarquement qdebarquement;
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -54,8 +54,22 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
     @OneToMany(mappedBy = "pages",targetEntity = qJourDeb.class)
     private List<qJourDeb>  listJours;
 
+    public qPageDebarquement(String numeroPage, Integer nbrLigne, Integer nbrLigne1, qDebarquement qdebarquement, List<qJourDeb> listJours) {
+        super(numeroPage, nbrLigne);
+        nbrLigne = nbrLigne1;
+        this.qdebarquement = qdebarquement;
+        this.listJours = listJours;
+    }
 
+    @Override
+    public Integer getNbrLigne() {
+        return nbrLigne;
+    }
 
+    @Override
+    public void setNbrLigne(Integer nbrLigne) {
+        this.nbrLigne = nbrLigne;
+    }
 
     public qDebarquement getQdebarquement() {
         return qdebarquement;

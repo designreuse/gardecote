@@ -12,6 +12,11 @@ public class qZone implements Serializable {
     private Integer IdZone;
     private String nom;
 
+    public qZone(Integer idZone, String nom) {
+        IdZone = idZone;
+        this.nom = nom;
+    }
+
     public Integer getIdZone() {
         return IdZone;
     }

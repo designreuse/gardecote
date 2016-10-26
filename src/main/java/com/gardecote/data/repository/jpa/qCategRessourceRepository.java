@@ -2,7 +2,8 @@ package com.gardecote.data.repository.jpa;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import com.gardecote.entities.qCategRessource;
-/**
+import com.gardecote.entities.qTypeConcession;
+ /**
  * Repository : Authprov.
  */
 
@@ -10,7 +11,7 @@ import com.gardecote.entities.qCategRessource;
  * Repository : Bateaucomplet.
  */
 
-public  interface qCategRessourceRepository extends PagingAndSortingRepository<qCategRessource, qCategRessourcePK> {
+public  interface qCategRessourceRepository extends PagingAndSortingRepository<qCategRessource, qTypeConcession> {
 
 }
 

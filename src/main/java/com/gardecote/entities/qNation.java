@@ -15,4 +15,24 @@ public class qNation {
     private Integer idNation;
     @Column(name="designation", nullable=false)
     private String designation;
+
+    public qNation(String designation) {
+        this.designation = designation;
+    }
+
+    public Integer getIdNation() {
+        return idNation;
+    }
+
+    public void setIdNation(Integer idNation) {
+        this.idNation = idNation;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
 }

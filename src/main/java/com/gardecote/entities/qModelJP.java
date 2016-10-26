@@ -58,8 +58,26 @@ public class qModelJP implements Serializable
 		super();
     }
 
+    public qModelJP(qTypeConcession qtypeconcession, List<qEspeceTypee> especestypees) {
+        this.qtypeconcession = qtypeconcession;
+        this.especestypees = especestypees;
+    }
 
+    public qTypeConcession getQtypeconcession() {
+        return qtypeconcession;
+    }
 
+    public void setQtypeconcession(qTypeConcession qtypeconcession) {
+        this.qtypeconcession = qtypeconcession;
+    }
+
+    public List<qEspeceTypee> getEspecestypees() {
+        return especestypees;
+    }
+
+    public void setEspecestypees(List<qEspeceTypee> especestypees) {
+        this.especestypees = especestypees;
+    }
 
     //----------------------------------------------------------------------
     // toString METHOD

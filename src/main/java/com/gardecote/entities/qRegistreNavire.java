@@ -21,6 +21,11 @@ public class qRegistreNavire implements Serializable {
 
     private qLicence qlicencedernier;
 
+    public qRegistreNavire(qLicence qlicencedernier,String numimm) {
+        this.qlicencedernier = qlicencedernier;
+        this.numimm=numimm;
+    }
+
     @OneToMany(mappedBy="qnavire", targetEntity=qLicence.class)
     private List<qLicence>  qlicences;
 

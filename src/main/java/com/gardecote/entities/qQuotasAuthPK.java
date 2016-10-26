@@ -11,6 +11,11 @@ public class qQuotasAuthPK  implements Serializable {
 
     qConcession qconcession;
 
+    public qQuotasAuthPK(qCategRessource qcategressource, qConcession qconcession) {
+        this.qcategressource = qcategressource;
+        this.qconcession = qconcession;
+    }
+
     public qCategRessource getQcategressource() {
         return qcategressource;
     }

@@ -41,6 +41,18 @@ public class qPageMarree extends qPageCarnet implements Serializable {
    //----------------------------------------------------------------------
 
 
+    public qPageMarree(Integer nbrLigne, List<qJourMere> listJours, qMarree qmarree) {
+        this.nbrLigne = nbrLigne;
+        this.listJours = listJours;
+        this.qmarree = qmarree;
+    }
+
+    public qPageMarree(String numeroPage, Integer nbrLigne, Integer nbrLigne1, List<qJourMere> listJours, qMarree qmarree) {
+        super(numeroPage, nbrLigne);
+        nbrLigne = nbrLigne1;
+        this.listJours = listJours;
+        this.qmarree = qmarree;
+    }
 
     public qMarree getQmarree() {
         return qmarree;

@@ -10,6 +10,11 @@ public class qSeqPK implements Serializable {
     String  prefix;
     Long debut;
 
+    public qSeqPK(String prefix, Long debut) {
+        this.prefix = prefix;
+        this.debut = debut;
+    }
+
     public String getPrefix() {
         return prefix;
     }
