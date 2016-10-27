@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Dell on 22/10/2016.
  */
-
+@Entity
 public class qRegistreNavire implements Serializable {
     private static final long serialVersionUID = 1L;
     //----------------------------------------------------------------------
@@ -24,6 +24,9 @@ public class qRegistreNavire implements Serializable {
     public qRegistreNavire(qLicence qlicencedernier,String numimm) {
         this.qlicencedernier = qlicencedernier;
         this.numimm=numimm;
+    }
+
+    public qRegistreNavire() {
     }
 
     @OneToMany(mappedBy="qnavire", targetEntity=qLicence.class)

@@ -1,11 +1,11 @@
 package com.gardecote.data.repository.jpa;
 import com.gardecote.entities.qMarree;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import com.gardecote.entities.qMarreePK;
+import com.gardecote.entities.qDocPK;
 
 /**
  * Repository : CodesAmende.
  */
-public interface qMareeRepository extends PagingAndSortingRepository<qMarree, qMarreePK> {
+public interface qMareeRepository extends PagingAndSortingRepository<qMarree, qDocPK> {
 
 }

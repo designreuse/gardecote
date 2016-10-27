@@ -1,13 +1,20 @@
 package com.gardecote.entities;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by Dell on 09/10/2016.
  */
+@Entity
+public class qTypeLic implements Serializable {
+  @Id
+  @GeneratedValue(strategy= GenerationType.AUTO)
+  @Column(name="id_typelic", nullable=false)
+  private Integer idTypeLic;
 
-public class qTypeLic {
-  private char codelic;
+   private char codelic;
+
   private char codeaut;
   private String descr;
 

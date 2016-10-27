@@ -5,7 +5,7 @@
 package com.gardecote.business.service;
 import com.gardecote.entities.qModelJP;
 import java.util.List;
-
+import com.gardecote.entities.qTypeConcession;
 /**
  * Business Service Interface for entity Codauth.
  */
@@ -16,7 +16,7 @@ public interface qModelJPService {
 	 * @param codeauth
 	 * @return entity
 	 */
-	qModelJP findById(qCategRessourcePK codeauth) ;
+	qModelJP findById(qTypeConcession  codeauth) ;
 
 	/**
 	 * Loads all entities.
@@ -49,7 +49,7 @@ public interface qModelJPService {
 	 * Deletes an entity using its Primary Key
 	 * @param codeauth
 	 */
-	void delete(qCategRessourcePK codeauth);
+	void delete(qTypeConcession codeauth);
 
 
 }

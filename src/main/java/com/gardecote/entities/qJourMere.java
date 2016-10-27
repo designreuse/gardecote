@@ -24,7 +24,7 @@ import java.util.List;
 @Table(name="qJour", schema="dbo", catalog="DSPCM_DB" )
 // Define named queries here
 @NamedQueries ( {
-  @NamedQuery ( name="qJour.countAll", query="SELECT COUNT(x) FROM qJour x" )
+  @NamedQuery ( name="qJour.countAll", query="SELECT COUNT(x) FROM qJourMere x" )
 } )
 public class qJourMere implements Serializable
 {
@@ -47,7 +47,7 @@ public class qJourMere implements Serializable
    //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(mappedBy="jour", targetEntity=qCapture.class)
+    @OneToMany(mappedBy="jourMere", targetEntity=qCapture.class)
     private List<qCapture> capturesDuMarree;
     @OneToMany
     private List<qPageMarree> pagesMarree;

@@ -22,6 +22,8 @@ import java.util.List;
 
 @Entity
 @Table(name="qPageCarnet", schema="dbo", catalog="DSPCM_DB" )
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="TYPE_PAGE", discriminatorType=DiscriminatorType.STRING, length=20)
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qPageCarnet.countAll", query="SELECT COUNT(x) FROM qPageCarnet x" )
@@ -46,7 +48,13 @@ public class qPageCarnet implements Serializable
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
     @ManyToOne
-    @JoinColumn(name="IdCarnet", referencedColumnName="IdCarnet")
+   // @JoinColumn(name="IdCarnet", referencedColumnName="IdCarnet")
+    @JoinColumns({
+            @JoinColumn(name = "jprefixNumerotation", referencedColumnName = "PrefixNum"),
+            @JoinColumn(name = "jnumeroDebutPage", referencedColumnName = "DebutPage")
+
+    })
+
     private qCarnet carnet;
 
     public qPageCarnet() {

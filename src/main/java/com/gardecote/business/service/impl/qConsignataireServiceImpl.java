@@ -28,7 +28,7 @@ public class qConsignataireServiceImpl implements qConsignataireService {
 
 	
 	@Override
-	public qConsignataire findById(Integer idBatobs) {
+	public qConsignataire findById(String idBatobs) {
 		qConsignataire batobservEntity = batobservJpaRepository.findOne(idBatobs);
 		return batobservEntity;
 	}
@@ -50,7 +50,7 @@ public class qConsignataireServiceImpl implements qConsignataireService {
 
 	@Override
 	public qConsignataire create(qConsignataire batobserv) {
-		qConsignataire batobservEntity = batobservJpaRepository.findOne(batobserv.getIdConsignataire());
+		qConsignataire batobservEntity = batobservJpaRepository.findOne(batobserv.getConsignataire());
 		if( batobservEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
@@ -62,14 +62,14 @@ public class qConsignataireServiceImpl implements qConsignataireService {
 
 	@Override
 	public qConsignataire update(qConsignataire batobserv) {
-		qConsignataire batobservEntity = batobservJpaRepository.findOne(batobserv.getIdConsignataire());
+		qConsignataire batobservEntity = batobservJpaRepository.findOne(batobserv.getConsignataire());
 
 		qConsignataire batobservEntitySaved = batobservJpaRepository.save(batobservEntity);
 		return batobservEntitySaved;
 	}
 
 	@Override
-	public void delete(Integer idBatobs) {
+	public void delete(String idBatobs) {
 		batobservJpaRepository.delete(idBatobs);
 	}
 
@@ -80,7 +80,5 @@ public class qConsignataireServiceImpl implements qConsignataireService {
 	public void setBatobservJpaRepository(qConsignataireRepository batobservJpaRepository) {
 		this.batobservJpaRepository = batobservJpaRepository;
 	}
-
-	
 
 }

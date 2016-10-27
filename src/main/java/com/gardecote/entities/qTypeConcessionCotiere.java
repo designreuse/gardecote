@@ -1,9 +1,15 @@
 package com.gardecote.entities;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import java.io.Serializable;
+
 /**
  * Created by Dell on 25/10/2016.
  */
-public class qTypeConcessionCotiere extends qTypeConcession {
+@Entity
+@DiscriminatorValue("TCOTIER")
+public class qTypeConcessionCotiere extends qTypeConcession implements Serializable {
 
     private enumTypeConcessionCotiere enumTypeConcessionCotiere;
     private enumTypePechCotiere enumTypePecheCotiere;

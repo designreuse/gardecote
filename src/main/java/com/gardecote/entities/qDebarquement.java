@@ -1,6 +1,7 @@
 package com.gardecote.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -11,42 +12,30 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("DEBARQUEMENT")
 
-public class qDebarquement extends qDoc {
+public class qDebarquement extends qDoc implements Serializable {
     private static final long serialVersionUID = 1L;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
-    @Id
-    @Column(name="Depart", nullable=false, length=10)
-    private Date depart       ;
 
     @Column(name="Retour", nullable=false, length=10)
     private Date     retour       ;
 
-    qConcession qconcessionconcernee;
+    private qConcession qconcessionconcernee;
 
-    @OneToOne
-    private qRegistreNavire    qnavire;
+
 
     private qCategRessource    qcategconcernee;
-
+    @OneToMany(mappedBy="qdebarquement", targetEntity=qPageDebarquement.class)
     private List<qPageDebarquement> pages;
 
-    public qDebarquement(Date depart, Date retour, qConcession qconcessionconcernee, qRegistreNavire qnavire, qCategRessource qcategconcernee) {
-        this.depart = depart;
-        this.retour = retour;
-        this.qconcessionconcernee = qconcessionconcernee;
-        this.qnavire = qnavire;
-        this.qcategconcernee = qcategconcernee;
+    public qDebarquement(enumTypeDoc enumtypedoc, List<qSeq> qlistseq) {
+        super(enumtypedoc, qlistseq);
     }
 
-    public Date getDepart() {
-        return depart;
-    }
 
-    public void setDepart(Date depart) {
-        this.depart = depart;
-    }
+
+
 
     public Date getRetour() {
         return retour;
@@ -61,6 +50,13 @@ public class qDebarquement extends qDoc {
     }
 
     public void setPages(List<qPageDebarquement> pages) {
+        this.pages = pages;
+    }
+
+    public qDebarquement(Date retour, qConcession qconcessionconcernee, qCategRessource qcategconcernee, List<qPageDebarquement> pages) {
+        this.retour = retour;
+        this.qconcessionconcernee = qconcessionconcernee;
+        this.qcategconcernee = qcategconcernee;
         this.pages = pages;
     }
 }

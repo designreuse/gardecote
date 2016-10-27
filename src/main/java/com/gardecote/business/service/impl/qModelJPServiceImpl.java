@@ -14,7 +14,7 @@ import com.gardecote.data.repository.jpa.qModelJPRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.entities.qModelJP;
-
+import com.gardecote.entities.qTypeConcession;
 
 /**
  * Implementation of CodesAmendeService
@@ -29,7 +29,7 @@ public class qModelJPServiceImpl implements qModelJPService {
 	
 	
 	@Override
-	public qModelJP findById(qCategRessourcePK id) {
+	public qModelJP findById(qTypeConcession id) {
 		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(id);
 		return codesAmendeEntity;
 	}
@@ -51,7 +51,7 @@ public class qModelJPServiceImpl implements qModelJPService {
 
 	@Override
 	public qModelJP create(qModelJP codesAmende) {
-		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getIdMJP());
+		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getQtypeconcession());
 		if( codesAmendeEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
@@ -62,13 +62,13 @@ public class qModelJPServiceImpl implements qModelJPService {
 
 	@Override
 	public qModelJP update(qModelJP codesAmende) {
-		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getIdMJP());
+		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getQtypeconcession());
 		qModelJP codesAmendeEntitySaved = codesAmendeJpaRepository.save(codesAmendeEntity);
 		return codesAmendeEntitySaved;
 	}
 
 	@Override
-	public void delete(qCategRessourcePK id) {
+	public void delete(qTypeConcession id) {
 		codesAmendeJpaRepository.delete(id);
 	}
 

@@ -24,6 +24,8 @@ public class qCategRessource implements Serializable {
     private qTypeConcession typeConcession;
 
     private enumSupport typeSupport;
+    @ManyToOne
+    private qLicence    qlicence;
 
     @OneToMany(mappedBy = "categressource",targetEntity =qEnginPeche.class)
     private List<qEnginPeche> Engins;
@@ -36,6 +38,9 @@ public class qCategRessource implements Serializable {
         this.typeConcession = typeConcession;
         this.typeSupport = typeSupport;
         Engins = engins;
+    }
+
+    public qCategRessource() {
     }
 
     public qTypeConcession getTypeConcession() {

@@ -2,12 +2,14 @@ package com.gardecote.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * Created by Dell on 23/10/2016.
  */
+@Entity
 @IdClass(qQuotasAuthPK.class)
-public class qQuotasAuthorisee {
+public class qQuotasAuthorisee implements Serializable {
     @Id
     qCategRessource qcategressource;
     @Id
@@ -19,6 +21,9 @@ public class qQuotasAuthorisee {
         this.qcategressource = qcategressource;
         this.qconcession = qconcession;
         this.qQuantiteAuthorisee = qQuantiteAuthorisee;
+    }
+
+    public qQuotasAuthorisee() {
     }
 
     public qCategRessource getQcategressource() {

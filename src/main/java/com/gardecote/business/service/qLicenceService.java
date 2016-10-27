@@ -4,52 +4,54 @@
  */
 package com.gardecote.business.service;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
-import com.gardecote.entities.qJour;
+import com.gardecote.entities.qLicence;
 /**
- * Business Service Interface for entity Captures2.
+ * Business Service Interface for entity Changmentact.
  */
-public interface qJourService {
+public interface qLicenceService {
 
 	/**
 	 * Loads an entity from the database using its Primary Key
-	 * @param idCapture
+	 * @param idchact
 	 * @return entity
 	 */
-	qJour findById(Long idCapture) ;
+	qLicence findById(Long idchact) ;
 
 	/**
 	 * Loads all entities.
 	 * @return all entities
 	 */
-	List<qJour> findAll();
+	List<qLicence> findAll();
 
 	/**
 	 * Saves the given entity in the database (create or update)
 	 * @param entity
 	 * @return entity
 	 */
-	qJour save(qJour entity);
+	qLicence save(qLicence entity);
 
 	/**
 	 * Updates the given entity in the database
 	 * @param entity
 	 * @return
 	 */
-	qJour update(qJour entity);
+	qLicence update(qLicence entity);
 
 	/**
 	 * Creates the given entity in the database
 	 * @param entity
 	 * @return
 	 */
-	qJour create(qJour entity);
+	qLicence create(qLicence entity);
 
 	/**
 	 * Deletes an entity using its Primary Key
-	 * @param idCapture
+	 * @param idchact
 	 */
-	void delete(Long idCapture);
-
+	void delete(Long idchact);
+	Page<qLicence> returnSuggNomNav(String searchNomnav);
 
 }

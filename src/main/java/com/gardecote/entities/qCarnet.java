@@ -74,7 +74,10 @@ public class qCarnet implements Serializable
     {
 		super();
     }
-
+   public qCarnetPK getCarnetPK() {
+       qCarnetPK qCarnPK=new qCarnetPK(prefixNumerotation,numeroDebutPage);
+       return qCarnPK;
+   }
     public Integer getNbrLigneParPage() {
         return nbrLigneParPage;
     }
@@ -82,6 +85,7 @@ public class qCarnet implements Serializable
     public void setNbrLigneParPage(Integer nbrLigneParPage) {
         this.nbrLigneParPage = nbrLigneParPage;
     }
+
 
     public qCarnet(enumPrefix prefixNumerotation, Long numeroDebutPage, Integer nbrPages) {
 

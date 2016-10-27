@@ -1,15 +1,13 @@
 package com.gardecote.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import javax.persistence.IdClass;
 import java.io.Serializable;
 import java.util.Date;
 /**
  * Created by Dell on 16/10/2016.
  */
-@IdClass(qMarreePK.class)
-public class qMarreePK implements Serializable {
+@IdClass(qDocPK.class)
+public class qDocPK implements Serializable {
 
     private qRegistreNavire     qnavire   ;
 
@@ -28,9 +26,9 @@ public class qMarreePK implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof qMarreePK)) return false;
+        if (!(o instanceof qDocPK)) return false;
 
-        qMarreePK qMarreePK = (qMarreePK) o;
+        qDocPK qMarreePK = (qDocPK) o;
 
         if (qnavire != null ? !qnavire.equals(qMarreePK.qnavire) : qMarreePK.qnavire != null) return false;
         return !(depart != null ? !depart.equals(qMarreePK.depart) : qMarreePK.depart != null);
@@ -44,12 +42,12 @@ public class qMarreePK implements Serializable {
         return result;
     }
 
-    public qMarreePK(qRegistreNavire refBase, Date depart) {
+    public qDocPK(qRegistreNavire refBase, Date depart) {
         this.qnavire = refBase;
         this.depart = depart;
     }
 
-    public qMarreePK() {
+    public qDocPK() {
         super();
     }
 }

@@ -9,30 +9,55 @@ import java.util.List;
  * Created by Dell on 23/10/2016.
  */
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
 
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
+@IdClass(qDocPK.class)
 public class qDoc implements Serializable {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="IdDoc", nullable=false)
-    private Integer IdDoc;
+    @Column(name="Depart", nullable=false, length=10)
+    private Date depart       ;
+    @Id
+    @OneToOne
+    private qRegistreNavire    qnavire;
 
-    enumTypeDoc enumtypedoc;
+    private enumTypeDoc enumtypedoc;
 
-    List<qSeq>  qlistseq;
+    @OneToMany(mappedBy="qdoc", targetEntity=qSeq.class)
+    private List<qSeq>  qlistseq;
+
+    public qDoc() {
+
+    }
+
+    public Date getDepart() {
+        return depart;
+    }
+    public qDocPK getqDocPK(){
+        qDocPK qMarree=new qDocPK();
+
+
+        return qMarree;
+    }
+    public void setDepart(Date depart) {
+        this.depart = depart;
+    }
+
+    public qRegistreNavire getQnavire() {
+        return qnavire;
+    }
+
+    public void setQnavire(qRegistreNavire qnavire) {
+        this.qnavire = qnavire;
+    }
 
     public qDoc(enumTypeDoc enumtypedoc, List<qSeq> qlistseq) {
         this.enumtypedoc = enumtypedoc;
         this.qlistseq = qlistseq;
     }
 
-    public Integer getIdDoc() {
-        return IdDoc;
-    }
 
-    public void setIdDoc(Integer idDoc) {
-        IdDoc = idDoc;
-    }
 
     public enumTypeDoc getEnumtypedoc() {
         return enumtypedoc;

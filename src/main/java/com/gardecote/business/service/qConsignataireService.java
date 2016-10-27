@@ -16,7 +16,7 @@ public interface qConsignataireService {
 	 * @param idCondifnataire
 	 * @return entity
 	 */
-	qConsignataire findById(Integer idCondifnataire) ;
+	qConsignataire findById(String idCondifnataire) ;
 
 	/**
 	 * Loads all entities.
@@ -49,7 +49,7 @@ public interface qConsignataireService {
 	 * Deletes an entity using its Primary Key
 	 * @param idPvcomEntity
 	 */
-	void delete(Integer idPvcomEntity);
+	void delete(String idPvcomEntity);
 
 
 }

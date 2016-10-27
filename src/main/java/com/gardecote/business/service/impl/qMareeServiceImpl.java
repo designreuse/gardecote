@@ -12,14 +12,15 @@ import com.gardecote.data.repository.jpa.qMareeRepository;
 import com.gardecote.business.service.qMarreeService;
 
 
+import com.gardecote.entities.enumTypeDoc;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.gardecote.business.service.qMarreeService;
 import com.gardecote.entities.qMarree;
-import com.gardecote.entities.qMarreePK;
+import com.gardecote.entities.qDocPK;
 /**
  * Implementation of CodeInfractionsService
  */
+
 @Service
 @Transactional
 public class qMareeServiceImpl implements qMarreeService {
@@ -30,7 +31,7 @@ public class qMareeServiceImpl implements qMarreeService {
 	
 	
 	@Override
-	public  qMarree findById(qMarreePK  code) {
+	public  qMarree findById(qDocPK code) {
 		qMarree codeInfractionsEntity = codeInfractionsJpaRepository.findOne(code);
 		return codeInfractionsEntity;
 	}
@@ -52,24 +53,24 @@ public class qMareeServiceImpl implements qMarreeService {
 
 	@Override
 	public qMarree create(qMarree codeInfractions) {
-		qMarree codeInfractionsEntity = codeInfractionsJpaRepository.findOne(codeInfractions.getqMareePK());
+		qMarree codeInfractionsEntity = codeInfractionsJpaRepository.findOne(codeInfractions.getqDocPK());
 		if( codeInfractionsEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
-		codeInfractionsEntity = new qMarree();
+		codeInfractionsEntity = new qMarree(enumTypeDoc.Journal_Peche,null);
 		qMarree codeInfractionsEntitySaved = codeInfractionsJpaRepository.save(codeInfractionsEntity);
 		return codeInfractionsEntitySaved ;
 	}
 
 	@Override
 	public qMarree update(qMarree codeInfractions) {
-		qMarree codeInfractionsEntity = codeInfractionsJpaRepository.findOne(codeInfractions.getqMareePK());
+		qMarree codeInfractionsEntity = codeInfractionsJpaRepository.findOne(codeInfractions.getqDocPK());
 		qMarree codeInfractionsEntitySaved = codeInfractionsJpaRepository.save(codeInfractionsEntity);
 		return codeInfractionsEntitySaved;
 	}
 
 	@Override
-	public void delete(qMarreePK code) {
+	public void delete(qDocPK code) {
 		codeInfractionsJpaRepository.delete(code);
 	}
 

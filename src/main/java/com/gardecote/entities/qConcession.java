@@ -59,7 +59,7 @@ public class qConcession implements Serializable
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
 
-    @OneToMany(mappedBy="concession", targetEntity=qLicence.class)
+    @OneToMany(mappedBy="qconcession", targetEntity=qLicence.class)
     private List<qLicence>     qLicenceBatLastList;
 
 
@@ -192,6 +192,16 @@ public class qConcession implements Serializable
         sb.append("|");
         sb.append(dateFin);
         return sb.toString(); 
-    } 
+    }
 
+    public qConcession(String refConcession, qConsignataire concessionaire, String numlicence, Date dateLicence, Date dateDebut, Date dateFin, List<qCategRessource> categoriesRessources, List<qLicence> qLicenceBatLastList) {
+        this.refConcession = refConcession;
+        this.concessionaire = concessionaire;
+        this.numlicence = numlicence;
+        this.dateLicence = dateLicence;
+        this.dateDebut = dateDebut;
+        this.dateFin = dateFin;
+        this.categoriesRessources = categoriesRessources;
+        this.qLicenceBatLastList = qLicenceBatLastList;
+    }
 }

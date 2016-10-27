@@ -27,6 +27,16 @@ public class qEnginPeche implements Serializable {
         this.maillage = maillage;
     }
 
+    public qEnginPeche(Integer idEngin, String engin, Integer maillage, qCategRessource categressource) {
+        IdEngin = idEngin;
+        Engin = engin;
+        this.maillage = maillage;
+        this.categressource = categressource;
+    }
+
+    public qEnginPeche() {
+    }
+
     public Integer getIdEngin() {
         return IdEngin;
     }

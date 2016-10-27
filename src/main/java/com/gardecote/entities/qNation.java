@@ -1,14 +1,13 @@
 package com.gardecote.entities;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by Dell on 23/10/2016.
  */
-public class qNation {
+@Entity
+public class qNation implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name="idNation", nullable=false)
@@ -18,6 +17,9 @@ public class qNation {
 
     public qNation(String designation) {
         this.designation = designation;
+    }
+
+    public qNation() {
     }
 
     public Integer getIdNation() {

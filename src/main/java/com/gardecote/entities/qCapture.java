@@ -36,8 +36,9 @@ public class qCapture implements Serializable
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name="idCapture", nullable=false)
     private Long      idCapture ;
-
+    @OneToOne
     private qEspeceTypee especeTypee;
+
     private Integer quantite;
 
     @ManyToOne
@@ -84,6 +85,16 @@ public class qCapture implements Serializable
     }
 
     public void setJourDeb(qJourDeb jourDeb) {
+        this.jourDeb = jourDeb;
+    }
+
+    public qCapture() {
+    }
+
+    public qCapture(qEspeceTypee especeTypee, Integer quantite, qJourMere jourMere, qJourDeb jourDeb) {
+        this.especeTypee = especeTypee;
+        this.quantite = quantite;
+        this.jourMere = jourMere;
         this.jourDeb = jourDeb;
     }
 }

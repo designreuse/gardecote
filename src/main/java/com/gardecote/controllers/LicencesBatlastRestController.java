@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import com.gardecote.web.listitem.LicencesBatlastListItem;
+
 import org.springframework.data.domain.Page;
-import com.gardecote.business.service.qLicenceBatLastService;
-import com.gardecote.entities.qLicenceBatLast;
+import com.gardecote.web.listitem.LicencesListItem;
+
+import com.gardecote.entities.qLicence;
+import com.gardecote.business.service.qLicenceService;
 /**
  * Spring MVC controller for 'LicencesBatlast' management.
  */
@@ -29,23 +31,23 @@ import com.gardecote.entities.qLicenceBatLast;
 public class LicencesBatlastRestController {
 
 	@Autowired
-	private qLicenceBatLastService licencesBatlastService;
+	private qLicenceService licencesBatlastService;
 	
 	@RequestMapping( value="/items/licencesBatlast",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<LicencesBatlastListItem> findAllAsListItems() {
-		List<qLicenceBatLast> list = licencesBatlastService.findAll();
-		List<LicencesBatlastListItem> items = new LinkedList<LicencesBatlastListItem>();
-		for ( qLicenceBatLast licencesBatlast : list ) {
-			items.add(new LicencesBatlastListItem( licencesBatlast ) );
+	public List<LicencesListItem> findAllAsListItems() {
+		List<qLicence> list = licencesBatlastService.findAll();
+		List<LicencesListItem> items = new LinkedList<LicencesListItem>();
+		for ( qLicence licencesBatlast : list ) {
+			items.add(new LicencesListItem(licencesBatlast) );
 		}
 		return items;
 	}
 	@RequestMapping(value="/autocomBats",method = RequestMethod.GET)
-	public Page<qLicenceBatLast> getAutocompleteLocals(@RequestParam String nomnav) {
+	public Page<qLicence> getAutocompleteLocals(@RequestParam String nomnav) {
 		System.out.println(licencesBatlastService.returnSuggNomNav(nomnav));
 		return licencesBatlastService.returnSuggNomNav(nomnav);
 	}
@@ -54,7 +56,7 @@ public class LicencesBatlastRestController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<qLicenceBatLast> findAll() {
+	public List<qLicence> findAll() {
 		return licencesBatlastService.findAll();
 	}
 
@@ -63,7 +65,7 @@ public class LicencesBatlastRestController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public qLicenceBatLast findOne(@PathVariable("idLic") Long idLic) {
+	public qLicence findOne(@PathVariable("idLic") Long idLic) {
 		return licencesBatlastService.findById(idLic);
 	}
 	
@@ -72,7 +74,7 @@ public class LicencesBatlastRestController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public qLicenceBatLast create(@RequestBody qLicenceBatLast licencesBatlast) {
+	public qLicence create(@RequestBody qLicence licencesBatlast) {
 		return licencesBatlastService.create(licencesBatlast);
 	}
 
@@ -81,7 +83,7 @@ public class LicencesBatlastRestController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public qLicenceBatLast update(@PathVariable("idLic") Long idLic, @RequestBody qLicenceBatLast licencesBatlast) {
+	public qLicence update(@PathVariable("idLic") Long idLic, @RequestBody qLicence licencesBatlast) {
 		return licencesBatlastService.update(licencesBatlast);
 	}
 

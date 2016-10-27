@@ -1,9 +1,14 @@
 package com.gardecote.entities;
 
+import javax.persistence.Entity;
+import java.io.Serializable;
+import javax.persistence.Id;
 /**
  * Created by Dell on 25/10/2016.
  */
-public class qUsine {
+@Entity
+public class qUsine implements Serializable {
+    @Id
     private String refUsine;
     private String refEuropean;
     private String capaciteStockage;

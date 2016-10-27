@@ -22,13 +22,13 @@ import java.util.Date;
 
 @Entity
 @DiscriminatorValue("MARREE")
-@Table(name="qMarree", schema="dbo", catalog="DSPCM_DB" )
+// @Table(name="qMarree", schema="dbo", catalog="DSPCM_DB" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qMarree.countAll", query="SELECT COUNT(x) FROM qMarree x" )
 } )
 
-@IdClass(qMarreePK.class)
+@IdClass(qDocPK.class)
 
 public class qMarree extends qDoc implements Serializable
 {
@@ -36,25 +36,19 @@ public class qMarree extends qDoc implements Serializable
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------
-    @Id
-    @Column(name="Depart", nullable=false, length=10)
-    private Date depart       ;
-    @Id
-    @OneToOne
-    private qRegistreNavire    qnavire;
 
     @Column(name="Retour", nullable=false, length=10)
     private Date     retour       ;
 
-    qConcession qconcessionconcernee;
+    private qConcession qconcessionconcernee;
 
 
     private qCategRessource qcategconcernee;
 
 
 
-
-    List<qPageMarree> pages;
+    @OneToMany(mappedBy="qmarree", targetEntity=qPageMarree.class)
+    private List<qPageMarree> pages;
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
@@ -74,21 +68,23 @@ public class qMarree extends qDoc implements Serializable
     //----------------------------------------------------------------------
 
 
-    public qMarree(enumTypeDoc enumtypedoc, List<qSeq> qlistseq, Date depart, Date retour, qConcession qconcessionconcernee, qRegistreNavire qnavire, qCategRessource qcategconcernee) {
-        super(enumtypedoc, qlistseq);
-        this.depart = depart;
+    public qMarree(Date retour, qConcession qconcessionconcernee, qCategRessource qcategconcernee, List<qPageMarree> pages) {
         this.retour = retour;
         this.qconcessionconcernee = qconcessionconcernee;
-        this.qnavire = qnavire;
+        this.qcategconcernee = qcategconcernee;
+        this.pages = pages;
+    }
+
+    public qMarree(enumTypeDoc enumtypedoc, List<qSeq> qlistseq, Date depart, Date retour, qConcession qconcessionconcernee, qRegistreNavire qnavire, qCategRessource qcategconcernee) {
+        super(enumtypedoc, qlistseq);
+
+        this.retour = retour;
+        this.qconcessionconcernee = qconcessionconcernee;
+
         this.qcategconcernee = qcategconcernee;
     }
 
-    public qMarreePK  getqMareePK(){
-    qMarreePK qMarree=new qMarreePK();
 
-
-    return qMarree;
-}
 
 
     //--- DATABASE MAPPING : Depart ( date )

@@ -23,8 +23,9 @@ import com.gardecote.web.common.AbstractController;
 import com.gardecote.web.common.FormMode;
 import com.gardecote.web.common.Message;
 import com.gardecote.web.common.MessageType;
-import com.gardecote.business.service.qLicenceBatLastService;
-import com.gardecote.entities.qLicenceBatLast;
+import com.gardecote.business.service.qLicenceService;
+import com.gardecote.entities.qLicence;
+import com.gardecote.entities.qLicence;
 //--- Entities
 
 //--- Services
@@ -51,7 +52,7 @@ public class LicencesBatlastController extends AbstractController {
 
 	//--- Main entity service
 	@Autowired
-    private qLicenceBatLastService  licencesBatlastService; // Injected by Spring
+    private qLicenceService  licencesBatlastService; // Injected by Spring
 
 	//--- Other service(s)
 
@@ -73,7 +74,7 @@ public class LicencesBatlastController extends AbstractController {
 	 * @param model
 	 * @param licencesBatlast
 	 */
-	private void populateModel(Model model, qLicenceBatLast licencesBatlast, FormMode formMode) {
+	private void populateModel(Model model, qLicence licencesBatlast, FormMode formMode) {
 		//--- Main entity
 		model.addAttribute(MAIN_ENTITY_NAME, licencesBatlast);
 		if ( formMode == FormMode.CREATE ) {
@@ -99,7 +100,7 @@ public class LicencesBatlastController extends AbstractController {
 	@RequestMapping()
 	public String list(Model model) {
 		log("Action 'list'");
-		List<qLicenceBatLast> list = licencesBatlastService.findAll();
+		List<qLicence> list = licencesBatlastService.findAll();
 		model.addAttribute(MAIN_LIST_NAME, list);		
 		return JSP_LIST;
 	}
@@ -113,7 +114,7 @@ public class LicencesBatlastController extends AbstractController {
 	public String formForCreate(Model model) {
 		log("Action 'formForCreate'");
 		//--- Populates the model with a new instance
-		qLicenceBatLast licencesBatlast = new qLicenceBatLast();
+		qLicence licencesBatlast = new qLicence();
 		populateModel( model, licencesBatlast, FormMode.CREATE);
 		return JSP_FORM;
 	}
@@ -128,7 +129,7 @@ public class LicencesBatlastController extends AbstractController {
 	public String formForUpdate(Model model, @PathVariable("idLic") Long idLic ) {
 		log("Action 'formForUpdate'");
 		//--- Search the entity by its primary key and stores it in the model 
-		qLicenceBatLast licencesBatlast = licencesBatlastService.findById(idLic);
+		qLicence licencesBatlast = licencesBatlastService.findById(idLic);
 		populateModel( model, licencesBatlast, FormMode.UPDATE);		
 		return JSP_FORM;
 	}
@@ -144,11 +145,11 @@ public class LicencesBatlastController extends AbstractController {
 	 * @return
 	 */
 	@RequestMapping(value = "/create" ) // GET or POST
-	public String create(@Valid qLicenceBatLast licencesBatlast, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest) {
+	public String create(@Valid qLicence licencesBatlast, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest) {
 		log("Action 'create'");
 		try {
 			if (!bindingResult.hasErrors()) {
-				qLicenceBatLast licencesBatlastCreated = licencesBatlastService.create(licencesBatlast);
+				qLicence licencesBatlastCreated = licencesBatlastService.create(licencesBatlast);
 				model.addAttribute(MAIN_ENTITY_NAME, licencesBatlastCreated);
 
 				//---
@@ -177,12 +178,12 @@ public class LicencesBatlastController extends AbstractController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update" ) // GET or POST
-	public String update(@Valid qLicenceBatLast licencesBatlast, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest) {
+	public String update(@Valid qLicence licencesBatlast, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest) {
 		log("Action 'update'");
 		try {
 			if (!bindingResult.hasErrors()) {
 				//--- Perform database operations
-				qLicenceBatLast licencesBatlastSaved = licencesBatlastService.update(licencesBatlast);
+				qLicence licencesBatlastSaved = licencesBatlastService.update(licencesBatlast);
 				model.addAttribute(MAIN_ENTITY_NAME, licencesBatlastSaved);
 				//--- Set the result message
 				messageHelper.addMessage(redirectAttributes, new Message(MessageType.SUCCESS,"save.ok"));

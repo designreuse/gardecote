@@ -5,49 +5,43 @@
 package com.gardecote.business.service;
 import com.gardecote.entities.qCategRessource;
 import java.util.List;
-
+import com.gardecote.entities.qTypeConcession;
 /**
  * Business Service Interface for entity AutorisEntity.
  */
-public interface qCategRessourceService {
-
+public interface qTypeConcessionService {
 	/**
 	 * Loads an entity from the database using its Primary Key
 	 * @return entity
 	 */
-	qCategRessource findById(qCategRessourcePK qPK) ;
-
+	qTypeConcession findById(Long qPK) ;
 	/**
 	 * Loads all entities.
 	 * @return all entities
 	 */
-	List<qCategRessource> findAll();
-
+	List<qTypeConcession> findAll();
 	/**
 	 * Saves the given entity in the database (create or update)
 	 * @param entity
 	 * @return entity
 	 */
-	qCategRessource save(qCategRessource entity);
-
+	qTypeConcession save(qTypeConcession entity);
 	/**
 	 * Updates the given entity in the database
 	 * @param entity
 	 * @return
 	 */
-	qCategRessource update(qCategRessource entity);
-
+	qTypeConcession update(qTypeConcession entity);
 	/**
 	 * Creates the given entity in the database
 	 * @param entity
 	 * @return
 	 */
-	qCategRessource create(qCategRessource entity);
-
+	qTypeConcession create(qTypeConcession entity);
 	/**
 	 * Deletes an entity using its Primary Key
 	 */
-	void delete(qCategRessourcePK qPK);
+	void delete(Long qPK);
 
 
 }

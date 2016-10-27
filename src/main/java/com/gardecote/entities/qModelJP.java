@@ -45,7 +45,7 @@ public class qModelJP implements Serializable
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "modelesp",targetEntity = qEspece.class)
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "modelesp",targetEntity =qEspeceTypee.class)
     private List<qEspeceTypee> especestypees;
 
 
@@ -88,6 +88,9 @@ public class qModelJP implements Serializable
 
         sb.append("]:"); 
         return sb.toString(); 
-    } 
+    }
 
+    public qModelJP(qTypeConcession qtypeconcession) {
+        this.qtypeconcession = qtypeconcession;
+    }
 }

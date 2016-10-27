@@ -49,8 +49,8 @@ public class qZoneServiceImpl implements qZoneService {
 		if( codesNotifAmEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
-		codesNotifAmEntity = new qZone();
-		qZone codesNotifAmEntitySaved = codesNotifAmJpaRepository.save(codesNotifAmEntity);
+	//	codesNotifAmEntity = new qZone();
+		qZone codesNotifAmEntitySaved = codesNotifAmJpaRepository.save(codesNotifAm);
 		return codesNotifAmEntitySaved;
 	}
 

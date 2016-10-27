@@ -1,31 +1,43 @@
 package com.gardecote.entities;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Date;
 /**
  * Created by Dell on 25/10/2016.
  */
-public class qTraitement extends qDoc {
+@Entity
+public class qTraitement implements Serializable {
 
 
-
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="idTraitement", nullable=false)
+    private Long    idTraitement      ;
+    @Column
+    @Enumerated
+    @ElementCollection(targetClass = enumSegPeche.class)
     private  List<enumSegPeche> segs;
     private qUsine qusine;
+    @OneToMany(mappedBy = "qtraitement",targetEntity = qQuantiteExportee.class)
     private List<qQuantiteExportee> qQteExp;
     private Long qteDechu;
     private Date dateTraitement;
-    @OneToMany
+    //@OneToMany
+    @OneToMany(mappedBy="qtraitement", targetEntity=qPageTraitement.class)
     private List<qPageTraitement> pagesTraitement;
 
     public qTraitement(enumTypeDoc enumtypedoc, List<qSeq> qlistseq, List<enumSegPeche> segs, qUsine qusine, List<qQuantiteExportee> qQteExp, Long qteDechu, Date dateTraitement, List<qPageTraitement> pagesTraitement) {
-        super(enumtypedoc, qlistseq);
+      //  super(enumtypedoc, qlistseq);
         this.segs = segs;
         this.qusine = qusine;
         this.qQteExp = qQteExp;
         this.qteDechu = qteDechu;
         this.dateTraitement = dateTraitement;
         this.pagesTraitement = pagesTraitement;
+    }
+
+    public qTraitement() {
     }
 
     public List<enumSegPeche> getSegs() {

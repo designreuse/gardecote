@@ -21,8 +21,9 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qPageDebarquement", schema="dbo", catalog="DSPCM_DB" )
+//@Table(name="qPageDebarquement", schema="dbo", catalog="DSPCM_DB" )
 // Define named queries here
+@DiscriminatorValue("PDEBARQUEMENT")
 @NamedQueries ( {
   @NamedQuery ( name="qPageDebarquement.countAll", query="SELECT COUNT(x) FROM qPageDebarquement x" )
 } )
@@ -30,7 +31,7 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    private Integer  nbrLigne=10;
+
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
@@ -41,35 +42,33 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
 	// "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link 
 
 
-
     @OneToOne
     private qDebarquement qdebarquement;
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @ManyToOne
-    @JoinColumn(name="IdCarnet", referencedColumnName="IdCarnet")
-    private qCarnet carnet;
 
-    @OneToMany(mappedBy = "pages",targetEntity = qJourDeb.class)
+
+    @OneToMany(mappedBy = "pagesDeb",targetEntity = qJourDeb.class)
     private List<qJourDeb>  listJours;
 
     public qPageDebarquement(String numeroPage, Integer nbrLigne, Integer nbrLigne1, qDebarquement qdebarquement, List<qJourDeb> listJours) {
-        super(numeroPage, nbrLigne);
+        super(numeroPage, 10);
         nbrLigne = nbrLigne1;
         this.qdebarquement = qdebarquement;
         this.listJours = listJours;
     }
 
-    @Override
-    public Integer getNbrLigne() {
-        return nbrLigne;
+    public qPageDebarquement(Integer nbrLigne, qDebarquement qdebarquement, List<qJourDeb> listJours) {
+
+        this.qdebarquement = qdebarquement;
+
+        this.listJours = listJours;
     }
 
-    @Override
-    public void setNbrLigne(Integer nbrLigne) {
-        this.nbrLigne = nbrLigne;
-    }
+
+
+
 
     public qDebarquement getQdebarquement() {
         return qdebarquement;
@@ -79,15 +78,6 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
         this.qdebarquement = qdebarquement;
     }
 
-    @Override
-    public qCarnet getCarnet() {
-        return carnet;
-    }
-
-    @Override
-    public void setCarnet(qCarnet carnet) {
-        this.carnet = carnet;
-    }
 
     public List<qJourDeb> getListJours() {
         return listJours;

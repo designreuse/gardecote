@@ -5,8 +5,8 @@
 package com.gardecote.business.service;
 import com.gardecote.entities.qCarnet;
 import java.util.List;
+import com.gardecote.entities.qCarnetPK;
 
-;
 
 /**
  * Business Service Interface for entity Authprov.
@@ -18,7 +18,7 @@ public interface qCarnetService {
 	 * @param idcapture
 	 * @return entity
 	 */
-	qCarnet findById(Long idcapture) ;
+	qCarnet findById(qCarnetPK idcapture) ;
 
 	/**
 	 * Loads all entities.
@@ -51,7 +51,7 @@ public interface qCarnetService {
 	 * Deletes an entity using its Primary Key
 	 * @param idauthpr
 	 */
-	void delete(Long idauthpr);
+	void delete(qCarnetPK idauthpr);
 
 
 }

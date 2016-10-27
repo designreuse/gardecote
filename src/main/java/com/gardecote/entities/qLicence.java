@@ -51,12 +51,12 @@ public class qLicence implements Serializable
     @Column(name="id_zone")
     private qZone   zone       ;
 
-    @Column(name="id_nation", nullable=false)
-    private qNation    qNation     ;
+    @Column(name="id_nation")
+    private qNation    nation     ;
 
     // Ca c'est pour le format de nouvelle strategie
 
-    @OneToMany(mappedBy = "categressource",targetEntity =qCategRessource.class)
+    @OneToMany(mappedBy = "qlicence",targetEntity =qCategRessource.class)
     private List<qCategRessource> qcatressources;
 
 
@@ -81,7 +81,7 @@ public class qLicence implements Serializable
 
     // ca c'est la fin pour le format de nouvelle strategie
 
-
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="debaut")
     private Date       dateDebutAuth      ;
 
@@ -105,7 +105,7 @@ public class qLicence implements Serializable
     @Column(name="count", length=255)
     private String     count        ;
 
-    @Temporal(TemporalType.TIMESTAMP)
+
 
     @Column(name="eff", length=255)
     private String     eff          ;
@@ -171,7 +171,312 @@ public class qLicence implements Serializable
     {
 		super();
     }
-    
 
+    public qLicence(qTypeLic qtypnav, qTypeEnc typencad, qZone zone, com.gardecote.entities.qNation qNation, List<qCategRessource> qcatressources, List<qEnginPeche> engins, enumSupport typesuppDroit, qRegistreNavire qnavire, qConsignataire qconcessionaire, qConcession qconcession, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, Integer balise, String calpoids, String count, String eff, Double gt, Integer imo, Double kw, String larg, String longg, String nbrhomm, String nomar, String nomex, String nomnav, String numimm, String numlic, String port, String puimot, String radio, Double tjb) {
+        this.qtypnav = qtypnav;
+        this.typencad = typencad;
+        this.zone = zone;
+        this.nation = qNation;
+        this.qcatressources = qcatressources;
+        Engins = engins;
+        this.typesuppDroit = typesuppDroit;
+        this.qnavire = qnavire;
+        this.qconcessionaire = qconcessionaire;
+        this.qconcession = qconcession;
+        this.typb = typb;
+        this.dateDebutAuth = dateDebutAuth;
+        this.dateFinAuth = dateFinAuth;
+        this.anneeconstr = anneeconstr;
+        this.balise = balise;
+        this.calpoids = calpoids;
+        this.count = count;
+        this.eff = eff;
+        this.gt = gt;
+        this.imo = imo;
+        this.kw = kw;
+        this.larg = larg;
+        this.longg = longg;
+        this.nbrhomm = nbrhomm;
+        this.nomar = nomar;
+        this.nomex = nomex;
+        this.nomnav = nomnav;
+        this.numimm = numimm;
+        this.numlic = numlic;
+        this.port = port;
+        this.puimot = puimot;
+        this.radio = radio;
+        this.tjb = tjb;
+    }
 
+    public Long getIdLic() {
+        return idLic;
+    }
+
+    public void setIdLic(Long idLic) {
+        this.idLic = idLic;
+    }
+
+    public qTypeLic getQtypnav() {
+        return qtypnav;
+    }
+
+    public void setQtypnav(qTypeLic qtypnav) {
+        this.qtypnav = qtypnav;
+    }
+
+    public qTypeEnc getTypencad() {
+        return typencad;
+    }
+
+    public void setTypencad(qTypeEnc typencad) {
+        this.typencad = typencad;
+    }
+
+    public qZone getZone() {
+        return zone;
+    }
+
+    public void setZone(qZone zone) {
+        this.zone = zone;
+    }
+
+    public com.gardecote.entities.qNation getqNation() {
+        return nation;
+    }
+
+    public void setqNation(com.gardecote.entities.qNation qNation) {
+        this.nation = qNation;
+    }
+
+    public List<qCategRessource> getQcatressources() {
+        return qcatressources;
+    }
+
+    public void setQcatressources(List<qCategRessource> qcatressources) {
+        this.qcatressources = qcatressources;
+    }
+
+    public List<qEnginPeche> getEngins() {
+        return Engins;
+    }
+
+    public void setEngins(List<qEnginPeche> engins) {
+        Engins = engins;
+    }
+
+    public enumSupport getTypesuppDroit() {
+        return typesuppDroit;
+    }
+
+    public void setTypesuppDroit(enumSupport typesuppDroit) {
+        this.typesuppDroit = typesuppDroit;
+    }
+
+    public qRegistreNavire getQnavire() {
+        return qnavire;
+    }
+
+    public void setQnavire(qRegistreNavire qnavire) {
+        this.qnavire = qnavire;
+    }
+
+    public qConsignataire getQconcessionaire() {
+        return qconcessionaire;
+    }
+
+    public void setQconcessionaire(qConsignataire qconcessionaire) {
+        this.qconcessionaire = qconcessionaire;
+    }
+
+    public qConcession getQconcession() {
+        return qconcession;
+    }
+
+    public void setQconcession(qConcession qconcession) {
+        this.qconcession = qconcession;
+    }
+
+    public enumTypeBat getTypb() {
+        return typb;
+    }
+
+    public void setTypb(enumTypeBat typb) {
+        this.typb = typb;
+    }
+
+    public Date getDateDebutAuth() {
+        return dateDebutAuth;
+    }
+
+    public void setDateDebutAuth(Date dateDebutAuth) {
+        this.dateDebutAuth = dateDebutAuth;
+    }
+
+    public Date getDateFinAuth() {
+        return dateFinAuth;
+    }
+
+    public void setDateFinAuth(Date dateFinAuth) {
+        this.dateFinAuth = dateFinAuth;
+    }
+
+    public Integer getAnneeconstr() {
+        return anneeconstr;
+    }
+
+    public void setAnneeconstr(Integer anneeconstr) {
+        this.anneeconstr = anneeconstr;
+    }
+
+    public Integer getBalise() {
+        return balise;
+    }
+
+    public void setBalise(Integer balise) {
+        this.balise = balise;
+    }
+
+    public String getCalpoids() {
+        return calpoids;
+    }
+
+    public void setCalpoids(String calpoids) {
+        this.calpoids = calpoids;
+    }
+
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
+    }
+
+    public String getEff() {
+        return eff;
+    }
+
+    public void setEff(String eff) {
+        this.eff = eff;
+    }
+
+    public Double getGt() {
+        return gt;
+    }
+
+    public void setGt(Double gt) {
+        this.gt = gt;
+    }
+
+    public Integer getImo() {
+        return imo;
+    }
+
+    public void setImo(Integer imo) {
+        this.imo = imo;
+    }
+
+    public Double getKw() {
+        return kw;
+    }
+
+    public void setKw(Double kw) {
+        this.kw = kw;
+    }
+
+    public String getLarg() {
+        return larg;
+    }
+
+    public void setLarg(String larg) {
+        this.larg = larg;
+    }
+
+    public String getLongg() {
+        return longg;
+    }
+
+    public void setLongg(String longg) {
+        this.longg = longg;
+    }
+
+    public String getNbrhomm() {
+        return nbrhomm;
+    }
+
+    public void setNbrhomm(String nbrhomm) {
+        this.nbrhomm = nbrhomm;
+    }
+
+    public String getNomar() {
+        return nomar;
+    }
+
+    public void setNomar(String nomar) {
+        this.nomar = nomar;
+    }
+
+    public String getNomex() {
+        return nomex;
+    }
+
+    public void setNomex(String nomex) {
+        this.nomex = nomex;
+    }
+
+    public String getNomnav() {
+        return nomnav;
+    }
+
+    public void setNomnav(String nomnav) {
+        this.nomnav = nomnav;
+    }
+
+    public String getNumimm() {
+        return numimm;
+    }
+
+    public void setNumimm(String numimm) {
+        this.numimm = numimm;
+    }
+
+    public String getNumlic() {
+        return numlic;
+    }
+
+    public void setNumlic(String numlic) {
+        this.numlic = numlic;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public String getPuimot() {
+        return puimot;
+    }
+
+    public void setPuimot(String puimot) {
+        this.puimot = puimot;
+    }
+
+    public String getRadio() {
+        return radio;
+    }
+
+    public void setRadio(String radio) {
+        this.radio = radio;
+    }
+
+    public Double getTjb() {
+        return tjb;
+    }
+
+    public void setTjb(Double tjb) {
+        this.tjb = tjb;
+    }
 }

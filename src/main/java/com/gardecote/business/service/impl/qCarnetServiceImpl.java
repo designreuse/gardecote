@@ -16,6 +16,7 @@ import com.gardecote.data.repository.jpa.qCarnetRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.entities.qCarnet;
+import com.gardecote.entities.qCarnetPK;
 /**
  * Implementation of AuthprovService
  */
@@ -28,7 +29,7 @@ public class qCarnetServiceImpl implements qCarnetService {
 
 
 	@Override
-	public qCarnet findById(Long idcarnet) {
+	public qCarnet findById(qCarnetPK idcarnet) {
 		qCarnet authprovEntity = qCarnetRepository.findOne(idcarnet);
 		return authprovEntity;
 	}
@@ -50,7 +51,7 @@ public class qCarnetServiceImpl implements qCarnetService {
 
 	@Override
 	public qCarnet create(qCarnet authprov) {
-		qCarnet authprovEntity = qCarnetRepository.findOne(authprov.getIdcarnet());
+		qCarnet authprovEntity = qCarnetRepository.findOne(authprov.getCarnetPK());
 		if( authprovEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
@@ -62,14 +63,14 @@ public class qCarnetServiceImpl implements qCarnetService {
 
 	@Override
 	public qCarnet update(qCarnet authprov) {
-		qCarnet authprovEntity = qCarnetRepository.findOne(authprov.getIdcarnet());
+		qCarnet authprovEntity = qCarnetRepository.findOne(authprov.getCarnetPK());
 
 		qCarnet authprovEntitySaved = qCarnetRepository.save(authprovEntity);
 		return authprovEntitySaved ;
 	}
 
 	@Override
-	public void delete(Long idauthpr) {
+	public void delete(qCarnetPK  idauthpr) {
 		qCarnetRepository.delete(idauthpr);
 	}
 

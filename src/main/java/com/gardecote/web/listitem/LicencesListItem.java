@@ -5,13 +5,13 @@
 package com.gardecote.web.listitem;
 
 import com.gardecote.web.common.ListItem;
-import com.gardecote.entities.qLicenceBatLast;
-public class LicencesBatlastListItem implements ListItem {
+import com.gardecote.entities.qLicence;
+public class LicencesListItem implements ListItem {
 
 	private final String value ;
 	private final String label ;
 	
-	public LicencesBatlastListItem(qLicenceBatLast licencesBatlast) {
+	public LicencesListItem(qLicence licencesBatlast) {
 		super();
 
 		this.value = ""

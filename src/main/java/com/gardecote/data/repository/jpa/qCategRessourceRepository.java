@@ -1,17 +1,13 @@
 package com.gardecote.data.repository.jpa;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
-import com.gardecote.entities.qCategRessource;
+import com.gardecote.entities.qCapture;
 import com.gardecote.entities.qTypeConcession;
- /**
- * Repository : Authprov.
- */
+import com.gardecote.entities.qCategRessource;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
- * Repository : Bateaucomplet.
+ * Created by Dell on 27/10/2016.
  */
-
-public  interface qCategRessourceRepository extends PagingAndSortingRepository<qCategRessource, qTypeConcession> {
+public interface qCategRessourceRepository extends PagingAndSortingRepository<qCategRessource, qTypeConcession> {
 
 }
-

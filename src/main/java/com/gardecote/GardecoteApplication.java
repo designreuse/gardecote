@@ -27,7 +27,7 @@ public class GardecoteApplication {
     public static void main(String[] args) {
      ApplicationContext ctx= SpringApplication.run(GardecoteApplication.class, args);
 
-        qCategRessourceRepository qcategressourcerepository= ctx.getBean(qCategRessourceRepository.class);
+       qCategRessourceRepository qcategressourcerepository= ctx.getBean(qCategRessourceRepository.class);
         //-------------------------------------------------------------------------------------------
         // creer les categories de ressource 5 PA
         qTypeConcession paCeph=new qTypeConcessionArtisanal(enumTypeConcessionArtisanal.Cephalopode);

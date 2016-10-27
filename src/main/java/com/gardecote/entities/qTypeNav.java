@@ -1,12 +1,14 @@
 package com.gardecote.entities;
 
 import javax.persistence.Entity;
-
+import java.io.Serializable;
+import javax.persistence.Id;
 /**
  * Created by Dell on 09/10/2016.
  */
-
-public class qTypeNav {
+@Entity
+public class qTypeNav implements Serializable {
+    @Id
     private String idqTypeNav;
     private String descr;
 

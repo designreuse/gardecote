@@ -5,7 +5,7 @@
 package com.gardecote.business.service;
 import com.gardecote.entities.qMarree;
 import java.util.List;
-import com.gardecote.entities.qMarreePK;
+import com.gardecote.entities.qDocPK;
 /**
  * Business Service Interface for entity Classinfractions.
  */
@@ -15,7 +15,7 @@ public interface qMarreeService {
 	 * @param codeClass
 	 * @return entity
 	 */
-	qMarree findById(qMarreePK codeClass) ;
+	qMarree findById(qDocPK codeClass) ;
 
 	/**
 	 * Loads all entities.
@@ -48,7 +48,7 @@ public interface qMarreeService {
 	 * Deletes an entity using its Primary Key
 	 * @param codeClass
 	 */
-	void delete(qMarreePK codeClass);
+	void delete(qDocPK codeClass);
 
 
 }
