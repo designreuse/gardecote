@@ -7,6 +7,11 @@ import java.io.Serializable;
  * Created by Dell on 23/10/2016.
  */
 @Entity
+@Table(name="qNation", schema="dbo", catalog="DSPCM_DB" )
+// Define named queries here
+@NamedQueries ( {
+        @NamedQuery ( name="qNation.countAll", query="SELECT COUNT(x) FROM qNation x" )
+} )
 public class qNation implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

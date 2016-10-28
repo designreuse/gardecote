@@ -1,12 +1,17 @@
 package com.gardecote.entities;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
-import javax.persistence.Id;
+
 /**
  * Created by Dell on 25/10/2016.
  */
 @Entity
+@Table(name="qUsine", schema="dbo", catalog="DSPCM_DB" )
+// Define named queries here
+@NamedQueries( {
+        @NamedQuery( name="qUsine.countAll", query="SELECT COUNT(x) FROM qUsine x" )
+} )
 public class qUsine implements Serializable {
     @Id
     private String refUsine;

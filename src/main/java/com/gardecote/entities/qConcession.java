@@ -40,8 +40,9 @@ public class qConcession implements Serializable
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @OneToOne(cascade = CascadeType.ALL)
-    private qConsignataire     concessionaire ;
+    @OneToOne
+
+    private qConsignataire    concessionaire;
 
     @Column(name="NumLicence", nullable=false, length=50)
     private String     numlicence   ;

@@ -7,6 +7,11 @@ import java.util.Date;
  * Created by Dell on 25/10/2016.
  */
 @Entity
+@Table(name="qTraitement", schema="dbo", catalog="DSPCM_DB" )
+// Define named queries here
+@NamedQueries ( {
+        @NamedQuery ( name="qTraitement.countAll", query="SELECT COUNT(x) FROM qTraitement x" )
+} )
 public class qTraitement implements Serializable {
 
 

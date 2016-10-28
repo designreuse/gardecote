@@ -14,6 +14,8 @@ import java.io.Serializable;
 } )
 public class qEnginPeche implements Serializable {
     @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="id_engin", nullable=false)
    private Integer IdEngin;
 
     private String Engin;

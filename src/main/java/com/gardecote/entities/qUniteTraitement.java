@@ -8,6 +8,11 @@ import java.util.List;
  * Created by Dell on 25/10/2016.
  */
 @Entity
+@Table(name="qUniteTraitement", schema="dbo", catalog="DSPCM_DB" )
+// Define named queries here
+@NamedQueries( {
+        @NamedQuery( name="qUniteTraitement.countAll", query="SELECT COUNT(x) FROM qUniteTraitement x" )
+} )
 public class qUniteTraitement implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

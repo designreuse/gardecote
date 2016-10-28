@@ -42,4 +42,25 @@ public class qEspeceTypeePK implements Serializable {
     public void setQtypeconcession(qTypeConcession qtypeconcession) {
         this.qtypeconcession = qtypeconcession;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof qEspeceTypeePK)) return false;
+
+        qEspeceTypeePK that = (qEspeceTypeePK) o;
+
+        if (!qespece.equals(that.qespece)) return false;
+        if (enumesptype != that.enumesptype) return false;
+        return qtypeconcession.equals(that.qtypeconcession);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = qespece.hashCode();
+        result = 31 * result + enumesptype.hashCode();
+        result = 31 * result + qtypeconcession.hashCode();
+        return result;
+    }
 }

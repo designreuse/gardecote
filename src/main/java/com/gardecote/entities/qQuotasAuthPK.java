@@ -34,4 +34,23 @@ public class qQuotasAuthPK  implements Serializable {
     public void setQconcession(qConcession qconcession) {
         this.qconcession = qconcession;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof qQuotasAuthPK)) return false;
+
+        qQuotasAuthPK that = (qQuotasAuthPK) o;
+
+        if (!qcategressource.equals(that.qcategressource)) return false;
+        return qconcession.equals(that.qconcession);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = qcategressource.hashCode();
+        result = 31 * result + qconcession.hashCode();
+        return result;
+    }
 }

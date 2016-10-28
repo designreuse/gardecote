@@ -9,6 +9,11 @@ import java.util.List;
  * Created by Dell on 22/10/2016.
  */
 @Entity
+@Table(name="RegistreNavire", schema="dbo", catalog="DSPCM_DB" )
+// Define named queries here
+@NamedQueries ( {
+        @NamedQuery ( name="RegistreNavire.countAll", query="SELECT COUNT(x) FROM RegistreNavire x" )
+} )
 public class qRegistreNavire implements Serializable {
     private static final long serialVersionUID = 1L;
     //----------------------------------------------------------------------

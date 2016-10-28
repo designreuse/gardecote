@@ -38,4 +38,23 @@ public class qCarnetPK implements Serializable {
     public void setNumeroDebutPage(Long numeroDebutPage) {
         this.numeroDebutPage = numeroDebutPage;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof qCarnetPK)) return false;
+
+        qCarnetPK qCarnetPK = (qCarnetPK) o;
+
+        if (prefixNumerotation != qCarnetPK.prefixNumerotation) return false;
+        return numeroDebutPage.equals(qCarnetPK.numeroDebutPage);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = prefixNumerotation.hashCode();
+        result = 31 * result + numeroDebutPage.hashCode();
+        return result;
+    }
 }
