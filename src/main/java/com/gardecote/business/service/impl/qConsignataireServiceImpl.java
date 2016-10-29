@@ -50,7 +50,7 @@ public class qConsignataireServiceImpl implements qConsignataireService {
 
 	@Override
 	public qConsignataire create(qConsignataire batobserv) {
-		qConsignataire batobservEntity = batobservJpaRepository.findOne(batobserv.getConsignataire());
+		qConsignataire batobservEntity = batobservJpaRepository.findOne(batobserv.getNomConsignataire());
 		if( batobservEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
@@ -62,7 +62,7 @@ public class qConsignataireServiceImpl implements qConsignataireService {
 
 	@Override
 	public qConsignataire update(qConsignataire batobserv) {
-		qConsignataire batobservEntity = batobservJpaRepository.findOne(batobserv.getConsignataire());
+		qConsignataire batobservEntity = batobservJpaRepository.findOne(batobserv.getNomConsignataire());
 
 		qConsignataire batobservEntitySaved = batobservJpaRepository.save(batobservEntity);
 		return batobservEntitySaved;

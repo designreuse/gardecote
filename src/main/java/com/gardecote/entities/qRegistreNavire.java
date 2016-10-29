@@ -9,10 +9,10 @@ import java.util.List;
  * Created by Dell on 22/10/2016.
  */
 @Entity
-@Table(name="RegistreNavire", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qRegistreNavire", schema="dbo", catalog="DSPCM_DB" )
 // Define named queries here
 @NamedQueries ( {
-        @NamedQuery ( name="RegistreNavire.countAll", query="SELECT COUNT(x) FROM RegistreNavire x" )
+        @NamedQuery ( name="qRegistreNavire.countAll", query="SELECT COUNT(x) FROM qRegistreNavire x" )
 } )
 public class qRegistreNavire implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -20,7 +20,7 @@ public class qRegistreNavire implements Serializable {
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+
     @Column(name="numimm", nullable=false)
     private String     numimm;
 

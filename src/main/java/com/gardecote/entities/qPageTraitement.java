@@ -43,6 +43,16 @@ public class qPageTraitement extends qPageCarnet {
     //----------------------------------------------------------------------
 
 
+    public qPageTraitement(List<enumAuthorisation> segs, qTraitement qtraitement, List<qUniteTraitement> opTraitements) {
+        this.segs = segs;
+        this.qtraitement = qtraitement;
+        this.opTraitements = opTraitements;
+    }
+
+    public qPageTraitement(String numeroPage, Integer nbrLigne) {
+        super(numeroPage, nbrLigne);
+    }
+
     public qPageTraitement(Integer nbrLigne, List<enumAuthorisation> segs, qTraitement qtraitement, List<qUniteTraitement> opTraitements) {
 
         this.segs = segs;
@@ -58,7 +68,9 @@ public class qPageTraitement extends qPageCarnet {
         this.opTraitements = opTraitements;
     }
 
+    public qPageTraitement() {
 
+    }
 
     public List<enumAuthorisation> getSegs() {
         return segs;

@@ -22,6 +22,9 @@ public class qTypeNav implements Serializable {
         this.descr = descr;
     }
 
+    public qTypeNav() {
+    }
+
     public String getIdqTypeNav() {
         return idqTypeNav;
     }

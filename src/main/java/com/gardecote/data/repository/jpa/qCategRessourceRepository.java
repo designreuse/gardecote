@@ -8,6 +8,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * Created by Dell on 27/10/2016.
  */
-public interface qCategRessourceRepository extends PagingAndSortingRepository<qCategRessource, qTypeConcession> {
+public interface qCategRessourceRepository extends PagingAndSortingRepository<qCategRessource, Long> {
 
 }

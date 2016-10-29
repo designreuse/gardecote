@@ -59,4 +59,7 @@ public class qDebarquement extends qDoc implements Serializable {
         this.qcategconcernee = qcategconcernee;
         this.pages = pages;
     }
+    public qDebarquement() {
+
+    }
 }

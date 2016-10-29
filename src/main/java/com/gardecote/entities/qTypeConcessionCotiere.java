@@ -19,12 +19,22 @@ public class qTypeConcessionCotiere extends qTypeConcession implements Serializa
         this.enumTypePecheCotiere = enumTypePecheCotiere;
     }
 
+    public qTypeConcessionCotiere(String libelle, com.gardecote.entities.enumTypeConcessionCotiere enumTypeConcessionCotiere, enumTypePechCotiere enumTypePecheCotiere) {
+        super(libelle);
+        this.enumTypeConcessionCotiere = enumTypeConcessionCotiere;
+        this.enumTypePecheCotiere = enumTypePecheCotiere;
+    }
+
     public enumTypeConcessionCotiere getEnumSegPecheCotiere() {
         return enumTypeConcessionCotiere;
     }
 
     public void setEnumSegPecheCotiere(enumTypeConcessionCotiere enumSegPecheCotiere) {
         this.enumTypeConcessionCotiere = enumSegPecheCotiere;
+    }
+
+    public qTypeConcessionCotiere() {
+
     }
 
     public enumTypePechCotiere getEnumTypePecheCotiere() {

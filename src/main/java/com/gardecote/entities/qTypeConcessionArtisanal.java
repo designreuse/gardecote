@@ -23,4 +23,8 @@ public class qTypeConcessionArtisanal extends qTypeConcession implements Seriali
     public void setEnumTypeConcessionArtisanal(com.gardecote.entities.enumTypeConcessionArtisanal enumTypeConcessionArtisanal) {
         this.enumTypeConcessionArtisanal = enumTypeConcessionArtisanal;
     }
+
+    public qTypeConcessionArtisanal() {
+    }
+
 }

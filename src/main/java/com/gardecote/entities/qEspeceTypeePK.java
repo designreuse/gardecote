@@ -13,6 +13,9 @@ public class qEspeceTypeePK implements Serializable {
 
     private qTypeConcession qtypeconcession;
 
+    public qEspeceTypeePK() {
+    }
+
     public qEspeceTypeePK(qEspece qespece, enumEspType enumesptype, qTypeConcession qtypeconcession) {
         this.qespece = qespece;
         this.enumesptype = enumesptype;

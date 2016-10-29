@@ -17,11 +17,11 @@ import java.util.List;
         @NamedQuery ( name="qCategRessource.countAll", query="SELECT COUNT(x) FROM qCategRessource x" )
 } )
 
-
+//@IdClass(qTypeConcession.class)
 public class qCategRessource implements Serializable {
     @Id
-    @NotNull
-    private qTypeConcession typeConcession;
+ private Long idTypeConcession;
+  //  private qTypeConcession typeConcession;
 
     private enumSupport typeSupport;
     @ManyToOne
@@ -34,8 +34,16 @@ public class qCategRessource implements Serializable {
    // @JoinColumn(name = "ref_concession", nullable = false)
     private qConcession concession;
 
-    public qCategRessource(qTypeConcession typeConcession, enumSupport typeSupport, List<qEnginPeche> engins) {
-        this.typeConcession = typeConcession;
+    public qLicence getQlicence() {
+        return qlicence;
+    }
+
+    public void setQlicence(qLicence qlicence) {
+        this.qlicence = qlicence;
+    }
+
+    public qCategRessource(Long typeConcession, enumSupport typeSupport, List<qEnginPeche> engins) {
+        this.idTypeConcession = typeConcession;
         this.typeSupport = typeSupport;
         Engins = engins;
     }
@@ -43,12 +51,12 @@ public class qCategRessource implements Serializable {
     public qCategRessource() {
     }
 
-    public qTypeConcession getTypeConcession() {
-        return typeConcession;
+    public Long getTypeConcession() {
+        return idTypeConcession;
     }
 
-    public void setTypeConcession(qTypeConcession typeConcession) {
-        this.typeConcession = typeConcession;
+    public void setTypeConcession(Long typeConcession) {
+        this.idTypeConcession = typeConcession;
     }
 
     public enumSupport getTypeSupport() {

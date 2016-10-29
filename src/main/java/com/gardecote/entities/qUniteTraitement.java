@@ -20,6 +20,10 @@ public class qUniteTraitement implements Serializable {
     private Long idTraitement        ;
     private qEspece esp;
     private Long qte;
+
+    public qUniteTraitement() {
+    }
+
     @OneToMany
     private List<qPageTraitement> pagesTraitement;
 

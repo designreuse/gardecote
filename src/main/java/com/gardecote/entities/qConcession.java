@@ -40,9 +40,10 @@ public class qConcession implements Serializable
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @OneToOne
-
-    private qConsignataire    concessionaire;
+   // @Column(name="idconcession", nullable=false)
+    @ManyToOne
+  // @JoinColumn(name = "idconcession")
+     private qConsignataire    qconsignataire;
 
     @Column(name="NumLicence", nullable=false, length=50)
     private String     numlicence   ;
@@ -109,11 +110,11 @@ public class qConcession implements Serializable
     //--- DATABASE MAPPING : Concessionaire ( varchar ) 
     public void setConcessionaire( qConsignataire concessionaire )
     {
-        this.concessionaire = concessionaire;
+        this.qconsignataire = concessionaire;
     }
     public qConsignataire getConcessionaire()
     {
-        return this.concessionaire;
+        return this.qconsignataire;
     }
 
     //--- DATABASE MAPPING : NumLicence ( varchar )
@@ -182,7 +183,7 @@ public class qConcession implements Serializable
         sb.append("|");
         sb.append(categoriesRessources );
         sb.append("|");
-        sb.append(concessionaire);
+        sb.append(qconsignataire);
 
         sb.append("|");
         sb.append(numlicence);
@@ -197,7 +198,7 @@ public class qConcession implements Serializable
 
     public qConcession(String refConcession, qConsignataire concessionaire, String numlicence, Date dateLicence, Date dateDebut, Date dateFin, List<qCategRessource> categoriesRessources, List<qLicence> qLicenceBatLastList) {
         this.refConcession = refConcession;
-        this.concessionaire = concessionaire;
+        this.qconsignataire = concessionaire;
         this.numlicence = numlicence;
         this.dateLicence = dateLicence;
         this.dateDebut = dateDebut;

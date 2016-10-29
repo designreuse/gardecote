@@ -16,11 +16,9 @@ import java.util.List;
 public class qDoc implements Serializable {
 
     @Id
-    @Column(name="Depart", nullable=false, length=10)
-    private Date depart       ;
+   private Date depart       ;
 
     @Id
-    @OneToOne
     private qRegistreNavire    qnavire;
 
     private enumTypeDoc enumtypedoc;

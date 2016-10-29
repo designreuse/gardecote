@@ -19,7 +19,10 @@ public class qTypeLic implements Serializable {
   @Column(name="id_typelic", nullable=false)
   private Integer idTypeLic;
 
-   private char codelic;
+  public qTypeLic() {
+  }
+
+  private char codelic;
 
   private char codeaut;
   private String descr;

@@ -26,6 +26,12 @@ public class qTypeConcessionHautiriere extends qTypeConcession implements Serial
         this.enumTypeConcessionHautiriere = enumTypeConcessionHautiriere;
     }
 
+    public qTypeConcessionHautiriere(String libelle) {
+        super(libelle);
+    }
+    public qTypeConcessionHautiriere() {
+
+    }
     public com.gardecote.entities.enumTypePecheHautiriere getEnumTypePecheHautiriere() {
         return enumTypePecheHautiriere;
     }

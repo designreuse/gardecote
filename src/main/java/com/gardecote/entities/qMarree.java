@@ -58,12 +58,32 @@ public class qMarree extends qDoc implements Serializable
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
 
+    public qMarree(Date retour, qConcession qconcessionconcernee, qCategRessource qcategconcernee) {
+        this.retour = retour;
+        this.qconcessionconcernee = qconcessionconcernee;
+        this.qcategconcernee = qcategconcernee;
+    }
+
+    public qMarree() {
+
+    }
+
+    public qMarree(Date retour, qConcession qconcessionconcernee) {
+        this.retour = retour;
+        this.qconcessionconcernee = qconcessionconcernee;
+    }
+
     public qMarree(enumTypeDoc enumtypedoc, List<qSeq> qlistseq) {
         super(enumtypedoc, qlistseq);
     }
 
-
-    //----------------------------------------------------------------------
+    public qMarree(enumTypeDoc enumtypedoc, List<qSeq> qlistseq, Date retour, qConcession qconcessionconcernee, qCategRessource qcategconcernee) {
+        super(enumtypedoc, qlistseq);
+        this.retour = retour;
+        this.qconcessionconcernee = qconcessionconcernee;
+        this.qcategconcernee = qcategconcernee;
+    }
+//----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
 

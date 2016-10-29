@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class qTypeConcession implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="idTypeConcession", nullable=false)
+    @Column(name="idtypeconcession", nullable=false)
 
     private Long idTypeConcession;
 

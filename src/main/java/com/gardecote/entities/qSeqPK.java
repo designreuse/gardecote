@@ -15,6 +15,9 @@ public class qSeqPK implements Serializable {
         this.debut = debut;
     }
 
+    public qSeqPK() {
+    }
+
     public String getPrefix() {
         return prefix;
     }
@@ -29,5 +32,24 @@ public class qSeqPK implements Serializable {
 
     public void setDebut(Long debut) {
         this.debut = debut;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof qSeqPK)) return false;
+
+        qSeqPK qSeqPK = (qSeqPK) o;
+
+        if (!prefix.equals(qSeqPK.prefix)) return false;
+        return debut.equals(qSeqPK.debut);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = prefix.hashCode();
+        result = 31 * result + debut.hashCode();
+        return result;
     }
 }

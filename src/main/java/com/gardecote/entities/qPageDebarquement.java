@@ -42,6 +42,8 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
 	// "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link 
 
 
+
+
     @OneToOne
     private qDebarquement qdebarquement;
     //----------------------------------------------------------------------
@@ -52,6 +54,12 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
     @OneToMany(mappedBy = "pagesDeb",targetEntity = qJourDeb.class)
     private List<qJourDeb>  listJours;
 
+    public qPageDebarquement(String numeroPage, Integer nbrLigne) {
+        super(numeroPage, nbrLigne);
+    }
+    public qPageDebarquement() {
+
+    }
     public qPageDebarquement(String numeroPage, Integer nbrLigne, Integer nbrLigne1, qDebarquement qdebarquement, List<qJourDeb> listJours) {
         super(numeroPage, 10);
         nbrLigne = nbrLigne1;
@@ -59,12 +67,7 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
         this.listJours = listJours;
     }
 
-    public qPageDebarquement(Integer nbrLigne, qDebarquement qdebarquement, List<qJourDeb> listJours) {
 
-        this.qdebarquement = qdebarquement;
-
-        this.listJours = listJours;
-    }
 
 
 

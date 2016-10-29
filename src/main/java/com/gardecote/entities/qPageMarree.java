@@ -27,6 +27,10 @@ public class qPageMarree extends qPageCarnet implements Serializable {
     // "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
 
 
+    public qPageMarree(qMarree qmarree, List<qJourMere> listJours) {
+        this.qmarree = qmarree;
+        this.listJours = listJours;
+    }
 
     @OneToOne
     private qMarree     qmarree;
@@ -39,6 +43,10 @@ public class qPageMarree extends qPageCarnet implements Serializable {
     private List<qJourMere> listJours;
    //----------------------------------------------------------------------
 
+
+    public qPageMarree(String numeroPage, Integer nbrLigne) {
+        super(numeroPage, nbrLigne);
+    }
 
     public qPageMarree(Integer nbrLigne, qMarree qmarree, List<qJourMere> listJours) {
 
@@ -59,7 +67,8 @@ public class qPageMarree extends qPageCarnet implements Serializable {
         this.listJours = listJours;
         this.qmarree = qmarree;
     }
-
+    public qPageMarree() {
+         }
     public qMarree getQmarree() {
         return qmarree;
     }

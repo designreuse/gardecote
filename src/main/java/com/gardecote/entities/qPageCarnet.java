@@ -58,6 +58,7 @@ public class qPageCarnet implements Serializable
     private qCarnet carnet;
 
     public qPageCarnet() {
+        super();
     }
 
     public qPageCarnet(String numeroPage, Integer nbrLigne) {

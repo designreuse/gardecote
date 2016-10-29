@@ -42,11 +42,11 @@ public class GardecoteApplication {
         qEnginPecheRepository qenginpecherepository= ctx.getBean(qEnginPecheRepository.class);
         qenginpecherepository.save(qEng1);
         qenginpecherepository.save(qEng2);
-        qCategRessource qPACep=new qCategRessource(paCeph,enumSupport.Collectif,qEngins);
-        qCategRessource qPACrust=new qCategRessource(paCrust,enumSupport.Collectif,qEngins);
-        qCategRessource qPADem=new qCategRessource(paDem,enumSupport.Collectif,qEngins);
-        qCategRessource qPAPel=new qCategRessource(paPel,enumSupport.Collectif,qEngins);
-        qCategRessource qPAAlAut=new qCategRessource(paAlAut,enumSupport.Collectif,qEngins);
+        qCategRessource qPACep=new qCategRessource(paCeph.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPACrust=new qCategRessource(paCrust.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPADem=new qCategRessource(paDem.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPAPel=new qCategRessource(paPel.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPAAlAut=new qCategRessource(paAlAut.getIdTypeConcession(),enumSupport.Collectif,qEngins);
         qcategressourcerepository.save(qPACep);
         qcategressourcerepository.save(qPACrust);
         qcategressourcerepository.save(qPADem);
@@ -61,13 +61,13 @@ public class GardecoteApplication {
         qTypeConcessionCotiere  pcNPPelSenneurs26A40=new qTypeConcessionCotiere(enumTypeConcessionCotiere.Poissons_Pelagiques_Seg2,enumTypePechCotiere.NON_PONTEE);
         qTypeConcessionCotiere  pcNPPelSenneurs40A60=new qTypeConcessionCotiere(enumTypeConcessionCotiere.Poissons_Pelagiques_Seg3,enumTypePechCotiere.NON_PONTEE);
         qTypeConcessionCotiere  pcNPAutreMol=new qTypeConcessionCotiere(enumTypeConcessionCotiere.Autres_Mollusques,enumTypePechCotiere.NON_PONTEE);
-        qCategRessource qPCNPCep=new qCategRessource(pcNPCeph,enumSupport.Collectif,qEngins);
-        qCategRessource qPCNPCrust=new qCategRessource(pcNPCrust,enumSupport.Collectif,qEngins);
-        qCategRessource qPCNPDem=new qCategRessource(pcNPDem,enumSupport.Collectif,qEngins);
-        qCategRessource qPCNPPel1=new qCategRessource(pcNPPelSenneursM26,enumSupport.Collectif,qEngins);
-        qCategRessource qPCNPPel2=new qCategRessource(pcNPPelSenneurs26A40,enumSupport.Collectif,qEngins);
-        qCategRessource qPCNPPel3=new qCategRessource(pcNPPelSenneurs40A60,enumSupport.Collectif,qEngins);
-        qCategRessource qPCNPAlAut=new qCategRessource(pcNPAutreMol,enumSupport.Collectif,qEngins);
+        qCategRessource qPCNPCep=new qCategRessource(pcNPCeph.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCNPCrust=new qCategRessource(pcNPCrust.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCNPDem=new qCategRessource(pcNPDem.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCNPPel1=new qCategRessource(pcNPPelSenneursM26.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCNPPel2=new qCategRessource(pcNPPelSenneurs26A40.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCNPPel3=new qCategRessource(pcNPPelSenneurs40A60.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCNPAlAut=new qCategRessource(pcNPAutreMol.getIdTypeConcession(),enumSupport.Collectif,qEngins);
         qcategressourcerepository.save(qPCNPCep);
         qcategressourcerepository.save(qPCNPCrust);
         qcategressourcerepository.save(qPCNPDem);
@@ -84,13 +84,13 @@ public class GardecoteApplication {
         qTypeConcessionCotiere  pcPPelSenneurs26A40=new qTypeConcessionCotiere(enumTypeConcessionCotiere.Poissons_Pelagiques_Seg2,enumTypePechCotiere.NON_PONTEE);
         qTypeConcessionCotiere  pcPPelSenneurs40A60=new qTypeConcessionCotiere(enumTypeConcessionCotiere.Poissons_Pelagiques_Seg3,enumTypePechCotiere.NON_PONTEE);
         qTypeConcessionCotiere  pcPAutreMol=new qTypeConcessionCotiere(enumTypeConcessionCotiere.Autres_Mollusques,enumTypePechCotiere.NON_PONTEE);
-        qCategRessource qPCPCep=new qCategRessource(pcPCeph,enumSupport.Collectif,qEngins);
-        qCategRessource qPCPCrust=new qCategRessource(pcPCrust,enumSupport.Collectif,qEngins);
-        qCategRessource qPCPDem=new qCategRessource(pcPDem,enumSupport.Collectif,qEngins);
-        qCategRessource qPCPPel1=new qCategRessource(pcPPelSenneursM26,enumSupport.Collectif,qEngins);
-        qCategRessource qPCPPel2=new qCategRessource(pcPPelSenneurs26A40,enumSupport.Collectif,qEngins);
-        qCategRessource qPCPPel3=new qCategRessource(pcPPelSenneurs40A60,enumSupport.Collectif,qEngins);
-        qCategRessource qPCPAlAut=new qCategRessource(pcPAutreMol,enumSupport.Collectif,qEngins);
+        qCategRessource qPCPCep=new qCategRessource(pcPCeph.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCPCrust=new qCategRessource(pcPCrust.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCPDem=new qCategRessource(pcPDem.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCPPel1=new qCategRessource(pcPPelSenneursM26.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCPPel2=new qCategRessource(pcPPelSenneurs26A40.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCPPel3=new qCategRessource(pcPPelSenneurs40A60.getIdTypeConcession(),enumSupport.Collectif,qEngins);
+        qCategRessource qPCPAlAut=new qCategRessource(pcPAutreMol.getIdTypeConcession(),enumSupport.Collectif,qEngins);
 
         qcategressourcerepository.save(qPCPCep);
         qcategressourcerepository.save(qPCPCrust);
@@ -110,14 +110,14 @@ public class GardecoteApplication {
         qTypeConcessionHautiriere  phNPel=new qTypeConcessionHautiriere(enumTypeConcessionHautiriere.Pelagique,enumTypePecheHautiriere.National);
         qTypeConcessionHautiriere  phNDemAQM=new qTypeConcessionHautiriere(enumTypeConcessionHautiriere.Poissons_demersaux_autre_que_merlu,enumTypePecheHautiriere.National);
         qTypeConcessionHautiriere  phNThon=new qTypeConcessionHautiriere(enumTypeConcessionHautiriere.Thons,enumTypePecheHautiriere.National);
-        qCategRessource qRCphNCeph=new qCategRessource(phNCeph,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphNAutres=new qCategRessource(phNAutres,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphNCrab=new qCategRessource(phNCrab,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphNCrv=new qCategRessource(phNCrv,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphNLangRose=new qCategRessource(phNMerlu,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphNMerlu=new qCategRessource(phNPel,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphNPel=new qCategRessource(phNDemAQM,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphNDemAQM=new qCategRessource(phNThon,enumSupport.Individuel,qEngins);
+        qCategRessource qRCphNCeph=new qCategRessource(phNCeph.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphNAutres=new qCategRessource(phNAutres.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphNCrab=new qCategRessource(phNCrab.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphNCrv=new qCategRessource(phNCrv.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphNLangRose=new qCategRessource(phNMerlu.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphNMerlu=new qCategRessource(phNPel.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphNPel=new qCategRessource(phNDemAQM.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphNDemAQM=new qCategRessource(phNThon.getIdTypeConcession(),enumSupport.Individuel,qEngins);
         qcategressourcerepository.save(qRCphNCeph);
         qcategressourcerepository.save(qRCphNAutres);
         qcategressourcerepository.save(qRCphNCrab);
@@ -138,15 +138,15 @@ public class GardecoteApplication {
         qTypeConcessionHautiriere  phADemAQM=new qTypeConcessionHautiriere(enumTypeConcessionHautiriere.Poissons_demersaux_autre_que_merlu,enumTypePecheHautiriere.Affraite);
         qTypeConcessionHautiriere  phAThon=new qTypeConcessionHautiriere(enumTypeConcessionHautiriere.Thons,enumTypePecheHautiriere.Affraite);
 
-        qCategRessource qRCphACeph=new qCategRessource(phACeph,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphAAutres=new qCategRessource(phAAutres,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphACrab=new qCategRessource(phACrab,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphACrv=new qCategRessource(phACrv,enumSupport.Individuel,qEngins);
-        qCategRessource qphALangRose=new qCategRessource(phALangRose,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphAMerlu=new qCategRessource(phAMerlu,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphAPel=new qCategRessource(phAPel,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphADemAQM=new qCategRessource(phADemAQM,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphAThon=new qCategRessource(phAThon,enumSupport.Individuel,qEngins);
+        qCategRessource qRCphACeph=new qCategRessource(phACeph.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphAAutres=new qCategRessource(phAAutres.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphACrab=new qCategRessource(phACrab.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphACrv=new qCategRessource(phACrv.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qphALangRose=new qCategRessource(phALangRose.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphAMerlu=new qCategRessource(phAMerlu.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphAPel=new qCategRessource(phAPel.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphADemAQM=new qCategRessource(phADemAQM.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphAThon=new qCategRessource(phAThon.getIdTypeConcession(),enumSupport.Individuel,qEngins);
 
 
         qcategressourcerepository.save(qRCphACeph);
@@ -168,15 +168,15 @@ public class GardecoteApplication {
         qTypeConcessionHautiriere  phLPel=new qTypeConcessionHautiriere(enumTypeConcessionHautiriere.Pelagique,enumTypePecheHautiriere.Licence);
         qTypeConcessionHautiriere  phLDemAQM=new qTypeConcessionHautiriere(enumTypeConcessionHautiriere.Poissons_demersaux_autre_que_merlu,enumTypePecheHautiriere.Licence);
         qTypeConcessionHautiriere  phLThon=new qTypeConcessionHautiriere(enumTypeConcessionHautiriere.Thons,enumTypePecheHautiriere.Licence);
-        qCategRessource qRCphLCeph=new qCategRessource(phLCeph,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphLAutres=new qCategRessource(phLAutres,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphLCrab=new qCategRessource(phLCrab,enumSupport.Individuel,qEngins);
-        qCategRessource qRCphLCrv=new qCategRessource(phLCrv,enumSupport.Individuel,qEngins);
-        qCategRessource qphLLangRose=new qCategRessource(phLLangRose,enumSupport.Individuel,qEngins);
-        qCategRessource qRCLphALangRose=new qCategRessource(phLMerlu,enumSupport.Individuel,qEngins);
-        qCategRessource qRCLphAMerlu=new qCategRessource(phLPel,enumSupport.Individuel,qEngins);
-        qCategRessource qRCLphAPel=new qCategRessource(phLDemAQM,enumSupport.Individuel,qEngins);
-        qCategRessource qRCLphADemAQM=new qCategRessource(phLThon,enumSupport.Individuel,qEngins);
+        qCategRessource qRCphLCeph=new qCategRessource(phLCeph.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphLAutres=new qCategRessource(phLAutres.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphLCrab=new qCategRessource(phLCrab.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCphLCrv=new qCategRessource(phLCrv.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qphLLangRose=new qCategRessource(phLLangRose.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCLphALangRose=new qCategRessource(phLMerlu.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCLphAMerlu=new qCategRessource(phLPel.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCLphAPel=new qCategRessource(phLDemAQM.getIdTypeConcession(),enumSupport.Individuel,qEngins);
+        qCategRessource qRCLphADemAQM=new qCategRessource(phLThon.getIdTypeConcession(),enumSupport.Individuel,qEngins);
         qcategressourcerepository.save(qRCphLCeph);
         qcategressourcerepository.save(qRCphLAutres);
         qcategressourcerepository.save(qRCphLCrab);
@@ -192,8 +192,8 @@ public class GardecoteApplication {
         //  creer le consignataires
         qConsignataireRepository qConsignataireRepository= ctx.getBean(qConsignataireRepository.class);
         qConsignataire qconsignataire1=new qConsignataire("Jelal eddine");
-        qConsignataire qconsignataire2=new qConsignataire("Jelal eddine");
-        qConsignataire qconsignataire3=new qConsignataire("Jelal eddine");
+        qConsignataire qconsignataire2=new qConsignataire("Jelal eddine 3");
+        qConsignataire qconsignataire3=new qConsignataire("Jelal eddine 2 ");
 
         //creer les engins de peches
 

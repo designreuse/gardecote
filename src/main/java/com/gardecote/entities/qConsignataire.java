@@ -17,37 +17,40 @@ import java.util.List;
 public class qConsignataire implements Serializable {
 
     @Id
-    private String Consignataire;
-    @OneToMany(mappedBy ="concessionaire" ,targetEntity =qConcession.class )
-    private List<qConcession> concession;
+    @Column(name="nomconsignataire", nullable=false)
+    private String  nomconsignataire;
+//mappedBy ="concessionaire" ,  ,targetEntity =qConcession.class,cascade = CascadeType.ALL
+    @OneToMany(mappedBy ="qconsignataire",targetEntity =qConcession.class,cascade = CascadeType.ALL)
+  //@JoinTable(name="LiaisonConcessionConcessionaire",joinColumns=@JoinColumn(name="consignataire_fk"),inverseJoinColumns = @JoinColumn(name="concession_fk"))
+//@JoinColumn(name = "idconcession")
+    private List<qConcession> qconcession;
 
     public qConsignataire(String consignataire, List<qConcession> concession) {
-        Consignataire = consignataire;
-        this.concession = concession;
+        nomconsignataire = consignataire;
+        this.qconcession = concession;
     }
 
     public qConsignataire() { super();
     }
 
     public qConsignataire(String consignataire) {
-        Consignataire = consignataire;
+        nomconsignataire = consignataire;
     }
 
 
-
-    public String getConsignataire() {
-        return Consignataire;
+    public String getNomConsignataire() {
+        return nomconsignataire;
     }
 
-    public void setConsignataire(String consignataire) {
-        Consignataire = consignataire;
+    public void setNomConsignataire(String nomConsignataire) {
+        this.nomconsignataire = nomConsignataire;
     }
 
     public List<qConcession> getConcession() {
-        return concession;
+        return qconcession;
     }
 
     public void setConcession(List<qConcession> concession) {
-        this.concession = concession;
+        this.qconcession = concession;
     }
 }

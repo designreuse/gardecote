@@ -24,6 +24,9 @@ public class qUsine implements Serializable {
     private String lieuImplementation;
     private boolean signatureCapitaine;
 
+    public qUsine() {
+    }
+
     public qUsine(String refUsine, String refEuropean, String capaciteStockage, String capaciteCongelation, String nomUsine, String address, String nomResp, String lieuImplementation, boolean signatureCapitaine) {
         this.refUsine = refUsine;
         this.refEuropean = refEuropean;
