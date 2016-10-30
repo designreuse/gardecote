@@ -11,7 +11,7 @@ import com.gardecote.entities.qTypeConcession;
  * Repository : Bateaucomplet.
  */
 
-public  interface qTypeConcessionRepository extends PagingAndSortingRepository<qTypeConcession, Long> {
+public  interface qTypeConcessionRepository extends PagingAndSortingRepository<qTypeConcession, Integer> {
 
 }
 

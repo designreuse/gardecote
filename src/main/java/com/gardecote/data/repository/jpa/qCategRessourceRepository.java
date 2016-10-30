@@ -3,11 +3,12 @@ package com.gardecote.data.repository.jpa;
 import com.gardecote.entities.qCapture;
 import com.gardecote.entities.qTypeConcession;
 import com.gardecote.entities.qCategRessource;
+import com.gardecote.entities.qTypeConcessionId;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
  * Created by Dell on 27/10/2016.
  */
-public interface qCategRessourceRepository extends PagingAndSortingRepository<qCategRessource, Long> {
+public interface qCategRessourceRepository extends PagingAndSortingRepository<qCategRessource,Integer> {
 
 }

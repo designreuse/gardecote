@@ -27,7 +27,7 @@ public class qTypeConcessionServiceImpl implements qTypeConcessionService {
 
 	
 	@Override
-	public qTypeConcession findById(Long idcapt) {
+	public qTypeConcession findById(Integer idcapt) {
 		qTypeConcession qCaptures = qTypeConcessionJpaRepository.findOne(idcapt);
 		return qCaptures;
 	}
@@ -49,7 +49,7 @@ public class qTypeConcessionServiceImpl implements qTypeConcessionService {
 
 	@Override
 	public qTypeConcession create(qTypeConcession qcapture) {
-		qTypeConcession qcaptureEntity = qTypeConcessionJpaRepository.findOne(qcapture.getIdTypeConcession());
+		qTypeConcession qcaptureEntity = qTypeConcessionJpaRepository.findOne(qcapture.getQtypeconcessionpk());
 		if( qcaptureEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
@@ -60,13 +60,13 @@ public class qTypeConcessionServiceImpl implements qTypeConcessionService {
 
 	@Override
 	public qTypeConcession update(qTypeConcession qcapture) {
-		qTypeConcession qcaptureEntity = qTypeConcessionJpaRepository.findOne(qcapture.getIdTypeConcession());
+		qTypeConcession qcaptureEntity = qTypeConcessionJpaRepository.findOne(qcapture.getQtypeconcessionpk());
 		qTypeConcession qcaptureEntitySaved = qTypeConcessionJpaRepository.save(qcaptureEntity);
 		return qcaptureEntitySaved;
 	}
 
 	@Override
-	public void delete(Long idcapt) {
+	public void delete(Integer idcapt) {
 		qTypeConcessionJpaRepository.delete(idcapt);
 	}
 

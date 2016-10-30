@@ -29,7 +29,7 @@ import java.util.List;
 } )
 public class qConcession implements Serializable
 {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
@@ -45,11 +45,9 @@ public class qConcession implements Serializable
   // @JoinColumn(name = "idconcession")
      private qConsignataire    qconsignataire;
 
-    @Column(name="NumLicence", nullable=false, length=50)
-    private String     numlicence   ;
 
-    @Column(name="date_licence", nullable=false, length=10)
-    private Date     dateLicence  ;
+   @Column(name="dateConcession", nullable=false, length=10)
+    private Date     dateConcession  ;
 
     @Column(name="date_debut", nullable=false, length=10)
     private Date dateDebut    ;
@@ -78,6 +76,8 @@ public class qConcession implements Serializable
     {
 		super();
     }
+
+
     
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
@@ -107,34 +107,22 @@ public class qConcession implements Serializable
         return this.categoriesRessources;
     }
 
-    //--- DATABASE MAPPING : Concessionaire ( varchar ) 
-    public void setConcessionaire( qConsignataire concessionaire )
-    {
-        this.qconsignataire = concessionaire;
-    }
-    public qConsignataire getConcessionaire()
-    {
-        return this.qconsignataire;
+    public qConsignataire getQconsignataire() {
+        return qconsignataire;
     }
 
-    //--- DATABASE MAPPING : NumLicence ( varchar )
-    public void setNumlicence( String numlicence )
-    {
-        this.numlicence = numlicence;
-    }
-    public String getNumlicence()
-    {
-        return this.numlicence;
+    public void setQconsignataire(qConsignataire qconsignataire) {
+        this.qconsignataire = qconsignataire;
     }
 
-    //--- DATABASE MAPPING : date_licence ( date ) 
+    //--- DATABASE MAPPING : date_licence ( date )
     public void setDateLicence( Date dateLicence )
     {
-        this.dateLicence = dateLicence;
+        this.dateConcession = dateLicence;
     }
-    public Date getDateLicence()
+    public Date getConcession()
     {
-        return this.dateLicence;
+        return this.dateConcession;
     }
 
     //--- DATABASE MAPPING : date_debut ( date ) 
@@ -186,9 +174,9 @@ public class qConcession implements Serializable
         sb.append(qconsignataire);
 
         sb.append("|");
-        sb.append(numlicence);
+
         sb.append("|");
-        sb.append(dateLicence);
+        sb.append(dateConcession);
         sb.append("|");
         sb.append(dateDebut);
         sb.append("|");
@@ -196,11 +184,11 @@ public class qConcession implements Serializable
         return sb.toString(); 
     }
 
-    public qConcession(String refConcession, qConsignataire concessionaire, String numlicence, Date dateLicence, Date dateDebut, Date dateFin, List<qCategRessource> categoriesRessources, List<qLicence> qLicenceBatLastList) {
+    public qConcession(String refConcession, qConsignataire concessionaire, Date dateLicence, Date dateDebut, Date dateFin, List<qCategRessource> categoriesRessources, List<qLicence> qLicenceBatLastList) {
         this.refConcession = refConcession;
         this.qconsignataire = concessionaire;
-        this.numlicence = numlicence;
-        this.dateLicence = dateLicence;
+
+        this.dateConcession = dateLicence;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.categoriesRessources = categoriesRessources;

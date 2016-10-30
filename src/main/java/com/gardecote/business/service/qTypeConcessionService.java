@@ -14,7 +14,7 @@ public interface qTypeConcessionService {
 	 * Loads an entity from the database using its Primary Key
 	 * @return entity
 	 */
-	qTypeConcession findById(Long qPK) ;
+	qTypeConcession findById(Integer qPK) ;
 	/**
 	 * Loads all entities.
 	 * @return all entities
@@ -41,7 +41,7 @@ public interface qTypeConcessionService {
 	/**
 	 * Deletes an entity using its Primary Key
 	 */
-	void delete(Long qPK);
+	void delete(Integer qPK);
 
 
 }

@@ -27,4 +27,8 @@ public class qTypeConcessionArtisanal extends qTypeConcession implements Seriali
     public qTypeConcessionArtisanal() {
     }
 
+    public qTypeConcessionArtisanal(Integer libelle, com.gardecote.entities.enumTypeConcessionArtisanal enumTypeConcessionArtisanal) {
+        super(libelle);
+        this.enumTypeConcessionArtisanal = enumTypeConcessionArtisanal;
+    }
 }

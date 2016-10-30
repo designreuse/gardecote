@@ -22,6 +22,8 @@ public class qEnginPeche implements Serializable {
     private Integer maillage;
 
     @ManyToOne
+
+
     private qCategRessource categressource;
 
     public qEnginPeche(String engin, Integer maillage) {

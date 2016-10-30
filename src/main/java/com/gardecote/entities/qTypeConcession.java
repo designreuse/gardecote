@@ -18,34 +18,26 @@ import java.io.Serializable;
 public class qTypeConcession implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="idtypeconcession", nullable=false)
-
-    private Long idTypeConcession;
-
-    private String libelle;
+     @Column(name = "qtypeconcessionpk",unique=true, nullable = false)
+     private Integer qtypeconcessionpk;
 
     public qTypeConcession() {
         super();
     }
 
-    public qTypeConcession(String libelle) {
-        this.libelle = libelle;
+    public qTypeConcession(Integer libelle) {
+        this.qtypeconcessionpk = libelle;
     }
 
-    public Long getIdTypeConcession() {
-        return idTypeConcession;
+
+
+
+    public Integer getQtypeconcessionpk() {
+        return qtypeconcessionpk;
     }
 
-    public void setIdTypeConcession(Long idTypeConcession) {
-        this.idTypeConcession = idTypeConcession;
-    }
-
-    public String getLibelle() {
-        return libelle;
-    }
-
-    public void setLibelle(String libelle) {
-        this.libelle = libelle;
+    public void setQtypeconcessionpk(Integer libelle) {
+        this.qtypeconcessionpk = libelle;
     }
 
 }

@@ -17,22 +17,26 @@ import java.util.List;
         @NamedQuery ( name="qCategRessource.countAll", query="SELECT COUNT(x) FROM qCategRessource x" )
 } )
 
-//@IdClass(qTypeConcession.class)
+
 public class qCategRessource implements Serializable {
-    @Id
- private Long idTypeConcession;
-  //  private qTypeConcession typeConcession;
+   @Id
+   // private qTypeConcession idTypeConcession;
+  private Integer idtypeConcession;
 
     private enumSupport typeSupport;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private qLicence    qlicence;
 
-    @OneToMany(mappedBy = "categressource",targetEntity =qEnginPeche.class)
+    @OneToMany(mappedBy = "categressource",targetEntity =qEnginPeche.class,cascade = CascadeType.PERSIST)
+
     private List<qEnginPeche> Engins;
 
     @ManyToOne
    // @JoinColumn(name = "ref_concession", nullable = false)
     private qConcession concession;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+   private  qTypeConcession typeconcessionConcernee;
 
     public qLicence getQlicence() {
         return qlicence;
@@ -42,21 +46,24 @@ public class qCategRessource implements Serializable {
         this.qlicence = qlicence;
     }
 
-    public qCategRessource(Long typeConcession, enumSupport typeSupport, List<qEnginPeche> engins) {
-        this.idTypeConcession = typeConcession;
+    public qCategRessource(qTypeConcession typeConcession, enumSupport typeSupport, List<qEnginPeche> engins) {
+
         this.typeSupport = typeSupport;
-        Engins = engins;
+        this.Engins = engins;
+        this.typeconcessionConcernee=typeConcession;
+        this.idtypeConcession = typeConcession.getQtypeconcessionpk();
     }
 
     public qCategRessource() {
     }
 
-    public Long getTypeConcession() {
-        return idTypeConcession;
+
+    public Integer getIdtypeConcession() {
+        return idtypeConcession;
     }
 
-    public void setTypeConcession(Long typeConcession) {
-        this.idTypeConcession = typeConcession;
+    public void setIdtypeConcession(Integer idtypeConcession) {
+        this.idtypeConcession = idtypeConcession;
     }
 
     public enumSupport getTypeSupport() {
@@ -81,5 +88,13 @@ public class qCategRessource implements Serializable {
 
     public void setConcession(qConcession concession) {
         this.concession = concession;
+    }
+
+    public qTypeConcession getTypeconcessionConcernee() {
+        return typeconcessionConcernee;
+    }
+
+    public void setTypeconcessionConcernee(qTypeConcession typeconcessionConcernee) {
+        this.typeconcessionConcernee = typeconcessionConcernee;
     }
 }
