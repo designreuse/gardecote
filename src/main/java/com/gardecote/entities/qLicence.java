@@ -41,17 +41,17 @@ public class qLicence implements Serializable
 
    // pour la compatibilté avec les anciens données
 
-
-    @Column(name="id_type_nav")
+    @OneToOne
+    //@Column(name="id_type_nav")
     private qTypeLic   qtypnav       ;
-
-    @Column(name="typencad")
+    //@OneToOne
+   // @Column(name="typencad")
     private qTypeEnc    typencad     ;
-
-    @Column(name="id_zone")
+    @OneToOne
+  //  @Column(name="id_zone")
     private qZone   zone       ;
-
-    @Column(name="id_nation")
+    @OneToOne
+  //  @Column(name="id_nation")
     private qNation    nation     ;
 
     // Ca c'est pour le format de nouvelle strategie
@@ -63,20 +63,21 @@ public class qLicence implements Serializable
     @OneToMany(mappedBy = "categressource",targetEntity =qEnginPeche.class)
     private List<qEnginPeche> Engins;
 
-    @Column(name="code_type_supp_droit", length=50)
+    @Column(name="code_type_supp_droit", length=100)
     private enumSupport     typesuppDroit ;
 
     @ManyToOne
     private qRegistreNavire qnavire;
-
-    @Column(name="id_consignataire", length=50)
+    @ManyToOne
+    @JoinColumn(name="id_consignataire")
     private qConsignataire    qconcessionaire ;
 
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name="qConcessionid")
     private qConcession     qconcession ;
 
-    @Column(name="typb")
+    @Column(name="typb", length=100)
     private enumTypeBat    typb         ;
 
     // ca c'est la fin pour le format de nouvelle strategie
@@ -95,7 +96,7 @@ public class qLicence implements Serializable
     @Column(name="ancons", length=255)
     private Integer     anneeconstr       ;
 
-    @Column(name="balise")
+    @Column(name="balise" , length=100)
     private Integer    balise       ;
 
     @Column(name="calpoids", length=255)
@@ -113,14 +114,14 @@ public class qLicence implements Serializable
 
 
     @Column(name="gt")
-    private Double     gt           ;
+    private float    gt           ;
 
 
     @Column(name="imo")
     private Integer    imo          ;
 
-    @Column(name="kw")
-    private Double     kw           ;
+    @Column(name="kw" )
+    private float    kw           ;
 
     @Column(name="larg", length=255)
     private String     larg         ;
@@ -159,7 +160,7 @@ public class qLicence implements Serializable
     private String     radio        ;
 
    @Column(name="tjb")
-    private Double     tjb          ;
+    private float     tjb          ;
 //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -172,7 +173,7 @@ public class qLicence implements Serializable
 		super();
     }
 
-    public qLicence(qTypeLic qtypnav, qTypeEnc typencad, qZone zone, com.gardecote.entities.qNation qNation, List<qCategRessource> qcatressources, List<qEnginPeche> engins, enumSupport typesuppDroit, qRegistreNavire qnavire, qConsignataire qconcessionaire, qConcession qconcession, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, Integer balise, String calpoids, String count, String eff, Double gt, Integer imo, Double kw, String larg, String longg, String nbrhomm, String nomar, String nomex, String nomnav, String numimm, String numlic, String port, String puimot, String radio, Double tjb) {
+    public qLicence(qTypeLic qtypnav, qTypeEnc typencad, qZone zone, com.gardecote.entities.qNation qNation, List<qCategRessource> qcatressources, List<qEnginPeche> engins, enumSupport typesuppDroit, qRegistreNavire qnavire, qConsignataire qconcessionaire, qConcession qconcession, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, Integer balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomex, String nomnav, String numimm, String numlic, String port, String puimot, String radio, float tjb) {
         this.qtypnav = qtypnav;
         this.typencad = typencad;
         this.zone = zone;
@@ -360,11 +361,11 @@ public class qLicence implements Serializable
         this.eff = eff;
     }
 
-    public Double getGt() {
+    public float getGt() {
         return gt;
     }
 
-    public void setGt(Double gt) {
+    public void setGt(float gt) {
         this.gt = gt;
     }
 
@@ -376,11 +377,11 @@ public class qLicence implements Serializable
         this.imo = imo;
     }
 
-    public Double getKw() {
+    public float getKw() {
         return kw;
     }
 
-    public void setKw(Double kw) {
+    public void setKw(float kw) {
         this.kw = kw;
     }
 
@@ -472,11 +473,11 @@ public class qLicence implements Serializable
         this.radio = radio;
     }
 
-    public Double getTjb() {
+    public float getTjb() {
         return tjb;
     }
 
-    public void setTjb(Double tjb) {
+    public void setTjb(float tjb) {
         this.tjb = tjb;
     }
 }

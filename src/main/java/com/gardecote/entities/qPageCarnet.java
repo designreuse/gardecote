@@ -6,6 +6,9 @@
 
 package com.gardecote.entities;
 
+import org.hibernate.annotations.JoinColumnOrFormula;
+import org.hibernate.annotations.JoinColumnsOrFormulas;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -47,32 +50,29 @@ public class qPageCarnet implements Serializable
      //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @ManyToOne
-   // @JoinColumn(name="IdCarnet", referencedColumnName="IdCarnet")
+
+    @ManyToOne(fetch=FetchType.EAGER, optional=false)
+    //@JoinColumnsOrFormulas(name="IdCarnet", referencedColumnName="IdCarnet")
     @JoinColumns({
-            @JoinColumn(name = "jprefixNumerotation", referencedColumnName = "PrefixNum"),
-            @JoinColumn(name = "jnumeroDebutPage", referencedColumnName = "DebutPage")
-
+            @JoinColumn(name = "prefixNum", referencedColumnName = "prefixNum"),
+            @JoinColumn(name = "debutPage1", referencedColumnName = "debutPage1")
     })
-
-    private qCarnet carnet;
+    private qCarnet qcarnet;
 
     public qPageCarnet() {
         super();
     }
 
-    public qPageCarnet(String numeroPage, Integer nbrLigne) {
+    public qPageCarnet(String numeroPage, Integer nbrLigne,qCarnet carnet) {
         this.numeroPage = numeroPage;
-        this.nbrLigne = nbrLigne;
+        this.nbrLigne = carnet.getNbrLigneParPage();
+        this.qcarnet=carnet;
     }
 
     public Integer getNbrLigne() {
         return nbrLigne;
     }
 
-    public void setNbrLigne(Integer nbrLigne) {
-        this.nbrLigne = nbrLigne;
-    }
 
     public String getNumeroPage() {
         return numeroPage;
@@ -82,13 +82,15 @@ public class qPageCarnet implements Serializable
         this.numeroPage = numeroPage;
     }
 
-    public qCarnet getCarnet() {
-        return carnet;
+    public void setNbrLigne(Integer nbrLigne) {
+        this.nbrLigne = nbrLigne;
     }
 
-    public void setCarnet(qCarnet carnet) {
-        this.carnet = carnet;
+    public qCarnet getQcarnet() {
+        return qcarnet;
     }
 
-
+    public void setQcarnet(qCarnet qcarnet) {
+        this.qcarnet = qcarnet;
+    }
 }

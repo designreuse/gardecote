@@ -37,8 +37,27 @@ public class qRegistreNavire implements Serializable {
     @OneToMany(mappedBy="qnavire", targetEntity=qLicence.class)
     private List<qLicence>  qlicences;
 
+    @OneToMany(mappedBy="qnavire", targetEntity=qCarnet.class)
+    private List<qCarnet>  qcarnets;
+
     public String getNumimm() {
         return numimm;
+    }
+
+    public qLicence getQlicencedernier() {
+        return qlicencedernier;
+    }
+
+    public void setQlicencedernier(qLicence qlicencedernier) {
+        this.qlicencedernier = qlicencedernier;
+    }
+
+    public List<qCarnet> getQcarnets() {
+        return qcarnets;
+    }
+
+    public void setQcarnets(List<qCarnet> qcarnets) {
+        this.qcarnets = qcarnets;
     }
 
     public void setNumimm(String numimm) {

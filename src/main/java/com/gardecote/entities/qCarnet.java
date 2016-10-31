@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.springframework.format.annotation.NumberFormat;
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
 
@@ -30,16 +30,18 @@ import java.util.List;
 @IdClass(qCarnetPK.class)
 public class qCarnet implements Serializable
 {
-    private static final long serialVersionUID = 1L;
+
 
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @Column(name="PrefixNum", nullable=false, length=2)
+  //  @Enumerated(EnumType.STRING)
+    @Column(name="prefixNum", nullable=false, length=2)
     private enumPrefix     prefixNumerotation    ;
     @Id
-    @Column(name="DebutPage", nullable=false)
+
+    @Column(name="debutPage1")
     private Long       numeroDebutPage    ;
 
 
@@ -52,19 +54,22 @@ public class qCarnet implements Serializable
 
     @Column(name="NbrPages", nullable=false)
     private Integer    nbrPages      ;
-    @Column(name="NbrLigne", nullable=false)
+    @Column(name="NbrLignes", nullable=false)
     private Integer    nbrLigneParPage      ;
-
-    @Column(name="refLicencement", nullable=true)
-    private qConcession      qconcession  ;
+    @OneToOne
+    @JoinColumn(name="qnavire")
+    private qRegistreNavire      qnavire  ;
+    @OneToOne
+    @JoinColumn(name="qusine")
+    private qUsine     qusine  ;
 
 
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="carnet", targetEntity=qPageCarnet.class)
-    private List<qPageCarnet> pages       ;
+    @OneToMany(mappedBy="qcarnet",cascade = CascadeType.ALL, targetEntity=qPageCarnet.class)
+    private List<qPageCarnet> pages ;
 
 
     //----------------------------------------------------------------------
@@ -87,37 +92,38 @@ public class qCarnet implements Serializable
     }
 
 
-    public qCarnet(enumPrefix prefixNumerotation, Long numeroDebutPage, Integer nbrPages) {
+    public qCarnet(enumTypeDoc enumtypedoc,enumPrefix enumprefix, Long numeroDebutPage, Integer nbrPages) {
 
-        this.prefixNumerotation = prefixNumerotation;
+        this.typeDoc=enumtypedoc;
         this.numeroDebutPage = numeroDebutPage;
+        this.prefixNumerotation = enumprefix;
+        this.qnavire = null;
+        this.qusine = null;
         this.nbrPages = nbrPages;
-    //    this.modeCarnet = modeCarnet;
-    //    this.refLicencement = refLicencement;
-        this.pages = pages;
+        this.nbrLigneParPage=0;
+
+      //    this.modeCarnet = modeCarnet;
+         //    this.refLicencement = refLicencement;this.pages = pages;
         // ajouter des pages du carnet encours
-        qPageCarnet qpcrn=new qPageCarnet();
-        qpcrn.setCarnet(this);
 
-        List<qPageCarnet> lstPgs=new ArrayList<qPageCarnet>();
-        for(int i=0;i<this.nbrPages;i++) {
-            qPageCarnet  qp= new qPageCarnet();
 
-            qp.setCarnet(this);
 
-            qp.setNumeroPage(this.prefixNumerotation.toString()+Long.toString(this.numeroDebutPage+i));
 
-            lstPgs.add(qp);
-        }
-     this.pages=lstPgs;
     }
 
-    public void distribuer(qConcession refConcession){
+    public void distribuer(qRegistreNavire qnavire,qUsine qusine){
 
-    this.qconcession = refConcession;
+        this.qnavire =qnavire;
+        this.qusine = qusine;
     }
 
+    public qUsine getQusine() {
+        return qusine;
+    }
 
+    public void setQusine(qUsine qusine) {
+        this.qusine = qusine;
+    }
 
     public enumTypeDoc getTypeDoc() {
         return typeDoc;
@@ -151,12 +157,13 @@ public class qCarnet implements Serializable
         this.nbrPages = nbrPages;
     }
 
-    public qConcession getQconcession() {
-        return qconcession;
+
+    public qRegistreNavire getQnavire() {
+        return qnavire;
     }
 
-    public void setQconcession(qConcession qconcession) {
-        this.qconcession = qconcession;
+    public void setQnavire(qRegistreNavire qnavire) {
+        this.qnavire = qnavire;
     }
 
     public List<qPageCarnet> getPages() {

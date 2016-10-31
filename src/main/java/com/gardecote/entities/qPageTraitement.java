@@ -13,22 +13,15 @@ import java.util.List;
 } )
 public class qPageTraitement extends qPageCarnet {
     private static final long serialVersionUID = 1L;
-
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
-
-
-    // "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
-
-
-
+   // "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
     @Column
     @Enumerated
     @ElementCollection(targetClass = enumAuthorisation.class)
-
     private List<enumAuthorisation> segs;
 
     @OneToOne
@@ -49,9 +42,7 @@ public class qPageTraitement extends qPageCarnet {
         this.opTraitements = opTraitements;
     }
 
-    public qPageTraitement(String numeroPage, Integer nbrLigne) {
-        super(numeroPage, nbrLigne);
-    }
+
 
     public qPageTraitement(Integer nbrLigne, List<enumAuthorisation> segs, qTraitement qtraitement, List<qUniteTraitement> opTraitements) {
 
@@ -60,13 +51,6 @@ public class qPageTraitement extends qPageCarnet {
         this.opTraitements = opTraitements;
     }
 
-    public qPageTraitement(String numeroPage, Integer nbrLigne, Integer nbrLigne1, List<enumAuthorisation> segs, qTraitement qtraitement, List<qUniteTraitement> opTraitements) {
-        super(numeroPage, 9);
-        nbrLigne = nbrLigne1;
-        this.segs = segs;
-        this.qtraitement = qtraitement;
-        this.opTraitements = opTraitements;
-    }
 
     public qPageTraitement() {
 
@@ -98,11 +82,10 @@ public class qPageTraitement extends qPageCarnet {
         this.opTraitements = opTraitements;
     }
 
-    public qPageTraitement(Integer nbrLigne, List<enumAuthorisation> segs, qTraitement qtraitement, qCarnet carnet, List<qUniteTraitement> opTraitements) {
-
+    public qPageTraitement(String numeroPage, Integer nbrLigne, qCarnet carnet, List<enumAuthorisation> segs, qTraitement qtraitement, List<qUniteTraitement> opTraitements) {
+        super(numeroPage, nbrLigne, carnet);
         this.segs = segs;
         this.qtraitement = qtraitement;
-
         this.opTraitements = opTraitements;
     }
 }

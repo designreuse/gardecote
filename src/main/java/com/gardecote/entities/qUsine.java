@@ -2,6 +2,7 @@ package com.gardecote.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Dell on 25/10/2016.
@@ -23,6 +24,9 @@ public class qUsine implements Serializable {
     private String nomResp;
     private String lieuImplementation;
     private boolean signatureCapitaine;
+        @OneToMany(mappedBy="qusine", targetEntity=qCarnet.class)
+    private List<qCarnet> qcarnets;
+
 
     public qUsine() {
     }
@@ -37,6 +41,14 @@ public class qUsine implements Serializable {
         this.nomResp = nomResp;
         this.lieuImplementation = lieuImplementation;
         this.signatureCapitaine = signatureCapitaine;
+    }
+
+    public List<qCarnet> getQcarnets() {
+        return qcarnets;
+    }
+
+    public void setQcarnets(List<qCarnet> qcarnets) {
+        this.qcarnets = qcarnets;
     }
 
     public String getRefUsine() {

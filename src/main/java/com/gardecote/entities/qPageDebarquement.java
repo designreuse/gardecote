@@ -6,6 +6,9 @@
 
 package com.gardecote.entities;
 
+import org.hibernate.annotations.JoinColumnOrFormula;
+import org.hibernate.annotations.JoinColumnsOrFormulas;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -46,6 +49,7 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
 
     @OneToOne
     private qDebarquement qdebarquement;
+
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -54,23 +58,15 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
     @OneToMany(mappedBy = "pagesDeb",targetEntity = qJourDeb.class)
     private List<qJourDeb>  listJours;
 
-    public qPageDebarquement(String numeroPage, Integer nbrLigne) {
-        super(numeroPage, nbrLigne);
-    }
-    public qPageDebarquement() {
-
-    }
-    public qPageDebarquement(String numeroPage, Integer nbrLigne, Integer nbrLigne1, qDebarquement qdebarquement, List<qJourDeb> listJours) {
-        super(numeroPage, 10);
-        nbrLigne = nbrLigne1;
+    public qPageDebarquement(String numeroPage, Integer nbrLigne, qCarnet carnet, qDebarquement qdebarquement, List<qJourDeb> listJours) {
+        super(numeroPage, nbrLigne, carnet);
         this.qdebarquement = qdebarquement;
         this.listJours = listJours;
     }
 
+    public qPageDebarquement() {
 
-
-
-
+    }
 
 
     public qDebarquement getQdebarquement() {
