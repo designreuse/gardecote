@@ -7,43 +7,21 @@ import java.io.Serializable;
  */
 public class qEspeceTypeePK implements Serializable {
 
-    private qEspece qespece;
+
+    private Integer qespeceId;
 
     private enumEspType enumesptype;
 
-    private qTypeConcession qtypeconcession;
+
+    private String idmodel;
 
     public qEspeceTypeePK() {
     }
 
-    public qEspeceTypeePK(qEspece qespece, enumEspType enumesptype, qTypeConcession qtypeconcession) {
-        this.qespece = qespece;
+    public qEspeceTypeePK(Integer qespeceId, enumEspType enumesptype, String idmodel) {
+        this.qespeceId = qespeceId;
         this.enumesptype = enumesptype;
-        this.qtypeconcession = qtypeconcession;
-    }
-
-    public qEspece getQespece() {
-        return qespece;
-    }
-
-    public void setQespece(qEspece qespece) {
-        this.qespece = qespece;
-    }
-
-    public enumEspType getEnumesptype() {
-        return enumesptype;
-    }
-
-    public void setEnumesptype(enumEspType enumesptype) {
-        this.enumesptype = enumesptype;
-    }
-
-    public qTypeConcession getQtypeconcession() {
-        return qtypeconcession;
-    }
-
-    public void setQtypeconcession(qTypeConcession qtypeconcession) {
-        this.qtypeconcession = qtypeconcession;
+        this.idmodel = idmodel;
     }
 
     @Override
@@ -53,17 +31,17 @@ public class qEspeceTypeePK implements Serializable {
 
         qEspeceTypeePK that = (qEspeceTypeePK) o;
 
-        if (!qespece.equals(that.qespece)) return false;
+        if (!qespeceId.equals(that.qespeceId)) return false;
         if (enumesptype != that.enumesptype) return false;
-        return qtypeconcession.equals(that.qtypeconcession);
+        return idmodel.equals(that.idmodel);
 
     }
 
     @Override
     public int hashCode() {
-        int result = qespece.hashCode();
+        int result = qespeceId.hashCode();
         result = 31 * result + enumesptype.hashCode();
-        result = 31 * result + qtypeconcession.hashCode();
+        result = 31 * result + idmodel.hashCode();
         return result;
     }
 }

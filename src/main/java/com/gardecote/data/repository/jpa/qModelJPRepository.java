@@ -6,6 +6,6 @@ import com.gardecote.entities.qTypeConcession;
 /**
  * Repository : CodesNotifAm.
  */
-public interface qModelJPRepository extends PagingAndSortingRepository<qModelJP, qTypeConcession> {
+public interface qModelJPRepository extends PagingAndSortingRepository<qModelJP, String> {
 
 }

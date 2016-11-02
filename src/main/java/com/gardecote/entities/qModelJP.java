@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qModelJP", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qModelJP2", schema="dbo", catalog="DSPCM_DB" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qModelJP.countAll", query="SELECT COUNT(x) FROM qModelJP x" )
@@ -36,7 +36,8 @@ public class qModelJP implements Serializable
     //----------------------------------------------------------------------
     @Id
     @NotNull
-    private qTypeConcession qtypeconcession;
+    @Column(name="prefixModel", nullable=false, length=2)
+    private enumPrefix prefixModel;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
@@ -50,6 +51,7 @@ public class qModelJP implements Serializable
 
 
 
+
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
@@ -58,17 +60,17 @@ public class qModelJP implements Serializable
 		super();
     }
 
-    public qModelJP(qTypeConcession qtypeconcession, List<qEspeceTypee> especestypees) {
-        this.qtypeconcession = qtypeconcession;
+    public qModelJP(enumPrefix prefixModel, List<qEspeceTypee> especestypees) {
+        this.prefixModel = prefixModel;
         this.especestypees = especestypees;
     }
 
-    public qTypeConcession getQtypeconcession() {
-        return qtypeconcession;
+    public enumPrefix getPrefixModel() {
+        return prefixModel;
     }
 
-    public void setQtypeconcession(qTypeConcession qtypeconcession) {
-        this.qtypeconcession = qtypeconcession;
+    public void setPrefixModel(enumPrefix prefixModel) {
+        this.prefixModel = prefixModel;
     }
 
     public List<qEspeceTypee> getEspecestypees() {
@@ -77,20 +79,5 @@ public class qModelJP implements Serializable
 
     public void setEspecestypees(List<qEspeceTypee> especestypees) {
         this.especestypees = especestypees;
-    }
-
-    //----------------------------------------------------------------------
-    // toString METHOD
-    //----------------------------------------------------------------------
-    public String toString() { 
-        StringBuffer sb = new StringBuffer(); 
-        sb.append("["); 
-
-        sb.append("]:"); 
-        return sb.toString(); 
-    }
-
-    public qModelJP(qTypeConcession qtypeconcession) {
-        this.qtypeconcession = qtypeconcession;
     }
 }

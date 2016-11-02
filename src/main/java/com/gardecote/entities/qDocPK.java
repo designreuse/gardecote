@@ -9,7 +9,7 @@ import java.util.Date;
 @IdClass(qDocPK.class)
 public class qDocPK implements Serializable {
 
-    private qRegistreNavire     qnavire   ;
+    private String     qnavire   ;
 
     private Date    depart       ;
 
@@ -23,26 +23,15 @@ public class qDocPK implements Serializable {
         this.depart = depart;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof qDocPK)) return false;
-
-        qDocPK qMarreePK = (qDocPK) o;
-
-        if (qnavire != null ? !qnavire.equals(qMarreePK.qnavire) : qMarreePK.qnavire != null) return false;
-        return !(depart != null ? !depart.equals(qMarreePK.depart) : qMarreePK.depart != null);
-
+    public String getQnavire() {
+        return qnavire;
     }
 
-    @Override
-    public int hashCode() {
-        int result = qnavire != null ? qnavire.hashCode() : 0;
-        result = 31 * result + (depart != null ? depart.hashCode() : 0);
-        return result;
+    public void setQnavire(String qnavire) {
+        this.qnavire = qnavire;
     }
 
-    public qDocPK(qRegistreNavire refBase, Date depart) {
+    public qDocPK(String refBase, Date depart) {
         this.qnavire = refBase;
         this.depart = depart;
     }
@@ -50,4 +39,5 @@ public class qDocPK implements Serializable {
     public qDocPK() {
         super();
     }
+
 }

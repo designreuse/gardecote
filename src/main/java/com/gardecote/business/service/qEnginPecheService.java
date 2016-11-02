@@ -16,7 +16,7 @@ public interface qEnginPecheService {
 	 * @param numimm
 	 * @return entity
 	 */
-	qEnginPeche findById(Integer numimm) ;
+	qEnginPeche findById(String numimm) ;
 
 	/**
 	 * Loads all entities.
@@ -49,7 +49,7 @@ public interface qEnginPecheService {
 	 * Deletes an entity using its Primary Key
 	 * @param numimm
 	 */
-	void delete(Integer numimm);
+	void delete(String numimm);
 
 
 }

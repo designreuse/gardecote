@@ -46,9 +46,10 @@ public class qDistributeur implements Serializable {
         qcarnet.setPages(pgs);
 return qcarnet;
 }
-   public qCarnet distribuer(qCarnet qcarnet,qRegistreNavire qnavire, qUsine qusine){
+   public qCarnet distribuer(qCarnet qcarnet,qConcession qconcession,qRegistreNavire qnavire, qUsine qusine){
         qcarnet.setQnavire(qnavire);
         qcarnet.setQusine(qusine);
+       qcarnet.setQconcession(qconcession);
        return qcarnet;
     }
 }

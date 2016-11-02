@@ -8,7 +8,7 @@ package com.gardecote.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-
+import java.util.List;
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
 
@@ -37,8 +37,8 @@ public class qEspece implements Serializable
     @Column(name="Code_Esp", nullable=false)
     private Integer    codeEsp      ;
 
-
-
+  @OneToMany(cascade = CascadeType.ALL)
+  private List<qEspeceTypee> qespecetypee;
 
 
     //----------------------------------------------------------------------
@@ -65,11 +65,19 @@ public class qEspece implements Serializable
 		super();
     }
 
-    public qEspece(String nomAr, String nomFr,Integer numOrdre,qModelJP qm) {
+    public qEspece(String nomAr, String nomFr,Integer numOrdre) {
         this.nomAr = nomAr;
         this.nomFr = nomFr;
         this.numOrdre=numOrdre;
 
+    }
+
+    public List<qEspeceTypee> getQespecetypee() {
+        return qespecetypee;
+    }
+
+    public void setQespecetypee(List<qEspeceTypee> qespecetypee) {
+        this.qespecetypee = qespecetypee;
     }
 
     public Integer getNumOrdre() {

@@ -29,7 +29,7 @@ public class qEnginPecheServiceImpl implements qEnginPecheService {
 	
 	
 	@Override
-	public qEnginPeche findById(Integer idCapture) {
+	public qEnginPeche findById(String idCapture) {
 		qEnginPeche captures2Entity = captures2JpaRepository.findOne(idCapture);
 		return captures2Entity ;
 	}
@@ -51,7 +51,7 @@ public class qEnginPecheServiceImpl implements qEnginPecheService {
 
 	@Override
 	public qEnginPeche create(qEnginPeche captures2) {
-		qEnginPeche captures2Entity = captures2JpaRepository.findOne(captures2.getIdEngin());
+		qEnginPeche captures2Entity = captures2JpaRepository.findOne(captures2.getEngin().toString());
 		if( captures2Entity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
@@ -63,13 +63,13 @@ public class qEnginPecheServiceImpl implements qEnginPecheService {
 
 	@Override
 	public qEnginPeche update(qEnginPeche captures2) {
-		qEnginPeche captures2Entity = captures2JpaRepository.findOne(captures2.getIdEngin());
+		qEnginPeche captures2Entity = captures2JpaRepository.findOne(captures2.getEngin().toString());
 		qEnginPeche captures2EntitySaved = captures2JpaRepository.save(captures2Entity);
 		return captures2EntitySaved;
 	}
 
 	@Override
-	public void delete(Integer idCapture) {
+	public void delete(String idCapture) {
 		captures2JpaRepository.delete(idCapture);
 	}
 

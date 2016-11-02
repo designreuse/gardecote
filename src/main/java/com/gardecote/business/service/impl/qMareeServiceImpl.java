@@ -57,8 +57,8 @@ public class qMareeServiceImpl implements qMarreeService {
 		if( codeInfractionsEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
-		codeInfractionsEntity = new qMarree(enumTypeDoc.Journal_Peche,null);
-		qMarree codeInfractionsEntitySaved = codeInfractionsJpaRepository.save(codeInfractionsEntity);
+		//codeInfractionsEntity = new qMarree(enumTypeDoc.Journal_Peche,null);
+		qMarree codeInfractionsEntitySaved = codeInfractionsJpaRepository.save(codeInfractions);
 		return codeInfractionsEntitySaved ;
 	}
 

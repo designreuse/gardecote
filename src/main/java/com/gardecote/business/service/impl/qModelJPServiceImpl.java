@@ -29,7 +29,7 @@ public class qModelJPServiceImpl implements qModelJPService {
 	
 	
 	@Override
-	public qModelJP findById(qTypeConcession id) {
+	public qModelJP findById(String id) {
 		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(id);
 		return codesAmendeEntity;
 	}
@@ -51,7 +51,7 @@ public class qModelJPServiceImpl implements qModelJPService {
 
 	@Override
 	public qModelJP create(qModelJP codesAmende) {
-		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getQtypeconcession());
+		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getPrefixModel().toString());
 		if( codesAmendeEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
@@ -62,13 +62,13 @@ public class qModelJPServiceImpl implements qModelJPService {
 
 	@Override
 	public qModelJP update(qModelJP codesAmende) {
-		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getQtypeconcession());
+		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getPrefixModel().toString());
 		qModelJP codesAmendeEntitySaved = codesAmendeJpaRepository.save(codesAmendeEntity);
 		return codesAmendeEntitySaved;
 	}
 
 	@Override
-	public void delete(qTypeConcession id) {
+	public void delete(String id) {
 		codesAmendeJpaRepository.delete(id);
 	}
 

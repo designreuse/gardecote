@@ -18,32 +18,68 @@ public class qDebarquement extends qDoc implements Serializable {
     // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
 
-    @Column(name="Retour", nullable=false, length=10)
-    private Date     retour       ;
 
+    // la concession deja lisee a travers de page
     private qConcession qconcessionconcernee;
 
+    @OneToMany(cascade=CascadeType.ALL,mappedBy = "qdeb",targetEntity = qEnginPecheDeb.class)
+    private List<qEnginPecheDeb> Engins;
 
+    // selected licence par l utilisateur
+    // une zones liee a cette licence
+    // un navire liee a cette licence
+    // list des engins a remplir
 
-    private qCategRessource    qcategconcernee;
+    // list des zones deroulante liees a cette concession  a selectionner
+
+    // list des licenses deroulante liees a cette concession  a selectionner
+    @OneToMany(cascade=CascadeType.ALL,targetEntity = qCategRessource.class)
+   private List<qCategRessource>    qcategconcernees;
+
+    private enumTypeDebarquement typeDeb;
+
     @OneToMany(mappedBy="qdebarquement", targetEntity=qPageDebarquement.class)
     private List<qPageDebarquement> pages;
 
-    public qDebarquement(enumTypeDoc enumtypedoc, List<qSeq> qlistseq) {
-        super(enumtypedoc, qlistseq);
+    public List<qEnginPecheDeb> getEngins() {
+        return Engins;
+    }
+
+    public void setEngins(List<qEnginPecheDeb> engins) {
+        Engins = engins;
+    }
+
+    public qConcession getQconcessionconcernee() {
+        return qconcessionconcernee;
+    }
+
+    public void setQconcessionconcernee(qConcession qconcessionconcernee) {
+        this.qconcessionconcernee = qconcessionconcernee;
+    }
+
+    public enumTypeDebarquement getTypeDeb() {
+        return typeDeb;
+    }
+
+    public void setTypeDeb(enumTypeDebarquement typeDeb) {
+        this.typeDeb = typeDeb;
+    }
+
+    public List<qCategRessource> getQcategconcernees() {
+        return qcategconcernees;
+    }
+
+    public void setQcategconcernees(List<qCategRessource> qcategconcernees) {
+        this.qcategconcernees = qcategconcernees;
     }
 
 
 
 
 
-    public Date getRetour() {
-        return retour;
-    }
 
-    public void setRetour(Date retour) {
-        this.retour = retour;
-    }
+
+
 
     public List<qPageDebarquement> getPages() {
         return pages;
@@ -53,13 +89,18 @@ public class qDebarquement extends qDoc implements Serializable {
         this.pages = pages;
     }
 
-    public qDebarquement(Date retour, qConcession qconcessionconcernee, qCategRessource qcategconcernee, List<qPageDebarquement> pages) {
-        this.retour = retour;
+    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,Integer nbrPages, qRegistreNavire qnavire, qConcession qconcessionconcernee, List<qEnginPecheDeb> qEngins, List<qCategRessource> qcategconcernees, enumTypeDebarquement typeDeb, List<qPageDebarquement> pages) {
+        super(enumtypedoc, depart, retour,nbrPages, qnavire);
         this.qconcessionconcernee = qconcessionconcernee;
-        this.qcategconcernee = qcategconcernee;
+
+        this.qcategconcernees = qcategconcernees;
+        this.typeDeb = typeDeb;
         this.pages = pages;
     }
+
     public qDebarquement() {
 
     }
+
+
 }

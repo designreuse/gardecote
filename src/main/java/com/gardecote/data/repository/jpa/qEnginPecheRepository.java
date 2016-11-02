@@ -5,6 +5,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * Repository : Changmentact.
  */
-public interface qEnginPecheRepository extends PagingAndSortingRepository<qEnginPeche, Integer> {
+public interface qEnginPecheRepository extends PagingAndSortingRepository<qEnginPeche, String> {
 
 }

@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Entity
 @DiscriminatorValue("TARTISANAL")
 public class qTypeConcessionArtisanal extends qTypeConcession implements Serializable {
+
     private enumTypeConcessionArtisanal enumTypeConcessionArtisanal;
 
     public qTypeConcessionArtisanal(com.gardecote.entities.enumTypeConcessionArtisanal enumTypeConcessionArtisanal) {
@@ -27,8 +28,8 @@ public class qTypeConcessionArtisanal extends qTypeConcession implements Seriali
     public qTypeConcessionArtisanal() {
     }
 
-    public qTypeConcessionArtisanal(Integer libelle, com.gardecote.entities.enumTypeConcessionArtisanal enumTypeConcessionArtisanal) {
-        super(libelle);
+    public qTypeConcessionArtisanal(enumPrefix prefixNum, com.gardecote.entities.enumTypeConcessionArtisanal enumTypeConcessionArtisanal) {
+        super(prefixNum);
         this.enumTypeConcessionArtisanal = enumTypeConcessionArtisanal;
     }
 }

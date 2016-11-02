@@ -37,15 +37,14 @@ public class qMarree extends qDoc implements Serializable
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------
 
-    @Column(name="Retour", nullable=false, length=10)
-    private Date     retour       ;
-
     private qConcession qconcessionconcernee;
 
 
     private qCategRessource qcategconcernee;
 
-
+    private enumJP typeJP;
+    @OneToMany(cascade=CascadeType.ALL,mappedBy = "qmarree",targetEntity = qEnginPecheDeb.class)
+    private List<qEnginPeche> qEngins;
 
     @OneToMany(mappedBy="qmarree", targetEntity=qPageMarree.class)
     private List<qPageMarree> pages;
@@ -53,63 +52,71 @@ public class qMarree extends qDoc implements Serializable
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
-
-    public qMarree(Date retour, qConcession qconcessionconcernee, qCategRessource qcategconcernee) {
-        this.retour = retour;
-        this.qconcessionconcernee = qconcessionconcernee;
-        this.qcategconcernee = qcategconcernee;
-    }
-
-    public qMarree() {
+   public qMarree() {
 
     }
 
-    public qMarree(Date retour, qConcession qconcessionconcernee) {
-        this.retour = retour;
-        this.qconcessionconcernee = qconcessionconcernee;
-    }
-
-    public qMarree(enumTypeDoc enumtypedoc, List<qSeq> qlistseq) {
-        super(enumtypedoc, qlistseq);
-    }
-
-    public qMarree(enumTypeDoc enumtypedoc, List<qSeq> qlistseq, Date retour, qConcession qconcessionconcernee, qCategRessource qcategconcernee) {
-        super(enumtypedoc, qlistseq);
-        this.retour = retour;
-        this.qconcessionconcernee = qconcessionconcernee;
-        this.qcategconcernee = qcategconcernee;
-    }
 //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
 
 
-    public qMarree(Date retour, qConcession qconcessionconcernee, qCategRessource qcategconcernee, List<qPageMarree> pages) {
-        this.retour = retour;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, Integer nbrPages, qRegistreNavire qnavire, qConcession qconcessionconcernee, qCategRessource qcategconcernee, enumJP typeJP, List<qEnginPeche> qEngins, List<qPageMarree> pages) {
+        super(enumtypedoc, depart, retour,nbrPages, qnavire);
         this.qconcessionconcernee = qconcessionconcernee;
         this.qcategconcernee = qcategconcernee;
+        this.typeJP = typeJP;
+        this.qEngins = qEngins;
         this.pages = pages;
     }
 
-    public qMarree(enumTypeDoc enumtypedoc, List<qSeq> qlistseq, Date depart, Date retour, qConcession qconcessionconcernee, qRegistreNavire qnavire, qCategRessource qcategconcernee) {
-        super(enumtypedoc, qlistseq);
+    //--- DATABASE MAPPING : Depart ( date )
+  public qConcession getQconcessionconcernee() {
+        return qconcessionconcernee;
+    }
 
-        this.retour = retour;
+    public void setQconcessionconcernee(qConcession qconcessionconcernee) {
         this.qconcessionconcernee = qconcessionconcernee;
+    }
 
+    public qCategRessource getQcategconcernee() {
+        return qcategconcernee;
+    }
+
+    public void setQcategconcernee(qCategRessource qcategconcernee) {
         this.qcategconcernee = qcategconcernee;
     }
 
+    public enumJP getTypeJP() {
+        return typeJP;
+    }
 
+    public void setTypeJP(enumJP typeJP) {
+        this.typeJP = typeJP;
+    }
 
+    public List<qEnginPeche> getqEngins() {
+        return qEngins;
+    }
 
-    //--- DATABASE MAPPING : Depart ( date )
+    public void setqEngins(List<qEnginPeche> qEngins) {
+        this.qEngins = qEngins;
+    }
 
+    public List<qPageMarree> getPages() {
+        return pages;
+    }
 
+    public void setPages(List<qPageMarree> pages) {
+        this.pages = pages;
+    }
 
     //----------------------------------------------------------------------
     // toString METHOD

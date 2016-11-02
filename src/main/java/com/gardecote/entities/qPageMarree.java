@@ -15,6 +15,7 @@ import java.util.List;
         @NamedQuery ( name="qPageMarree.countAll", query="SELECT COUNT(x) FROM qPageMarree x" )
 } )
 public class qPageMarree extends qPageCarnet implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     //----------------------------------------------------------------------
@@ -22,18 +23,15 @@ public class qPageMarree extends qPageCarnet implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
-
-
     // "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
 
 
-    public qPageMarree(qMarree qmarree, List<qJourMere> listJours) {
-        this.qmarree = qmarree;
-        this.listJours = listJours;
-    }
+    @OneToOne
+    private qConcession qconcession;
 
     @OneToOne
     private qMarree     qmarree;
+
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -44,15 +42,12 @@ public class qPageMarree extends qPageCarnet implements Serializable {
    //----------------------------------------------------------------------
 
 
-
-
-
-
-
-
     public qPageMarree() {
          }
-
+    public qPageMarree(qMarree qmarree, List<qJourMere> listJours) {
+        this.qmarree = qmarree;
+        this.listJours = listJours;
+    }
     public qPageMarree(String numeroPage, Integer nbrLigne, qCarnet carnet, qMarree qmarree, List<qJourMere> listJours) {
         super(numeroPage, nbrLigne, carnet);
         this.qmarree = qmarree;

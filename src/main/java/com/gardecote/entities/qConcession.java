@@ -45,14 +45,20 @@ public class qConcession implements Serializable
   // @JoinColumn(name = "idconcession")
      private qConsignataire    qconsignataire;
 
+    @OneToMany(mappedBy = "qconcession",targetEntity = qPageDebarquement.class)
+    private List<qPageDebarquement> qpagesdebarquement;
 
-   @Column(name="dateConcession", nullable=false, length=10)
+    @OneToMany(mappedBy = "qconcession",targetEntity = qPageDebarquement.class)
+    private List<qPageMarree> qpagesMaree;
+
+   @Column(name="dateConcession")
     private Date     dateConcession  ;
-
-    @Column(name="date_debut", nullable=false, length=10)
+    @Column(name="dureeconcession" )
+    private Integer dureeConcession;
+    @Column(name="date_debut")
     private Date dateDebut    ;
 
-    @Column(name="date_fin", nullable=false, length=10)
+    @Column(name="date_fin")
     private Date     dateFin      ;
 
     //----------------------------------------------------------------------
@@ -64,7 +70,8 @@ public class qConcession implements Serializable
 
 
 
-    @OneToMany(mappedBy = "concession",targetEntity =qCategRessource.class )
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "concession",targetEntity =qCategRessource.class,fetch = FetchType.LAZY)
+
     private List<qCategRessource>     categoriesRessources ;
 
     //private List<qCategRessource>     categoriesRessources ;
@@ -191,7 +198,7 @@ public class qConcession implements Serializable
         this.dateConcession = dateLicence;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
-        this.categoriesRessources = categoriesRessources;
+        this.categoriesRessources=categoriesRessources;
         this.qLicenceBatLastList = qLicenceBatLastList;
     }
 }

@@ -14,25 +14,23 @@ import java.io.Serializable;
 } )
 public class qEnginPeche implements Serializable {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="id_engin", nullable=false)
-   private Integer IdEngin;
-
-    private String Engin;
+   private enumEngin Engin;
     private Integer maillage;
+    private boolean flage;
 
     @ManyToOne
 
 
     private qCategRessource categressource;
-
-    public qEnginPeche(String engin, Integer maillage) {
+    @ManyToOne
+    private qEnginPecheDeb qdeb;
+    public qEnginPeche(enumEngin engin, Integer maillage) {
         Engin = engin;
         this.maillage = maillage;
     }
 
-    public qEnginPeche(Integer idEngin, String engin, Integer maillage, qCategRessource categressource) {
-        IdEngin = idEngin;
+    public qEnginPeche(enumEngin engin, Integer maillage, qCategRessource categressource) {
+
         Engin = engin;
         this.maillage = maillage;
         this.categressource = categressource;
@@ -41,19 +39,13 @@ public class qEnginPeche implements Serializable {
     public qEnginPeche() {
     }
 
-    public Integer getIdEngin() {
-        return IdEngin;
-    }
 
-    public void setIdEngin(Integer idEngin) {
-        IdEngin = idEngin;
-    }
 
-    public String getEngin() {
+    public enumEngin getEngin() {
         return Engin;
     }
 
-    public void setEngin(String engin) {
+    public void setEngin(enumEngin engin) {
         Engin = engin;
     }
 

@@ -16,7 +16,7 @@ public interface qModelJPService {
 	 * @param codeauth
 	 * @return entity
 	 */
-	qModelJP findById(qTypeConcession  codeauth) ;
+	qModelJP findById(String  codeauth) ;
 
 	/**
 	 * Loads all entities.
@@ -49,7 +49,7 @@ public interface qModelJPService {
 	 * Deletes an entity using its Primary Key
 	 * @param codeauth
 	 */
-	void delete(qTypeConcession codeauth);
+	void delete(String codeauth);
 
 
 }

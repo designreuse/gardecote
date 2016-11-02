@@ -19,12 +19,20 @@ public class qDoc implements Serializable {
    private Date depart       ;
 
     @Id
+    private String numImm;
+
+    @Column(name="nbrPages", nullable=false)
+    private Integer nbrPages;
+
+    @Column(name="Retour", nullable=false, length=10)
+    private Date     retour       ;
+
+    @OneToOne
     private qRegistreNavire    qnavire;
 
+    @Column(name="doctype", nullable=false, length=10)
     private enumTypeDoc enumtypedoc;
 
-    @OneToMany(mappedBy="qdoc", targetEntity=qSeq.class)
-    private List<qSeq>  qlistseq;
 
     public qDoc() {
 
@@ -40,6 +48,7 @@ public class qDoc implements Serializable {
         return qMarree;
     }
     public void setDepart(Date depart) {
+
         this.depart = depart;
     }
 
@@ -51,9 +60,13 @@ public class qDoc implements Serializable {
         this.qnavire = qnavire;
     }
 
-    public qDoc(enumTypeDoc enumtypedoc, List<qSeq> qlistseq) {
+    public qDoc(enumTypeDoc enumtypedoc,Date depart,Date     retour,Integer nbrPages,qRegistreNavire    qnavire) {
         this.enumtypedoc = enumtypedoc;
-        this.qlistseq = qlistseq;
+        this.depart=depart;
+        this.qnavire=qnavire;
+        this.numImm=this.qnavire.getNumimm();
+        this.retour = retour;
+        this.nbrPages=nbrPages;
     }
 
 
@@ -68,11 +81,7 @@ public class qDoc implements Serializable {
 
 
 
-    public List<qSeq> getQlistseq() {
-        return qlistseq;
-    }
 
-    public void setQlistseq(List<qSeq> qlistseq) {
-        this.qlistseq = qlistseq;
-    }
+
+
 }

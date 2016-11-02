@@ -10,5 +10,6 @@ public enum enumPrefix {
    CRUS,
    PC,
    PA,
-   TRQITEMENT
+   TR,
+   IND
 }

@@ -62,8 +62,8 @@ public class qCarnet implements Serializable
     @OneToOne
     @JoinColumn(name="qusine")
     private qUsine     qusine  ;
-
-
+    @OneToOne
+    private qConcession qconcession;
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
@@ -91,14 +91,22 @@ public class qCarnet implements Serializable
         this.nbrLigneParPage = nbrLigneParPage;
     }
 
+    public qConcession getQconcession() {
+        return qconcession;
+    }
 
-    public qCarnet(enumTypeDoc enumtypedoc,enumPrefix enumprefix, Long numeroDebutPage, Integer nbrPages) {
+    public void setQconcession(qConcession qconcession) {
+        this.qconcession = qconcession;
+    }
+
+    public qCarnet(enumTypeDoc enumtypedoc, enumPrefix enumprefix, Long numeroDebutPage, Integer nbrPages) {
 
         this.typeDoc=enumtypedoc;
         this.numeroDebutPage = numeroDebutPage;
         this.prefixNumerotation = enumprefix;
         this.qnavire = null;
         this.qusine = null;
+        this.qconcession=null;
         this.nbrPages = nbrPages;
         this.nbrLigneParPage=0;
 

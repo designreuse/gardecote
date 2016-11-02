@@ -31,7 +31,8 @@ public class qCategRessource implements Serializable {
 
     private List<qEnginPeche> Engins;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "concession")
    // @JoinColumn(name = "ref_concession", nullable = false)
     private qConcession concession;
 

@@ -49,6 +49,13 @@ public class qJourMere implements Serializable
     //----------------------------------------------------------------------
     @OneToMany(mappedBy="jourMere", targetEntity=qCapture.class)
     private List<qCapture> capturesDuMarree;
+    @Column(name="totalCapturs", nullable=false, length=10)
+    private Integer totalCapturs;
+    @Column(name="totalCong", nullable=false, length=10)
+    private Integer totalCong;
+    @Column(name="nbrCaisse", nullable=false, length=10)
+    private Integer nbrCaisse;
+
     @OneToMany
     private List<qPageMarree> pagesMarree;
 
@@ -58,6 +65,39 @@ public class qJourMere implements Serializable
     public qJourMere()
     {
 		super();
+    }
+
+    public Integer getTotalCapturs() {
+        return totalCapturs;
+    }
+
+    public void setTotalCapturs(Integer totalCapturs) {
+        this.totalCapturs = totalCapturs;
+    }
+
+    public Integer getTotalCong() {
+        return totalCong;
+    }
+
+    public void setTotalCong(Integer totalCong) {
+        this.totalCong = totalCong;
+    }
+
+    public Integer getNbrCaisse() {
+        return nbrCaisse;
+    }
+
+    public void setNbrCaisse(Integer nbrCaisse) {
+        this.nbrCaisse = nbrCaisse;
+    }
+
+    public qJourMere(String datejourMere, List<qCapture> capturesDuMarree, Integer totalCapturs, Integer totalCong, Integer nbrCaisse) {
+        this.datejourMere = datejourMere;
+        this.capturesDuMarree = capturesDuMarree;
+        this.totalCapturs = totalCapturs;
+        this.totalCong = totalCong;
+        this.nbrCaisse = nbrCaisse;
+
     }
 
     public Long getIdJourMere() {
