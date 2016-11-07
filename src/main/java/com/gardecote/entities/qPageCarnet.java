@@ -24,7 +24,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qPageCarnet", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qPageCarnet1", schema="dbo", catalog="GCM1" )
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_PAGE", discriminatorType=DiscriminatorType.STRING, length=20)
 // Define named queries here
@@ -45,34 +45,49 @@ public class qPageCarnet implements Serializable
     private String     numeroPage      ;
     private Integer  nbrLigne ;
 
+    private  enumEtatPage etatPage;
+private Long numeroOrdrePage;
 	// "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link 
 
      //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
 
-    @ManyToOne(fetch=FetchType.EAGER, optional=false)
+    @ManyToOne
     //@JoinColumnsOrFormulas(name="IdCarnet", referencedColumnName="IdCarnet")
-    @JoinColumns({
-            @JoinColumn(name = "prefixNum", referencedColumnName = "prefixNum"),
-            @JoinColumn(name = "debutPage1", referencedColumnName = "debutPage1")
-    })
     private qCarnet qcarnet;
 
     public qPageCarnet() {
         super();
     }
 
-    public qPageCarnet(String numeroPage, Integer nbrLigne,qCarnet carnet) {
+    public enumEtatPage getEtatPage() {
+        return etatPage;
+    }
+
+    public void setEtatPage(enumEtatPage etatPage) {
+        this.etatPage = etatPage;
+    }
+
+    public qPageCarnet(String numeroPage, qCarnet carnet, Long numeroOrdrePage,enumEtatPage etatPage) {
         this.numeroPage = numeroPage;
         this.nbrLigne = carnet.getNbrLigneParPage();
         this.qcarnet=carnet;
+        this.numeroOrdrePage=numeroOrdrePage;
+        this.etatPage=etatPage;
     }
 
     public Integer getNbrLigne() {
         return nbrLigne;
     }
 
+    public Long getNumeroOrdrePage() {
+        return numeroOrdrePage;
+    }
+
+    public void setNumeroOrdrePage(Long numeroOrdrePage) {
+        this.numeroOrdrePage = numeroOrdrePage;
+    }
 
     public String getNumeroPage() {
         return numeroPage;

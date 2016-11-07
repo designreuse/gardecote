@@ -8,20 +8,20 @@ import java.io.Serializable;
 public class qEspeceTypeePK implements Serializable {
 
 
-    private Integer qespeceId;
+    private String qespeceId;
 
     private enumEspType enumesptype;
 
 
-    private String idmodel;
+
 
     public qEspeceTypeePK() {
     }
 
-    public qEspeceTypeePK(Integer qespeceId, enumEspType enumesptype, String idmodel) {
+    public qEspeceTypeePK(String qespeceId, enumEspType enumesptype) {
         this.qespeceId = qespeceId;
         this.enumesptype = enumesptype;
-        this.idmodel = idmodel;
+
     }
 
     @Override
@@ -32,8 +32,7 @@ public class qEspeceTypeePK implements Serializable {
         qEspeceTypeePK that = (qEspeceTypeePK) o;
 
         if (!qespeceId.equals(that.qespeceId)) return false;
-        if (enumesptype != that.enumesptype) return false;
-        return idmodel.equals(that.idmodel);
+        return enumesptype == that.enumesptype;
 
     }
 
@@ -41,7 +40,6 @@ public class qEspeceTypeePK implements Serializable {
     public int hashCode() {
         int result = qespeceId.hashCode();
         result = 31 * result + enumesptype.hashCode();
-        result = 31 * result + idmodel.hashCode();
         return result;
     }
 }

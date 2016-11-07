@@ -10,6 +10,7 @@ import java.util.List;
  */
 
 @Entity
+@Table(name="qDoc", schema="dbo", catalog="GCM1" )
 @DiscriminatorValue("DEBARQUEMENT")
 
 public class qDebarquement extends qDoc implements Serializable {
@@ -19,10 +20,13 @@ public class qDebarquement extends qDoc implements Serializable {
     //----------------------------------------------------------------------
 
 
-    // la concession deja lisee a travers de page
-    private qConcession qconcessionconcernee;
+    // la concession deja lu a travers de page
+    @OneToOne
+    private qConcession qconcessionDeb;
 
-    @OneToMany(cascade=CascadeType.ALL,mappedBy = "qdeb",targetEntity = qEnginPecheDeb.class)
+
+    @ManyToMany(targetEntity = qEnginPecheDeb.class,cascade = CascadeType.ALL)
+    @JoinTable(name = "qAssocDebarqEnginPeche")
     private List<qEnginPecheDeb> Engins;
 
     // selected licence par l utilisateur
@@ -33,13 +37,17 @@ public class qDebarquement extends qDoc implements Serializable {
     // list des zones deroulante liees a cette concession  a selectionner
 
     // list des licenses deroulante liees a cette concession  a selectionner
-    @OneToMany(cascade=CascadeType.ALL,targetEntity = qCategRessource.class)
+    @ManyToMany(targetEntity = qCategRessource.class,cascade=CascadeType.ALL)
+    @JoinTable(name = "qAssocDebarqCategRessources")
    private List<qCategRessource>    qcategconcernees;
 
     private enumTypeDebarquement typeDeb;
 
-    @OneToMany(mappedBy="qdebarquement", targetEntity=qPageDebarquement.class)
+    @OneToMany(targetEntity=qPageDebarquement.class,cascade = CascadeType.ALL)
+    @JoinTable(name = "qAssocDebarqPages")
     private List<qPageDebarquement> pages;
+
+
 
     public List<qEnginPecheDeb> getEngins() {
         return Engins;
@@ -49,12 +57,12 @@ public class qDebarquement extends qDoc implements Serializable {
         Engins = engins;
     }
 
-    public qConcession getQconcessionconcernee() {
-        return qconcessionconcernee;
+    public qConcession getQconcessionDeb() {
+        return qconcessionDeb;
     }
 
-    public void setQconcessionconcernee(qConcession qconcessionconcernee) {
-        this.qconcessionconcernee = qconcessionconcernee;
+    public void setQconcessionDeb(qConcession qconcessionconcernee) {
+        this.qconcessionDeb = qconcessionconcernee;
     }
 
     public enumTypeDebarquement getTypeDeb() {
@@ -75,12 +83,6 @@ public class qDebarquement extends qDoc implements Serializable {
 
 
 
-
-
-
-
-
-
     public List<qPageDebarquement> getPages() {
         return pages;
     }
@@ -89,14 +91,16 @@ public class qDebarquement extends qDoc implements Serializable {
         this.pages = pages;
     }
 
-    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,Integer nbrPages, qRegistreNavire qnavire, qConcession qconcessionconcernee, List<qEnginPecheDeb> qEngins, List<qCategRessource> qcategconcernees, enumTypeDebarquement typeDeb, List<qPageDebarquement> pages) {
-        super(enumtypedoc, depart, retour,nbrPages, qnavire);
-        this.qconcessionconcernee = qconcessionconcernee;
-
+    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,qSeq qseq,qRegistreNavire qnavire, qConcession qconcessionconcernee, List<qEnginPecheDeb> qEngins, List<qCategRessource> qcategconcernees, enumTypeDebarquement typeDeb, List<qPageDebarquement> pages) {
+        super(enumtypedoc, depart, retour,qseq, qnavire);
+        this.qconcessionDeb = qconcessionconcernee;
+        this.Engins=qEngins;
         this.qcategconcernees = qcategconcernees;
         this.typeDeb = typeDeb;
         this.pages = pages;
     }
+
+
 
     public qDebarquement() {
 

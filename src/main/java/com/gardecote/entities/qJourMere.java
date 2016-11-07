@@ -19,13 +19,14 @@ import java.util.List;
  * @author Telosys Tools Generator
  *
  */
-
+import java.util.Date;
 @Entity
-@Table(name="qJour", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qJour", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJour.countAll", query="SELECT COUNT(x) FROM qJourMere x" )
 } )
+@IdClass(qJourPK.class)
 public class qJourMere implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -34,16 +35,20 @@ public class qJourMere implements Serializable
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="Id_Jour", nullable=false)
-    private Long       idJourMere       ;
 
+    @Column(name="numimmJour", nullable=false)
+    private String       numImm       ;
 
+    @Id
+    @Column(name="dateJour", nullable=false, length=10)
+    private Date     dateJour     ;
+
+    @OneToOne
+    private qRegistreNavire navire;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name="dateJour", nullable=false, length=10)
-    private String     datejourMere     ;
+
    //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -91,29 +96,41 @@ public class qJourMere implements Serializable
         this.nbrCaisse = nbrCaisse;
     }
 
-    public qJourMere(String datejourMere, List<qCapture> capturesDuMarree, Integer totalCapturs, Integer totalCong, Integer nbrCaisse) {
-        this.datejourMere = datejourMere;
+    public qJourMere(Date datejourMere,qRegistreNavire navire, List<qCapture> capturesDuMarree, Integer totalCapturs, Integer totalCong, Integer nbrCaisse) {
+        this.dateJour = datejourMere;
         this.capturesDuMarree = capturesDuMarree;
         this.totalCapturs = totalCapturs;
         this.totalCong = totalCong;
         this.nbrCaisse = nbrCaisse;
+        this.numImm=navire.getNumimm();
 
     }
 
-    public Long getIdJourMere() {
-        return idJourMere;
+    public String getNumImm() {
+        return numImm;
+    }
+    public qJourPK getJourMerPK(){
+    qJourPK qjourpk=new qJourPK(this.getDatejourMere(),this.getNumImm().toString());
+      return qjourpk;
+    }
+    public void setNumImm(String numImm) {
+        this.numImm = numImm;
     }
 
-    public void setIdJourMere(Long idJourMere) {
-        this.idJourMere = idJourMere;
+    public qRegistreNavire getNavire() {
+        return navire;
     }
 
-    public String getDatejourMere() {
-        return datejourMere;
+    public void setNavire(qRegistreNavire navire) {
+        this.navire = navire;
     }
 
-    public void setDatejourMere(String datejourMere) {
-        this.datejourMere = datejourMere;
+    public Date getDatejourMere() {
+        return dateJour;
+    }
+
+    public void setDatejourMere(Date datejourMere) {
+        this.dateJour = datejourMere;
     }
 
     public List<qCapture> getCapturesDuMarree() {

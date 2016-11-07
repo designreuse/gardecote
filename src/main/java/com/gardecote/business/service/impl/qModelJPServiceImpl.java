@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import com.gardecote.business.service.qModelJPService;
 
 import com.gardecote.data.repository.jpa.qModelJPRepository;
+import com.gardecote.entities.enumPrefix;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.entities.qModelJP;
@@ -29,7 +30,7 @@ public class qModelJPServiceImpl implements qModelJPService {
 	
 	
 	@Override
-	public qModelJP findById(String id) {
+	public qModelJP findById(enumPrefix id) {
 		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(id);
 		return codesAmendeEntity;
 	}
@@ -51,7 +52,7 @@ public class qModelJPServiceImpl implements qModelJPService {
 
 	@Override
 	public qModelJP create(qModelJP codesAmende) {
-		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getPrefixModel().toString());
+		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getPrefixModel());
 		if( codesAmendeEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
@@ -62,13 +63,13 @@ public class qModelJPServiceImpl implements qModelJPService {
 
 	@Override
 	public qModelJP update(qModelJP codesAmende) {
-		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getPrefixModel().toString());
+		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getPrefixModel());
 		qModelJP codesAmendeEntitySaved = codesAmendeJpaRepository.save(codesAmendeEntity);
 		return codesAmendeEntitySaved;
 	}
 
 	@Override
-	public void delete(String id) {
+	public void delete(enumPrefix id) {
 		codesAmendeJpaRepository.delete(id);
 	}
 

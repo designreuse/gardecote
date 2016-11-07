@@ -28,8 +28,8 @@ public class qTypeConcessionArtisanal extends qTypeConcession implements Seriali
     public qTypeConcessionArtisanal() {
     }
 
-    public qTypeConcessionArtisanal(enumPrefix prefixNum, com.gardecote.entities.enumTypeConcessionArtisanal enumTypeConcessionArtisanal) {
-        super(prefixNum);
+    public qTypeConcessionArtisanal(Integer qtypeconcessionpk,enumPrefix prefixNum, com.gardecote.entities.enumTypeConcessionArtisanal enumTypeConcessionArtisanal) {
+        super(qtypeconcessionpk,prefixNum);
         this.enumTypeConcessionArtisanal = enumTypeConcessionArtisanal;
     }
 }

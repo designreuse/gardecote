@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qModelJP2", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qModelJP", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qModelJP.countAll", query="SELECT COUNT(x) FROM qModelJP x" )
@@ -46,7 +46,8 @@ public class qModelJP implements Serializable
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "modelesp",targetEntity =qEspeceTypee.class)
+    @ManyToMany(cascade = CascadeType.MERGE,targetEntity =qEspeceTypee.class,fetch = FetchType.EAGER)
+    @JoinTable(name = "qAssocModelEspeceTypee")
     private List<qEspeceTypee> especestypees;
 
 

@@ -27,7 +27,7 @@ public class qEspeceServiceImpl implements qEspeceService {
 
 
 	@Override
-	public qEspece findById(Integer idchact) {
+	public qEspece findById(String idchact) {
 		qEspece changmentactEntity = changmentactJpaRepository.findOne(idchact);
 		return changmentactEntity;
 	}
@@ -67,7 +67,7 @@ public class qEspeceServiceImpl implements qEspeceService {
 	}
 
 	@Override
-	public void delete(Integer idchact) {
+	public void delete(String idchact) {
 		changmentactJpaRepository.delete(idchact);
 	}
 

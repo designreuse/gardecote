@@ -22,7 +22,7 @@ import org.springframework.format.annotation.NumberFormat;
  */
 
 @Entity
-@Table(name="qCarnet", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qCarnet", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qCarnet.countAll", query="SELECT COUNT(x) FROM qCarnet x" )
@@ -68,7 +68,7 @@ public class qCarnet implements Serializable
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(mappedBy="qcarnet",cascade = CascadeType.ALL, targetEntity=qPageCarnet.class)
+    @OneToMany(mappedBy="qcarnet",cascade = CascadeType.MERGE,targetEntity=qPageCarnet.class)
     private List<qPageCarnet> pages ;
 
 
@@ -100,8 +100,7 @@ public class qCarnet implements Serializable
     }
 
     public qCarnet(enumTypeDoc enumtypedoc, enumPrefix enumprefix, Long numeroDebutPage, Integer nbrPages) {
-
-        this.typeDoc=enumtypedoc;
+       this.typeDoc=enumtypedoc;
         this.numeroDebutPage = numeroDebutPage;
         this.prefixNumerotation = enumprefix;
         this.qnavire = null;
@@ -113,10 +112,6 @@ public class qCarnet implements Serializable
       //    this.modeCarnet = modeCarnet;
          //    this.refLicencement = refLicencement;this.pages = pages;
         // ajouter des pages du carnet encours
-
-
-
-
     }
 
     public void distribuer(qRegistreNavire qnavire,qUsine qusine){

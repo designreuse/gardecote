@@ -2,12 +2,12 @@ package com.gardecote.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-
+import java.util.List;
 /**
  * Created by Dell on 09/10/2016.
  */
 @Entity
-@Table(name="qEnginPecheDeb", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qEnginPecheDeb", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qEnginPecheDeb.countAll", query="SELECT COUNT(x) FROM qEnginPecheDeb x" )
@@ -21,13 +21,17 @@ public class qEnginPecheDeb implements Serializable {
     @Column(name = "flag")
     private boolean flag;
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    private qDebarquement qdeb;
-    @ManyToOne(cascade=CascadeType.ALL)
-    private qMarree qmarree;
+    @ManyToMany(mappedBy = "Engins",cascade = CascadeType.PERSIST)
+ //   @JoinColumns({
+  //          @JoinColumn(name = "departfk", referencedColumnName = "depart",insertable = false,updatable = false),
+   //         @JoinColumn(name = "numImmfk", referencedColumnName = "numImm",insertable = false,updatable = false)
+   // })
+    private     List<qDebarquement> qdeb;
 
-    @ManyToOne
-    private qCategRessource categressource;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "qAssocEnginPecheDebCategRessources")
+    private List<qCategRessource> categressource;
 
     public qEnginPecheDeb(enumEnginDeb engin,boolean flag, Integer maillage) {
         this.Engin = engin;
@@ -43,7 +47,7 @@ public class qEnginPecheDeb implements Serializable {
         this.flag = flag;
     }
 
-    public qEnginPecheDeb(enumEnginDeb engin, Integer maillage, qCategRessource categressource) {
+    public qEnginPecheDeb(enumEnginDeb engin, Integer maillage, List<qCategRessource> categressource) {
 
         Engin = engin;
         this.maillage = maillage;
@@ -53,7 +57,13 @@ public class qEnginPecheDeb implements Serializable {
     public qEnginPecheDeb() {
     }
 
+    public List<qDebarquement> getQdeb() {
+        return qdeb;
+    }
 
+    public void setQdeb(List<qDebarquement> qdeb) {
+        this.qdeb = qdeb;
+    }
 
     public enumEnginDeb getEngin() {
         return Engin;
@@ -63,11 +73,11 @@ public class qEnginPecheDeb implements Serializable {
         Engin = engin;
     }
 
-    public qCategRessource getCategressource() {
+    public List<qCategRessource> getCategressource() {
         return categressource;
     }
 
-    public void setCategressource(qCategRessource categressource) {
+    public void setCategressource(List<qCategRessource> categressource) {
         this.categressource = categressource;
     }
 

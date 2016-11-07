@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qConcession", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qConcession", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qConcession.countAll", query="SELECT COUNT(x) FROM qConcession x" )
@@ -41,14 +41,17 @@ public class qConcession implements Serializable
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
    // @Column(name="idconcession", nullable=false)
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
   // @JoinColumn(name = "idconcession")
+
      private qConsignataire    qconsignataire;
 
     @OneToMany(mappedBy = "qconcession",targetEntity = qPageDebarquement.class)
+
     private List<qPageDebarquement> qpagesdebarquement;
 
     @OneToMany(mappedBy = "qconcession",targetEntity = qPageDebarquement.class)
+
     private List<qPageMarree> qpagesMaree;
 
    @Column(name="dateConcession")
@@ -70,9 +73,9 @@ public class qConcession implements Serializable
 
 
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "concession",targetEntity =qCategRessource.class,fetch = FetchType.LAZY)
-
-    private List<qCategRessource>     categoriesRessources ;
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
+    @JoinTable(name = "qAssocConessionCategRessources")
+     private List<qCategRessource>     categoriesRessources ;
 
     //private List<qCategRessource>     categoriesRessources ;
    //----------------------------------------------------------------------

@@ -12,7 +12,8 @@ import org.hibernate.annotations.JoinColumnsOrFormulas;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
 
@@ -54,11 +55,13 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
     //----------------------------------------------------------------------
 
 
-    @OneToMany(mappedBy = "pagesDeb",targetEntity = qJourDeb.class)
+    @OneToMany(mappedBy = "pagesDeb",targetEntity = qJourDeb.class,fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL)
+   // @NotFound(action=NotFoundAction.IGNORE)
     private List<qJourDeb>  listJours;
 
-    public qPageDebarquement(String numeroPage, Integer nbrLigne, qCarnet carnet, qDebarquement qdebarquement, List<qJourDeb> listJours) {
-        super(numeroPage, nbrLigne, carnet);
+    public qPageDebarquement(String numeroPage,Long numeroOrdrePage, enumEtatPage etat, qCarnet carnet, qDebarquement qdebarquement, List<qJourDeb> listJours) {
+        super(numeroPage,  carnet,numeroOrdrePage,etat);
 
         this.qdebarquement = qdebarquement;
         this.listJours = listJours;

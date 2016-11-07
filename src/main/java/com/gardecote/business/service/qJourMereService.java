@@ -7,6 +7,8 @@ package com.gardecote.business.service;
 import java.util.List;
 
 import com.gardecote.entities.qJourMere;
+import com.gardecote.entities.qJourPK;
+
 /**
  * Business Service Interface for entity Captures2.
  */
@@ -17,7 +19,7 @@ public interface qJourMereService {
 	 * @param idCapture
 	 * @return entity
 	 */
-	qJourMere findById(Long idCapture) ;
+	qJourMere findById(qJourPK idCapture) ;
 
 	/**
 	 * Loads all entities.
@@ -50,7 +52,7 @@ public interface qJourMereService {
 	 * Deletes an entity using its Primary Key
 	 * @param idCapture
 	 */
-	void delete(Long idCapture);
+	void delete(qJourPK idCapture);
 
 
 }

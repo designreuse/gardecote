@@ -83,8 +83,8 @@ public class qPageTraitement extends qPageCarnet {
         this.opTraitements = opTraitements;
     }
 
-    public qPageTraitement(String numeroPage, Integer nbrLigne, qCarnet carnet, List<enumAuthorisation> segs, qTraitement qtraitement, List<qUniteTraitement> opTraitements) {
-        super(numeroPage, nbrLigne, carnet);
+    public qPageTraitement(String numeroPage,  Long numeroOrdrePage,enumEtatPage etat ,qCarnet carnet, List<enumAuthorisation> segs, qTraitement qtraitement, List<qUniteTraitement> opTraitements) {
+        super(numeroPage, carnet,numeroOrdrePage,etat);
         this.segs = segs;
         this.qtraitement = qtraitement;
         this.opTraitements = opTraitements;

@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by Dell on 25/10/2016.
  */
 @Entity
-@Table(name="qTraitement", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qTraitement", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qTraitement.countAll", query="SELECT COUNT(x) FROM qTraitement x" )

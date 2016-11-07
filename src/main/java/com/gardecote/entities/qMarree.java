@@ -21,6 +21,7 @@ import java.util.Date;
  */
 
 @Entity
+@Table(name="qDoc", schema="dbo", catalog="GCM1" )
 @DiscriminatorValue("MARREE")
 // @Table(name="qMarree", schema="dbo", catalog="DSPCM_DB" )
 // Define named queries here
@@ -36,14 +37,16 @@ public class qMarree extends qDoc implements Serializable
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private qConcession qconcessionMaree;
 
-    private qConcession qconcessionconcernee;
+    @ManyToMany(mappedBy = "qmarree",targetEntity = qCategRessource.class,cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 
-
-    private qCategRessource qcategconcernee;
+    private List<qCategRessource> qcategconcernees;
 
     private enumJP typeJP;
-    @OneToMany(cascade=CascadeType.ALL,mappedBy = "qmarree",targetEntity = qEnginPecheDeb.class)
+    @ManyToMany(cascade=CascadeType.REFRESH,targetEntity = qEnginPeche.class)
+    @JoinTable(name = "qAssocMarreeEngins")
     private List<qEnginPeche> qEngins;
 
     @OneToMany(mappedBy="qmarree", targetEntity=qPageMarree.class)
@@ -68,10 +71,10 @@ public class qMarree extends qDoc implements Serializable
         return serialVersionUID;
     }
 
-    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, Integer nbrPages, qRegistreNavire qnavire, qConcession qconcessionconcernee, qCategRessource qcategconcernee, enumJP typeJP, List<qEnginPeche> qEngins, List<qPageMarree> pages) {
-        super(enumtypedoc, depart, retour,nbrPages, qnavire);
-        this.qconcessionconcernee = qconcessionconcernee;
-        this.qcategconcernee = qcategconcernee;
+    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qRegistreNavire qnavire, qConcession qconcessionconcernee, List<qCategRessource> qcategconcernee, enumJP typeJP, List<qEnginPeche> qEngins, List<qPageMarree> pages) {
+        super(enumtypedoc, depart, retour,qseq, qnavire);
+        this.qconcessionMaree = qconcessionconcernee;
+        this.qcategconcernees = qcategconcernee;
         this.typeJP = typeJP;
         this.qEngins = qEngins;
         this.pages = pages;
@@ -79,19 +82,19 @@ public class qMarree extends qDoc implements Serializable
 
     //--- DATABASE MAPPING : Depart ( date )
   public qConcession getQconcessionconcernee() {
-        return qconcessionconcernee;
+        return qconcessionMaree;
     }
 
     public void setQconcessionconcernee(qConcession qconcessionconcernee) {
-        this.qconcessionconcernee = qconcessionconcernee;
+        this.qconcessionMaree = qconcessionconcernee;
     }
 
-    public qCategRessource getQcategconcernee() {
-        return qcategconcernee;
+    public List<qCategRessource> getQcategconcernees() {
+        return qcategconcernees;
     }
 
-    public void setQcategconcernee(qCategRessource qcategconcernee) {
-        this.qcategconcernee = qcategconcernee;
+    public void setQcategconcernees(List<qCategRessource> qcategconcernee) {
+        this.qcategconcernees = qcategconcernee;
     }
 
     public enumJP getTypeJP() {

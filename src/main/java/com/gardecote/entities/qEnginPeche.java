@@ -2,12 +2,12 @@ package com.gardecote.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-
+import java.util.List;
 /**
  * Created by Dell on 09/10/2016.
  */
 @Entity
-@Table(name="qEnginPeche", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qEnginPeche", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qEnginPeche.countAll", query="SELECT COUNT(x) FROM qEnginPeche x" )
@@ -18,18 +18,28 @@ public class qEnginPeche implements Serializable {
     private Integer maillage;
     private boolean flage;
 
-    @ManyToOne
+    @ManyToMany(mappedBy = "Engins",cascade = CascadeType.REFRESH)
 
 
-    private qCategRessource categressource;
-    @ManyToOne
-    private qEnginPecheDeb qdeb;
+    private List<qCategRessource> categressource;
+
+    @ManyToMany(mappedBy = "qEngins")
+
+   // @JoinColumns({
+   //         @JoinColumn(name = "departfk", referencedColumnName = "depart",insertable = false,updatable = false),
+    //        @JoinColumn(name = "numImmfk", referencedColumnName = "numImm",insertable = false,updatable = false)
+    //})
+    private List<qMarree> qmarrees;
+
+    @ManyToMany(mappedBy = "Engins",cascade = CascadeType.REFRESH)
+     private List<qLicence> qlicences;
+
     public qEnginPeche(enumEngin engin, Integer maillage) {
         Engin = engin;
         this.maillage = maillage;
     }
 
-    public qEnginPeche(enumEngin engin, Integer maillage, qCategRessource categressource) {
+    public qEnginPeche(enumEngin engin, Integer maillage, List<qCategRessource> categressource) {
 
         Engin = engin;
         this.maillage = maillage;
@@ -39,8 +49,6 @@ public class qEnginPeche implements Serializable {
     public qEnginPeche() {
     }
 
-
-
     public enumEngin getEngin() {
         return Engin;
     }
@@ -49,11 +57,11 @@ public class qEnginPeche implements Serializable {
         Engin = engin;
     }
 
-    public qCategRessource getCategressource() {
+    public List<qCategRessource> getCategressource() {
         return categressource;
     }
 
-    public void setCategressource(qCategRessource categressource) {
+    public void setCategressource(List<qCategRessource> categressource) {
         this.categressource = categressource;
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Dell on 23/10/2016.
  */
 @Entity
-
+@Table(name="qDoc", schema="dbo", catalog="GCM1" )
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
@@ -21,14 +21,15 @@ public class qDoc implements Serializable {
     @Id
     private String numImm;
 
-    @Column(name="nbrPages", nullable=false)
-    private Integer nbrPages;
+    @OneToOne( cascade = CascadeType.ALL,targetEntity = qSeq.class)
+    private qSeq qseq;
+
+
 
     @Column(name="Retour", nullable=false, length=10)
     private Date     retour       ;
 
-    @OneToOne
-    private qRegistreNavire    qnavire;
+
 
     @Column(name="doctype", nullable=false, length=10)
     private enumTypeDoc enumtypedoc;
@@ -52,24 +53,22 @@ public class qDoc implements Serializable {
         this.depart = depart;
     }
 
-    public qRegistreNavire getQnavire() {
-        return qnavire;
+    public qSeq getQseq() {
+        return qseq;
     }
 
-    public void setQnavire(qRegistreNavire qnavire) {
-        this.qnavire = qnavire;
+    public void setQseq(qSeq qsec) {
+        this.qseq = qsec;
     }
 
-    public qDoc(enumTypeDoc enumtypedoc,Date depart,Date     retour,Integer nbrPages,qRegistreNavire    qnavire) {
+    public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour,qSeq qseq, qRegistreNavire   qnavire) {
         this.enumtypedoc = enumtypedoc;
         this.depart=depart;
-        this.qnavire=qnavire;
-        this.numImm=this.qnavire.getNumimm();
+        this.qseq=qseq;
+        this.numImm=qnavire.getNumimm();
         this.retour = retour;
-        this.nbrPages=nbrPages;
+
     }
-
-
 
     public enumTypeDoc getEnumtypedoc() {
         return enumtypedoc;
@@ -79,9 +78,21 @@ public class qDoc implements Serializable {
         this.enumtypedoc = enumtypedoc;
     }
 
+    public String getNumImm() {
+        return numImm;
+    }
+
+    public void setNumImm(String numImm) {
+        this.numImm = numImm;
+    }
 
 
 
+    public Date getRetour() {
+        return retour;
+    }
 
-
+    public void setRetour(Date retour) {
+        this.retour = retour;
+    }
 }

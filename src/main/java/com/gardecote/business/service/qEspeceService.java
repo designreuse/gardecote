@@ -16,7 +16,7 @@ public interface qEspeceService {
 	 * @param idBatobs
 	 * @return entity
 	 */
-	qEspece findById(Integer idBatobs) ;
+	qEspece findById(String idBatobs) ;
 
 	/**
 	 * Loads all entities.
@@ -49,7 +49,7 @@ public interface qEspeceService {
 	 * Deletes an entity using its Primary Key
 	 * @param idBatobs
 	 */
-	void delete(Integer idBatobs);
+	void delete(String idBatobs);
 
 
 }

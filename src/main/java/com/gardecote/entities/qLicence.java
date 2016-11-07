@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qlicence", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qlicence", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qLicence.countAll", query="SELECT COUNT(x) FROM  qLicence x")
@@ -56,11 +56,14 @@ public class qLicence implements Serializable
 
     // Ca c'est pour le format de nouvelle strategie
 
-    @OneToMany(mappedBy = "qlicence",targetEntity =qCategRessource.class)
+    @ManyToMany(cascade = CascadeType.REFRESH,targetEntity =qCategRessource.class,fetch = FetchType.EAGER)
+    @JoinTable(name = "qAssocLicencesCategRessources")
     private List<qCategRessource> qcatressources;
 
 
-    @OneToMany(mappedBy = "categressource",targetEntity =qEnginPeche.class)
+
+    @ManyToMany(cascade = CascadeType.REFRESH,targetEntity =qEnginPeche.class,fetch = FetchType.EAGER)
+    @JoinTable(name = "qAssocLicencesEngins")
     private List<qEnginPeche> Engins;
 
     @Column(name="code_type_supp_droit", length=100)
@@ -174,12 +177,14 @@ public class qLicence implements Serializable
     }
 
     public qLicence(qTypeLic qtypnav, qTypeEnc typencad, qZone zone, com.gardecote.entities.qNation qNation, List<qCategRessource> qcatressources, List<qEnginPeche> engins, enumSupport typesuppDroit, qRegistreNavire qnavire, qConsignataire qconcessionaire, qConcession qconcession, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, Integer balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomex, String nomnav, String numimm, String numlic, String port, String puimot, String radio, float tjb) {
+
         this.qtypnav = qtypnav;
         this.typencad = typencad;
         this.zone = zone;
         this.nation = qNation;
-        this.qcatressources = qcatressources;
-        Engins = engins;
+        this.qcatressources=qcatressources;
+       // this.qcatressources = qcatressources;
+        this.Engins = engins;
         this.typesuppDroit = typesuppDroit;
         this.qnavire = qnavire;
         this.qconcessionaire = qconcessionaire;
@@ -254,7 +259,9 @@ public class qLicence implements Serializable
     }
 
     public void setQcatressources(List<qCategRessource> qcatressources) {
-        this.qcatressources = qcatressources;
+
+        this.qcatressources=qcatressources;
+
     }
 
     public List<qEnginPeche> getEngins() {

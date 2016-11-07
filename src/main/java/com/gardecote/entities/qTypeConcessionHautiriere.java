@@ -31,8 +31,8 @@ public class qTypeConcessionHautiriere extends qTypeConcession implements Serial
 
     }
 
-    public qTypeConcessionHautiriere(enumPrefix prefixNum, com.gardecote.entities.enumTypeConcessionHautiriere enumTypeConcessionHautiriere, com.gardecote.entities.enumTypePecheHautiriere enumTypePecheHautiriere) {
-        super(prefixNum);
+    public qTypeConcessionHautiriere(Integer qtypeconcessionpk,enumPrefix prefixNum, com.gardecote.entities.enumTypeConcessionHautiriere enumTypeConcessionHautiriere, com.gardecote.entities.enumTypePecheHautiriere enumTypePecheHautiriere) {
+        super(qtypeconcessionpk,prefixNum);
         this.enumTypeConcessionHautiriere = enumTypeConcessionHautiriere;
         this.enumTypePecheHautiriere = enumTypePecheHautiriere;
     }

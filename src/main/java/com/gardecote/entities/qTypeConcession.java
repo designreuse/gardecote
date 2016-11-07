@@ -10,14 +10,14 @@ import java.util.List;
 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_CONCESSION", discriminatorType=DiscriminatorType.STRING, length=20)
-@Table(name="qTypeConcession1", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qTypeConcession", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qTypeConcession.countAll", query="SELECT COUNT(x) FROM qTypeConcession x" )
 } )
 public class qTypeConcession implements Serializable {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+ //   @GeneratedValue(strategy= GenerationType.AUTO)
      @Column(name = "qtypeconcessionpk",unique=true, nullable = false)
      private Integer qtypeconcessionpk;
 
@@ -31,7 +31,8 @@ public class qTypeConcession implements Serializable {
         super();
     }
 
-    public qTypeConcession(enumPrefix prefixNum) {
+    public qTypeConcession(Integer qtypeconcessionpk,enumPrefix prefixNum) {
+        this.qtypeconcessionpk=qtypeconcessionpk;
         this.prefixNum = prefixNum;
     }
 

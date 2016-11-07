@@ -5,6 +5,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * Repository : Classinfractions.
  */
-public interface qEspeceRepository extends PagingAndSortingRepository<qEspece, Integer> {
+public interface qEspeceRepository extends PagingAndSortingRepository<qEspece, String> {
 
 }

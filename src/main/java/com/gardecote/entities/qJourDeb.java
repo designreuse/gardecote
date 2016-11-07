@@ -6,6 +6,9 @@
 
 package com.gardecote.entities;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -22,36 +25,44 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qJourDeb", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qJourDeb", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJourDeb.countAll", query="SELECT COUNT(x) FROM qJourDeb x" )
 } )
+
+@IdClass(qJourPK.class)
 public class qJourDeb implements Serializable
 {
     private static final long serialVersionUID = 1L;
-
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="Id_Jour", nullable=false)
-    private Long       idJourDeb       ;
-
+    @Column(name="numimmJour", nullable=false)
+    private String       numImm       ;
 
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
+    @Id
     @Column(name="dateJour", nullable=false, length=10)
-    private Date datejourDeb     ;
+    private Date  dateJour ;
+
    //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(mappedBy="jourDeb", targetEntity=qCapture.class)
+
+
+    @OneToOne
+    private qRegistreNavire navire;
+
+    @OneToMany(mappedBy = "jourDeb",targetEntity=qCapture.class,cascade = CascadeType.ALL)
     private List<qCapture> debarqDuJour;
-    @OneToMany
-    private List<qPageDebarquement> pagesDeb;
+
+    @ManyToOne
+
+    private qPageDebarquement pagesDeb;
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
@@ -61,20 +72,38 @@ public class qJourDeb implements Serializable
 		super();
     }
 
-    public Long getIdJourDeb() {
-        return idJourDeb;
+    public qJourDeb(Date datejourDeb, qRegistreNavire navire, List<qCapture> debarqDuJour, qPageDebarquement pagesDeb) {
+        this.numImm = navire.getNumimm();
+        this.dateJour = datejourDeb;
+        this.navire = navire;
+        this.debarqDuJour = debarqDuJour;
+        this.pagesDeb = pagesDeb;
     }
 
-    public void setIdJourDeb(Long idJourDeb) {
-        this.idJourDeb = idJourDeb;
+    public String getNumImm() {
+        return numImm;
     }
+
+    public void setNumImm(String numImm) {
+        this.numImm = numImm;
+    }
+
+    public qRegistreNavire getNavire() {
+        return navire;
+    }
+
+    public void setNavire(qRegistreNavire navire) {
+        this.navire = navire;
+    }
+
+
 
     public Date getDatejourDeb() {
-        return datejourDeb;
+        return dateJour;
     }
 
     public void setDatejourDeb(Date datejourDeb) {
-        this.datejourDeb = datejourDeb;
+        this.dateJour = datejourDeb;
     }
 
     public List<qCapture> getDebarqDuJour() {
@@ -85,11 +114,11 @@ public class qJourDeb implements Serializable
         this.debarqDuJour = debarqDuJour;
     }
 
-    public List<qPageDebarquement> getPagesDeb() {
+    public qPageDebarquement getPagesDeb() {
         return pagesDeb;
     }
 
-    public void setPagesDeb(List<qPageDebarquement> pagesDeb) {
+    public void setPagesDeb(qPageDebarquement pagesDeb) {
         this.pagesDeb = pagesDeb;
     }
 }

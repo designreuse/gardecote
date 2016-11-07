@@ -6,6 +6,9 @@
 
 package com.gardecote.entities;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -18,13 +21,14 @@ import java.io.Serializable;
  * @author Telosys Tools Generator
  *
  */
-
+import java.util.Date;
 @Entity
-@Table(name="qCapture", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qCapture", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qCaptue.countAll", query="SELECT COUNT(x) FROM qCapture x" )
 } )
+@IdClass(qCapturePK.class)
 public class qCapture implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -33,9 +37,19 @@ public class qCapture implements Serializable
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="idCapture", nullable=false)
-    private Long      idCapture ;
+     private    Date        datedepart;
+    @Id
+     private    String      nummimm;
+    @Id
+     private    Date        dateJour;
+    @Id
+     private    String      idespece;
+    @Id
+     private    enumEspType esptype;
+
+    @OneToOne(cascade = CascadeType.MERGE)
+    // @NotFound(action= NotFoundAction.IGNORE)
+    private qDoc qdoc;
     @OneToOne
     private qEspeceTypee especeTypee;
 
@@ -44,7 +58,8 @@ public class qCapture implements Serializable
     @ManyToOne
     private qJourMere jourMere;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = qJourDeb.class,cascade = CascadeType.ALL)
+
     private qJourDeb jourDeb;
 
     public qEspeceTypee getEspeceTypee() {
@@ -55,14 +70,53 @@ public class qCapture implements Serializable
         this.especeTypee = especeTypee;
     }
 
-    public Long getIdCapture() {
-        return idCapture;
+    public Date getDatedepart() {
+        return datedepart;
     }
 
-    public void setIdCapture(Long idCapture) {
-        this.idCapture = idCapture;
+    public void setDatedepart(Date datedepart) {
+        this.datedepart = datedepart;
     }
 
+   public String getNummimm() {
+        return nummimm;
+    }
+
+    public void setNummimm(String nummimm) {
+        this.nummimm = nummimm;
+    }
+
+    public Date getDateJour() {
+        return dateJour;
+    }
+
+    public void setDateJour(Date dateJour) {
+        this.dateJour = dateJour;
+    }
+
+    public String getIdespece() {
+        return idespece;
+    }
+
+    public void setIdespece(String idespece) {
+        this.idespece = idespece;
+    }
+
+    public enumEspType getEsptype() {
+        return esptype;
+    }
+
+    public void setEsptype(enumEspType esptype) {
+        this.esptype = esptype;
+    }
+
+    public qDoc getQdoc() {
+        return qdoc;
+    }
+
+    public void setQdoc(qDoc qdoc) {
+        this.qdoc = qdoc;
+    }
 
     public Integer getQuantite() {
         return quantite;
@@ -91,7 +145,19 @@ public class qCapture implements Serializable
     public qCapture() {
     }
 
-    public qCapture(qEspeceTypee especeTypee, Integer quantite, qJourMere jourMere, qJourDeb jourDeb) {
+     public qCapturePK  getCapturePK() {
+         qCapturePK qcappk=new qCapturePK(datedepart,nummimm,dateJour,idespece,esptype);
+         return qcappk;
+      }
+
+    public qCapture(qDoc qdoc, qEspeceTypee especeTypee, Integer quantite, qJourMere jourMere, qJourDeb jourDeb) {
+        this.datedepart = qdoc.getDepart();
+        this.nummimm = qdoc.getNumImm();
+        if(qdoc.getEnumtypedoc().equals(enumTypeDoc.Fiche_Debarquement))this.dateJour = jourDeb.getDatejourDeb();
+        if(qdoc.getEnumtypedoc().equals(enumTypeDoc.Journal_Peche))this.dateJour = jourMere.getDatejourMere();
+        this.idespece = especeTypee.getQespeceId();
+        this.esptype = especeTypee.getEnumesptype();
+        this.qdoc = qdoc;
         this.especeTypee = especeTypee;
         this.quantite = quantite;
         this.jourMere = jourMere;

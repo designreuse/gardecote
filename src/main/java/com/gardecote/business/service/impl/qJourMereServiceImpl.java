@@ -13,6 +13,7 @@ import com.gardecote.data.repository.jpa.qJourMereRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.entities.qJourMere;
+import com.gardecote.entities.qJourPK;
 /**
  * Implementation of ClassinfractionsService
  */
@@ -26,7 +27,7 @@ public class qJourMereServiceImpl implements qJourMereService {
 	
 	
 	@Override
-	public qJourMere findById(Long codeClass) {
+	public qJourMere findById(qJourPK codeClass) {
 		qJourMere classinfractionsEntity = classinfractionsJpaRepository.findOne(codeClass);
 		return classinfractionsEntity ;
 	}
@@ -48,7 +49,7 @@ public class qJourMereServiceImpl implements qJourMereService {
 
 	@Override
 	public qJourMere create(qJourMere classinfractions) {
-		qJourMere classinfractionsEntity = classinfractionsJpaRepository.findOne(classinfractions.getIdJourMere());
+		qJourMere classinfractionsEntity = classinfractionsJpaRepository.findOne(classinfractions.getJourMerPK());
 		if( classinfractionsEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
@@ -59,13 +60,13 @@ public class qJourMereServiceImpl implements qJourMereService {
 
 	@Override
 	public qJourMere update(qJourMere classinfractions) {
-		qJourMere classinfractionsEntity = classinfractionsJpaRepository.findOne(classinfractions.getIdJourMere());
+		qJourMere classinfractionsEntity = classinfractionsJpaRepository.findOne(classinfractions.getJourMerPK());
 		qJourMere classinfractionsEntitySaved = classinfractionsJpaRepository.save(classinfractionsEntity);
 		return classinfractionsEntitySaved;
 	}
 
 	@Override
-	public void delete(Long codeClass) {
+	public void delete(qJourPK codeClass) {
 		classinfractionsJpaRepository.delete(codeClass);
 	}
 

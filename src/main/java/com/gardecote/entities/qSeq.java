@@ -7,75 +7,52 @@ import javax.persistence.*;
  * Created by Dell on 23/10/2016.
  */
 @Entity
-@Table(name="qSeq", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qSeq", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qSeq.countAll", query="SELECT COUNT(x) FROM qSeq x" )
 } )
 @IdClass(qSeqPK.class)
 public class qSeq implements Serializable {
-    @Id
-    String  prefix;
-    @Id
-    Long debut;
 
-    Long Fin;
-    @OneToOne
+    @Id
+    String debut;
+    @Id
+    String fin;
+
+    @OneToOne(mappedBy = "qseq")
     private qDoc qdoc;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof qSeq)) return false;
-
-        qSeq qSeq = (qSeq) o;
-
-        if (!prefix.equals(qSeq.prefix)) return false;
-        if (!debut.equals(qSeq.debut)) return false;
-        if (Fin != null ? !Fin.equals(qSeq.Fin) : qSeq.Fin != null) return false;
-        return !(qdoc != null ? !qdoc.equals(qSeq.qdoc) : qSeq.qdoc != null);
-
+    public String getDebut() {
+        return debut;
     }
 
-    @Override
-    public int hashCode() {
-        int result = prefix.hashCode();
-        result = 31 * result + debut.hashCode();
-        result = 31 * result + (Fin != null ? Fin.hashCode() : 0);
-        result = 31 * result + (qdoc != null ? qdoc.hashCode() : 0);
-        return result;
-    }
-
-    public qSeq(String prefix, Long debut, Long fin) {
-        this.prefix = prefix;
+    public void setDebut(String debut) {
         this.debut = debut;
-        Fin = fin;
+    }
+
+    public String getFin() {
+        return fin;
+    }
+
+    public void setFin(String fin) {
+        this.fin = fin;
+    }
+
+    public qDoc getQdoc() {
+        return qdoc;
+    }
+
+    public void setQdoc(qDoc qdoc) {
+        this.qdoc = qdoc;
     }
 
     public qSeq() {
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    public Long getDebut() {
-        return debut;
-    }
-
-    public void setDebut(Long debut) {
+    public qSeq(String debut, String fin, qDoc qdoc) {
         this.debut = debut;
-    }
-
-    public Long getFin() {
-        return Fin;
-    }
-
-    public void setFin(Long fin) {
-        Fin = fin;
+        this.fin = fin;
+        this.qdoc = qdoc;
     }
 }

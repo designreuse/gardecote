@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qEspece", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qEspece", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qEspece.countAll", query="SELECT COUNT(x) FROM qEspece x" )
@@ -33,9 +33,9 @@ public class qEspece implements Serializable
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+   //@GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name="Code_Esp", nullable=false)
-    private Integer    codeEsp      ;
+    private String   codeEsp      ;
 
   @OneToMany(cascade = CascadeType.ALL)
   private List<qEspeceTypee> qespecetypee;
@@ -65,11 +65,11 @@ public class qEspece implements Serializable
 		super();
     }
 
-    public qEspece(String nomAr, String nomFr,Integer numOrdre) {
+    public qEspece(String codeEsp, String nomAr, String nomFr, Integer numOrdre) {
+        this.codeEsp = codeEsp;
         this.nomAr = nomAr;
         this.nomFr = nomFr;
-        this.numOrdre=numOrdre;
-
+        this.numOrdre = numOrdre;
     }
 
     public List<qEspeceTypee> getQespecetypee() {
@@ -93,11 +93,11 @@ public class qEspece implements Serializable
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
-    public void setCodeEsp( Integer codeEsp )
+    public void setCodeEsp( String codeEsp )
     {
         this.codeEsp = codeEsp ;
     }
-    public Integer getCodeEsp()
+    public String getCodeEsp()
     {
         return this.codeEsp;
     }

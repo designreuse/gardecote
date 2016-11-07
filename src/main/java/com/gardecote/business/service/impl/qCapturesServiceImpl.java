@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.gardecote.entities.qCapturePK;
 /**
  * Implementation of ActivitebatService
  */
@@ -28,7 +28,7 @@ public class qCapturesServiceImpl implements qCapturesService {
 
 	
 	@Override
-	public qCapture findById(Long idcapt) {
+	public qCapture findById(qCapturePK idcapt) {
 		qCapture qCaptures = qCapturesJpaRepository.findOne(idcapt);
 		return qCaptures;
 	}
@@ -50,7 +50,7 @@ public class qCapturesServiceImpl implements qCapturesService {
 
 	@Override
 	public qCapture create(qCapture qcapture) {
-		qCapture qcaptureEntity = qCapturesJpaRepository.findOne(qcapture.getIdCapture());
+		qCapture qcaptureEntity = qCapturesJpaRepository.findOne(qcapture.getCapturePK());
 		if( qcaptureEntity != null ) {
 			throw new IllegalStateException("already.exists");
 		}
@@ -61,13 +61,13 @@ public class qCapturesServiceImpl implements qCapturesService {
 
 	@Override
 	public qCapture update(qCapture qcapture) {
-		qCapture qcaptureEntity = qCapturesJpaRepository.findOne(qcapture.getIdCapture());
+		qCapture qcaptureEntity = qCapturesJpaRepository.findOne(qcapture.getCapturePK());
 		qCapture qcaptureEntitySaved = qCapturesJpaRepository.save(qcaptureEntity);
 		return qcaptureEntitySaved;
 	}
 
 	@Override
-	public void delete(Long idcapt) {
+	public void delete(qCapturePK  idcapt) {
 		qCapturesJpaRepository.delete(idcapt);
 	}
 

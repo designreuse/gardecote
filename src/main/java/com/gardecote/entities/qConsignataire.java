@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qConsignataire", schema="dbo", catalog="DSPCM_DB" )
+@Table(name="qConsignataire", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qConsignataire.countAll", query="SELECT COUNT(x) FROM qConsignataire x" )
@@ -20,7 +20,8 @@ public class qConsignataire implements Serializable {
     @Column(name="nomconsignataire", nullable=false)
     private String  nomconsignataire;
 //mappedBy ="concessionaire" ,  ,targetEntity =qConcession.class,cascade = CascadeType.ALL
-    @OneToMany(mappedBy ="qconsignataire",targetEntity =qConcession.class,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy ="qconsignataire",targetEntity =qConcession.class,cascade = CascadeType.PERSIST)
+ //   @JoinColumn(name="qpagedeb",insertable = false,updatable = false)
   //@JoinTable(name="LiaisonConcessionConcessionaire",joinColumns=@JoinColumn(name="consignataire_fk"),inverseJoinColumns = @JoinColumn(name="concession_fk"))
 //@JoinColumn(name = "idconcession")
     private List<qConcession> qconcession;

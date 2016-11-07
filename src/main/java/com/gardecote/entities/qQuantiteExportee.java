@@ -4,10 +4,14 @@ import javax.persistence.Entity;
 import java.io.Serializable;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
 /**
  * Created by Dell on 25/10/2016.
  */
+
 @Entity
+@Table(name="qQuantiteExportee", schema="dbo", catalog="GCM1" )
 public class qQuantiteExportee implements Serializable {
     @Id
     private enumZonOrientation enumZonOrientationPeche;

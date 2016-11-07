@@ -6,6 +6,7 @@ package com.gardecote.business.service;
 
 import java.util.List;
 import com.gardecote.entities.qCapture;
+import com.gardecote.entities.qCapturePK;
 /**
  * Business Service Interface for entity Activitebat.
  */
@@ -16,7 +17,7 @@ public interface qCapturesService {
 	 * @param idact
 	 * @return entity
 	 */
-	qCapture findById(Long idact) ;
+	qCapture findById(qCapturePK idact) ;
 
 	/**
 	 * Loads all entities.
@@ -49,7 +50,7 @@ public interface qCapturesService {
 	 * Deletes an entity using its Primary Key
 	 * @param idCapture
 	 */
-	void delete(Long idCapture);
+	void delete(qCapturePK idCapture);
 
 
 }

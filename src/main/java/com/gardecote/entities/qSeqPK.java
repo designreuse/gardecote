@@ -7,31 +7,32 @@ import java.io.Serializable;
  * Created by Dell on 25/10/2016.
  */
 public class qSeqPK implements Serializable {
-    String  prefix;
-    Long debut;
 
-    public qSeqPK(String prefix, Long debut) {
-        this.prefix = prefix;
+    String debut;
+    String fin;
+
+    public String getDebut() {
+        return debut;
+    }
+
+    public void setDebut(String debut) {
         this.debut = debut;
+    }
+
+    public String getFin() {
+        return fin;
+    }
+
+    public void setFin(String fin) {
+        this.fin = fin;
     }
 
     public qSeqPK() {
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    public Long getDebut() {
-        return debut;
-    }
-
-    public void setDebut(Long debut) {
+    public qSeqPK(String debut, String fin) {
         this.debut = debut;
+        this.fin = fin;
     }
 
     @Override
@@ -41,15 +42,15 @@ public class qSeqPK implements Serializable {
 
         qSeqPK qSeqPK = (qSeqPK) o;
 
-        if (!prefix.equals(qSeqPK.prefix)) return false;
-        return debut.equals(qSeqPK.debut);
+        if (!debut.equals(qSeqPK.debut)) return false;
+        return fin.equals(qSeqPK.fin);
 
     }
 
     @Override
     public int hashCode() {
-        int result = prefix.hashCode();
-        result = 31 * result + debut.hashCode();
+        int result = debut.hashCode();
+        result = 31 * result + fin.hashCode();
         return result;
     }
 }

@@ -1,48 +1,39 @@
 package com.gardecote.entities;
 
 import javax.persistence.*;
-
+import java.io.Serializable;
+import java.util.List;
 /**
  * Created by Dell on 25/10/2016.
  */
 @Entity
+@Table(name="qEspeceTypee", schema="dbo", catalog="GCM1" )
 @IdClass(qEspeceTypeePK.class)
-public class qEspeceTypee {
+public class qEspeceTypee implements Serializable {
     @Id
-    private Integer qespeceId;
+    private String qespeceId;
     @Id
     private enumEspType enumesptype;
 
-    @Id
-    private String idmodel;
+   // @Id
+ //   private String idmodel;
 
 
 
     @OneToOne(cascade = CascadeType.ALL)
+
     private qEspece qespece;
-    @OneToOne(cascade = CascadeType.ALL)
-    private qModelJP modeljp;
-    @ManyToOne
- //   @JoinColumns({
-   //         @JoinColumn(name = "modelesp_segment", referencedColumnName = "segPeche"),
-    //        @JoinColumn(name = "modelesp_categorie", referencedColumnName = "categorie")
- //   })
-    @JoinColumn(name = "modelesp")
-    private qModelJP modelesp;
+
+    @ManyToMany(mappedBy ="especestypees",cascade = CascadeType.REFRESH)
+
+    private List<qModelJP> modeljp;
 
 
-
-    public qEspeceTypee(enumEspType enumesptype, qEspece qespece, qModelJP modelesp) {
-        this.enumesptype = enumesptype;
-
-
-        this.qespece = qespece;
-        this.modelesp = modelesp;
-
+    public qEspeceTypee(enumEspType enumesptype, qEspece qespece, List<qModelJP> modeljp) {
         this.qespeceId = qespece.getCodeEsp();
-       this.idmodel= modelesp.getPrefixModel().toString();
-
-
+        this.enumesptype = enumesptype;
+        this.qespece = qespece;
+        this.modeljp = modeljp;
     }
 
     public qEspeceTypee() {
@@ -64,35 +55,23 @@ public class qEspeceTypee {
         this.enumesptype = enumesptype;
     }
 
-    public Integer getQespeceId() {
+    public String getQespeceId() {
         return qespeceId;
     }
 
-    public void setQespeceId(Integer qespeceId) {
+    public void setQespeceId(String qespeceId) {
         this.qespeceId = qespeceId;
     }
 
-    public String getIdmodel() {
-        return idmodel;
-    }
 
-    public void setIdmodel(String idmodel) {
-        this.idmodel = idmodel;
-    }
 
-    public qModelJP getModeljp() {
+    public List<qModelJP> getModeljp() {
         return modeljp;
     }
 
-    public void setModeljp(qModelJP modeljp) {
+    public void setModeljp(List<qModelJP> modeljp) {
         this.modeljp = modeljp;
     }
 
-    public qModelJP getModelesp() {
-        return modelesp;
-    }
 
-    public void setModelesp(qModelJP modelesp) {
-        this.modelesp = modelesp;
-    }
 }
