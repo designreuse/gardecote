@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import com.gardecote.data.repository.jpa.qPageCarnetRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.business.service.qPageCarnetService;
@@ -21,7 +22,7 @@ import com.gardecote.entities.qPageCarnet;
 @Transactional
 public class qPageCarnetServiceImpl implements qPageCarnetService {
 
-	@Resource
+	@Autowired
 	private qPageCarnetRepository qPageCarnetRepository;
 
 		

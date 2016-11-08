@@ -33,6 +33,14 @@ public class qTypeLic implements Serializable {
     this.descr = descr;
   }
 
+  public Integer getIdTypeLic() {
+    return idTypeLic;
+  }
+
+  public void setIdTypeLic(Integer idTypeLic) {
+    this.idTypeLic = idTypeLic;
+  }
+
   public char getCodelic() {
     return codelic;
   }

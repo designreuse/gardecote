@@ -20,7 +20,26 @@ import java.util.HashMap;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.gardecote.LicenceAc;
-
+import com.gardecote.business.service.qCarnetService;
+import com.gardecote.business.service.qConcessionService;
+import com.gardecote.business.service.qConsignataireService;
+import com.gardecote.business.service.qEnginPecheService;
+import com.gardecote.business.service.qEspeceService;
+import com.gardecote.business.service.qJourMereService;
+import com.gardecote.business.service.qZoneService;
+import com.gardecote.business.service.qLicenceService;
+import com.gardecote.business.service.qModelJPService;
+import com.gardecote.business.service.qPageCarnetService		;
+import com.gardecote.business.service.qTypeConcessionService;
+import com.gardecote.business.service.qCategRessourceService;
+import com.gardecote.business.service.qDocService;
+import com.gardecote.business.service.qEspeceTypeeService;
+import com.gardecote.business.service.qJourDebService;
+import com.gardecote.business.service.qNationService;
+import com.gardecote.business.service.qRegistreNavireService;
+import com.gardecote.business.service.qSeqService;
+import com.gardecote.business.service.qTypeLicService;
+import com.gardecote.business.service.qTypeNavService;
 /**
  * Spring MVC controller for 'LicencesBatlast' management.
  */
@@ -28,6 +47,50 @@ import com.gardecote.LicenceAc;
 
 public class mainJsp  {
 
+	@Autowired
+	private qCarnetService carnetService;
+	@Autowired
+	private qConcessionService concessionService;
+	@Autowired
+	private qConsignataireService consignataireService;
+	@Autowired
+	private qEnginPecheService enginsPecheService;
+
+	@Autowired
+	private qEspeceService especesService;
+	@Autowired
+	private qJourMereService jourMereService;
+	@Autowired
+	private qLicenceService licenceService;
+	@Autowired
+	private qModelJPService modeljpService;
+	@Autowired
+	private qPageCarnetService pagecarnetService;
+
+	@Autowired
+	private qTypeConcessionService typeconcessionService;
+	@Autowired
+	private qZoneService zoneService;
+
+	@Autowired
+	private qCategRessourceService categService;
+	@Autowired
+	private qDocService docService;
+	@Autowired
+	private qEspeceTypeeService especeService;
+	@Autowired
+	private qJourDebService   jourdebService;
+	@Autowired
+	private qNationService  nationService;
+
+	@Autowired
+	private qRegistreNavireService registrenavireService;
+	@Autowired
+	private qSeqService seqService;
+	@Autowired
+	private qTypeLicService typelicService;
+	@Autowired
+	private qTypeNavService typenavService;
 
 	@Autowired
 	private LicenceAc ourLic;

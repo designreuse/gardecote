@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import com.gardecote.business.service.qEnginPecheService;
 
 import com.gardecote.data.repository.jpa.qEnginPecheRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.entities.qEnginPeche;
@@ -23,7 +24,7 @@ import com.gardecote.entities.qEnginPeche;
 @Transactional
 public class qEnginPecheServiceImpl implements qEnginPecheService {
 
-	@Resource
+	@Autowired
 	private qEnginPecheRepository captures2JpaRepository;
 
 	

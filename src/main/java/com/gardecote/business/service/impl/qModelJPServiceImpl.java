@@ -12,6 +12,7 @@ import com.gardecote.business.service.qModelJPService;
 
 import com.gardecote.data.repository.jpa.qModelJPRepository;
 import com.gardecote.entities.enumPrefix;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.entities.qModelJP;
@@ -24,7 +25,7 @@ import com.gardecote.entities.qTypeConcession;
 @Transactional
 public class qModelJPServiceImpl implements qModelJPService {
 
-	@Resource
+	@Autowired
 	private qModelJPRepository codesAmendeJpaRepository;
 
 	

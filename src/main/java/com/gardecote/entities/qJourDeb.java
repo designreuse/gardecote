@@ -74,6 +74,11 @@ public class qJourDeb implements Serializable
 		super();
     }
 
+    public qJourPK getJourPK(){
+        qJourPK qjp=new qJourPK(this.getDatejourDeb(),this.getNumImm());
+        return qjp;
+    }
+
     public qJourDeb(Date datejourDeb, qRegistreNavire navire, List<qCapture> debarqDuJour, qPageDebarquement pagesDeb) {
         this.numImm = navire.getNumimm();
         this.dateJour = datejourDeb;

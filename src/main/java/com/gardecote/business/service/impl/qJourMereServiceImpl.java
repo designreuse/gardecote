@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.gardecote.data.repository.jpa.qJourMereRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.entities.qJourMere;
@@ -21,7 +22,7 @@ import com.gardecote.entities.qJourPK;
 @Transactional
 public class qJourMereServiceImpl implements qJourMereService {
 
-	@Resource
+	@Autowired
 	private qJourMereRepository classinfractionsJpaRepository;
 
 	

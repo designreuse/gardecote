@@ -55,4 +55,8 @@ public class qSeq implements Serializable {
         this.fin = fin;
         this.qdoc = qdoc;
     }
+    public qSeqPK getSeqPK(){
+        qSeqPK qseqpk=new qSeqPK(this.debut,this.fin);
+        return qseqpk;
+    }
 }

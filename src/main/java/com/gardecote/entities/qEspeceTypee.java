@@ -28,6 +28,10 @@ public class qEspeceTypee implements Serializable {
 
     private List<qModelJP> modeljp;
 
+    public qEspeceTypeePK getQEspeceTypeePK(){
+    qEspeceTypeePK espPK=new qEspeceTypeePK(this.qespeceId,this.enumesptype);
+    return espPK;
+    }
 
     public qEspeceTypee(enumEspType enumesptype, qEspece qespece, List<qModelJP> modeljp) {
         this.qespeceId = qespece.getCodeEsp();

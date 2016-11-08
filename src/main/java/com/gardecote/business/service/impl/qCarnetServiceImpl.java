@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 
 
 import com.gardecote.data.repository.jpa.qCarnetRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.entities.qCarnet;
@@ -24,7 +25,7 @@ import com.gardecote.entities.qCarnetPK;
 @Transactional
 public class qCarnetServiceImpl implements qCarnetService {
 
-	@Resource
+	@Autowired
 	private qCarnetRepository qCarnetRepository;
 
 

@@ -38,7 +38,7 @@ auth.jdbcAuthentication()
 	  .csrf() .disable()
 	  
 		.authorizeRequests()
-		  .antMatchers("/gcmcss/bootstrap.css","/gcmjs/**","/licence.html","/error.html").permitAll()
+		  .antMatchers("/gcmcss/*","/gcmjs/*","/licence.html","/error.html").permitAll()
 		  .anyRequest()
 		 
 		   .authenticated()

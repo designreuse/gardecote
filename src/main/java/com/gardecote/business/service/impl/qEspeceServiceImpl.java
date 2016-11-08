@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 ;
 
 import com.gardecote.data.repository.jpa.qEspeceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.entities.qEspece;
@@ -22,7 +23,7 @@ import com.gardecote.entities.qEspece;
 @Transactional
 public class qEspeceServiceImpl implements qEspeceService {
 
-	@Resource
+	@Autowired
 	private qEspeceRepository changmentactJpaRepository;
 
 

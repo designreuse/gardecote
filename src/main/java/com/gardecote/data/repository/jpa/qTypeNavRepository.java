@@ -5,6 +5,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * Repository : DetDes.
  */
-public interface qTypeNavRepository extends PagingAndSortingRepository<qTypeNav, Integer> {
+public interface qTypeNavRepository extends PagingAndSortingRepository<qTypeNav, String> {
 
 }
