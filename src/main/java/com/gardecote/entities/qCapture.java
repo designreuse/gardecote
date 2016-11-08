@@ -48,7 +48,7 @@ public class qCapture implements Serializable
      private    enumEspType esptype;
 
     @OneToOne(cascade = CascadeType.MERGE)
-    // @NotFound(action= NotFoundAction.IGNORE)
+
     private qDoc qdoc;
     @OneToOne
     private qEspeceTypee especeTypee;
@@ -58,7 +58,7 @@ public class qCapture implements Serializable
     @ManyToOne
     private qJourMere jourMere;
 
-    @ManyToOne(targetEntity = qJourDeb.class,cascade = CascadeType.ALL)
+    @ManyToOne
 
     private qJourDeb jourDeb;
 

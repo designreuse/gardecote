@@ -515,19 +515,6 @@ public class GardecoteApplication {
         }
 //        q2.setQlicence(qlicencebatlast2);
        // qcategressourcerepository.save(q2);
-
-
-        // creer les carnet et les pages automatiques
-        qCarnetRepository qcarnetrepository= ctx.getBean(qCarnetRepository.class);
-        qPageCarnetRepository qPageCarnetRepository=ctx.getBean(qPageCarnetRepository.class);
-         // creation d'une fiche de debarquement
-     qCarnet qcarnet=new qCarnet(enumTypeDoc.Fiche_Debarquement,enumPrefix.PC,1L,50);
-     qDistributeur distributeur=new qDistributeur();
-
-     qCarnet carnetDistrSyst=distributeur.distribuer(qcarnet);
-     qCarnet carnetDistrAuNavire= distributeur.distribuer(carnetDistrSyst,qConcessionPC,qreg1,null);
-   qcarnetrepository.save(carnetDistrAuNavire);
-
      // crer les modeles et les associer avec  les especes
      qModelJPRepository  qmodeljprepository=ctx.getBean(qModelJPRepository.class);
      qModelJP qmodelPA=new qModelJP(enumPrefix.PA,null);
@@ -538,11 +525,11 @@ public class GardecoteApplication {
      qModelJP qmodelJPDEM=new qModelJP(enumPrefix.DEM,null);
 
 
-        // creer les especes
-        qEspeceRepository qEspeceRepository=ctx.getBean(qEspeceRepository.class);
-        qEspece qespeceArts1=new qEspece("ESP1001","الفئة الاولى","premiere espece",1);
-        qEspece qespeceArts2=new qEspece("ESP1002","الفئة الاولى","deuxieme espece",2);
-        qEspece qespeceArts3=new qEspece("ESP1003","الفئة الاولى","troisieme espece",3);
+     // creer les especes
+     qEspeceRepository qEspeceRepository=ctx.getBean(qEspeceRepository.class);
+     qEspece qespeceArts1=new qEspece("ESP1001","الفئة الاولى","premiere espece",1);
+     qEspece qespeceArts2=new qEspece("ESP1002","الفئة الاولى","deuxieme espece",2);
+     qEspece qespeceArts3=new qEspece("ESP1003","الفئة الاولى","troisieme espece",3);
 
      qEspeceRepository.save(qespeceArts1);
      qEspeceRepository.save(qespeceArts2);
@@ -568,6 +555,13 @@ public class GardecoteApplication {
      qmodeljprepository.save(qmodelPC);
 
 
+        // creer les carnet et les pages automatiques
+        qCarnetRepository qcarnetrepository= ctx.getBean(qCarnetRepository.class);
+        qPageCarnetRepository qPageCarnetRepository=ctx.getBean(qPageCarnetRepository.class);
+         // creation d'une fiche de debarquement
+
+
+
      // simulation de saisie d'un fiche de debarquement PC Non Pontee n de page = pc7
      SimpleDateFormat sdfmt = new SimpleDateFormat("dd/MM/yy");
      Date dateDepart=null, dateRetour=null;
@@ -578,6 +572,8 @@ public class GardecoteApplication {
       e.printStackTrace();
      }
      qSeq seqActive=new qSeq("PC7","PC12",null);
+     qSeqRepository qseqrepo=ctx.getBean(qSeqRepository.class);
+     qseqrepo.save(seqActive);
      List<qEnginPecheDeb> qEnginsDeb = new ArrayList<qEnginPecheDeb>();
      qEnginsDeb.add(new qEnginPecheDeb(enumEnginDeb.Pots, false, 0));               //creer un document de debarquement le PC NON PONTEE
      qEnginsDeb.add(new qEnginPecheDeb(enumEnginDeb.Casier, false, 0));
@@ -589,7 +585,15 @@ public class GardecoteApplication {
      qEnginsDeb.add(new qEnginPecheDeb(enumEnginDeb.Filet_encerclant_senne_tourn, false, 0));
      // detecter le type de doc associé a la page
 
-     qDoc docDeb = distributeur.creerDoc(dateDepart,dateRetour,seqActive,qEnginsDeb,ctx);
+
+     qCarnet qcarnet=new qCarnet(enumTypeDoc.Fiche_Debarquement,enumPrefix.PC,1L,50);
+     qDistributeur distributeur=new qDistributeur();
+
+     qCarnet carnetDistrSyst=distributeur.distribuer(qcarnet);
+     qCarnet carnetDistrAuNavire= distributeur.distribuer(carnetDistrSyst,qConcessionPC,qreg1,null);
+     qcarnetrepository.save(carnetDistrAuNavire);
+
+    // qDoc docDeb = distributeur.creerDoc(dateDepart,dateRetour,seqActive,qEnginsDeb,ctx);
 
 
 }

@@ -46,15 +46,15 @@ public class qDocPK implements  Serializable {
 
         qDocPK qDocPK = (qDocPK) o;
 
-        if (!numImm.equals(qDocPK.numImm)) return false;
-        return depart.equals(qDocPK.depart);
+        if (!getDepart().equals(qDocPK.getDepart())) return false;
+        return getNumImm().equals(qDocPK.getNumImm());
 
     }
 
     @Override
     public int hashCode() {
-        int result = numImm.hashCode();
-        result = 31 * result + depart.hashCode();
+        int result = getDepart().hashCode();
+        result = 31 * result + getNumImm().hashCode();
         return result;
     }
 }

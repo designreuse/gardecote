@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
 
@@ -58,6 +59,7 @@ public class qJourDeb implements Serializable
     private qRegistreNavire navire;
 
     @OneToMany(mappedBy = "jourDeb",targetEntity=qCapture.class,cascade = CascadeType.ALL)
+
     private List<qCapture> debarqDuJour;
 
     @ManyToOne

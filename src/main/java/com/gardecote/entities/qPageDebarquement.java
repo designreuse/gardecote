@@ -6,14 +6,15 @@
 
 package com.gardecote.entities;
 
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinColumnsOrFormulas;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import java.io.Serializable;
 import java.util.List;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
 
@@ -55,8 +56,8 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
     //----------------------------------------------------------------------
 
 
-    @OneToMany(mappedBy = "pagesDeb",targetEntity = qJourDeb.class,fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pagesDeb",targetEntity = qJourDeb.class,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+
    // @NotFound(action=NotFoundAction.IGNORE)
     private List<qJourDeb>  listJours;
 

@@ -17,8 +17,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled=true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	@Autowired
-	private SimpleUrlAuthenticationSuccessHandler cust;
+//	@Autowired
+//	private SimpleUrlAuthenticationSuccessHandler cust;
 	@Autowired
 public  void globalConfig(AuthenticationManagerBuilder auth,DataSource dataSource)  throws Exception{
 
@@ -38,20 +38,20 @@ auth.jdbcAuthentication()
 	  .csrf() .disable()
 	  
 		.authorizeRequests()
-		  .antMatchers("/css/**","/assets/**","/angular/**","/bootstrap-3.3.6-dist/**","/js/**","/licence.html","/error.html").permitAll()
+		  .antMatchers("/gcmcss/bootstrap.css","/gcmjs/**","/licence.html","/error.html").permitAll()
 		  .anyRequest()
 		 
 		   .authenticated()
 		   
 	            .and()
 	     .formLogin()
-	     .successHandler(cust)
+	 //    .successHandler(cust)
 	     
 	        .loginPage("/login")
 	        
 	        .permitAll()
 	      
-	 //  .defaultSuccessUrl("/index.html")
+	   .defaultSuccessUrl("/start")
 	        
 	   .failureUrl("/error.html")
 	  

@@ -3,6 +3,7 @@ package com.gardecote.entities;
 import com.gardecote.data.repository.jpa.*;
 import org.springframework.context.ApplicationContext;
 
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,9 +66,10 @@ return qcarnet;
         qDocRepository qdocrepo = ctx.getBean(qDocRepository.class);
         qModelJPRepository qmodelrepo=ctx.getBean(qModelJPRepository.class);
         qJourDebRepository qjourrepository=ctx.getBean(qJourDebRepository.class);
+        qCapturesRepository qcapturepository=ctx.getBean(qCapturesRepository.class);
 
 
-
+        List<qCapture> capturesTotal=new ArrayList<qCapture>();
         boolean flagLiberte = false, flagIdentiteCarnet = false, flg = true;
         Integer fi = 0, fl = 0;
         qDoc qdoc=null;
@@ -154,37 +156,50 @@ return qcarnet;
                         Date dateJourCourant= qdoc.getDepart();
                         List<qCapture> capturesLine=new ArrayList<qCapture>();
 
+                        List<qJourDeb>  joursDeb=new ArrayList<qJourDeb>();
                         while(qdebpages.hasNext())
                         {
                             qPageDebarquement currp=qdebpages.next();
                             currp.setEtatPage(enumEtatPage.DRAFT);
                             currp.setQdebarquement((qDebarquement) qdoc);
-                            List<qJourDeb>  joursDeb=new ArrayList<qJourDeb>();
+
                             // pqrcourir les ligne de page
                             for(int k=0;k<currp.getNbrLigne();k++) {
 
                                 qJourDeb jourDeb=new qJourDeb(dateJourCourant,qnav,null,currp);
                                 // traitement des captures
-                                capturesLine.clear();
+
                                 for(qEspeceTypee esptypee:currentModel.getEspecestypees())
                                 {
                                     qCapture qcapture=new qCapture(qdoc,esptypee,0,null,jourDeb);
+                                    qcapture.setQdoc(qdoc);
+                                    qcapture.setJourDeb(jourDeb);
+                                    qcapture.setDatedepart(qdoc.getDepart());
+                                    qcapture.setNummimm(qdoc.getNumImm());
+                                    qcapture.setDateJour(dateJourCourant);
+                                    qcapture.setIdespece(esptypee.getQespeceId());
+                                    qcapture.setEsptype(esptypee.getEnumesptype());
                                     capturesLine.add(qcapture);
+                                    capturesTotal.add(qcapture);
 
                                 }
                                 jourDeb.setDebarqDuJour(capturesLine);
+
                                 jourDeb.setPagesDeb(currp);
                                 joursDeb.add(jourDeb);
                                 Calendar cal = Calendar.getInstance();
                                 cal.setTime(dateJourCourant);
                                 cal.add( Calendar.DATE, 1 );
                                 dateJourCourant=cal.getTime();
+                                capturesLine.clear();
                             }
 
                             currp.setListJours(joursDeb);
+                            joursDeb.clear();
                         }
-                        ((qDebarquement)qdoc).setQseq(seqActive);
+                        qdoc.setQseq(seqActive);
                         ((qDebarquement)qdoc).setPages(lstPgsDeb);
+                     //   ((qDebarquement)qdoc).setCaptures(capturesTotal);
                     }
                     if (carnetDebut.getPrefixNumerotation().equals(enumPrefix.PA)) {
                         // la peche artisanal
@@ -212,7 +227,9 @@ return qcarnet;
         }
 
     }
+
         qdocrepo.save(qdoc);
+        qcapturepository.save(capturesTotal);
         return qdoc;
     }
 }

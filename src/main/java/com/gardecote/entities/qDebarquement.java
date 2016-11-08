@@ -1,6 +1,11 @@
 package com.gardecote.entities;
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -44,9 +49,9 @@ public class qDebarquement extends qDoc implements Serializable {
     private enumTypeDebarquement typeDeb;
 
     @OneToMany(targetEntity=qPageDebarquement.class,cascade = CascadeType.ALL)
+
     @JoinTable(name = "qAssocDebarqPages")
     private List<qPageDebarquement> pages;
-
 
 
     public List<qEnginPecheDeb> getEngins() {
@@ -80,6 +85,7 @@ public class qDebarquement extends qDoc implements Serializable {
     public void setQcategconcernees(List<qCategRessource> qcategconcernees) {
         this.qcategconcernees = qcategconcernees;
     }
+
 
 
 

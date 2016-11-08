@@ -49,9 +49,6 @@ public class qCarnet implements Serializable
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-
-
-
     @Column(name="NbrPages", nullable=false)
     private Integer    nbrPages      ;
     @Column(name="NbrLignes", nullable=false)
@@ -68,7 +65,7 @@ public class qCarnet implements Serializable
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(mappedBy="qcarnet",cascade = CascadeType.MERGE,targetEntity=qPageCarnet.class)
+    @OneToMany(mappedBy="qcarnet",cascade = CascadeType.ALL,targetEntity=qPageCarnet.class)
     private List<qPageCarnet> pages ;
 
 
