@@ -13,8 +13,6 @@ import java.util.Date;
         @NamedQuery ( name="qTraitement.countAll", query="SELECT COUNT(x) FROM qTraitement x" )
 } )
 public class qTraitement implements Serializable {
-
-
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name="idTraitement", nullable=false)
@@ -22,7 +20,10 @@ public class qTraitement implements Serializable {
     @Column
     @Enumerated
     @ElementCollection(targetClass = enumSegPeche.class)
-    private  List<enumSegPeche> segs;
+    private  List<segUsines> segs;
+    @OneToMany(targetEntity = quantitesTypesConcession.class)
+    private List<quantitesTypesConcession> typesConcession;
+    @OneToOne
     private qUsine qusine;
     @OneToMany(mappedBy = "qtraitement",targetEntity = qQuantiteExportee.class)
     private List<qQuantiteExportee> qQteExp;
@@ -32,7 +33,7 @@ public class qTraitement implements Serializable {
     @OneToMany(mappedBy="qtraitement", targetEntity=qPageTraitement.class)
     private List<qPageTraitement> pagesTraitement;
 
-    public qTraitement(enumTypeDoc enumtypedoc, List<qSeq> qlistseq, List<enumSegPeche> segs, qUsine qusine, List<qQuantiteExportee> qQteExp, Long qteDechu, Date dateTraitement, List<qPageTraitement> pagesTraitement) {
+    public qTraitement(enumTypeDoc enumtypedoc, List<qSeq> qlistseq, List<segUsines> segs, qUsine qusine, List<qQuantiteExportee> qQteExp, Long qteDechu, Date dateTraitement, List<qPageTraitement> pagesTraitement) {
       //  super(enumtypedoc, qlistseq);
         this.segs = segs;
         this.qusine = qusine;
@@ -45,12 +46,28 @@ public class qTraitement implements Serializable {
     public qTraitement() {
     }
 
-    public List<enumSegPeche> getSegs() {
+    public Long getIdTraitement() {
+        return idTraitement;
+    }
+
+    public void setIdTraitement(Long idTraitement) {
+        this.idTraitement = idTraitement;
+    }
+
+    public List<segUsines> getSegs() {
         return segs;
     }
 
-    public void setSegs(List<enumSegPeche> segs) {
+    public void setSegs(List<segUsines> segs) {
         this.segs = segs;
+    }
+
+    public List<quantitesTypesConcession> getTypesConcession() {
+        return typesConcession;
+    }
+
+    public void setTypesConcession(List<quantitesTypesConcession> typesConcession) {
+        this.typesConcession = typesConcession;
     }
 
     public qUsine getQusine() {

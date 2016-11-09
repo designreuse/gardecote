@@ -50,12 +50,8 @@ public class qJourMereServiceImpl implements qJourMereService {
 
 	@Override
 	public qJourMere create(qJourMere classinfractions) {
-		qJourMere classinfractionsEntity = classinfractionsJpaRepository.findOne(classinfractions.getJourMerPK());
-		if( classinfractionsEntity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
-		classinfractionsEntity = new qJourMere();
-		qJourMere classinfractionsEntitySaved = classinfractionsJpaRepository.save(classinfractionsEntity);
+
+		qJourMere classinfractionsEntitySaved = classinfractionsJpaRepository.save(classinfractions);
 		return classinfractionsEntitySaved;
 	}
 

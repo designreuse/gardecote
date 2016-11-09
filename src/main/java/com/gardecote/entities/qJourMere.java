@@ -61,8 +61,8 @@ public class qJourMere implements Serializable
     @Column(name="nbrCaisse", nullable=false, length=10)
     private Integer nbrCaisse;
 
-    @OneToMany
-    private List<qPageMarree> pagesMarree;
+    @ManyToOne
+    private qPageMarree pageMarree;
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
@@ -96,13 +96,14 @@ public class qJourMere implements Serializable
         this.nbrCaisse = nbrCaisse;
     }
 
-    public qJourMere(Date datejourMere,qRegistreNavire navire, List<qCapture> capturesDuMarree, Integer totalCapturs, Integer totalCong, Integer nbrCaisse) {
+    public qJourMere(Date datejourMere,qRegistreNavire navire, List<qCapture> capturesDuMarree, Integer totalCapturs, Integer totalCong, Integer nbrCaisse,qPageMarree pageMarree) {
         this.dateJour = datejourMere;
         this.capturesDuMarree = capturesDuMarree;
         this.totalCapturs = totalCapturs;
         this.totalCong = totalCong;
         this.nbrCaisse = nbrCaisse;
         this.numImm=navire.getNumimm();
+        this.setPageMarree(pageMarree);
 
     }
 
@@ -141,11 +142,19 @@ public class qJourMere implements Serializable
         this.capturesDuMarree = capturesDuMarree;
     }
 
-    public List<qPageMarree> getPagesMarree() {
-        return pagesMarree;
+    public Date getDateJour() {
+        return dateJour;
     }
 
-    public void setPagesMarree(List<qPageMarree> pagesMarree) {
-        this.pagesMarree = pagesMarree;
+    public void setDateJour(Date dateJour) {
+        this.dateJour = dateJour;
+    }
+
+    public qPageMarree getPageMarree() {
+        return pageMarree;
+    }
+
+    public void setPageMarree(qPageMarree pageMarree) {
+        this.pageMarree = pageMarree;
     }
 }

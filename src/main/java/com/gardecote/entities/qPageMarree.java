@@ -37,7 +37,7 @@ public class qPageMarree extends qPageCarnet implements Serializable {
     //----------------------------------------------------------------------
 
 
-    @OneToMany(mappedBy = "pagesMarree",targetEntity = qJourMere.class)
+    @OneToMany(mappedBy = "pageMarree",targetEntity = qJourMere.class)
     private List<qJourMere> listJours;
    //----------------------------------------------------------------------
 

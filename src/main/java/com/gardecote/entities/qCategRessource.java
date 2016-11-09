@@ -17,14 +17,14 @@ import java.util.List;
         @NamedQuery ( name="qCategRessource.countAll", query="SELECT COUNT(x) FROM qCategRessource x" )
 } )
 
-
+//@IdClass(qCategPK.class)
 public class qCategRessource implements Serializable {
    @Id
    @Column(name = "idcateg")
-  private Integer idtypeConcession;
+   private Integer idtypeConcession;
 
-    private enumSupport typeSupport;
-    @ManyToMany(mappedBy = "qcatressources",cascade = CascadeType.REFRESH)
+   private enumSupport typeSupport;
+   @ManyToMany(mappedBy = "qcatressources",cascade = CascadeType.REFRESH)
   //  @JoinColumn(insertable = false,updatable = false)
     private List<qLicence>    qlicences;
 
@@ -69,12 +69,14 @@ public class qCategRessource implements Serializable {
     }
 
     public qCategRessource(qTypeConcession typeConcession, enumSupport typeSupport,List<qLicence>  lic, List<qEnginPeche> engins) {
-         this.qlicences=lic;
+        this.idtypeConcession = typeConcession.getQtypeconcessionpk();
+        this.qlicences=lic;
         this.typeSupport = typeSupport;
         this.Engins = engins;
         this.typeconcessionConcernee=typeConcession;
-        this.idtypeConcession = typeConcession.getQtypeconcessionpk();
-    }
+   }
+
+
 
     public qCategRessource() {
     }

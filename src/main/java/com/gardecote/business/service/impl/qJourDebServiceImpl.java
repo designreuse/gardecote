@@ -48,13 +48,8 @@ public class qJourDebServiceImpl implements qJourDebService {
 
     @Override
     public qJourDeb create(qJourDeb authprov) {
-        qJourDeb authprovEntity = qJourDebRepository.findOne(authprov.getJourPK());
-        if( authprovEntity != null ) {
-            throw new IllegalStateException("already.exists");
-        }
-        authprovEntity = new qJourDeb();
 
-        qJourDeb authprovEntitySaved = qJourDebRepository.save(authprovEntity);
+        qJourDeb authprovEntitySaved = qJourDebRepository.save(authprov);
         return authprovEntitySaved;
     }
 

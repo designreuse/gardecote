@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import com.gardecote.business.service.qEnginPecheService;
 
 import com.gardecote.data.repository.jpa.qEnginPecheRepository;
+import com.gardecote.entities.enumEngin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ public class qEnginPecheServiceImpl implements qEnginPecheService {
 	
 	
 	@Override
-	public qEnginPeche findById(String idCapture) {
+	public qEnginPeche findById(enumEngin idCapture) {
 		qEnginPeche captures2Entity = captures2JpaRepository.findOne(idCapture);
 		return captures2Entity ;
 	}
@@ -52,10 +53,10 @@ public class qEnginPecheServiceImpl implements qEnginPecheService {
 
 	@Override
 	public qEnginPeche create(qEnginPeche captures2) {
-		qEnginPeche captures2Entity = captures2JpaRepository.findOne(captures2.getEngin().toString());
-		if( captures2Entity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
+		qEnginPeche captures2Entity = captures2JpaRepository.findOne(captures2.getEngin());
+	//	if( captures2Entity != null ) {
+	//		throw new Exception("already exists");
+	//	}
 		//captures2Entity = new qEnginPeche();
 
 		qEnginPeche captures2EntitySaved = captures2JpaRepository.save(captures2);
@@ -64,13 +65,13 @@ public class qEnginPecheServiceImpl implements qEnginPecheService {
 
 	@Override
 	public qEnginPeche update(qEnginPeche captures2) {
-		qEnginPeche captures2Entity = captures2JpaRepository.findOne(captures2.getEngin().toString());
-		qEnginPeche captures2EntitySaved = captures2JpaRepository.save(captures2Entity);
+
+		qEnginPeche captures2EntitySaved = captures2JpaRepository.save(captures2);
 		return captures2EntitySaved;
 	}
 
 	@Override
-	public void delete(String idCapture) {
+	public void delete(enumEngin idCapture) {
 		captures2JpaRepository.delete(idCapture);
 	}
 

@@ -42,6 +42,4 @@ public interface qTypeConcessionService {
 	 * Deletes an entity using its Primary Key
 	 */
 	void delete(Integer qPK);
-
-
 }

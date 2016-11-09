@@ -44,14 +44,14 @@
                             <label>Numeros de pages :</label>
                         </div>
                         <div class="input-sm col-sm-2 ">
-                            <label > <input type="text" class="form-control" id="numerodebut" placeholder="numero de debut" /></label>
+                            <label > <input type="text" class="form-control" id="numerodebut" th:text="${debut}" placeholder="numero de debut" /></label>
                         </div>
 
                         <div class="input-sm col-sm-2 ">
-                            <label ><input type="text" class="form-control" id="numerofin" placeholder="numero de fin" /></label>
+                            <label ><input type="text" class="form-control" id="numerofin" th:text="${fin}" placeholder="numero de fin" /></label>
                         </div>
                         <div class="input-sm col-sm-1  ">
-                            <label ><a type="submit" class="btn btn-primary" href="df">OK </a></label>
+                            <label ><a type="submit" class="btn btn-primary" th:href="@{creerDoc(debut=${debut},fin=${fin})}">OK </a></label>
                         </div>
 
                     </div>

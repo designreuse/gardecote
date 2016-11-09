@@ -50,12 +50,8 @@ public class qCapturesServiceImpl implements qCapturesService {
 
 	@Override
 	public qCapture create(qCapture qcapture) {
-		qCapture qcaptureEntity = qCapturesJpaRepository.findOne(qcapture.getCapturePK());
-		if( qcaptureEntity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
-		qcaptureEntity = new qCapture();
-		qCapture qcaptureEntitySaved = qCapturesJpaRepository.save(qcaptureEntity);
+
+		qCapture qcaptureEntitySaved = qCapturesJpaRepository.save(qcapture);
 		return qcaptureEntitySaved ;
 	}
 

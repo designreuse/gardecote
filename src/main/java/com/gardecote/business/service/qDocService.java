@@ -1,11 +1,12 @@
 package com.gardecote.business.service;
 
-import com.gardecote.entities.qCapture;
-import com.gardecote.entities.qCategRessource;
-import com.gardecote.entities.qDoc;
-import com.gardecote.entities.qDocPK;
+import com.gardecote.entities.*;
+import org.springframework.data.domain.Pageable;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Dell on 08/11/2016.
@@ -22,7 +23,7 @@ public interface qDocService {
      * Loads all entities.
      * @return all entities
      */
-    List<qDoc> findAll();
+    List<qDoc> findAll(Pageable pageable);
 
     /**
      * Saves the given entity in the database (create or update)
@@ -50,4 +51,17 @@ public interface qDocService {
      * @param idCapture
      */
     void delete(qDocPK idCapture);
-}
+    // cherecher cette sequence et si l on touve ,on retourne juste  l ancien document associee avec cette sequence.
+    // s il y en a pas une sequence exacte , on recherche tous les documents associes au toutes les pages de cette sequence
+    // si les docs==null on cree un nouveau document
+    // si les docs n sont pas null, retourner la liste de ces documents avec leurs sequences et demander de l administrateur de supprimer un document si necessaire
+
+    qDoc verifierAncienDoc(qSeqPK sequencepk);
+
+    Map<String,Set<Object>> detecterDestructionDonnees(qSeqPK sequencepk);
+
+    boolean checkSaisie(qSeqPK sequencepk);
+
+    qDoc creerDoc(Date dateDepart, Date dateRetour, qSeq seqActive, List<qEnginPecheDeb> engisDeb, List<qEnginPeche> engisMar);
+
+    }

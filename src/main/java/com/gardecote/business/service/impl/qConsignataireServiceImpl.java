@@ -51,13 +51,9 @@ public class qConsignataireServiceImpl implements qConsignataireService {
 
 	@Override
 	public qConsignataire create(qConsignataire batobserv) {
-		qConsignataire batobservEntity = batobservJpaRepository.findOne(batobserv.getNomConsignataire());
-		if( batobservEntity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
-		batobservEntity = new qConsignataire();
 
-		qConsignataire batobservEntitySaved = batobservJpaRepository.save(batobservEntity);
+
+		qConsignataire batobservEntitySaved = batobservJpaRepository.save(batobserv);
 		return batobservEntitySaved;
 	}
 

@@ -65,7 +65,7 @@ public class LicencesBatlastRestController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public qLicence findOne(@PathVariable("idLic") Long idLic) {
+	public qLicence findOne(@PathVariable("idLic") String idLic) {
 		return licencesBatlastService.findById(idLic);
 	}
 	
@@ -92,7 +92,7 @@ public class LicencesBatlastRestController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public void delete(@PathVariable("idLic") Long idLic) {
+	public void delete(@PathVariable("idLic") String idLic) {
 		licencesBatlastService.delete(idLic);
 	}
 	

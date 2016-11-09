@@ -47,13 +47,9 @@ public class qEspeceTypeeServiceImpl implements qEspeceTypeeService {
 
     @Override
     public qEspeceTypee create(qEspeceTypee authprov) {
-        qEspeceTypee authprovEntity = qEspeceTypeeRepository.findOne(authprov.getQEspeceTypeePK());
-        if( authprovEntity != null ) {
-            throw new IllegalStateException("already.exists");
-        }
-        authprovEntity = new qEspeceTypee();
 
-        qEspeceTypee authprovEntitySaved = qEspeceTypeeRepository.save(authprovEntity);
+
+        qEspeceTypee authprovEntitySaved = qEspeceTypeeRepository.save(authprov);
         return authprovEntitySaved;
     }
 

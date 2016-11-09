@@ -2,6 +2,7 @@ package com.gardecote.business.service;
 
 import com.gardecote.entities.qCapture;
 import com.gardecote.entities.qCapturePK;
+import com.gardecote.entities.qCategPK;
 import com.gardecote.entities.qCategRessource;
 
 import java.util.List;

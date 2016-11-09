@@ -126,7 +126,7 @@ public class LicencesBatlastController extends AbstractController {
 	 * @return
 	 */
 	@RequestMapping(value = "/form/{idLic}")
-	public String formForUpdate(Model model, @PathVariable("idLic") Long idLic ) {
+	public String formForUpdate(Model model, @PathVariable("idLic") String idLic ) {
 		log("Action 'formForUpdate'");
 		//--- Search the entity by its primary key and stores it in the model 
 		qLicence licencesBatlast = licencesBatlastService.findById(idLic);
@@ -210,7 +210,7 @@ public class LicencesBatlastController extends AbstractController {
 	 * @return
 	 */
 	@RequestMapping(value = "/delete/{idLic}") // GET or POST
-	public String delete(RedirectAttributes redirectAttributes, @PathVariable("idLic") Long idLic) {
+	public String delete(RedirectAttributes redirectAttributes, @PathVariable("idLic") String idLic) {
 		log("Action 'delete'" );
 		try {
 			licencesBatlastService.delete( idLic );

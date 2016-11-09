@@ -49,10 +49,8 @@ public class qTypeConcessionServiceImpl implements qTypeConcessionService {
 
 	@Override
 	public qTypeConcession create(qTypeConcession qcapture) {
-		qTypeConcession qcaptureEntity = qTypeConcessionJpaRepository.findOne(qcapture.getQtypeconcessionpk());
-		if( qcaptureEntity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
+
+
 		//qcaptureEntity = new qCategRessource();
 		qTypeConcession qcaptureEntitySaved = qTypeConcessionJpaRepository.save(qcapture);
 		return qcaptureEntitySaved ;

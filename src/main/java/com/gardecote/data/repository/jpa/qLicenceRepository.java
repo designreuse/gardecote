@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 /**
  * Repository : CodeInfractions.
  */
-public interface qLicenceRepository extends PagingAndSortingRepository<qLicence, Long> {
+public interface qLicenceRepository extends PagingAndSortingRepository<qLicence, String> {
 
     @Query("select l from qLicence  l where TRIM(l.nomnav) like %:searchNomnav% order by l.idLic")
     Page<qLicence>  returnSuggNomNav1(Pageable pageable,@Param("searchNomnav") String searchNomnav);

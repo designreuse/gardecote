@@ -46,13 +46,8 @@ public class qTypeLicServiceImpl implements qTypeLicService {
 
     @Override
     public qTypeLic create(qTypeLic authprov) {
-        qTypeLic authprovEntity = qTypeLicRepository.findOne(authprov.getIdTypeLic());
-        if( authprovEntity != null ) {
-            throw new IllegalStateException("already.exists");
-        }
-        authprovEntity = new qTypeLic();
 
-        qTypeLic authprovEntitySaved = qTypeLicRepository.save(authprovEntity);
+        qTypeLic authprovEntitySaved = qTypeLicRepository.save(authprov);
         return authprovEntitySaved;
     }
 

@@ -50,10 +50,7 @@ public class qEspeceServiceImpl implements qEspeceService {
 
 	@Override
 	public qEspece create(qEspece changmentact) {
-		qEspece changmentactEntity = changmentactJpaRepository.findOne(changmentact.getCodeEsp());
-		if( changmentactEntity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
+
 
 		qEspece changmentactEntitySaved = changmentactJpaRepository.save(changmentact);
 		return changmentactEntitySaved;

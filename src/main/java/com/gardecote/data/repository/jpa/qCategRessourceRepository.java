@@ -1,9 +1,6 @@
 package com.gardecote.data.repository.jpa;
 
-import com.gardecote.entities.qCapture;
-import com.gardecote.entities.qTypeConcession;
-import com.gardecote.entities.qCategRessource;
-import com.gardecote.entities.qTypeConcessionId;
+import com.gardecote.entities.*;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**

@@ -14,7 +14,7 @@ import java.util.List;
 } )
 public class qEnginPeche implements Serializable {
     @Id
-   private enumEngin Engin;
+     private enumEngin Engin;
     private Integer maillage;
     private boolean flage;
 

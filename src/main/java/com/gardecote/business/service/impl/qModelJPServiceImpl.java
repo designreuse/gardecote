@@ -53,12 +53,8 @@ public class qModelJPServiceImpl implements qModelJPService {
 
 	@Override
 	public qModelJP create(qModelJP codesAmende) {
-		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getPrefixModel());
-		if( codesAmendeEntity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
-		codesAmendeEntity = new qModelJP();
-		qModelJP codesAmendeEntitySaved = codesAmendeJpaRepository.save(codesAmendeEntity);
+
+		qModelJP codesAmendeEntitySaved = codesAmendeJpaRepository.save(codesAmende);
 		return codesAmendeEntitySaved;
 	}
 

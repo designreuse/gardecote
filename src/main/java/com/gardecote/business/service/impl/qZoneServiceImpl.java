@@ -47,11 +47,7 @@ public class qZoneServiceImpl implements qZoneService {
 
 	@Override
 	public qZone create(qZone codesNotifAm) {
-		qZone codesNotifAmEntity = codesNotifAmJpaRepository.findOne(codesNotifAm.getIdZone());
-		if( codesNotifAmEntity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
-	//	codesNotifAmEntity = new qZone();
+
 		qZone codesNotifAmEntitySaved = codesNotifAmJpaRepository.save(codesNotifAm);
 		return codesNotifAmEntitySaved;
 	}

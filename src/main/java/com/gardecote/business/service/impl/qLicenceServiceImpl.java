@@ -30,7 +30,7 @@ public class qLicenceServiceImpl implements qLicenceService {
 	private qLicenceRepository codauthJpaRepository;
 
 	@Override
-	public qLicence findById(Long codeauth) {
+	public qLicence findById(String codeauth) {
 		qLicence codauthEntity = codauthJpaRepository.findOne(codeauth);
 		return codauthEntity;
 	}
@@ -52,26 +52,18 @@ public class qLicenceServiceImpl implements qLicenceService {
 
 	@Override
 	public qLicence create(qLicence codauth) {
-		qLicence codauthEntity = codauthJpaRepository.findOne(codauth.getIdLic());
-		if( codauthEntity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
-		codauthEntity = new qLicence();
-
-		qLicence codauthEntitySaved = codauthJpaRepository.save(codauthEntity);
+    	qLicence codauthEntitySaved = codauthJpaRepository.save(codauth);
 		return codauthEntitySaved ;
 	}
 
 	@Override
 	public qLicence update(qLicence codauth) {
-		qLicence codauthEntity = codauthJpaRepository.findOne(codauth.getIdLic());
-
-		qLicence codauthEntitySaved = codauthJpaRepository.save(codauthEntity);
+    	qLicence codauthEntitySaved = codauthJpaRepository.save(codauth);
 		return codauthEntitySaved;
 	}
 
 	@Override
-	public void delete(Long codeauth) {
+	public void delete(String codeauth) {
 		codauthJpaRepository.delete(codeauth);
 	}
 

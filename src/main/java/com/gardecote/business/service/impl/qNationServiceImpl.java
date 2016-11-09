@@ -46,13 +46,8 @@ public class qNationServiceImpl implements qNationService {
 
     @Override
     public qNation create(qNation authprov) {
-        qNation authprovEntity = qNationRepository.findOne(authprov.getIdNation());
-        if( authprovEntity != null ) {
-            throw new IllegalStateException("already.exists");
-        }
-        authprovEntity = new qNation();
 
-        qNation authprovEntitySaved = qNationRepository.save(authprovEntity);
+        qNation authprovEntitySaved = qNationRepository.save(authprov);
         return authprovEntitySaved;
     }
 

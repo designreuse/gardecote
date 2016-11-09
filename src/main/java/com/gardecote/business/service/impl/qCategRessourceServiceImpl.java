@@ -5,6 +5,7 @@ import com.gardecote.data.repository.jpa.qCarnetRepository;
 import com.gardecote.data.repository.jpa.qCategRessourceRepository;
 import com.gardecote.entities.qCarnet;
 import com.gardecote.entities.qCarnetPK;
+import com.gardecote.entities.qCategPK;
 import com.gardecote.entities.qCategRessource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,13 +48,9 @@ public class qCategRessourceServiceImpl implements qCategRessourceService {
 
     @Override
     public qCategRessource create(qCategRessource authprov) {
-        qCategRessource authprovEntity = qCategRessourceRepository.findOne(authprov.getIdtypeConcession());
-        if( authprovEntity != null ) {
-            throw new IllegalStateException("already.exists");
-        }
-        authprovEntity = new qCategRessource();
 
-        qCategRessource authprovEntitySaved = qCategRessourceRepository.save(authprovEntity);
+
+        qCategRessource authprovEntitySaved = qCategRessourceRepository.save(authprov);
         return authprovEntitySaved;
     }
 
@@ -66,7 +63,7 @@ public class qCategRessourceServiceImpl implements qCategRessourceService {
     }
 
     @Override
-    public void delete(Integer  idauthpr) {
+    public void delete(Integer idauthpr) {
         qCategRessourceRepository.delete(idauthpr);
     }
 

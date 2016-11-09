@@ -13,11 +13,11 @@ import javax.annotation.Resource;
 
 
 import com.gardecote.data.repository.jpa.qCarnetRepository;
+import com.gardecote.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.gardecote.entities.qCarnet;
-import com.gardecote.entities.qCarnetPK;
+
 /**
  * Implementation of AuthprovService
  */
@@ -52,13 +52,9 @@ public class qCarnetServiceImpl implements qCarnetService {
 
 	@Override
 	public qCarnet create(qCarnet authprov) {
-		qCarnet authprovEntity = qCarnetRepository.findOne(authprov.getCarnetPK());
-		if( authprovEntity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
-		authprovEntity = new qCarnet();
 
-		qCarnet authprovEntitySaved = qCarnetRepository.save(authprovEntity);
+
+		qCarnet authprovEntitySaved = qCarnetRepository.save(authprov);
 		return authprovEntitySaved;
 	}
 
@@ -83,5 +79,51 @@ public class qCarnetServiceImpl implements qCarnetService {
 		this.qCarnetRepository = authprovJpaRepository;
 	}
 
+	@Override
+	public qCarnet entrerDansLeSystem(qCarnet carnet) {
+		List<qPageCarnet>  pgs=new ArrayList<qPageCarnet>();
+		if (carnet.getTypeDoc().equals(enumTypeDoc.Journal_Peche)){
+			carnet.setNbrLigneParPage(10);
 
+			for(int i=0;i<carnet.getNbrPages();i++) {
+				qPageCarnet  qp= new qPageMarree(carnet.getPrefixNumerotation().toString()+Long.toString(carnet.getNumeroDebutPage()+i),
+						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null );
+				//   qp.setQcarnet(this);
+
+				pgs.add(qp);
+			}
+		}
+		if (carnet.getTypeDoc().equals(enumTypeDoc.Fiche_Debarquement)) {
+			carnet.setNbrLigneParPage(9);
+
+			for(int i=0;i<carnet.getNbrPages();i++) {
+				qPageCarnet  qp= new qPageDebarquement(carnet.getPrefixNumerotation().toString()+Long.toString(carnet.getNumeroDebutPage()+i),
+						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null);
+				pgs.add(qp);
+			}
+		}
+		if(carnet.getTypeDoc().equals(enumTypeDoc.Fiche_Traitement)) {
+			carnet.setNbrLigneParPage(8);
+			for(int i=0;i<carnet.getNbrPages();i++) {
+				qPageCarnet  qp= new qPageTraitement(carnet.getPrefixNumerotation().toString()+Long.toString(carnet.getNumeroDebutPage()+i),carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null,null);
+
+
+				pgs.add(qp);
+			}
+		}
+		carnet.setPages(pgs);
+		qCarnetRepository.save(carnet);
+		return carnet;
+
+	}
+
+	@Override
+	public qCarnet attribuerCarnetAuNavire(qCarnet carnet, qRegistreNavire navire, qConcession concess, qUsine usine) {
+		carnet.setQnavire(navire);
+		carnet.setQusine(usine);
+		carnet.setQconcession(concess);
+		qCarnetRepository.save(carnet);
+		return carnet;
+
+	}
 }

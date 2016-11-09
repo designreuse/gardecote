@@ -4,54 +4,57 @@
  */
 package com.gardecote.business.service;
 
-import org.springframework.data.domain.Page;
+import com.gardecote.entities.enumEngin;
+import com.gardecote.entities.enumEnginDeb;
+import com.gardecote.entities.qEnginPeche;
+import com.gardecote.entities.qEnginPecheDeb;
 
 import java.util.List;
-import com.gardecote.entities.qLicence;
+
 /**
- * Business Service Interface for entity Changmentact.
+ * Business Service Interface for entity BateaucompletEntity.
  */
-public interface qLicenceService {
+public interface qEnginPecheDebService {
 
 	/**
 	 * Loads an entity from the database using its Primary Key
-	 * @param idchact
+	 * @param numimm
 	 * @return entity
 	 */
-	qLicence findById(String idchact) ;
+	qEnginPecheDeb findById(enumEnginDeb numimm) ;
 
 	/**
 	 * Loads all entities.
 	 * @return all entities
 	 */
-	List<qLicence> findAll();
+	List<qEnginPecheDeb> findAll();
 
 	/**
 	 * Saves the given entity in the database (create or update)
 	 * @param entity
 	 * @return entity
 	 */
-	qLicence save(qLicence entity);
+	qEnginPecheDeb save(qEnginPecheDeb entity);
 
 	/**
 	 * Updates the given entity in the database
 	 * @param entity
 	 * @return
 	 */
-	qLicence update(qLicence entity);
+	qEnginPecheDeb update(qEnginPecheDeb entity);
 
 	/**
 	 * Creates the given entity in the database
 	 * @param entity
 	 * @return
 	 */
-	qLicence create(qLicence entity);
+	qEnginPecheDeb create(qEnginPecheDeb entity);
 
 	/**
 	 * Deletes an entity using its Primary Key
-	 * @param idchact
+	 * @param numimm
 	 */
-	void delete(String idchact);
-	Page<qLicence> returnSuggNomNav(String searchNomnav);
+	void delete(enumEnginDeb numimm);
+
 
 }

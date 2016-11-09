@@ -46,13 +46,9 @@ public class qTypeNavServiceImpl implements qTypeNavService {
 
     @Override
     public qTypeNav create(qTypeNav authprov) {
-        qTypeNav authprovEntity = qTypeNavRepository.findOne(authprov.getIdqTypeNav());
-        if( authprovEntity != null ) {
-            throw new IllegalStateException("already.exists");
-        }
-        authprovEntity = new qTypeNav();
 
-        qTypeNav authprovEntitySaved = qTypeNavRepository.save(authprovEntity);
+
+        qTypeNav authprovEntitySaved = qTypeNavRepository.save(authprov);
         return authprovEntitySaved;
     }
 

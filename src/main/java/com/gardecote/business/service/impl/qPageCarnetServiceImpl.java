@@ -5,12 +5,16 @@
 package com.gardecote.business.service.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
 import com.gardecote.data.repository.jpa.qPageCarnetRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.business.service.qPageCarnetService;
@@ -35,7 +39,8 @@ public class qPageCarnetServiceImpl implements qPageCarnetService {
 	@Override
 	public List<qPageCarnet> findAll() {
 		Iterable<qPageCarnet> entities = qPageCarnetRepository.findAll();
-		List<qPageCarnet> beans = new ArrayList<qPageCarnet>();
+	//	Iterable<qPageCarnet>
+		List<qPageCarnet> beans =new ArrayList<qPageCarnet>();
 		for(qPageCarnet codesEspEntity : entities) {
 			beans.add(codesEspEntity);
 		}
@@ -49,12 +54,8 @@ public class qPageCarnetServiceImpl implements qPageCarnetService {
 
 	@Override
 	public qPageCarnet create(qPageCarnet codesEsp) {
-		qPageCarnet codesEspEntity = qPageCarnetRepository.findOne(codesEsp.getNumeroPage());
-		if( codesEspEntity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
-		codesEspEntity = new qPageCarnet();
-		qPageCarnet codesEspEntitySaved = qPageCarnetRepository.save(codesEspEntity);
+
+		qPageCarnet codesEspEntitySaved = qPageCarnetRepository.save(codesEsp);
 		return codesEspEntitySaved;
 	}
 

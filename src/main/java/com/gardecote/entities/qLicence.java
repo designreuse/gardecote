@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qlicence", schema="dbo", catalog="GCM1" )
+@Table(name="qlicence1", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qLicence.countAll", query="SELECT COUNT(x) FROM  qLicence x")
@@ -34,9 +34,13 @@ public class qLicence implements Serializable
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
+
+
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="id_lic", nullable=false)
+    @Column(name="numlic", length=255)
+    private String     numlic       ;
+
+    @Column(name="id_lic")
     private Long idLic        ;
 
    // pour la compatibilté avec les anciens données
@@ -150,8 +154,7 @@ public class qLicence implements Serializable
     @Column(name="numimm", nullable=false, length=255)
     private String     numimm       ;
 
-    @Column(name="numlic", length=255)
-    private String     numlic       ;
+
 
     @Column(name="port", length=255)
     private String     port         ;

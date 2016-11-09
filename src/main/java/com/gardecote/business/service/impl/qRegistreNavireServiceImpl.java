@@ -46,13 +46,9 @@ public class qRegistreNavireServiceImpl implements qRegistreNavireService {
 
     @Override
     public qRegistreNavire create(qRegistreNavire authprov) {
-        qRegistreNavire authprovEntity = qRegistreNavireRepository.findOne(authprov.getNumimm());
-        if( authprovEntity != null ) {
-            throw new IllegalStateException("already.exists");
-        }
-        authprovEntity = new qRegistreNavire();
 
-        qRegistreNavire authprovEntitySaved = qRegistreNavireRepository.save(authprovEntity);
+
+        qRegistreNavire authprovEntitySaved = qRegistreNavireRepository.save(authprov);
         return authprovEntitySaved;
     }
 

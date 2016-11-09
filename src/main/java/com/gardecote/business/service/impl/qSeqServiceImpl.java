@@ -47,13 +47,9 @@ public class qSeqServiceImpl implements qSeqService {
 
     @Override
     public qSeq create(qSeq authprov) {
-        qSeq authprovEntity = qSeqRepository.findOne(authprov.getSeqPK());
-        if( authprovEntity != null ) {
-            throw new IllegalStateException("already.exists");
-        }
-        authprovEntity = new qSeq();
 
-        qSeq authprovEntitySaved = qSeqRepository.save(authprovEntity);
+
+        qSeq authprovEntitySaved = qSeqRepository.save(authprov);
         return authprovEntitySaved;
     }
 

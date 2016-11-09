@@ -47,12 +47,8 @@ public class qConcessionServiceImpl implements qConcessionService {
 
 	@Override
 	public qConcession create(qConcession bateaucomplet) {
-		qConcession bateaucompletEntity = qConcessionRepository.findOne(bateaucomplet.getRefConcession());
-		if( bateaucompletEntity != null ) {
-			throw new IllegalStateException("already.exists");
-		}
-		bateaucompletEntity = new qConcession();
-		qConcession bateaucompletEntitySaved = qConcessionRepository.save(bateaucompletEntity);
+
+		qConcession bateaucompletEntitySaved = qConcessionRepository.save(bateaucomplet);
 		return bateaucompletEntitySaved;
 	}
 
