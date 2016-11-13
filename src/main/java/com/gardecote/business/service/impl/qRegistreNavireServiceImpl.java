@@ -46,17 +46,15 @@ public class qRegistreNavireServiceImpl implements qRegistreNavireService {
 
     @Override
     public qRegistreNavire create(qRegistreNavire authprov) {
-
-
         qRegistreNavire authprovEntitySaved = qRegistreNavireRepository.save(authprov);
         return authprovEntitySaved;
     }
 
     @Override
     public qRegistreNavire update(qRegistreNavire authprov) {
-        qRegistreNavire authprovEntity = qRegistreNavireRepository.findOne(authprov.getNumimm());
+   //     qRegistreNavire authprovEntity = qRegistreNavireRepository.findOne(authprov.getNumimm());
 
-        qRegistreNavire authprovEntitySaved = qRegistreNavireRepository.save(authprovEntity);
+        qRegistreNavire authprovEntitySaved = qRegistreNavireRepository.save(authprov);
         return authprovEntitySaved ;
     }
 

@@ -53,7 +53,6 @@ public class qCarnetServiceImpl implements qCarnetService {
 	@Override
 	public qCarnet create(qCarnet authprov) {
 
-
 		qCarnet authprovEntitySaved = qCarnetRepository.save(authprov);
 		return authprovEntitySaved;
 	}
@@ -84,8 +83,7 @@ public class qCarnetServiceImpl implements qCarnetService {
 		List<qPageCarnet>  pgs=new ArrayList<qPageCarnet>();
 		if (carnet.getTypeDoc().equals(enumTypeDoc.Journal_Peche)){
 			carnet.setNbrLigneParPage(10);
-
-			for(int i=0;i<carnet.getNbrPages();i++) {
+     			for(int i=0;i<carnet.getNbrPages();i++) {
 				qPageCarnet  qp= new qPageMarree(carnet.getPrefixNumerotation().toString()+Long.toString(carnet.getNumeroDebutPage()+i),
 						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null );
 				//   qp.setQcarnet(this);

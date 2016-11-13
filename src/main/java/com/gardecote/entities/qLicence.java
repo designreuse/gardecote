@@ -6,6 +6,8 @@
 
 package com.gardecote.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -22,7 +24,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qlicence1", schema="dbo", catalog="GCM1" )
+@Table(name="qlicence3", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qLicence.countAll", query="SELECT COUNT(x) FROM  qLicence x")
@@ -34,8 +36,6 @@ public class qLicence implements Serializable
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
-
-
     @Id
     @Column(name="numlic", length=255)
     private String     numlic       ;
@@ -57,31 +57,31 @@ public class qLicence implements Serializable
     @OneToOne
   //  @Column(name="id_nation")
     private qNation    nation     ;
-
     // Ca c'est pour le format de nouvelle strategie
-
     @ManyToMany(cascade = CascadeType.REFRESH,targetEntity =qCategRessource.class,fetch = FetchType.EAGER)
     @JoinTable(name = "qAssocLicencesCategRessources")
+    @JsonBackReference
     private List<qCategRessource> qcatressources;
-
-
-
     @ManyToMany(cascade = CascadeType.REFRESH,targetEntity =qEnginPeche.class,fetch = FetchType.EAGER)
     @JoinTable(name = "qAssocLicencesEngins")
+    @JsonBackReference
     private List<qEnginPeche> Engins;
 
     @Column(name="code_type_supp_droit", length=100)
     private enumSupport     typesuppDroit ;
 
     @ManyToOne
+    @JsonBackReference
     private qRegistreNavire qnavire;
     @ManyToOne
     @JoinColumn(name="id_consignataire")
+    @JsonBackReference
     private qConsignataire    qconcessionaire ;
 
 
     @ManyToOne
     @JoinColumn(name="qConcessionid")
+    @JsonBackReference
     private qConcession     qconcession ;
 
     @Column(name="typb", length=100)
@@ -113,12 +113,8 @@ public class qLicence implements Serializable
     @Column(name="count", length=255)
     private String     count        ;
 
-
-
     @Column(name="eff", length=255)
     private String     eff          ;
-
-
 
     @Column(name="gt")
     private float    gt           ;

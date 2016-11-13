@@ -1,5 +1,7 @@
 package com.gardecote.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -26,11 +28,13 @@ public class qEnginPecheDeb implements Serializable {
   //          @JoinColumn(name = "departfk", referencedColumnName = "depart",insertable = false,updatable = false),
    //         @JoinColumn(name = "numImmfk", referencedColumnName = "numImm",insertable = false,updatable = false)
    // })
+    @JsonBackReference
     private     List<qDebarquement> qdeb;
 
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "qAssocEnginPecheDebCategRessources")
+    @JsonBackReference
     private List<qCategRessource> categressource;
 
     public qEnginPecheDeb(enumEnginDeb engin,boolean flag, Integer maillage) {

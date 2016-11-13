@@ -25,6 +25,11 @@ import java.util.List;
         @Query("select cp from qPageCarnet cp where cp.qcarnet = :carnetDebut and cp.numeroOrdrePage>=:debutNumberL and cp.numeroOrdrePage<=:finNumberL")
         public List<qPageCarnet> retPages(@Param("carnetDebut") qCarnet  carnetDebut,@Param("debutNumberL") long  debutNumberL ,@Param("finNumberL") long  finNumberL);
 
+        @Query("select cp.numeroOrdrePage from qPageCarnet cp where cp.numeroPage = :nump ")
+        public Long retNumOrdre(@Param("nump") String  nump);
+
+
+
 
     }
 

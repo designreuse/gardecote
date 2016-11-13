@@ -3972,19 +3972,18 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   margin-left: -1px;
 }
 .nav {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
 }
 .nav > li {
-  float: left;
+  position: relative;
+  display: block;
 }
 .nav > li > a {
+  position: relative;
   display: block;
-  padding: 8px;
-  background-color: #dddddd;
+  padding: 10px 15px;
 }
 .nav > li > a:hover,
 .nav > li > a:focus {

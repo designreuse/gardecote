@@ -1,5 +1,7 @@
 package com.gardecote.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -20,9 +22,9 @@ public class qEnginPeche implements Serializable {
 
     @ManyToMany(mappedBy = "Engins",cascade = CascadeType.REFRESH)
 
-
+    @JsonBackReference
     private List<qCategRessource> categressource;
-
+    @JsonBackReference
     @ManyToMany(mappedBy = "qEngins")
 
    // @JoinColumns({
@@ -32,6 +34,7 @@ public class qEnginPeche implements Serializable {
     private List<qMarree> qmarrees;
 
     @ManyToMany(mappedBy = "Engins",cascade = CascadeType.REFRESH)
+    @JsonBackReference
      private List<qLicence> qlicences;
 
     public qEnginPeche(enumEngin engin, Integer maillage) {

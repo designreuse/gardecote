@@ -52,8 +52,5 @@ public class GardecoteApplication {
      ApplicationContext ctx = SpringApplication.run(GardecoteApplication.class, args);
 
 
-
-
-
 }
  }

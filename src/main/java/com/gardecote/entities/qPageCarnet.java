@@ -6,8 +6,11 @@
 
 package com.gardecote.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.JoinColumnOrFormula;
 import org.hibernate.annotations.JoinColumnsOrFormulas;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,7 +27,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qPageCarnet1", schema="dbo", catalog="GCM1" )
+@Table(name="qPageCarnet3", schema="dbo", catalog="GCM1" )
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_PAGE", discriminatorType=DiscriminatorType.STRING, length=20)
 // Define named queries here
@@ -43,10 +46,10 @@ public class qPageCarnet implements Serializable
     @Id
     @Column(name="numPage", nullable=false, length=50)
     private String     numeroPage      ;
-    private Integer  nbrLigne ;
+    private Integer    nbrLigne ;
 
     private  enumEtatPage etatPage;
-private Long numeroOrdrePage;
+    private  Long         numeroOrdrePage;
 	// "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link 
 
      //----------------------------------------------------------------------
@@ -54,7 +57,8 @@ private Long numeroOrdrePage;
     //----------------------------------------------------------------------
 
     @ManyToOne
-    //@JoinColumnsOrFormulas(name="IdCarnet", referencedColumnName="IdCarnet")
+   //@JoinColumnsOrFormulas(name="IdCarnet", referencedColumnName="IdCarnet")
+    @JsonBackReference
     private qCarnet qcarnet;
 
     public qPageCarnet() {
@@ -104,6 +108,8 @@ private Long numeroOrdrePage;
     public qCarnet getQcarnet() {
         return qcarnet;
     }
+
+
 
     public void setQcarnet(qCarnet qcarnet) {
         this.qcarnet = qcarnet;

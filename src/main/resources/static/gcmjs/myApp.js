@@ -147,7 +147,7 @@ var underscore = angular.module('underscore', []);
 	});  
 
 
-	var app=angular.module("myzfApp",['underscore',"checklist-model",'ngRoute','ui.bootstrap']);
+	var app=angular.module("mygcmApp",['underscore',"checklist-model",'ngRoute','ui.bootstrap']);
 	
 
 
@@ -281,24 +281,128 @@ app.controller('DatepickerDemoCtrl', function ($scope) {
 	  };
 	});
 
-app.controller("gcJPController",function($scope,_,$http,$location,$sce) {
-	$scope.selectedCoiseJP=null;
-	$scope.selectednumimm="";
-	$scope.nomnav=null;
-	$scope.selectedrefConcess="";
 
-	$scope.getSuggBat= function(val) {
-		return $http.get('/RestGC/autocomBats', {
-			params: {
-				nomnav : val
+app.controller("searchpageController",function($scope,_,$http) {
 
-			}
-		}).then(function(response){
-			console.log("response");
-			console.log(response);
-			return response.data.content.map(function(item){
-				return item.nomnav;
-			});
-		});
-	};
-	 });
+    $scope.debut = null;
+    $scope.pageSize = 20;
+    $scope.searchpage = '';
+    $scope.finList = [];
+    /* bein autocomplete*/
+    var _selected;
+    $scope.selected = undefined;
+
+    $scope.getSuggPages = function (val) {
+        return $http.get('autocomPages', {
+            params: {
+                searchpage: val
+
+            }
+        }).then(function (response) {
+            console.log("response");
+            console.log(response);
+            return response.data.content.map(function (item) {
+                return item.numeroPage;
+            });
+
+        });
+    };
+    $scope.generate = function () {
+        $http.get("generate")
+            .success(function(data){
+
+                console.log("OK");
+            });
+
+}
+    $scope.updateFinds = function (val) {
+
+        console.log("commencer finlist");
+        $http.get("finList",{
+            params: {
+                debut: val
+
+            }
+        }).then(function (response) {
+            console.log("debutv="+  val);
+            console.log(response);
+            $scope.finList=response.data;
+
+
+        });
+
+
+    }
+    $scope.creerDoc = function (val) {
+
+        console.log("commencer creer Doc");
+        $http.get("creerDoc",{
+            params: {
+                debut: val
+
+            }
+        }).then(function (response) {
+            console.log("debutv="+  val);
+            console.log(response);
+            $scope.finList=response.data;
+
+
+        });
+
+
+    }
+    $scope.ngModelOptionsSelected = function(value) {
+			    if (arguments.length) {
+			      _selected = value;
+			    } else {
+			      return _selected;
+			    }
+			  };
+		  
+	  $scope.modelOptions = {
+				     debounce: {
+				      default: 500,
+				      blur: 250
+				    },
+				    getterSetter: true
+				  };	 var _selected;
+					 $scope.selected = undefined;
+					 
+					  $scope.getSuggPages = function(val) {
+						    return $http.get('autocomPages', {
+						      params: {
+						    	searchpage : val
+						        
+						      }
+						    }).then(function(response){
+						    	console.log("response");
+						    	console.log(response);
+						      return response.data.content.map(function(item){
+						        return item.numeroPage;
+						      });
+						    });
+						  };
+				    $scope.ngModelOptionsSelected = function(value) {
+							    if (arguments.length) {
+							      _selected = value;
+							    } else {
+							      return _selected;
+							    }
+							  };
+						  
+					  $scope.modelOptions = {
+								     debounce: {
+								      default: 500,
+								      blur: 250
+								    },
+								    getterSetter: true
+								  };
+		  /* end autocomplete*/
+
+	
+	
+	
+
+	
+});
+

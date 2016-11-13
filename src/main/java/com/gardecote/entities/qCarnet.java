@@ -10,6 +10,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.format.annotation.NumberFormat;
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
@@ -22,7 +24,7 @@ import org.springframework.format.annotation.NumberFormat;
  */
 
 @Entity
-@Table(name="qCarnet", schema="dbo", catalog="GCM1" )
+@Table(name="qCarnet2", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qCarnet.countAll", query="SELECT COUNT(x) FROM qCarnet x" )
@@ -65,7 +67,12 @@ public class qCarnet implements Serializable
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(mappedBy="qcarnet",cascade = CascadeType.ALL,targetEntity=qPageCarnet.class)
+    @OneToMany(mappedBy ="qcarnet",cascade = CascadeType.ALL,targetEntity=qPageCarnet.class)
+  //  @JoinColumns({
+  //          @JoinColumn(name = "debutPage1fk", referencedColumnName = "debutPage1",insertable = false,updatable = false),
+  //          @JoinColumn(name = "prefixNumfk", referencedColumnName = "prefixNum",insertable = false,updatable = false)
+  //  })
+    @JsonManagedReference
     private List<qPageCarnet> pages ;
 
 

@@ -1,5 +1,7 @@
 package com.gardecote.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -25,6 +27,7 @@ public class qUsine implements Serializable {
     private String lieuImplementation;
     private boolean signatureCapitaine;
         @OneToMany(mappedBy="qusine", targetEntity=qCarnet.class)
+        @JsonIgnore
     private List<qCarnet> qcarnets;
 
 

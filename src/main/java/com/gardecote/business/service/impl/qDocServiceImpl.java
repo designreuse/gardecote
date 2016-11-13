@@ -102,9 +102,11 @@ public class qDocServiceImpl implements qDocService {
         Matcher matcherDebut, matcherFin;
 
         String numeroDebut = seqActive.getDebut(), numeroFin = seqActive.getFin(), debutPrefix = null, finPrefix = null;
+        System.out.println(numeroDebut);
         String debutNumber = "", finNumber = "";
         Integer indexDebut = -1, indexFin = -1;
         if (checkSaisie(seqActive)) {
+            pattern = Pattern.compile("\\D{2,4}");
             matcherDebut = pattern.matcher(numeroDebut);
             matcherFin = pattern.matcher(numeroFin);
             while (matcherDebut.find()) {
@@ -150,19 +152,38 @@ public class qDocServiceImpl implements qDocService {
         Pattern pattern;
         Matcher matcherDebut, matcherFin;
 
-        pattern = Pattern.compile("\\D{2,4}");
+        pattern = Pattern.compile("(^\\D{2,4})(\\d{1,}$)");
         matcherDebut = pattern.matcher(numeroDebut);
         matcherFin = pattern.matcher(numeroFin);
-        while (matcherDebut.find()) {
-            debutPrefix = matcherDebut.group();
-            indexDebut = matcherDebut.end();
-            debutNumber = String.valueOf(numeroDebut.substring(indexDebut));
+        boolean b = matcherDebut.matches();
+        int z=0,r=0;
+        while (b) {
+            if(matcherDebut.groupCount()==3) {
+                debutPrefix = matcherDebut.group(1); // groupe capturee
+                indexDebut = matcherDebut.end();
+                debutNumber = String.valueOf(matcherDebut.group(2));
+            }
+            else {
+                debutPrefix = null;  // groupe capturee
+                indexDebut = 0;
+                debutNumber = null;
+            }
         }
-        while (matcherFin.find()) {
-            finPrefix = matcherFin.group();
-            indexFin = matcherFin.end();
-            finNumber = String.valueOf(numeroFin.substring(indexFin));
+        boolean h =  matcherFin.matches();
+        while (h) {
+          if(matcherDebut.groupCount()==3) {
+                finPrefix = matcherFin.group(1);
+                indexFin = matcherFin.end();
+                finNumber = String.valueOf(matcherFin.group(2));
+            }
+            else {
+                finPrefix = null;
+                indexFin = 0;
+                finNumber = null;
+                 }
         }
+
+
         boolean isnumericDebut = debutNumber.matches("-?\\d+(\\.\\d+)?"), isnumericFin = finNumber.matches("-?\\d+(\\.\\d+)?");
 
         qCarnet carnetDebut = qcarnetRepository.retCarnet(numeroDebut);
@@ -170,8 +191,8 @@ public class qDocServiceImpl implements qDocService {
 
         if (debutPrefix.equals(finPrefix) && indexDebut == indexFin && isnumericDebut == true && isnumericFin == true && this.contains(debutPrefix) &&
                 carnetDebut.equals(carnetFin) && Long.valueOf(debutNumber)<=Long.valueOf(finNumber))
-        return false;
-        else return true;
+        return true;
+        else return false;
     }
     public static boolean contains(String test) {
 
@@ -198,7 +219,7 @@ public class qDocServiceImpl implements qDocService {
 
         pattern = Pattern.compile("\\D{2,4}");
         matcherDebut = pattern.matcher(numeroDebut);
-
+        matcherFin = pattern.matcher(numeroFin);
         while (matcherDebut.find()) {
             debutPrefix = matcherDebut.group();
             indexDebut = matcherDebut.end();

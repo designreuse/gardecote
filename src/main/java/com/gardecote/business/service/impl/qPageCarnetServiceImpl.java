@@ -11,14 +11,17 @@ import java.util.List;
 import javax.annotation.Resource;
 import com.gardecote.data.repository.jpa.qPageCarnetRepository;
 
+import com.gardecote.entities.qCarnet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.business.service.qPageCarnetService;
 import com.gardecote.entities.qPageCarnet;
+import com.gardecote.data.repository.jpa.qCarnetRepository;
 /**
  * Implementation of CodesEspService
  */
@@ -28,6 +31,8 @@ public class qPageCarnetServiceImpl implements qPageCarnetService {
 
 	@Autowired
 	private qPageCarnetRepository qPageCarnetRepository;
+	@Autowired
+	private qCarnetRepository qcarnetRepository;
 
 		
 	@Override
@@ -80,6 +85,20 @@ public class qPageCarnetServiceImpl implements qPageCarnetService {
 		this.qPageCarnetRepository = codesEspJpaRepository;
 	}
 
-	
+	@Override
+	public Page<qPageCarnet> getSuggPage(String searchpage) {
+		return qPageCarnetRepository.returnSuggPage(new PageRequest(0, 10),searchpage);
 
+	}
+
+	@Override
+	public ArrayList<qPageCarnet> getFinList(String debut) {
+		qCarnet carnet=qcarnetRepository.retCarnet(debut);
+//		qPageCarnet gg=qPageCarnetRepository.findOne(debut);
+//		qCarnet carnet=gg.getQcarnet();
+		Long dd=qcarnetRepository.retNumOrdre(debut);
+		System.out.println(dd);
+		System.out.println(carnet.getPrefixNumerotation());
+		return qPageCarnetRepository.returnFinList(carnet,dd);
+	}
 }

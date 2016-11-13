@@ -1,5 +1,7 @@
 package com.gardecote.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -30,10 +32,11 @@ public class qCategRessource implements Serializable {
 
     @ManyToMany(targetEntity =qEnginPeche.class,cascade = CascadeType.MERGE)
     @JoinTable(name = "qAssocCategRessourcesEngins")
+    @JsonManagedReference
     private List<qEnginPeche> Engins;
 
     @ManyToMany(mappedBy = "categressource",targetEntity =qEnginPecheDeb.class,cascade = CascadeType.MERGE)
-
+    @JsonManagedReference
     private List<qEnginPecheDeb> EnginsDeb;
 
     @ManyToMany(mappedBy = "qcategconcernees",targetEntity =qDebarquement.class,cascade = CascadeType.MERGE)
@@ -41,6 +44,7 @@ public class qCategRessource implements Serializable {
  //          @JoinColumn(name = "departfk", referencedColumnName = "depart",insertable = false,updatable = false),
  //           @JoinColumn(name = "numImmfk", referencedColumnName = "numImm",insertable = false,updatable = false)
  //   })
+    @JsonManagedReference
     private List<qDebarquement> qdeb;
 
     @ManyToMany(targetEntity =qMarree.class)
@@ -49,15 +53,18 @@ public class qCategRessource implements Serializable {
      //       @JoinColumn(name = "numImmfkM", referencedColumnName = "numImm",insertable = false,updatable = false)
    // })
     @JoinTable(name = "qAssocMarreeCategRessources")
+    @JsonManagedReference
     private List<qMarree> qmarree;
 
     @ManyToMany(mappedBy = "categoriesRessources" ,  targetEntity =qConcession.class,cascade = CascadeType.MERGE)
    // @JoinColumn(name = "ref_concessionfk", referencedColumnName = "ref_concession",insertable = false,updatable = false)
 
    // @JoinColumn(name = "ref_concession", nullable = false)
+    @JsonManagedReference
     private List<qConcession> qconcession;
 
     @OneToOne
+    @JsonManagedReference
    private  qTypeConcession typeconcessionConcernee;
 
     public List<qLicence> getQlicences() {

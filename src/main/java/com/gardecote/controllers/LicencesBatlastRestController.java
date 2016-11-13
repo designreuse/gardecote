@@ -46,11 +46,7 @@ public class LicencesBatlastRestController {
 		}
 		return items;
 	}
-	@RequestMapping(value="/autocomBats",method = RequestMethod.GET)
-	public Page<qLicence> getAutocompleteLocals(@RequestParam String nomnav) {
-		System.out.println(licencesBatlastService.returnSuggNomNav(nomnav));
-		return licencesBatlastService.returnSuggNomNav(nomnav);
-	}
+
 	@RequestMapping( value="/licencesBatlast",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
