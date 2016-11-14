@@ -1,6 +1,9 @@
 package com.gardecote.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,11 +22,14 @@ public class qConsignataire implements Serializable {
     @Id
     @Column(name="nomconsignataire", nullable=false)
     private String  nomconsignataire;
-//mappedBy ="concessionaire" ,  ,targetEntity =qConcession.class,cascade = CascadeType.ALL
+   //mappedBy ="concessionaire" ,  ,targetEntity =qConcession.class,cascade = CascadeType.ALL
+
     @OneToMany(mappedBy ="qconsignataire",targetEntity =qConcession.class,cascade = CascadeType.PERSIST)
- //   @JoinColumn(name="qpagedeb",insertable = false,updatable = false)
+  //@JoinColumn(name="qpagedeb",insertable = false,updatable = false)
   //@JoinTable(name="LiaisonConcessionConcessionaire",joinColumns=@JoinColumn(name="consignataire_fk"),inverseJoinColumns = @JoinColumn(name="concession_fk"))
-//@JoinColumn(name = "idconcession")
+  //@JoinColumn(name = "idconcession")
+
+
     private List<qConcession> qconcession;
 
     public qConsignataire(String consignataire, List<qConcession> concession) {

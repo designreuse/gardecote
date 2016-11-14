@@ -1,0 +1,50 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<section class="col-sm-12" layout:fragment="content">
+    <div class="panel panel-default">
+        <div class="panel-heading col-sm-12 ">
+            <div class="form-inline col-sm-12" >
+
+                    <div class="input-sm  col-sm-1 " >
+
+                        <label>date de depart:</label>
+                    </div>
+                    <div class="input-sm col-sm-2 ">
+                        <label >
+                            <label th:text="${currentDoc.depart}"> :</label>
+
+                        </label>
+                    </div>
+
+                    <div class="input-sm col-sm-2 ">
+                        <label>
+                            <label>numimm:</label>
+                        </label>
+
+                    </div>
+                    <div class="input-sm col-sm-2 ">
+                        <label >
+                            <label th:text="${currentDoc.numImm}"> :</label>
+                        </label>
+
+                    </div>
+                    <div class="input-sm col-sm-1" >
+                    <input type="Date"  th:text="${currentDoc.retour}"/>
+
+                    </div>
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+</section>
+</body>
+</html>

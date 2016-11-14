@@ -46,7 +46,8 @@ public class qRegistreNavireServiceImpl implements qRegistreNavireService {
 
     @Override
     public qRegistreNavire create(qRegistreNavire authprov) {
-        qRegistreNavire authprovEntitySaved = qRegistreNavireRepository.save(authprov);
+        qRegistreNavire         authprovEntitySaved = qRegistreNavireRepository.save(authprov);
+
         return authprovEntitySaved;
     }
 

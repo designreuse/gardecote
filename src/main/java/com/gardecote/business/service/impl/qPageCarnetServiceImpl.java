@@ -88,7 +88,6 @@ public class qPageCarnetServiceImpl implements qPageCarnetService {
 	@Override
 	public Page<qPageCarnet> getSuggPage(String searchpage) {
 		return qPageCarnetRepository.returnSuggPage(new PageRequest(0, 10),searchpage);
-
 	}
 
 	@Override

@@ -5,8 +5,8 @@
 // This Bean has a basic Primary Key (not composite) 
 
 package com.gardecote.entities;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.JoinColumnOrFormula;
 import org.hibernate.annotations.JoinColumnsOrFormulas;
 import org.hibernate.annotations.NotFound;
@@ -58,7 +58,7 @@ public class qPageCarnet implements Serializable
 
     @ManyToOne
    //@JoinColumnsOrFormulas(name="IdCarnet", referencedColumnName="IdCarnet")
-    @JsonBackReference
+
     private qCarnet qcarnet;
 
     public qPageCarnet() {

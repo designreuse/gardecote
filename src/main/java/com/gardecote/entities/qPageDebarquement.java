@@ -48,7 +48,7 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
    @OneToOne
    private qConcession qconcession;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private qDebarquement qdebarquement;
 
     //----------------------------------------------------------------------

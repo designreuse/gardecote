@@ -28,9 +28,9 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 //AuthenticationSuccessHandler {
 	  @Autowired
 	    HttpSession session;
-	 @Autowired
+	  @Autowired
 	    private LicenceAc ourLic;
-    @Override
+      @Override
     public void onAuthenticationSuccess(HttpServletRequest request,	HttpServletResponse response,Authentication auth)
 		throws IOException, ServletException {
 	// initialization logic after login
@@ -60,22 +60,22 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 
       	ourLic.setLicAc(licenseSS);
       	System.out.println("licenseSS");
-        System.out.println(licenseSS);
+        System.out.println(licenseSS.getValidationStatus());
 	// redirect
 if (auth != null) {
 	  response.setStatus(HttpServletResponse.SC_OK);
 	}
 //	SavedRequest savedReq = (SavedRequest) session.getAttribute(WebAttributes.SAVED_REQUEST);
-  if(licenseSS.getValidationStatus()==ValidationStatus.LICENSE_VALID) {
+  if(licenseSS.getValidationStatus()==ValidationStatus.LICENSE_EXPIRED) {
 	 
 	  response.setStatus(HttpServletResponse.SC_OK);
 	
-	    response.sendRedirect(request.getContextPath() + "/licence.html");
+	    response.sendRedirect(request.getContextPath() + "/start");
 	}
 	else {
 		 session.invalidate();
 		response.setStatus(HttpServletResponse.SC_OK);
-		 response.sendRedirect(request.getContextPath() + "/start");
+		 response.sendRedirect(request.getContextPath() + "/licence.html");
 	}
     }
 }

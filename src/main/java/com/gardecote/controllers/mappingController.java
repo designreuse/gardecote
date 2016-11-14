@@ -10,13 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Created by Dell on 12/11/2016.
  */
 @Controller
-
+@RequestMapping("/")
 public class mappingController {
 
 
@@ -70,70 +72,109 @@ public class mappingController {
     @Autowired
     private LicenceAc ourLic;
 
-    @RequestMapping("/start")
+    @RequestMapping(value="/start")
     public String ggg(){
-
         return "index";
     }
-
-    @RequestMapping("/creerDoc")
-    public @ResponseBody
-    Object creerDocument(Model model, @RequestParam("debut") String debut, @RequestParam("fin") String fin) {
+    @RequestMapping(value="/creer")
+    public String gggh(){
+        return "index";
+    }
+    @RequestMapping(value="/creerDoc")
+    public String creerDocument(Model model, @RequestParam(name="debut",defaultValue = "PC0") String debut, @RequestParam(name="fin",defaultValue = "PC0") String fin,@RequestParam(name="dateDepart1") String dateDepart1) {
         List<qDoc> lstDoc=new ArrayList<qDoc>();
         qDoc currentDoc=null;
+        Object docExact=null;
+        Object traitExact=null;
         List<qTraitement> lstTraitements=new ArrayList<qTraitement>();
         qSeqPK qseqpk=new qSeqPK(debut,fin);
+
         qSeq qseq=seqService.findById(qseqpk);
-        Date dateDepart=null,dateRetour=null;
+      //  Date dateDepart=null,dateRetour=null;
         List<qEnginPecheDeb> choixEnginsDeb=null;
         List<qEnginPeche> choixEnginsMar=null;
+        System.out.println("debut="+debut+"fin"+fin);
+       // boolean flg=docService.checkSaisie(qseqpk);
+         SimpleDateFormat sdfmt1= new SimpleDateFormat("yyyy-MM-dd");
+        qSeqPK spk=new qSeqPK(debut,fin);
+        qSeq se=seqService.findById(spk);
+        if(se==null) se=new qSeq(debut,fin,null);
+        //	System.out.println(nav.getNumimm());
+        Date  dateDepart=null, dateRetour=null;
 
-        boolean flg=docService.checkSaisie(qseqpk);
-        if(flg==true) {
-            Map<String, Set<Object>> result = docService.detecterDestructionDonnees(qseqpk);
-            qDistributeur distributeur = null;
+        try {
+            dateDepart= sdfmt1.parse(dateDepart1);
 
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+            System.out.println("RRRRRRRRRRRR");
+            Map<String, Set<Object>> result = docService.detecterDestructionDonnees(qseqpk,dateDepart);
+
+            System.out.println("2 EME ETAPE");
             for (Map.Entry<String, Set<Object>> entry : result.entrySet()) {
+
+                if (entry.getKey() == "lstExact")
+                    for (Iterator<Object> it = entry.getValue().iterator(); it.hasNext(); ) {
+                        Object f = it.next();
+                        if(f!=null && f instanceof qDoc)    docExact= f;
+                        if(f!=null && f instanceof qTraitement)    traitExact= f;
+                    }
+
                 if (entry.getKey() == "lstDoc")
                     for (Iterator<Object> it = entry.getValue().iterator(); it.hasNext(); ) {
                         Object f = it.next();
-                        lstDoc.add((qDoc) f);
+                  if(f!=null )      lstDoc.add((qDoc) f);
                     }
                 if (entry.getKey() == "lstTraitements")
                     for (Iterator<Object> it = entry.getValue().iterator(); it.hasNext(); ) {
                         Object f = it.next();
-                        lstTraitements.add((qTraitement) f);
+                        if(f!=null )    lstTraitements.add((qTraitement) f);
                     }
 
             }
-            if(lstDoc.size()==0) {
-                qSeq seq=new qSeq(debut,fin,null);
-                currentDoc=docService.creerDoc(dateDepart,dateRetour,seq,choixEnginsDeb,choixEnginsMar);
+   //     lstDoc.remove( docExact);
+        System.out.println(lstDoc.size());
+     //   lstTraitements.remove(traitExact);
+       // qDoc docact=docService.findById(spk);
+            if(lstDoc.size()==0 && docExact==null && traitExact==null ) {
+
+
+                currentDoc=docService.creerDoc(dateDepart,null,se,choixEnginsDeb,choixEnginsMar);
 
             }
-            if(lstDoc.size()==1) {
-                currentDoc=lstDoc.get(0);
+        else {
+                if(lstDoc.size()==1 && (docExact!=null))   {   System.out.println("here");       currentDoc=(qDoc) docExact;}
+                if(lstTraitements.size()==1 && ( traitExact!=null))             currentDoc=(qDoc) traitExact;
+                if(lstDoc.size()>0 && (docExact==null)&& ( traitExact!=null)) currentDoc=null;
 
             }
-            if(lstDoc.size()>1)  {
-                currentDoc=null;
-            }
+     //      if(lstDoc.size()==1 && docDuplicat==null && traitDuplicat==null) {
+     //         currentDoc=lstDoc.get(0);
+    //   }
+
       //      result.put("currentDoc",currentDoc);
-        }
-
+        model.addAttribute("pageDebut",debut);
+        model.addAttribute("pageFin",fin);
+    //    model.addAttribute("docDuplicat",docExact);
+      //  model.addAttribute("traitDuplicat",traitExact);
+        model.addAttribute("currentDoc",currentDoc); // en cas de ecrasement on verifie s'i s'agit de different seq alors supprimer l'ancien et si est le meme seq juste il faut l'ouvrire pour modification
         model.addAttribute("lstDoc",lstDoc);
         model.addAttribute("lstTraitement",lstTraitements);
 
 
-        model.addAttribute("currentDoc",currentDoc);
-        System.out.println("Liste de documents interference :");
+        System.out.println("Liste de documents  :");
         System.out.println(lstDoc);
         System.out.println("Liste de traitements :");
         System.out.println(lstTraitements);
-        System.out.println("Document encour :");
+        System.out.println("Document encours :");
         System.out.println(currentDoc);
+       System.out.println("doc duplicat :");
+      System.out.println(docExact);
+       System.out.println("Dtrait dupl :");
+     System.out.println(traitExact);
 
 
-        return "index";
+        return "docEdit";
     }
 }

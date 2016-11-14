@@ -29,8 +29,7 @@ public class qPageTraitement extends qPageCarnet {
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToOne
-    private qUsine qusine;
+
 
     @OneToMany(mappedBy = "pagesTraitement",targetEntity = qUniteTraitement.class)
     private List<qUniteTraitement> opTraitements;

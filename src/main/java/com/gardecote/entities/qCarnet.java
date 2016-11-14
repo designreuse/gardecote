@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.format.annotation.NumberFormat;
 //import javax.validation.constraints.* ;
@@ -24,7 +26,7 @@ import org.springframework.format.annotation.NumberFormat;
  */
 
 @Entity
-@Table(name="qCarnet2", schema="dbo", catalog="GCM1" )
+@Table(name="qCarnet3", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qCarnet.countAll", query="SELECT COUNT(x) FROM qCarnet x" )
@@ -32,8 +34,6 @@ import org.springframework.format.annotation.NumberFormat;
 @IdClass(qCarnetPK.class)
 public class qCarnet implements Serializable
 {
-
-
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
@@ -45,8 +45,6 @@ public class qCarnet implements Serializable
 
     @Column(name="debutPage1")
     private Long       numeroDebutPage    ;
-
-
     private enumTypeDoc  typeDoc;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
@@ -57,14 +55,18 @@ public class qCarnet implements Serializable
     private Integer    nbrLigneParPage      ;
     @OneToOne
     @JoinColumn(name="qnavire")
+
+
     private qRegistreNavire      qnavire  ;
-    @OneToOne
+    @OneToOne(targetEntity = qUsine.class)
+
+
     @JoinColumn(name="qusine")
     private qUsine     qusine  ;
     @OneToOne
-    private qConcession qconcession;
 
-    //----------------------------------------------------------------------
+    private qConcession qconcession;
+   //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
     @OneToMany(mappedBy ="qcarnet",cascade = CascadeType.ALL,targetEntity=qPageCarnet.class)
@@ -72,11 +74,9 @@ public class qCarnet implements Serializable
   //          @JoinColumn(name = "debutPage1fk", referencedColumnName = "debutPage1",insertable = false,updatable = false),
   //          @JoinColumn(name = "prefixNumfk", referencedColumnName = "prefixNum",insertable = false,updatable = false)
   //  })
-    @JsonManagedReference
+
     private List<qPageCarnet> pages ;
-
-
-    //----------------------------------------------------------------------
+   //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
     public qCarnet()

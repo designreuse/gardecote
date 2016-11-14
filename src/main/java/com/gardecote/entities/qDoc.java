@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Dell on 23/10/2016.
  */
 @Entity
-@Table(name="qDoc", schema="dbo", catalog="GCM1" )
+@Table(name="qDoc1", schema="dbo", catalog="GCM1" )
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
@@ -26,7 +26,7 @@ public class qDoc implements Serializable {
 
 
 
-    @Column(name="Retour", nullable=false, length=10)
+    @Column(name="Retour", nullable=true, length=10)
     private Date     retour       ;
 
 
@@ -94,5 +94,24 @@ public class qDoc implements Serializable {
 
     public void setRetour(Date retour) {
         this.retour = retour;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof qDoc)) return false;
+
+        qDoc qDoc = (qDoc) o;
+
+        if (!getDepart().equals(qDoc.getDepart())) return false;
+        return getNumImm().equals(qDoc.getNumImm());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getDepart().hashCode();
+        result = 31 * result + getNumImm().hashCode();
+        return result;
     }
 }

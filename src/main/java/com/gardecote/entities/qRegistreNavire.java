@@ -4,6 +4,8 @@ package com.gardecote.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,7 +16,7 @@ import java.util.List;
  * Created by Dell on 22/10/2016.
  */
 @Entity
-@Table(name="qRegistreNavire2", schema="dbo", catalog="GCM1" )
+@Table(name="qRegistreNavire3", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qRegistreNavire.countAll", query="SELECT COUNT(x) FROM qRegistreNavire x" )
@@ -29,7 +31,8 @@ public class qRegistreNavire implements Serializable {
     private String     numimm;
 
     @OneToOne
-    @JsonManagedReference
+   // @NotFound(action = NotFoundAction.IGNORE)
+       @JsonManagedReference
     private qLicence qlicencedernier;
 
     public qRegistreNavire(qLicence qlicencedernier,String numimm) {
@@ -43,8 +46,9 @@ public class qRegistreNavire implements Serializable {
     @OneToMany(mappedBy="qnavire", targetEntity=qLicence.class)
     @JsonManagedReference
     private List<qLicence>  qlicences;
-    @JsonIgnore
+
     @OneToMany(mappedBy="qnavire", targetEntity=qCarnet.class)
+ //   @JsonIgnore
     @JsonManagedReference
     private List<qCarnet>  qcarnets;
 

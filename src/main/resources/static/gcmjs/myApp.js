@@ -301,9 +301,11 @@ app.controller("searchpageController",function($scope,_,$http) {
         }).then(function (response) {
             console.log("response");
             console.log(response);
-            return response.data.content.map(function (item) {
-                return item.numeroPage;
+          //   response.data.content.map on utilise pour une page retournee
+          return response.data.map(function (item) {
+                return item;
             });
+
 
         });
     };
@@ -377,8 +379,8 @@ app.controller("searchpageController",function($scope,_,$http) {
 						    }).then(function(response){
 						    	console.log("response");
 						    	console.log(response);
-						      return response.data.content.map(function(item){
-						        return item.numeroPage;
+						      return response.data.map(function(item){
+						        return item;
 						      });
 						    });
 						  };

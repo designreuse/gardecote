@@ -103,9 +103,13 @@ public class mainJsp  {
 	private LicenceAc ourLic;
 
 	@RequestMapping(value="/autocomPages",method = RequestMethod.GET)
-	public Page<qPageCarnet> getAutocompletePages(@RequestParam String searchpage) {
+	public List<String> getAutocompletePages(@RequestParam String searchpage) {
 		System.out.println("numero de page : "+searchpage);
-		return pagecarnetService.getSuggPage(searchpage);
+		List<String> numpages=new ArrayList<>();
+		Page<qPageCarnet> pq=pagecarnetService.getSuggPage(searchpage);
+		for(qPageCarnet q:pq) {numpages.add(q.getNumeroPage().toString());System.out.println(q.getNumeroPage().toString());}
+
+		return numpages;
 	}
 	@RequestMapping(value="/generate",method = RequestMethod.GET)
 	public void generatecontent(){
@@ -521,7 +525,7 @@ public class mainJsp  {
 
 
 		qRegistreNavire qreg1=new qRegistreNavire(null,"RT56");
-registrenavireService.save(qreg1);
+		registrenavireService.create(qreg1);
 
 		//   SimpleDateFormat sdfmt2= new SimpleDateFormat("dd-MMM-yyyy");
 		System.out.println("jhjg :");
@@ -537,9 +541,11 @@ registrenavireService.save(qreg1);
 		// save one side with null value for other many side
 		qLicence qlicencebatlast1=new qLicence(qtyplic20,qTypeEnc.MRT,qZone7,qnation3,null,qEngins,enumSupport.Individuel,qreg1,qconsignataire2,qConcessionPC,
 				enumTypeBat.Congélateur_RTMA, dateLicenceDebut,dateLicenceFin,1983,23,"5G","23","12",12,123,23,"12","12.5M","34","AHMED VALL","ghgh","BATEAU N 1","TR2016","LIC20171","Nouadhibou","ER345","3ER",23);
-        qreg1.setQlicencedernier(qlicencebatlast1);
 		licenceService.create(qlicencebatlast1);
+		qreg1.setQlicencedernier(qlicencebatlast1);
 		registrenavireService.save(qreg1);
+
+
 
 
 		// set for every element in many side a single already saved object on one side and save iterable result
@@ -636,9 +642,9 @@ registrenavireService.save(qreg1);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		qSeq seqActive=new qSeq("PC7","PC12",null);
+	//	qSeq seqActive=new qSeq("PC7","PC12",null);
 
-		seqService.create(seqActive);
+//		seqService.create(seqActive);
 		List<qEnginPecheDeb> qEnginsDeb = new ArrayList<qEnginPecheDeb>();
 		qEnginsDeb.add(new qEnginPecheDeb(enumEnginDeb.Pots, false, 0));               //creer un document de debarquement le PC NON PONTEE
 		qEnginsDeb.add(new qEnginPecheDeb(enumEnginDeb.Casier, false, 0));
@@ -655,13 +661,14 @@ registrenavireService.save(qreg1);
 		carnetService.attribuerCarnetAuNavire(crn,qreg1,qConcessionPC,null);
 	}
 	@RequestMapping(value="/finList",method = RequestMethod.GET)
-	public List<qPageCarnet> getFinList(@RequestParam String debut) {
+	public List<String> getFinList(@RequestParam String debut) {
 		// creer les categories de ressource 5 PA  de 1 a 5
+		System.out.println("numero de page  : "+debut);
+		List<String> numsfin=new ArrayList<>();
+		List<qPageCarnet> pq=pagecarnetService.getFinList(debut);
+		for(qPageCarnet q:pq) numsfin.add(q.getNumeroPage().toString());
+		return numsfin;
 
-
-		System.out.println("numero de fin : "+debut);
-
-		return pagecarnetService.getFinList(debut);
 	}
 
 
@@ -1217,9 +1224,9 @@ registrenavireService.save(qreg1);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		qSeq seqActive=new qSeq("PC7","PC12",null);
+	//	qSeq seqActive=new qSeq("PC7","PC12",null);
 
-		seqService.create(seqActive);
+	//	seqService.create(seqActive);
 		List<qEnginPecheDeb> qEnginsDeb = new ArrayList<qEnginPecheDeb>();
 		qEnginsDeb.add(new qEnginPecheDeb(enumEnginDeb.Pots, false, 0));               //creer un document de debarquement le PC NON PONTEE
 		qEnginsDeb.add(new qEnginPecheDeb(enumEnginDeb.Casier, false, 0));

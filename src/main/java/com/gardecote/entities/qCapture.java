@@ -23,7 +23,7 @@ import java.io.Serializable;
  */
 import java.util.Date;
 @Entity
-@Table(name="qCapture", schema="dbo", catalog="GCM1" )
+@Table(name="qCapture1", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qCaptue.countAll", query="SELECT COUNT(x) FROM qCapture x" )
@@ -47,7 +47,7 @@ public class qCapture implements Serializable
     @Id
      private    enumEspType esptype;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.ALL)
 
     private qDoc qdoc;
     @OneToOne
@@ -59,7 +59,6 @@ public class qCapture implements Serializable
     private qJourMere jourMere;
 
     @ManyToOne
-
     private qJourDeb jourDeb;
 
     public qEspeceTypee getEspeceTypee() {

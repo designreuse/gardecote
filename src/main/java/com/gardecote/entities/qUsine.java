@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Dell on 25/10/2016.
  */
 @Entity
-@Table(name="qUsine", schema="dbo", catalog="GCM1" )
+@Table(name="qUsine2", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qUsine.countAll", query="SELECT COUNT(x) FROM qUsine x" )
@@ -26,10 +26,12 @@ public class qUsine implements Serializable {
     private String nomResp;
     private String lieuImplementation;
     private boolean signatureCapitaine;
+
         @OneToMany(mappedBy="qusine", targetEntity=qCarnet.class)
         @JsonIgnore
     private List<qCarnet> qcarnets;
-
+    @OneToMany(mappedBy = "qusine")
+    private List<qTraitement>  traitements;
 
     public qUsine() {
     }
@@ -44,6 +46,14 @@ public class qUsine implements Serializable {
         this.nomResp = nomResp;
         this.lieuImplementation = lieuImplementation;
         this.signatureCapitaine = signatureCapitaine;
+    }
+
+    public List<qTraitement> getTraitements() {
+        return traitements;
+    }
+
+    public void setTraitements(List<qTraitement> traitements) {
+        this.traitements = traitements;
     }
 
     public List<qCarnet> getQcarnets() {

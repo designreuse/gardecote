@@ -58,7 +58,7 @@ public interface qDocService {
 
     qDoc verifierAncienDoc(qSeqPK sequencepk);
 
-    Map<String,Set<Object>> detecterDestructionDonnees(qSeqPK sequencepk);
+    Map<String,Set<Object>> detecterDestructionDonnees(qSeqPK sequencepk,Date dateDepartt);
 
     boolean checkSaisie(qSeqPK sequencepk);
 
