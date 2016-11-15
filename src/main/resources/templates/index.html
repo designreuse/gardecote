@@ -1,47 +1,48 @@
-<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout"  >
-<section class="col-sm-12" layout:fragment="content">
-    <div class="panel panel-default">
-        <div class="panel-heading col-sm-12 ">
-            <div class="form-inline col-sm-12" >
-                <form th:action="@{creerDoc}" methode="get">
-                    <div class="input-sm  col-sm-1 " >
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+<head>
+   <meta charset="utf-8" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <meta name="description" content="" />
+   <meta name="author" content="" />
 
-                        <label>Numeros de pages :</label>
-                    </div>
-                    <div class="input-sm col-sm-2 ">
-                        <label >
-                            <input type="text" class="form-control input-sm" id="debut" name="debut"  ng-model="$parent.debut" typeahead-on-select="updateFinds($parent.debut)"  typeahead-wait-ms="10" typeahead-editable="false" typeahead-min-length="1" placeholder="Pages loaded via $http" uib-typeahead="searchpage for searchpage in getSuggPages($viewValue)" typeahead-loading="loadingPages" typeahead-no-results="noResults" />
-                            <i ng-show="loadingPages" class="glyphicon glyphicon-refresh"></i>
-                            <div ng-show="noResults">
-                                <i class="glyphicon glyphicon-remove"></i> pas des resultats trouvés
-                            </div>
-                        </label>
-                    </div>
+   <!-- Bootstrap core CSS -->
 
-                    <div class="input-sm col-sm-2 ">
-                        <label ng-if="$parent.debut!=null">
-                            <select class="form-control" id="fin" name="fin" ng-model="$parent.fin"  ng-options="item as item for item in finList track by item" ></select>
+</head>
+<body>
+<div class="jumbotron "  layout:fragment="content">
+   <h1>Creer une marrée ou un debarquement</h1>
+   <form th:action="@{creerDoc}" methode="get"  class="form-inline ">
 
-                        </label>
+      <div class="form-group ">
 
-                    </div>
-                    <div class="input-sm col-sm-2 ">
-                        <label ng-if="$parent.debut!=null">
-                            <input type="date" class="form-control input-sm" id="dateDepart1" name="dateDepart1" />
-                        </label>
-
-                    </div>
-                    <div class="input-sm col-sm-1" ng-if="$parent.debut!=null">
-                        <button type="submit">OK </button>
-
-                    </div>
-                </form>
+            <input type="text" class="form-control " id="debut" name="debut"  ng-model="$parent.debut" typeahead-on-select="updateFinds($parent.debut)"  typeahead-wait-ms="10" typeahead-editable="false" typeahead-min-length="1" placeholder="Numero page de debut" uib-typeahead="searchpage for searchpage in getSuggPages($viewValue)" typeahead-loading="loadingPages" typeahead-no-results="noResults" />
+            <i ng-show="loadingPages" class="glyphicon glyphicon-refresh"></i>
+            <div ng-show="noResults">
+               <i class="glyphicon glyphicon-remove"></i> pas des resultats trouvés
             </div>
 
-        </div>
+      </div>
+
+      <div class="form-group">
+
+            <select ng-if="$parent.debut!=null" class="form-control" id="fin" name="fin" ng-model="$parent.fin"  ng-options="item as item for item in finList track by item" ></select>
 
 
 
-    </div>
-</section>
+      </div>
+      <div class="form-group ">
+
+            <input  ng-if="$parent.debut!=null" type="date" class="form-control " id="dateDepart1" name="dateDepart1" />
+
+
+      </div>
+      <div class="form-group" ng-if="$parent.debut!=null">
+         <p><button class="btn btn-lg btn-primary" type="submit"> creer document &raquo; </button></p>
+
+      </div>
+   </form>
+
+</div>
+</body>
 </html>

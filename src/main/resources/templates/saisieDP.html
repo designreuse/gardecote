@@ -1,0 +1,53 @@
+<html  xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>1 ER ETAPE POUR SAISIE</title>
+</head>
+<body>
+<section class="col-sm-12" layout:fragment="content">
+    <div class="panel panel-default">
+        <div class="panel-heading col-sm-12 ">
+            <div class="form-inline col-sm-12" >
+                <form th:action="@{creerDoc}" methode="get">
+                    <div class="input-sm  col-sm-1 " >
+                        <label>Numeros de pages :</label>
+                    </div>
+                    <div class="input-sm col-sm-2 ">
+                        <label >
+                            <input type="text" class="form-control input-sm" id="debut" name="debut"  ng-model="$parent.debut" typeahead-on-select="updateFinds($parent.debut)"  typeahead-wait-ms="10" typeahead-editable="false" typeahead-min-length="1" placeholder="Pages loaded via $http" uib-typeahead="searchpage for searchpage in getSuggPages($viewValue)" typeahead-loading="loadingPages" typeahead-no-results="noResults" />
+                            <i ng-show="loadingPages" class="glyphicon glyphicon-refresh"></i>
+                            <div ng-show="noResults">
+                                <i class="glyphicon glyphicon-remove"></i> pas des resultats trouvés
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="input-sm col-sm-2 ">
+                        <label ng-if="$parent.debut!=null">
+                            <select class="form-control" id="fin" name="fin" ng-model="$parent.fin"  ng-options="item as item for item in finList track by item" ></select>
+
+                        </label>
+
+                    </div>
+                    <div class="input-sm col-sm-2 ">
+                        <label ng-if="$parent.debut!=null">
+                            <input type="date" class="form-control input-sm" id="dateDepart1" name="dateDepart1" />
+                        </label>
+
+                    </div>
+                    <div class="input-sm col-sm-1" ng-if="$parent.debut!=null">
+                        <button type="submit">OK </button>
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+
+
+    </div>
+</section>
+</body>
+</html>

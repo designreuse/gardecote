@@ -1,5 +1,9 @@
 package com.gardecote.entities;
 
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -16,6 +20,7 @@ import java.util.List;
 public class qDoc implements Serializable {
 
     @Id
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
    private Date depart       ;
 
     @Id
@@ -27,6 +32,7 @@ public class qDoc implements Serializable {
 
 
     @Column(name="Retour", nullable=true, length=10)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date     retour       ;
 
 

@@ -76,14 +76,23 @@ public class mappingController {
     public String ggg(){
         return "index";
     }
-    @RequestMapping(value="/creer")
-    public String gggh(){
-        return "index";
+    @RequestMapping(value="/startDP")
+    public String startDP(){
+        return "startDP";
+    }
+    @RequestMapping(value="/docGeneration")
+    public String docgeneration(){
+        return "saisieDP";
+    }
+    @RequestMapping(value="/docEdit")
+    public String docedit(){
+        return "docEdit";
     }
     @RequestMapping(value="/creerDoc")
     public String creerDocument(Model model, @RequestParam(name="debut",defaultValue = "PC0") String debut, @RequestParam(name="fin",defaultValue = "PC0") String fin,@RequestParam(name="dateDepart1") String dateDepart1) {
         List<qDoc> lstDoc=new ArrayList<qDoc>();
         qDoc currentDoc=null;
+        String typeDoc=null;
         Object docExact=null;
         Object traitExact=null;
         List<qTraitement> lstTraitements=new ArrayList<qTraitement>();
@@ -154,6 +163,8 @@ public class mappingController {
     //   }
 
       //      result.put("currentDoc",currentDoc);
+        if(currentDoc instanceof qMarree) typeDoc="M";
+        if(currentDoc instanceof qDebarquement) typeDoc="D";
         model.addAttribute("pageDebut",debut);
         model.addAttribute("pageFin",fin);
     //    model.addAttribute("docDuplicat",docExact);
@@ -161,7 +172,8 @@ public class mappingController {
         model.addAttribute("currentDoc",currentDoc); // en cas de ecrasement on verifie s'i s'agit de different seq alors supprimer l'ancien et si est le meme seq juste il faut l'ouvrire pour modification
         model.addAttribute("lstDoc",lstDoc);
         model.addAttribute("lstTraitement",lstTraitements);
-
+        model.addAttribute("date_format", "dd/MM/yyyy");
+        model.addAttribute("typeDoc", typeDoc);
 
         System.out.println("Liste de documents  :");
         System.out.println(lstDoc);
@@ -173,7 +185,8 @@ public class mappingController {
       System.out.println(docExact);
        System.out.println("Dtrait dupl :");
      System.out.println(traitExact);
-
+        System.out.println("type de doc :");
+        System.out.println(typeDoc);
 
         return "docEdit";
     }

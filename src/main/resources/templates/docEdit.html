@@ -5,46 +5,50 @@
     <title>Title</title>
 </head>
 <body>
-<section class="col-sm-12" layout:fragment="content">
-    <div class="panel panel-default">
-        <div class="panel-heading col-sm-12 ">
-            <div class="form-inline col-sm-12" >
+<div class="jumbotron "  layout:fragment="content">
 
-                    <div class="input-sm  col-sm-1 " >
 
-                        <label>date de depart:</label>
-                    </div>
-                    <div class="input-sm col-sm-2 ">
-                        <label >
-                            <label th:text="${currentDoc.depart}"> :</label>
+    <div class="form-inline" th:if="${typeDoc=='D'}" >
+        <h4>Creation de débarquement</h4>
+<form th:action="@{saveDocument}" method="post" th:object="${currentDoc}">
+        <div class="form-group " >
 
-                        </label>
-                    </div>
+            <label class="control-label label-primary ">date de depart:</label>
+            <input type="text" class="form-control-static" th:field="*{depart}" disabled="disabled" />
 
-                    <div class="input-sm col-sm-2 ">
-                        <label>
-                            <label>numimm:</label>
-                        </label>
 
-                    </div>
-                    <div class="input-sm col-sm-2 ">
-                        <label >
-                            <label th:text="${currentDoc.numImm}"> :</label>
-                        </label>
 
-                    </div>
-                    <div class="input-sm col-sm-1" >
-                    <input type="Date"  th:text="${currentDoc.retour}"/>
 
-                    </div>
+                <label class="control-label label-primary">numimm:</label>
 
-            </div>
+
+            <input class="form-control-static" th:field="*{numImm}" />
+
+
+            <label class="control-label label-primary">Retour:</label>
+            <input type="Date"  th:field="*{retour}" />
+
+            <label class="control-label label-primary">type doc:</label>
+            <input type="Date"  th:field="*{enumtypedoc}" />
+
+            <label class="control-label label-primary"> typeDeb:</label>
+            <input type="Date"  th:field="*{typeDeb}" />
+
+            <label class="control-label label-primary"> Engins:</label>
+            <input type="Date"  th:field="*{typeDeb}" />
+
+            <label class="control-label label-primary"> qcategconcernees:</label>
+            <input type="Date"  th:field="*{typeDeb}" />
+
+
 
         </div>
-
-
-
+</form>
     </div>
-</section>
+</div>
+
+
+
+
 </body>
 </html>
