@@ -24,7 +24,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qlicence3", schema="dbo", catalog="GCM1" )
+@Table(name="qlicence4", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qLicence.countAll", query="SELECT COUNT(x) FROM  qLicence x")
@@ -58,14 +58,11 @@ public class qLicence implements Serializable
   //  @Column(name="id_nation")
     private qNation    nation     ;
     // Ca c'est pour le format de nouvelle strategie
-    @ManyToMany(cascade = CascadeType.REFRESH,targetEntity =qCategRessource.class,fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocLicencesCategRessources")
     @JsonBackReference
     private List<qCategRessource> qcatressources;
-    @ManyToMany(cascade = CascadeType.REFRESH,targetEntity =qEnginPeche.class,fetch = FetchType.EAGER)
-    @JoinTable(name = "qAssocLicencesEngins")
-    @JsonBackReference
-    private List<qEnginPeche> Engins;
+
 
     @Column(name="code_type_supp_droit", length=100)
     private enumSupport     typesuppDroit ;
@@ -175,7 +172,7 @@ public class qLicence implements Serializable
 		super();
     }
 
-    public qLicence(qTypeLic qtypnav, qTypeEnc typencad, qZone zone, com.gardecote.entities.qNation qNation, List<qCategRessource> qcatressources, List<qEnginPeche> engins, enumSupport typesuppDroit, qRegistreNavire qnavire, qConsignataire qconcessionaire, qConcession qconcession, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, Integer balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomex, String nomnav, String numimm, String numlic, String port, String puimot, String radio, float tjb) {
+    public qLicence(qTypeLic qtypnav, qTypeEnc typencad, qZone zone, com.gardecote.entities.qNation qNation, List<qCategRessource> qcatressources,  enumSupport typesuppDroit, qRegistreNavire qnavire, qConsignataire qconcessionaire, qConcession qconcession, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, Integer balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomex, String nomnav, String numimm, String numlic, String port, String puimot, String radio, float tjb) {
 
         this.qtypnav = qtypnav;
         this.typencad = typencad;
@@ -183,7 +180,7 @@ public class qLicence implements Serializable
         this.nation = qNation;
         this.qcatressources=qcatressources;
        // this.qcatressources = qcatressources;
-        this.Engins = engins;
+
         this.typesuppDroit = typesuppDroit;
         this.qnavire = qnavire;
         this.qconcessionaire = qconcessionaire;
@@ -263,13 +260,7 @@ public class qLicence implements Serializable
 
     }
 
-    public List<qEnginPeche> getEngins() {
-        return Engins;
-    }
 
-    public void setEngins(List<qEnginPeche> engins) {
-        Engins = engins;
-    }
 
     public enumSupport getTypesuppDroit() {
         return typesuppDroit;

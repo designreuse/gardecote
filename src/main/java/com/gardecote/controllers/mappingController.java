@@ -3,13 +3,17 @@ package com.gardecote.controllers;
 import com.gardecote.LicenceAc;
 import com.gardecote.business.service.*;
 import com.gardecote.entities.*;
+import com.gardecote.web.CreateDocForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -18,6 +22,9 @@ import java.util.*;
  * Created by Dell on 12/11/2016.
  */
 @Controller
+
+@SessionAttributes(types = {CreateDocForm.class})
+
 @RequestMapping("/")
 public class mappingController {
 
@@ -29,7 +36,12 @@ public class mappingController {
     @Autowired
     private qConsignataireService consignataireService;
     @Autowired
-    private qEnginPecheService enginsPecheService;
+    private qEnginsLicenceService enginsLicenceService;
+    @Autowired
+    private qEnginPecheMarService enginsPechMarService;
+    @Autowired
+    private qEnginPecheDebarService enginsPecheDebarService;
+
 
     @Autowired
     private qEspeceService especesService;
@@ -88,9 +100,41 @@ public class mappingController {
     public String docedit(){
         return "docEdit";
     }
-    @RequestMapping(value="/creerDoc")
-    public String creerDocument(Model model, @RequestParam(name="debut",defaultValue = "PC0") String debut, @RequestParam(name="fin",defaultValue = "PC0") String fin,@RequestParam(name="dateDepart1") String dateDepart1) {
+
+    @InitBinder public void initialiseBinder(WebDataBinder binder) {
+        binder.setDisallowedFields("numimm", "enumtypedoc");
+    }
+    @RequestMapping(value="/retActPage",method = RequestMethod.POST)
+    public String retActPage(final CreateDocForm docForm, final BindingResult result,@RequestParam(name="nump",defaultValue = "0") String nump,@RequestParam(name="indexp",defaultValue = "0") Integer indexp,final ModelMap model) {
+        String[] suppressedFields = result.getSuppressedFields();
+        if (suppressedFields.length > 0) {
+            throw new RuntimeException("Attempting to bind  disallowed fields: " + StringUtils.arrayToCommaDelimitedString(suppressedFields));
+        }
+        System.out.println(docForm.getCurrentDoc().getDepart());
+        System.out.println(docForm.getCurrentDoc().getNumImm());
+        // System.out.println(docForm.getCurrentDoc().getqDocPK().toString());
+        qDoc dc=docService.save(docForm.getCurrentDoc());
+        docForm.setCurrentPage(indexp);
+        return "docEdit";
+    }
+    @RequestMapping(value="/saveDocument",method = RequestMethod.POST)
+    public String saveDocument(final CreateDocForm docForm, final BindingResult result,final ModelMap model) {
+        String[] suppressedFields = result.getSuppressedFields();
+        if (suppressedFields.length > 0) {
+            throw new RuntimeException("Attempting to bind  disallowed fields: " + StringUtils.arrayToCommaDelimitedString(suppressedFields));
+        }
+      System.out.println(docForm.getCurrentDoc().getDepart());
+      System.out.println(docForm.getCurrentDoc().getNumImm());
+      //System.out.println(docForm.getCurrentDoc().getqDocPK().toString());
+      docService.save(docForm.getCurrentDoc());
+      docForm.setCurrentPage(0);
+        return "docEdit";
+    }
+    @RequestMapping(value="/creerDoc",method = RequestMethod.GET)
+    public String creerDocument(final ModelMap model,final CreateDocForm docForm, @RequestParam(name="debut",defaultValue = "PC0") String debut, @RequestParam(name="fin",defaultValue = "PC0") String fin,@RequestParam(name="dateDepart1") String dateDepart1) {
+      //  CreateDocForm docForm=new CreateDocForm();
         List<qDoc> lstDoc=new ArrayList<qDoc>();
+        String titre=null;
         qDoc currentDoc=null;
         String typeDoc=null;
         Object docExact=null;
@@ -100,8 +144,7 @@ public class mappingController {
 
         qSeq qseq=seqService.findById(qseqpk);
       //  Date dateDepart=null,dateRetour=null;
-        List<qEnginPecheDeb> choixEnginsDeb=null;
-        List<qEnginPeche> choixEnginsMar=null;
+
         System.out.println("debut="+debut+"fin"+fin);
        // boolean flg=docService.checkSaisie(qseqpk);
          SimpleDateFormat sdfmt1= new SimpleDateFormat("yyyy-MM-dd");
@@ -149,7 +192,7 @@ public class mappingController {
             if(lstDoc.size()==0 && docExact==null && traitExact==null ) {
 
 
-                currentDoc=docService.creerDoc(dateDepart,null,se,choixEnginsDeb,choixEnginsMar);
+                currentDoc=docService.creerDoc(dateDepart,null,se);
 
             }
         else {
@@ -163,31 +206,35 @@ public class mappingController {
     //   }
 
       //      result.put("currentDoc",currentDoc);
-        if(currentDoc instanceof qMarree) typeDoc="M";
-        if(currentDoc instanceof qDebarquement) typeDoc="D";
-        model.addAttribute("pageDebut",debut);
-        model.addAttribute("pageFin",fin);
-    //    model.addAttribute("docDuplicat",docExact);
-      //  model.addAttribute("traitDuplicat",traitExact);
-        model.addAttribute("currentDoc",currentDoc); // en cas de ecrasement on verifie s'i s'agit de different seq alors supprimer l'ancien et si est le meme seq juste il faut l'ouvrire pour modification
-        model.addAttribute("lstDoc",lstDoc);
-        model.addAttribute("lstTraitement",lstTraitements);
-        model.addAttribute("date_format", "dd/MM/yyyy");
-        model.addAttribute("typeDoc", typeDoc);
+        if(currentDoc instanceof qMarree) {typeDoc="M";titre="Marrée";}
+        if(currentDoc instanceof qDebarquement){ typeDoc="D";titre="Débarquement"+((qDebarquement) currentDoc).getTypeDeb().toString();}
 
+        docForm.setCurrentPage(0);
+        docForm.setPageFin(fin);
+        docForm.setCurrentDoc(currentDoc);
+        docForm.setLstDoc(lstDoc);
+        docForm.setLstTraitement(lstTraitements);
+        docForm.setTypeDoc(typeDoc);
+        docForm.setTitre(titre);
+
+
+        model.addAttribute("docForm", docForm);
         System.out.println("Liste de documents  :");
         System.out.println(lstDoc);
         System.out.println("Liste de traitements :");
         System.out.println(lstTraitements);
         System.out.println("Document encours :");
         System.out.println(currentDoc);
-       System.out.println("doc duplicat :");
-      System.out.println(docExact);
-       System.out.println("Dtrait dupl :");
-     System.out.println(traitExact);
+        System.out.println("doc duplicat :");
+        System.out.println(docExact);
+        System.out.println("Dtrait dupl :");
+        System.out.println(traitExact);
         System.out.println("type de doc :");
-        System.out.println(typeDoc);
-
+        System.out.println(currentDoc.getEnumtypedoc().toString());
+        System.out.println("categories size :");
+        System.out.println(((qDebarquement)currentDoc).getCategories().size());
+     for(qCategDeb cat:((qDebarquement)currentDoc).getCategories())
+        System.out.println(cat.getCat().getTypeconcessionConcernee());
         return "docEdit";
     }
 }

@@ -62,6 +62,6 @@ public interface qDocService {
 
     boolean checkSaisie(qSeqPK sequencepk);
 
-    qDoc creerDoc(Date dateDepart, Date dateRetour, qSeq seqActive, List<qEnginPecheDeb> engisDeb, List<qEnginPeche> engisMar);
+    qDoc creerDoc(Date dateDepart, Date dateRetour, qSeq seqActive);
 
     }

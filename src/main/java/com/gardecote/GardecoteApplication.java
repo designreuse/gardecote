@@ -10,7 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import com.gardecote.data.repository.jpa.qConsignataireRepository;
-import com.gardecote.data.repository.jpa.qEnginPecheRepository;
+
 import com.gardecote.data.repository.jpa.qConcessionRepository;
 import com.gardecote.data.repository.jpa.qDocRepository;
 import com.gardecote.data.repository.jpa.qCarnetRepository;
@@ -44,9 +44,15 @@ import javax.persistence.PersistenceContext;
 import java.util.regex.*;
 
 import com.gardecote.data.repository.jpa.qSeqRepository;
+import org.springframework.context.annotation.Bean;
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
+
 @SpringBootApplication
 public class GardecoteApplication {
-
+    @Bean
+    public Java8TimeDialect java8TimeDialect() {
+        return new Java8TimeDialect();
+    }
 
     public static void main(String[] args) {
      ApplicationContext ctx = SpringApplication.run(GardecoteApplication.class, args);

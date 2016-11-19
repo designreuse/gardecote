@@ -5,47 +5,167 @@
     <title>Title</title>
 </head>
 <body>
-<div class="jumbotron "  layout:fragment="content">
-
-
-    <div class="form-inline" th:if="${typeDoc=='D'}" >
-        <h4>Creation de débarquement</h4>
-<form th:action="@{saveDocument}" method="post" th:object="${currentDoc}">
-        <div class="form-group " >
-
-            <label class="control-label label-primary ">date de depart:</label>
-            <input type="text" class="form-control-static" th:field="*{depart}" disabled="disabled" />
 
 
 
+ <div  th:if="${docForm.typeDoc=='D'}"  layout:fragment="content" >
+        <h3 th:text="${docForm.titre}"></h3>
 
-                <label class="control-label label-primary">numimm:</label>
+  <form th:action="@{saveDocument}" method="post" th:object="${docForm}">
+       <div class="row well well-sm" >
+            <div class=" col-sm-2" >
+        <div class="form-group form-group-sm">
+            <label class="col-sm-5 control-label">date de depart:</label>
+<div class="col-sm-6">
+            <input type="date"  class="form-control col-sm-2 input-sm"  th:field="*{currentDoc.depart}" th:value="*{#dates.format(currentDoc.depart, 'yyyy-MM-dd')}" />
+</div>
+         </div>
+            </div>
+            <div class=" col-sm-2" >
+                <div class="form-group">
 
 
-            <input class="form-control-static" th:field="*{numImm}" />
+
+                </div>
+            </div>
+
+            <div class=" col-sm-2" >
+            <div class="form-group">
+            <label class="control-label" >date de Retour:</label>
+
+            <input type="date" class="form-control input-sm"  th:field="*{currentDoc.retour}" th:value="*{currentDoc.retour}?*{#dates.format(currentDoc.retour, 'yyyy-MM-dd')}:''"  />
+                </div>
 
 
-            <label class="control-label label-primary">Retour:</label>
-            <input type="Date"  th:field="*{retour}" />
+               </div>
 
-            <label class="control-label label-primary">type doc:</label>
-            <input type="Date"  th:field="*{enumtypedoc}" />
 
-            <label class="control-label label-primary"> typeDeb:</label>
-            <input type="Date"  th:field="*{typeDeb}" />
-
-            <label class="control-label label-primary"> Engins:</label>
-            <input type="Date"  th:field="*{typeDeb}" />
-
-            <label class="control-label label-primary"> qcategconcernees:</label>
-            <input type="Date"  th:field="*{typeDeb}" />
-
+    <div class=" col-sm-2" >
+        <div class="form-group">
 
 
         </div>
+    </div>
+    <div class="col-sm-2" >
+        <div class="form-group">
+
+        </div>
+    </div>
+    <div class=" col-sm-2" >
+        <div class="form-group">
+
+
+        </div>
+    </div>
+        </div>
+    <div class="row well well-sm" >
+
+
+                <div class=" col-sm-6" >
+
+
+
+              <table class="table-bordered"  id="engins" >
+               <tr>
+                   <th th:each="engindeb, stat : *{currentDoc.Engins}" th:text="*{currentDoc.Engins[__${stat.index}__].EnginDeb}"></th>
+               </tr>
+               <tr>
+
+              <td th:each="engindeb, stat : *{currentDoc.Engins}">
+
+                  <input type="numeric" class="form-control input-sm input-mysize" th:field="*{currentDoc.Engins[__${stat.index}__].maillage}"  th:value="*{currentDoc.Engins[__${stat.index}__].maillage}"/>
+
+              </td>
+
+                </tr>
+                 <tr >
+
+            <td th:each="engindeb, stat : *{currentDoc.Engins}">
+                <input type="checkbox"  th:field="*{currentDoc.Engins[__${stat.index}__].flag}"  th:value="*{currentDoc.Engins[__${stat.index}__].flag}"  /></td>
+              </tr>
+                   </table>
+
+                </div>
+
+
+        <div class=" col-sm-6" >
+
+
+        </div>
+
+</div>
+    <div class="row well well-sm">
+        <div class=" col-sm-12" >
+            <table class="table-bordered" id="categ" >
+                <tr  >
+
+                    <th th:each="categ, stat : *{currentDoc.categories}"  th:text="*{currentDoc.categories[__${stat.index}__].cat.typeconcessionConcernee}">
+
+                    </th>
+                </tr>
+                <tr >
+
+                    <td th:each="categ, stat : *{currentDoc.categories}">
+                        <input type="checkbox"  th:field="*{currentDoc.categories[__${stat.index}__].flag}" th:value="*{currentDoc.categories[__${stat.index}__].flag}" /></td>
+                </tr>
+
+
+
+            </table>
+        </div>
+        </div>
+      <div class="row">
+          <div class=" col-sm-12" >
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+           </div>
+          </div>
+
+ <div class="row">
+  <div class=" col-sm-12" >
+    <div class="panel panel-danger">
+        <div class="panel-heading">les captures de document</div>
+        <div class="panel-body">
+        <ul class="nav nav-tabs">
+            <li  th:each="page, stat : *{currentDoc.pages}" th:class="${__${stat.index}__==__${docForm.currentPage}__}? active : ''"><a data-toggle="tab" th:href="'#page'+${stat.index}"><span th:text="'page'+*{currentDoc.pages[__${stat.index}__].numeroPage}">${stat.index}</span></a> </li>
+
+
+        </ul>
+
+        <div class="tab-content">
+            <div th:each="page, statp : *{currentDoc.pages}" th:attr="id='page'+${statp.index}" class="tab-pane fade in active" th:class="${__${statp.index}__==__${docForm.currentPage}__}? 'tab-pane fade in active' : 'tab-pane fade'" >
+                <h3>les captures des jours de page</h3>
+                <p>
+                <table class="table-bordered">
+                    <tr >
+                        <th >Date du jour</th>
+                        <th th:each="p, statesp : *{currentDoc.pages[__${statp.index}__].listJours[0].debarqDuJour}">
+                            <span  th:text="*{currentDoc.pages[__${statp.index}__].listJours[0].debarqDuJour[__${statesp.index}__].especeTypee.qespece.nomFr}" />
+                        </th>
+                    </tr>
+                    <tr th:each="jourLigne, statj : *{currentDoc.pages[__${statp.index}__].listJours}">
+                        <td>
+                            <input type="date" class="form-control input-sm " th:disabled="true" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{#dates.format(currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour, 'yyyy-MM-dd')}" />
+                        </td>
+                        <td th:each="jourCap, statc : *{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour}">
+                            <input type="text" class="form-control input-sm " th:tabindex="((*{currentDoc.pages[__${statp.index}__].nbrLigne}*${statc.index})+${statj.index}+1)" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].quantite}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].quantite}"/>
+                        </td>
+                    </tr>
+                </table>
+
+                </p>
+            </div>
+
+        </div>
+        </div>
+    <panel>
+
+    </panel>
+</div>
+        </div>
+    </div>
 </form>
     </div>
-</div>
+
 
 
 

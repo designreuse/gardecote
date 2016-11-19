@@ -9,7 +9,7 @@ public enum enumTypeConcessionHautiriere {
     Cephalopode,
     Crevettes,
     Merlus,
-    Poissons_demersaux_autre_que_merlu,
+    Demersaux_autre_que_merlu,
     Langouste_rose,
     Crabe_profond,
     Autres_Mollusques

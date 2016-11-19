@@ -46,4 +46,9 @@ public class qTypeConcessionCotiere extends qTypeConcession implements Serializa
         this.enumTypeConcessionCotiere = enumTypeConcessionCotiere;
         this.enumTypePecheCotiere = enumTypePecheCotiere;
     }
+
+    @Override
+    public String toString() {
+        return  enumTypeConcessionCotiere.toString();
+    }
 }

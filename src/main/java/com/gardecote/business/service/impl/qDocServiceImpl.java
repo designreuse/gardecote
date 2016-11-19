@@ -3,11 +3,14 @@ package com.gardecote.business.service.impl;
 import com.gardecote.business.service.qDocService;
 import com.gardecote.data.repository.jpa.*;
 import com.gardecote.entities.*;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -20,8 +23,13 @@ import java.util.regex.Pattern;
 @Service
 @Transactional
 public class qDocServiceImpl implements qDocService {
+    @PersistenceContext
+    private EntityManager em;
+
     @Autowired
     private qDocRepository qdocRepository;
+    @Autowired
+    private qCategRessourceRepository qcqtRepository;
 
     @Autowired
     private qSeqRepository qseqRepository;
@@ -50,7 +58,17 @@ public class qDocServiceImpl implements qDocService {
 
     @Override
     public qDoc save(qDoc authprov) {
-        return update(authprov) ;
+
+        Session session = em.unwrap(Session.class);
+        qDoc authprovEntity = qdocRepository.findOne(authprov.getqDocPK());
+        if (authprovEntity == null) {
+            em.persist(authprov);
+            return authprov;
+        } else {
+
+            //   session.evict(authprovEntity);
+            return em.merge(authprov);
+        }
     }
 
     @Override
@@ -69,9 +87,9 @@ public class qDocServiceImpl implements qDocService {
 
     @Override
     public qDoc update(qDoc authprov) {
-        qDoc authprovEntity = qdocRepository.findOne(authprov.getqDocPK());
+      // qDoc authprovEntity = qdocRepository.findOne(authprov.getqDocPK());
 
-        qDoc authprovEntitySaved = qdocRepository.save(authprovEntity);
+        qDoc authprovEntitySaved = qdocRepository.save(authprov);
         return authprovEntitySaved ;
     }
 
@@ -207,7 +225,7 @@ public class qDocServiceImpl implements qDocService {
     }
 
     @Override
-    public qDoc creerDoc(Date dateDepart, Date dateRetour, qSeq seqActive, List<qEnginPecheDeb> engisDeb, List<qEnginPeche> engisMar) {
+    public qDoc creerDoc(Date dateDepart, Date dateRetour, qSeq seqActive) {
         String numeroDebut = seqActive.getDebut(),numeroFin = seqActive.getFin(), debutPrefix = null,finPrefix = null;
         qDoc documentCree=null;
 
@@ -222,25 +240,79 @@ public class qDocServiceImpl implements qDocService {
         debutPrefix=carnetDebut.getPrefixNumerotation().toString();
 
         qRegistreNavire qnav = carnetDebut.getQnavire();
-        qConcession qconcess = carnetDebut.getQconcession();
+        qConcession qconcess =carnetDebut.getQconcession();//qnav.getQlicencebatlastdernier().getQconcession(); // concession du dernier lic
+        //carnetDebut.getQconcession();
+        List<qEnginPecheDebar> choixEnginsDeb=new ArrayList<qEnginPecheDebar>();
+        qEnginPecheDebar engdeb1=new qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Filet_maillant,0,false);
+        qEnginPecheDebar engdeb2=new  qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Filet_Enc_ST,0,false);
+        qEnginPecheDebar engdeb3=new  qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Palangre,0,false);
+        qEnginPecheDebar engdeb4=new  qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Filet_tremail,0,false);
 
+        qEnginPecheDebar engdeb6=new qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Casier,0,false);
+        qEnginPecheDebar engdeb7=new qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Ligne,0,false);
+        qEnginPecheDebar engdeb8=new qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Pots,0,false);
+        qEnginPecheDebar engdeb9=new qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Turlutte,0,false);
+        choixEnginsDeb.add(engdeb1);
+        choixEnginsDeb.add(engdeb2);
+        choixEnginsDeb.add(engdeb3);
+        choixEnginsDeb.add(engdeb4);
+
+        choixEnginsDeb.add(engdeb6);
+        choixEnginsDeb.add(engdeb7);
+        choixEnginsDeb.add(engdeb8);
+        choixEnginsDeb.add(engdeb9);
+
+        List<qCategDeb> categsArt=new ArrayList<qCategDeb>();
+        qCategRessource cr1=qcqtRepository.findOne(1);
+        qCategRessource cr2=qcqtRepository.findOne(2);
+        qCategRessource cr3=qcqtRepository.findOne(3);
+        qCategRessource cr4=qcqtRepository.findOne(4);
+        qCategRessource cr5=qcqtRepository.findOne(5);
+
+        qCategDeb c1=new qCategDeb(qnav.getNumimm(),dateDepart,cr1,false);
+        qCategDeb c2=new qCategDeb(qnav.getNumimm(),dateDepart,cr2,false);
+        qCategDeb c3=new qCategDeb(qnav.getNumimm(),dateDepart,cr3,false);
+        qCategDeb c4=new qCategDeb(qnav.getNumimm(),dateDepart,cr4,false);
+        qCategDeb c5=new qCategDeb(qnav.getNumimm(),dateDepart,cr5,false);
+
+        categsArt.add(c1);categsArt.add(c2);categsArt.add(c3);categsArt.add(c4);categsArt.add(c5);
+
+        List<qCategDeb> categsCot=new ArrayList<qCategDeb>();
+        qCategRessource cr11=qcqtRepository.findOne(6);
+        qCategRessource cr21=qcqtRepository.findOne(7);
+        qCategRessource cr31=qcqtRepository.findOne(8);
+        qCategRessource cr41=qcqtRepository.findOne(9);
+        qCategRessource cr51=qcqtRepository.findOne(10);
+        qCategRessource cr61=qcqtRepository.findOne(11);
+        qCategRessource cr71=qcqtRepository.findOne(12);
+
+        qCategDeb c11=new qCategDeb(qnav.getNumimm(),dateDepart,cr11,false);
+        qCategDeb c21=new qCategDeb(qnav.getNumimm(),dateDepart,cr21,false);
+        qCategDeb c31=new qCategDeb(qnav.getNumimm(),dateDepart,cr31,false);
+        qCategDeb c41=new qCategDeb(qnav.getNumimm(),dateDepart,cr41,false);
+
+        categsCot.add(c11);categsCot.add(c21);categsCot.add(c31);categsCot.add(c41);
+
+
+        List<qEnginPecheMar> choixEnginsMar=null;
 
 
         qModelJP currentModel=qmodelRepository.findOne(enumPrefix.valueOf(debutPrefix));
-       List<qCategRessource>  ours=null;//qconcess.getCategoriesRessources();
+       List<qCategRessource>  ours=new ArrayList<qCategRessource>();
+        ours.addAll(qnav.getQlicencebatlastdernier().getQcatressources());        // cat du dernier licence
         if(seqActive.getQdoc()==null) {
             if (carnetDebut.getTypeDoc().equals(enumTypeDoc.Fiche_Debarquement)) {
                 if (carnetDebut.getPrefixNumerotation().equals(enumPrefix.PC)) {
                     // la peche cotiere
                     documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,
-                            qconcess, engisDeb, ours, enumTypeDebarquement.Cotier, null);
+                             choixEnginsDeb,  enumTypeDebarquement.Cotier, qconcess,categsCot, null);
                 }
 
                 if (carnetDebut.getPrefixNumerotation().equals(enumPrefix.PA)) {
                     // la peche artisanal
 
                     documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,
-                            qconcess, engisDeb, ours, enumTypeDebarquement.Artisanal, null);
+                              choixEnginsDeb, enumTypeDebarquement.Artisanal,qconcess, categsArt,null);
 
 
                 }
@@ -308,11 +380,11 @@ public class qDocServiceImpl implements qDocService {
                 }
                 // pour la journal de peche
                 if (flagcotiere > 0)
-                    documentCree = new qMarree(enumTypeDoc.Journal_Peche, dateDepart, dateRetour, seqActive, null,
-                            qconcess, qconcess.getCategoriesRessources(), enumJP.Cotier, null, null);
+                    documentCree = new qMarree(enumTypeDoc.Journal_Peche, dateDepart, dateRetour, seqActive, qnav,
+                            qconcess, enumJP.Cotier,  choixEnginsMar, null);
                 if (flaghautiriere > 0)
-                    documentCree = new qMarree(enumTypeDoc.Journal_Peche, dateDepart, dateRetour, seqActive, null,
-                            qconcess, qconcess.getCategoriesRessources(), enumJP.Hautirere, null, null);
+                    documentCree = new qMarree(enumTypeDoc.Journal_Peche, dateDepart, dateRetour, seqActive, qnav,
+                            qconcess,  enumJP.Hautirere, choixEnginsMar, null);
 
                 List<qPageMarree> lstPgsMar = new ArrayList<qPageMarree>();
                 // preparer les pages

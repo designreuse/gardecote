@@ -4,57 +4,56 @@
  */
 package com.gardecote.business.service;
 
-import com.gardecote.entities.enumEngin;
-import com.gardecote.entities.enumEnginDeb;
-import com.gardecote.entities.qEnginPeche;
-import com.gardecote.entities.qEnginPecheDeb;
+
+import com.gardecote.entities.qEnginPecheMar;
+import com.gardecote.entities.qEnginPechePK;
 
 import java.util.List;
 
 /**
  * Business Service Interface for entity BateaucompletEntity.
  */
-public interface qEnginPecheDebService {
+public interface qEnginPecheMarService {
 
 	/**
 	 * Loads an entity from the database using its Primary Key
 	 * @param numimm
 	 * @return entity
 	 */
-	qEnginPecheDeb findById(enumEnginDeb numimm) ;
+	qEnginPecheMar findById(qEnginPechePK numimm) ;
 
 	/**
 	 * Loads all entities.
 	 * @return all entities
 	 */
-	List<qEnginPecheDeb> findAll();
+	List<qEnginPecheMar> findAll();
 
 	/**
 	 * Saves the given entity in the database (create or update)
 	 * @param entity
 	 * @return entity
 	 */
-	qEnginPecheDeb save(qEnginPecheDeb entity);
+	qEnginPecheMar save(qEnginPecheMar entity);
 
 	/**
 	 * Updates the given entity in the database
 	 * @param entity
 	 * @return
 	 */
-	qEnginPecheDeb update(qEnginPecheDeb entity);
+	qEnginPecheMar update(qEnginPecheMar entity);
 
 	/**
 	 * Creates the given entity in the database
 	 * @param entity
 	 * @return
 	 */
-	qEnginPecheDeb create(qEnginPecheDeb entity);
+	qEnginPecheMar create(qEnginPecheMar entity);
 
 	/**
 	 * Deletes an entity using its Primary Key
 	 * @param numimm
 	 */
-	void delete(enumEnginDeb numimm);
+	void delete(qEnginPechePK numimm);
 
 
 }

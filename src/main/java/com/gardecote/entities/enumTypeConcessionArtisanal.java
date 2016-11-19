@@ -6,7 +6,7 @@ package com.gardecote.entities;
 public enum enumTypeConcessionArtisanal {
     Cephalopode,
     Crustaces,
-    Poissons_demersaux,
-    Poissons_Pelagique,
+    Demersaux,
+    Pelagique,
     Algues_et_autres_Mollusques
 }

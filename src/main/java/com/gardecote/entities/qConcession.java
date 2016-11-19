@@ -46,13 +46,11 @@ public class qConcession implements Serializable
 
      private qConsignataire    qconsignataire;
 
-    @OneToMany(mappedBy = "qconcession",targetEntity = qPageDebarquement.class)
+    @OneToMany(mappedBy = "qconcession",targetEntity = qDoc.class)
 
-    private List<qPageDebarquement> qpagesdebarquement;
+    private List<qDoc> qdocs;
 
-    @OneToMany(mappedBy = "qconcession",targetEntity = qPageDebarquement.class)
 
-    private List<qPageMarree> qpagesMaree;
 
    @Column(name="dateConcession")
     private Date     dateConcession  ;
@@ -73,7 +71,7 @@ public class qConcession implements Serializable
 
 
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "qAssocConessionCategRessources")
      private List<qCategRessource>     categoriesRessources ;
 
@@ -81,6 +79,30 @@ public class qConcession implements Serializable
    //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
+
+    public List<qDoc> getQdocs() {
+        return qdocs;
+    }
+
+    public void setQdocs(List<qDoc> qdocs) {
+        this.qdocs = qdocs;
+    }
+
+    public Date getDateConcession() {
+        return dateConcession;
+    }
+
+    public void setDateConcession(Date dateConcession) {
+        this.dateConcession = dateConcession;
+    }
+
+    public Integer getDureeConcession() {
+        return dureeConcession;
+    }
+
+    public void setDureeConcession(Integer dureeConcession) {
+        this.dureeConcession = dureeConcession;
+    }
 
     public qConcession()
     {

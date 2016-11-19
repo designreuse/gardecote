@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qCategoriesRessources", schema="dbo", catalog="GCM1" )
+@Table(name="qCategoriesRessources4", schema="dbo", catalog="GCM1" )
 // Define named queries here
 
 @NamedQueries ( {
@@ -26,35 +26,14 @@ public class qCategRessource implements Serializable {
    private Integer idtypeConcession;
 
    private enumSupport typeSupport;
-   @ManyToMany(mappedBy = "qcatressources",cascade = CascadeType.REFRESH)
+   @ManyToMany(mappedBy = "qcatressources",targetEntity = qLicence.class,cascade = CascadeType.MERGE)
   //  @JoinColumn(insertable = false,updatable = false)
     private List<qLicence>    qlicences;
 
-    @ManyToMany(targetEntity =qEnginPeche.class,cascade = CascadeType.MERGE)
+    @ManyToMany(targetEntity =qEnginsLicence.class,cascade = CascadeType.MERGE)
     @JoinTable(name = "qAssocCategRessourcesEngins")
     @JsonManagedReference
-    private List<qEnginPeche> Engins;
-
-    @ManyToMany(mappedBy = "categressource",targetEntity =qEnginPecheDeb.class,cascade = CascadeType.MERGE)
-    @JsonManagedReference
-    private List<qEnginPecheDeb> EnginsDeb;
-
-    @ManyToMany(mappedBy = "qcategconcernees",targetEntity =qDebarquement.class,cascade = CascadeType.MERGE)
-  //  @JoinColumns({
- //          @JoinColumn(name = "departfk", referencedColumnName = "depart",insertable = false,updatable = false),
- //           @JoinColumn(name = "numImmfk", referencedColumnName = "numImm",insertable = false,updatable = false)
- //   })
-    @JsonManagedReference
-    private List<qDebarquement> qdeb;
-
-    @ManyToMany(targetEntity =qMarree.class)
-  //  @JoinColumns({
-   //         @JoinColumn(name = "departfkM", referencedColumnName = "depart",insertable = false,updatable = false),
-     //       @JoinColumn(name = "numImmfkM", referencedColumnName = "numImm",insertable = false,updatable = false)
-   // })
-    @JoinTable(name = "qAssocMarreeCategRessources")
-    @JsonManagedReference
-    private List<qMarree> qmarree;
+    private List<qEnginsLicence> Engins;
 
     @ManyToMany(mappedBy = "categoriesRessources" ,  targetEntity =qConcession.class,cascade = CascadeType.MERGE)
    // @JoinColumn(name = "ref_concessionfk", referencedColumnName = "ref_concession",insertable = false,updatable = false)
@@ -75,7 +54,7 @@ public class qCategRessource implements Serializable {
         this.qlicences = qlicences;
     }
 
-    public qCategRessource(qTypeConcession typeConcession, enumSupport typeSupport,List<qLicence>  lic, List<qEnginPeche> engins) {
+    public qCategRessource(qTypeConcession typeConcession, enumSupport typeSupport,List<qLicence>  lic, List<qEnginsLicence> engins) {
         this.idtypeConcession = typeConcession.getQtypeconcessionpk();
         this.qlicences=lic;
         this.typeSupport = typeSupport;
@@ -88,13 +67,7 @@ public class qCategRessource implements Serializable {
     public qCategRessource() {
     }
 
-    public List<qEnginPecheDeb> getEnginsDeb() {
-        return EnginsDeb;
-    }
 
-    public void setEnginsDeb(List<qEnginPecheDeb> enginsDeb) {
-        EnginsDeb = enginsDeb;
-    }
 
     public Integer getIdtypeConcession() {
         return idtypeConcession;
@@ -112,29 +85,15 @@ public class qCategRessource implements Serializable {
         this.typeSupport = typeSupport;
     }
 
-    public List<qEnginPeche> getEngins() {
+    public List<qEnginsLicence> getEngins() {
         return Engins;
     }
 
-    public void setEngins(List<qEnginPeche> engins) {
+    public void setEngins(List<qEnginsLicence> engins) {
         Engins = engins;
     }
 
-    public List<qDebarquement> getQdeb() {
-        return qdeb;
-    }
 
-    public void setQdeb(List<qDebarquement> qdeb) {
-        this.qdeb = qdeb;
-    }
-
-    public List<qMarree> getQmarree() {
-        return qmarree;
-    }
-
-    public void setQmarree(List<qMarree> qmarree) {
-        this.qmarree = qmarree;
-    }
 
     public List<qConcession> getQconcession() {
         return qconcession;

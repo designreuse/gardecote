@@ -8,6 +8,7 @@ package com.gardecote.entities;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,7 +27,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qJourDeb1", schema="dbo", catalog="GCM1" )
+@Table(name="qJourDeb4", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJourDeb.countAll", query="SELECT COUNT(x) FROM qJourDeb x" )
@@ -48,6 +49,8 @@ public class qJourDeb implements Serializable
     //----------------------------------------------------------------------
     @Id
     @Column(name="dateJour", nullable=false, length=10)
+
+    @DateTimeFormat (pattern="yyyy-MM-dd")
     private Date  dateJour ;
 
    //----------------------------------------------------------------------
@@ -104,6 +107,13 @@ public class qJourDeb implements Serializable
     }
 
 
+    public Date getDateJour() {
+        return dateJour;
+    }
+
+    public void setDateJour(Date dateJour) {
+        this.dateJour = dateJour;
+    }
 
     public Date getDatejourDeb() {
         return dateJour;

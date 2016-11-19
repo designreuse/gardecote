@@ -6,9 +6,7 @@ package com.gardecote.entities;
 public enum enumTypeConcessionCotiere {
     Cepholopode,
     Crustaces,
-    Poissons_demersaux,
-    Poissons_Pelagiques_Seg1,
-    Poissons_Pelagiques_Seg2,
-    Poissons_Pelagiques_Seg3,
+    Demersaux,
+    Pelagique,
     Autres_Mollusques,
 }

@@ -9,5 +9,6 @@ public enum enumEngin {
     Nasses,
     Pots,
     Filet_tremail,
-    Turlutte
+    Turlutte,
+    Indefini
 }

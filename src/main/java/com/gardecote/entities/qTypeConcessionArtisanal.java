@@ -32,4 +32,8 @@ public class qTypeConcessionArtisanal extends qTypeConcession implements Seriali
         super(qtypeconcessionpk,prefixNum);
         this.enumTypeConcessionArtisanal = enumTypeConcessionArtisanal;
     }
+    @Override
+    public String toString() {
+        return   enumTypeConcessionArtisanal.toString();
+    }
 }

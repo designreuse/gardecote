@@ -1,5 +1,6 @@
 package com.gardecote.entities;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +14,8 @@ import java.util.List;
  * Created by Dell on 23/10/2016.
  */
 @Entity
-@Table(name="qDoc1", schema="dbo", catalog="GCM1" )
+@DynamicUpdate
+@Table(name="qDoc4", schema="dbo", catalog="GCM1" )
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
@@ -40,19 +42,29 @@ public class qDoc implements Serializable {
     @Column(name="doctype", nullable=false, length=10)
     private enumTypeDoc enumtypedoc;
 
+    @OneToOne
+    private qConcession qconcession;
 
     public qDoc() {
 
+    }
+
+    public qConcession getQconcession() {
+        return qconcession;
+    }
+
+    public void setQconcession(qConcession qconcession) {
+        this.qconcession = qconcession;
     }
 
     public Date getDepart() {
         return depart;
     }
     public qDocPK getqDocPK(){
-        qDocPK qMarree=new qDocPK();
+        qDocPK qdk=new qDocPK(this.getNumImm(),this.depart);
 
 
-        return qMarree;
+        return qdk;
     }
     public void setDepart(Date depart) {
 
@@ -67,7 +79,8 @@ public class qDoc implements Serializable {
         this.qseq = qsec;
     }
 
-    public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour,qSeq qseq, qRegistreNavire   qnavire) {
+    public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour,qSeq qseq, qRegistreNavire   qnavire,qConcession qconcess){
+        this.qconcession=qconcess;
         this.enumtypedoc = enumtypedoc;
         this.depart=depart;
         this.qseq=qseq;
