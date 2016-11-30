@@ -29,8 +29,17 @@ public class qConsignataire implements Serializable {
   //@JoinTable(name="LiaisonConcessionConcessionaire",joinColumns=@JoinColumn(name="consignataire_fk"),inverseJoinColumns = @JoinColumn(name="concession_fk"))
   //@JoinColumn(name = "idconcession")
 
-
     private List<qConcession> qconcession;
+
+    public String getNomconsignataire() {
+        return nomconsignataire;
+    } public void setNomconsignataire(String nomconsignataire) {
+        this.nomconsignataire = nomconsignataire;
+    } public List<qConcession> getQconcession() {
+        return qconcession;
+    } public void setQconcession(List<qConcession> qconcession) {
+        this.qconcession = qconcession;
+    }
 
     public qConsignataire(String consignataire, List<qConcession> concession) {
         nomconsignataire = consignataire;

@@ -16,16 +16,14 @@ import java.util.List;
         @NamedQuery ( name="qTypeConcession.countAll", query="SELECT COUNT(x) FROM qTypeConcession x" )
 } )
 public class qTypeConcession implements Serializable {
-     @Id
+    @Id
  //   @GeneratedValue(strategy= GenerationType.AUTO)
-     @Column(name = "qtypeconcessionpk",unique=true, nullable = false)
+    @Column(name = "qtypeconcessionpk",unique=true, nullable = false)
      private Integer qtypeconcessionpk;
 
 
     @Column(name="prefixNum", nullable=false, length=2)
     private enumPrefix     prefixNum    ;
-
-
 
     public qTypeConcession() {
         super();
@@ -51,4 +49,6 @@ public class qTypeConcession implements Serializable {
     public void setPrefixNum(enumPrefix prefixNum) {
         this.prefixNum = prefixNum;
     }
+
+
 }

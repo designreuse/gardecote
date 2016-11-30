@@ -55,7 +55,7 @@ public interface qCarnetService {
 
 	qCarnet entrerDansLeSystem(qCarnet carnet);
 
-	qCarnet attribuerCarnetAuNavire(qCarnet carnet,qRegistreNavire nav,qConcession concess,qUsine usine);
+	qCarnet attribuerCarnetAuNavire(qCarnet carnet,qNavire nav,qLic licence,qUsine usine);
 
 
 }

@@ -3,7 +3,6 @@ package com.gardecote.entities;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -26,9 +25,9 @@ public class qCategRessource implements Serializable {
    private Integer idtypeConcession;
 
    private enumSupport typeSupport;
-   @ManyToMany(mappedBy = "qcatressources",targetEntity = qLicence.class,cascade = CascadeType.MERGE)
+   @ManyToMany(mappedBy = "qcatressources",targetEntity = qLic.class,cascade = CascadeType.MERGE)
   //  @JoinColumn(insertable = false,updatable = false)
-    private List<qLicence>    qlicences;
+    private List<qLic>    qlicences;
 
     @ManyToMany(targetEntity =qEnginsLicence.class,cascade = CascadeType.MERGE)
     @JoinTable(name = "qAssocCategRessourcesEngins")
@@ -46,17 +45,17 @@ public class qCategRessource implements Serializable {
     @JsonManagedReference
    private  qTypeConcession typeconcessionConcernee;
 
-    public List<qLicence> getQlicences() {
+    public List<qLic> getQlicences() {
         return qlicences;
     }
 
-    public void setQlicences(List<qLicence> qlicences) {
+    public void setQlicences(List<qLic> qlicences) {
         this.qlicences = qlicences;
     }
 
-    public qCategRessource(qTypeConcession typeConcession, enumSupport typeSupport,List<qLicence>  lic, List<qEnginsLicence> engins) {
+    public qCategRessource(qTypeConcession typeConcession, enumSupport typeSupport, List<qLic>  licences, List<qEnginsLicence> engins) {
         this.idtypeConcession = typeConcession.getQtypeconcessionpk();
-        this.qlicences=lic;
+        this.qlicences=licences;
         this.typeSupport = typeSupport;
         this.Engins = engins;
         this.typeconcessionConcernee=typeConcession;

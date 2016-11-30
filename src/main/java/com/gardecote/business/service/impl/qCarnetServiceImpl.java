@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 
 
 import com.gardecote.data.repository.jpa.qCarnetRepository;
+import com.gardecote.data.repository.jpa.qConcessionRepository;
 import com.gardecote.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class qCarnetServiceImpl implements qCarnetService {
 
 	@Autowired
 	private qCarnetRepository qCarnetRepository;
+	@Autowired
+	private qConcessionRepository qconcessionRepository;
+
 
 
 	@Override
@@ -116,10 +120,14 @@ public class qCarnetServiceImpl implements qCarnetService {
 	}
 
 	@Override
-	public qCarnet attribuerCarnetAuNavire(qCarnet carnet, qRegistreNavire navire, qConcession concess, qUsine usine) {
+	public qCarnet attribuerCarnetAuNavire(qCarnet carnet, qNavire navire, qLic licence, qUsine usine) {
+		qConcession conHors= qconcessionRepository.findOne("Hors");
+
 		carnet.setQnavire(navire);
 		carnet.setQusine(usine);
-		carnet.setQconcession(concess);
+        if(licence instanceof qLicenceLibre )  carnet.setQconcession(conHors);
+        if(licence instanceof qLicenceNational )  carnet.setQconcession(((qLicenceNational) licence).getQconcession());
+
 		qCarnetRepository.save(carnet);
 		return carnet;
 

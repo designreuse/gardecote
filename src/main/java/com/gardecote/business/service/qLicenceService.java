@@ -4,10 +4,12 @@
  */
 package com.gardecote.business.service;
 
+import com.gardecote.entities.qLic;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import com.gardecote.entities.qLicence;
+
 /**
  * Business Service Interface for entity Changmentact.
  */
@@ -18,40 +20,41 @@ public interface qLicenceService {
 	 * @param idchact
 	 * @return entity
 	 */
-	qLicence findById(String idchact) ;
+	qLic findById(String idchact) ;
 
 	/**
 	 * Loads all entities.
 	 * @return all entities
 	 */
-	List<qLicence> findAll();
+	Page<qLic> findAll(int p, int size);
 
 	/**
 	 * Saves the given entity in the database (create or update)
 	 * @param entity
 	 * @return entity
 	 */
-	qLicence save(qLicence entity);
+	qLic save(qLic entity);
 
 	/**
 	 * Updates the given entity in the database
 	 * @param entity
 	 * @return
 	 */
-	qLicence update(qLicence entity);
+	qLic update(qLic entity);
 
 	/**
 	 * Creates the given entity in the database
 	 * @param entity
 	 * @return
 	 */
-	qLicence create(qLicence entity);
-
+	qLic create(qLic entity);
+	 boolean validatenav(qLic lic);
+	boolean validatenumlic(qLic lic);
 	/**
 	 * Deletes an entity using its Primary Key
 	 * @param idchact
 	 */
 	void delete(String idchact);
-	Page<qLicence> returnSuggNomNav(String searchNomnav);
+	Page<qLic> returnSuggNomNav(String searchNomnav);
 
 }

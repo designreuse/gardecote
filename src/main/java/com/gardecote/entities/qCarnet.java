@@ -53,11 +53,11 @@ public class qCarnet implements Serializable
     private Integer    nbrPages      ;
     @Column(name="NbrLignes", nullable=false)
     private Integer    nbrLigneParPage      ;
-    @OneToOne
+    @OneToOne(targetEntity = qNavire.class)
     @JoinColumn(name="qnavire")
 
 
-    private qRegistreNavire      qnavire  ;
+    private qNavire      qnavire  ;
     @OneToOne(targetEntity = qUsine.class)
 
 
@@ -118,7 +118,7 @@ public class qCarnet implements Serializable
         // ajouter des pages du carnet encours
     }
 
-    public void distribuer(qRegistreNavire qnavire,qUsine qusine){
+    public void distribuer(qNavire qnavire,qUsine qusine){
 
         this.qnavire =qnavire;
         this.qusine = qusine;
@@ -165,11 +165,11 @@ public class qCarnet implements Serializable
     }
 
 
-    public qRegistreNavire getQnavire() {
+    public qNavire getQnavire() {
         return qnavire;
     }
 
-    public void setQnavire(qRegistreNavire qnavire) {
+    public void setQnavire(qNavire qnavire) {
         this.qnavire = qnavire;
     }
 

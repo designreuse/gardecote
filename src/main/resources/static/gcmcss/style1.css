@@ -4,6 +4,9 @@
 	 http://css-tricks.com
 */
 
-
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 .input-mysize { width: 30px }
+.spacer {
+    margin-top:15px;
+    margin-left:15px;
+}

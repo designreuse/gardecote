@@ -34,6 +34,6 @@ public class qTypeConcessionArtisanal extends qTypeConcession implements Seriali
     }
     @Override
     public String toString() {
-        return   enumTypeConcessionArtisanal.toString();
+        return   "Artisanal-"+enumTypeConcessionArtisanal.toString();
     }
 }

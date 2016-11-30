@@ -1,0 +1,29 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+
+<div class="row "    layout:fragment="content">
+    <form  th:action="@{/NouvLicenceBatNouveau}" th:object="${LicForm}"  method="post" >
+
+        <h3> Création d'une nouvelle licence pour un nouveau bâteau</h3>
+
+       <div class="row well well-sm">
+       <label class="radio-inline">
+        <input  type="radio"   th:field="*{typeOperation}"  value="National"   />
+           Regime National
+       </label>
+       <label class="radio-inline">
+           <input  type="radio"    th:field="*{typeOperation}" value="Etranger"   />
+           Regime Etranger
+       </label>
+       <button type="submit" name="firstEtape"  value="firstEtape">Creer une licence pour un nouveau bâteau</button>
+       </div>
+
+    </form>
+  </div>
+
+</body>
+</html>

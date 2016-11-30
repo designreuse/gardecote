@@ -6,7 +6,12 @@
 
 package com.gardecote.entities;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +40,8 @@ public class qConcession implements Serializable
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
+
+    @Size(min = 2, max = 14)
     @Column(name="ref_concession", nullable=false)
     private String     refConcession ;
     //----------------------------------------------------------------------
@@ -66,8 +73,9 @@ public class qConcession implements Serializable
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
 
-    @OneToMany(mappedBy="qconcession", targetEntity=qLicence.class)
-    private List<qLicence>     qLicenceBatLastList;
+    @OneToMany(mappedBy="qconcession", targetEntity=qLicenceNational.class)
+
+    private List<qLicenceNational>     qLicenceBatLastList;
 
 
 
@@ -183,11 +191,11 @@ public class qConcession implements Serializable
     //----------------------------------------------------------------------
 
 
-    public List<qLicence> getqLicenceBatLastList() {
+    public List<qLicenceNational> getqLicenceBatLastList() {
         return qLicenceBatLastList;
     }
 
-    public void setqLicenceBatLastList(List<qLicence> qLicenceBatLastList) {
+    public void setqLicenceBatLastList(List<qLicenceNational> qLicenceBatLastList) {
         this.qLicenceBatLastList = qLicenceBatLastList;
     }
 
@@ -216,7 +224,7 @@ public class qConcession implements Serializable
         return sb.toString(); 
     }
 
-    public qConcession(String refConcession, qConsignataire concessionaire, Date dateLicence, Date dateDebut, Date dateFin, List<qCategRessource> categoriesRessources, List<qLicence> qLicenceBatLastList) {
+    public qConcession(String refConcession, qConsignataire concessionaire, Date dateLicence, Date dateDebut, Date dateFin, List<qCategRessource> categoriesRessources, List<qLicenceNational> qLicenceBatLastList) {
         this.refConcession = refConcession;
         this.qconsignataire = concessionaire;
 

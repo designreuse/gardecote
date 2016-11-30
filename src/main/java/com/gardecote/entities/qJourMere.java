@@ -44,7 +44,7 @@ public class qJourMere implements Serializable
     private Date     dateJour     ;
 
     @OneToOne
-    private qRegistreNavire navire;
+    private qNavire navire;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
@@ -96,7 +96,7 @@ public class qJourMere implements Serializable
         this.nbrCaisse = nbrCaisse;
     }
 
-    public qJourMere(Date datejourMere,qRegistreNavire navire, List<qCapture> capturesDuMarree, Integer totalCapturs, Integer totalCong, Integer nbrCaisse,qPageMarree pageMarree) {
+    public qJourMere(Date datejourMere,qNavire navire, List<qCapture> capturesDuMarree, Integer totalCapturs, Integer totalCong, Integer nbrCaisse,qPageMarree pageMarree) {
         this.dateJour = datejourMere;
         this.capturesDuMarree = capturesDuMarree;
         this.totalCapturs = totalCapturs;
@@ -118,11 +118,11 @@ public class qJourMere implements Serializable
         this.numImm = numImm;
     }
 
-    public qRegistreNavire getNavire() {
+    public qNavire getNavire() {
         return navire;
     }
 
-    public void setNavire(qRegistreNavire navire) {
+    public void setNavire(qNavire navire) {
         this.navire = navire;
     }
 

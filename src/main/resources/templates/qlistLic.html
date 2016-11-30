@@ -1,0 +1,66 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+<div class="row">
+    <form  th:action="@{/lstLic}"   method="post" th:object="${lstLicForm}">
+        <h2>List des licences </h2>
+        <table class="table spacer">
+            <thead>
+            <tr>
+                <th>Numero </th>
+                <th>Mqtricul</th>
+                <th>Nom de nqvire</th>
+                <th>Armateur</th>
+
+                <th>date Debut</th>
+                <th>date Fin</th>
+                <th>Categ ressources</th>
+                <th>Zone</th>
+                <th>Nation</th>
+                <th>Type bâteau</th>
+
+
+                          </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b:${lstLicForm.licences.content}">
+                <td th:text="${b.numlic}"></td>
+                 <td th:text="${b.qnavire.numimm}"></td>
+                <td th:text="${b.nomnav}"></td>
+                <td th:text="${b.nomar}"></td>
+                <td th:text="${b.dateDebutAuth}"></td>
+                <td th:text="${b.dateFinAuth}"></td>
+                <td >
+
+                    <table>
+                        <tr th:each="cat,catStat :${b.qcatressources}">
+                           <td  th:text="${catStat.index+1}"></td> <td   th:text="${b.qcatressources[__${catStat.index}__].typeconcessionConcernee}" ></td></tr>
+                    </table>
+                </td>
+                <td th:text="${b.zone.nom}"></td>
+                <td th:text="${b.nation.designation}"></td>
+                <td th:text="${b.typb}"></td>
+
+
+            </tr>
+            </tbody>
+        </table>
+
+    </form>
+</div>
+    <div class="container">
+
+        <ul class="nav nav-pills">
+            <li th:each="p:${lstLicForm.numPages}"  th:class="${p==lstLicForm.pageCourante}?active:''">
+<a th:text="${p}" th:href="@{afficherLstLicence(page=${p})}"></a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

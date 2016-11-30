@@ -10,6 +10,8 @@ import com.gardecote.entities.qConcession;
 
 import com.gardecote.data.repository.jpa.qConcessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +74,15 @@ public class qConcessionServiceImpl implements qConcessionService {
 		this.qConcessionRepository = bateaucompletJpaRepository;
 	}
 
-	
+	@Override
+	public Page<qConcession> getSuggConcession(String searcconcession) {
+		return qConcessionRepository.returnSuggConcession(new PageRequest(0, 10),searcconcession);
+	}
 
+	@Override
+	public boolean validate(String RefConcession) {
+		qConcession conc=qConcessionRepository.findOne(RefConcession);
+		if(conc==null) return false;
+		else return true;
+	}
 }

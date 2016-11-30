@@ -5,17 +5,18 @@
 // This Bean has a basic Primary Key (not composite) 
 
 package com.gardecote.entities;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
-
 /**
  * Persistent class for entity stored in table "licences_bat_last"
  *
@@ -24,167 +25,168 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qlicence4", schema="dbo", catalog="GCM1" )
+@Table(name="qlic4", schema="dbo", catalog="GCM1" )
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="TYPELICENCE", discriminatorType=DiscriminatorType.STRING, length=20)
 // Define named queries here
 @NamedQueries ( {
-  @NamedQuery ( name="qLicence.countAll", query="SELECT COUNT(x) FROM  qLicence x")
+  @NamedQuery ( name="qLic.countAll", query="SELECT COUNT(x) FROM  qLic x")
 } )
-public class qLicence implements Serializable
+public class qLic implements Serializable
 {
     private static final long serialVersionUID = 1L;
-
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
+  //  @NotEmpty(message = "le champs ne peut pas être null")
     @Column(name="numlic", length=255)
     private String     numlic       ;
 
-    @Column(name="id_lic")
-    private Long idLic        ;
+    @Column(name="numimm", nullable=true)
+        private String     numimm;
 
-   // pour la compatibilté avec les anciens données
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinTable(name = "qAssocLicencesCategRessources")
+    @JsonBackReference
+    //   @NotNull
+    private List<qCategRessource>   qcatressources;
+
+    @ManyToOne
+    @JsonBackReference
+    //@NotNull
+    //@Valid
+    private qNavire qnavire;
+    // remplissage de champs de navire a partir de batau selectionnee avec disabled ou enabled avec des nouveau saisi
+    @Column(name="balise", length=255)
+    //@NotEmpty
+    private String     balise;
+    @Column(name="nomnav", length=255)
+    // @NotEmpty
+    private String     nomnav;
+    @Column(name="nomar", length=255)
+    //@NotEmpty
+    private String     nomar;
+
+    @Column(name="longueur", length=255)
+    //@NotEmpty
+    private String     longg        ;
+
+    @Column(name="larg", length=255)
+    //@NotEmpty
+    private String     larg         ;
+    @Column(name="count", length=255)
+    //@NotEmpty
+    private String     count        ;
+
+    @Column(name="nbrhomm", length=255)
+    //@NotEmpty
+    private String     nbrhomm      ;
+
+    @Column(name="eff", length=255)
+    //@NotEmpty
+    private String     eff ;
+
+    @Column(name="ancons", length=255)
+    //@NotNull
+    private Integer     anneeconstr       ;
+
+    @Column(name="calpoids", length=255)
+    //@NotEmpty
+    private String     calpoids     ;
+    @Column(name="gt")
+    //@NotNull
+    private float    gt           ;
+
+
+    @Column(name="kw" )
+    //@NotNull
+    private float    kw           ;
+
+
+    @Column(name="tjb")
+    //@NotNull
+    private float     tjb          ;
+
+    @Column(name="imo")
+    //@NotNull
+    private Integer    imo          ;
+
+    @Column(name="port", length=255)
+    //@NotEmpty
+    private String     port         ;
+
+    @Column(name="puimot", length=255)
+    //@NotEmpty
+    private String     puimot       ;
+
+    @Column(name="radio", length=255)
+    //@NotEmpty
+    private String     radio        ;
+    // ca c'est la fin pour le format de nouvelle strategie
+   // @Temporal(TemporalType.TIMESTAMP)
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    //@NotNull
+
+    @Column(name="debaut")
+    private Date       dateDebutAuth      ;
+
+ //   @Temporal(TemporalType.TIMESTAMP)
+ //@NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name="finauto")
+    private Date       dateFinAuth       ;
+    // fin de remplissage de champs bateau
+
+    // pour la compatibilté avec les anciens données
 
     @OneToOne
     //@Column(name="id_type_nav")
     private qTypeLic   qtypnav       ;
-    //@OneToOne
-   // @Column(name="typencad")
-    private qTypeEnc    typencad     ;
+
     @OneToOne
-  //  @Column(name="id_zone")
+    //  @Column(name="id_zone")
     private qZone   zone       ;
     @OneToOne
-  //  @Column(name="id_nation")
+    //  @Column(name="id_nation")
     private qNation    nation     ;
-    // Ca c'est pour le format de nouvelle strategie
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinTable(name = "qAssocLicencesCategRessources")
-    @JsonBackReference
-    private List<qCategRessource> qcatressources;
-
-
-    @Column(name="code_type_supp_droit", length=100)
-    private enumSupport     typesuppDroit ;
-
-    @ManyToOne
-    @JsonBackReference
-    private qRegistreNavire qnavire;
-    @ManyToOne
-    @JoinColumn(name="id_consignataire")
-    @JsonBackReference
-    private qConsignataire    qconcessionaire ;
-
-
-    @ManyToOne
-    @JoinColumn(name="qConcessionid")
-    @JsonBackReference
-    private qConcession     qconcession ;
 
     @Column(name="typb", length=100)
     private enumTypeBat    typb         ;
-
-    // ca c'est la fin pour le format de nouvelle strategie
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="debaut")
-    private Date       dateDebutAuth      ;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="finauto")
-    private Date       dateFinAuth       ;
-
-    //----------------------------------------------------------------------
-    // ENTITY DATA FIELDS 
-    //----------------------------------------------------------------------    
-    @Column(name="ancons", length=255)
-    private Integer     anneeconstr       ;
-
-    @Column(name="balise" , length=100)
-    private Integer    balise       ;
-
-    @Column(name="calpoids", length=255)
-    private String     calpoids     ;
-
-
-    @Column(name="count", length=255)
-    private String     count        ;
-
-    @Column(name="eff", length=255)
-    private String     eff          ;
-
-    @Column(name="gt")
-    private float    gt           ;
-
-
-    @Column(name="imo")
-    private Integer    imo          ;
-
-    @Column(name="kw" )
-    private float    kw           ;
-
-    @Column(name="larg", length=255)
-    private String     larg         ;
-
-    @Column(name="longg", length=255)
-    private String     longg        ;
-
-
-
-    @Column(name="nbrhomm", length=255)
-    private String     nbrhomm      ;
-
-    @Column(name="nomar", length=255)
-    private String     nomar        ;
-
-    @Column(name="nomex", length=255)
-    private String     nomex        ;
-
-    @Column(name="nomnav", length=255)
-    private String     nomnav       ;
-
-
-    @Column(name="numimm", nullable=false, length=255)
-    private String     numimm       ;
-
-
-
-    @Column(name="port", length=255)
-    private String     port         ;
-
-    @Column(name="puimot", length=255)
-    private String     puimot       ;
-
-    @Column(name="radio", length=255)
-    private String     radio        ;
-
-   @Column(name="tjb")
-    private float     tjb          ;
-//----------------------------------------------------------------------
-    // ENTITY LINKS ( RELATIONSHIP )
-    //----------------------------------------------------------------------
+    // Ca c'est pour le format de nouvelle strategie
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
-    public qLicence()
+    public qLic()
     {
-		super();
+        super();
     }
 
-    public qLicence(qTypeLic qtypnav, qTypeEnc typencad, qZone zone, com.gardecote.entities.qNation qNation, List<qCategRessource> qcatressources,  enumSupport typesuppDroit, qRegistreNavire qnavire, qConsignataire qconcessionaire, qConcession qconcession, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, Integer balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomex, String nomnav, String numimm, String numlic, String port, String puimot, String radio, float tjb) {
+    public String getNomnav() {
+        return nomnav;
+    }
 
+    public void setNomnav(String nomnav) {
+        this.nomnav = nomnav;
+    }
+
+    public qNation getNation() {
+        return nation;
+    }
+
+    public void setNation(qNation nation) {
+        this.nation = nation;
+    }
+
+    public qLic(qTypeLic qtypnav, qZone zone, qNation qNation, List<qCategRessource> qcatressources, qNavire qnavire, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, String balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomnav, String numlic, String port, String puimot, String radio, float tjb) {
         this.qtypnav = qtypnav;
-        this.typencad = typencad;
         this.zone = zone;
         this.nation = qNation;
         this.qcatressources=qcatressources;
-       // this.qcatressources = qcatressources;
-
-        this.typesuppDroit = typesuppDroit;
+        // this.qcatressources = qcatressources;
         this.qnavire = qnavire;
-        this.qconcessionaire = qconcessionaire;
-        this.qconcession = qconcession;
         this.typb = typb;
         this.dateDebutAuth = dateDebutAuth;
         this.dateFinAuth = dateFinAuth;
@@ -200,22 +202,13 @@ public class qLicence implements Serializable
         this.longg = longg;
         this.nbrhomm = nbrhomm;
         this.nomar = nomar;
-        this.nomex = nomex;
-        this.nomnav = nomnav;
-        this.numimm = numimm;
+
+        this.numimm = this.qnavire.getNumimm();
         this.numlic = numlic;
         this.port = port;
         this.puimot = puimot;
         this.radio = radio;
         this.tjb = tjb;
-    }
-
-    public Long getIdLic() {
-        return idLic;
-    }
-
-    public void setIdLic(Long idLic) {
-        this.idLic = idLic;
     }
 
     public qTypeLic getQtypnav() {
@@ -226,13 +219,7 @@ public class qLicence implements Serializable
         this.qtypnav = qtypnav;
     }
 
-    public qTypeEnc getTypencad() {
-        return typencad;
-    }
 
-    public void setTypencad(qTypeEnc typencad) {
-        this.typencad = typencad;
-    }
 
     public qZone getZone() {
         return zone;
@@ -242,11 +229,11 @@ public class qLicence implements Serializable
         this.zone = zone;
     }
 
-    public com.gardecote.entities.qNation getqNation() {
+    public qNation getqNation() {
         return nation;
     }
 
-    public void setqNation(com.gardecote.entities.qNation qNation) {
+    public void setqNation(qNation qNation) {
         this.nation = qNation;
     }
 
@@ -255,43 +242,15 @@ public class qLicence implements Serializable
     }
 
     public void setQcatressources(List<qCategRessource> qcatressources) {
-
         this.qcatressources=qcatressources;
-
     }
 
-
-
-    public enumSupport getTypesuppDroit() {
-        return typesuppDroit;
-    }
-
-    public void setTypesuppDroit(enumSupport typesuppDroit) {
-        this.typesuppDroit = typesuppDroit;
-    }
-
-    public qRegistreNavire getQnavire() {
+    public qNavire getQnavire() {
         return qnavire;
     }
 
-    public void setQnavire(qRegistreNavire qnavire) {
+    public void setQnavire(qNavire qnavire) {
         this.qnavire = qnavire;
-    }
-
-    public qConsignataire getQconcessionaire() {
-        return qconcessionaire;
-    }
-
-    public void setQconcessionaire(qConsignataire qconcessionaire) {
-        this.qconcessionaire = qconcessionaire;
-    }
-
-    public qConcession getQconcession() {
-        return qconcession;
-    }
-
-    public void setQconcession(qConcession qconcession) {
-        this.qconcession = qconcession;
     }
 
     public enumTypeBat getTypb() {
@@ -326,11 +285,11 @@ public class qLicence implements Serializable
         this.anneeconstr = anneeconstr;
     }
 
-    public Integer getBalise() {
+    public String getBalise() {
         return balise;
     }
 
-    public void setBalise(Integer balise) {
+    public void setBalise(String balise) {
         this.balise = balise;
     }
 
@@ -414,21 +373,6 @@ public class qLicence implements Serializable
         this.nomar = nomar;
     }
 
-    public String getNomex() {
-        return nomex;
-    }
-
-    public void setNomex(String nomex) {
-        this.nomex = nomex;
-    }
-
-    public String getNomnav() {
-        return nomnav;
-    }
-
-    public void setNomnav(String nomnav) {
-        this.nomnav = nomnav;
-    }
 
     public String getNumimm() {
         return numimm;
@@ -477,4 +421,5 @@ public class qLicence implements Serializable
     public void setTjb(float tjb) {
         this.tjb = tjb;
     }
+
 }

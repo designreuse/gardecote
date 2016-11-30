@@ -79,7 +79,7 @@ public class qDoc implements Serializable {
         this.qseq = qsec;
     }
 
-    public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour,qSeq qseq, qRegistreNavire   qnavire,qConcession qconcess){
+    public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour,qSeq qseq, qNavire   qnavire,qConcession qconcess){
         this.qconcession=qconcess;
         this.enumtypedoc = enumtypedoc;
         this.depart=depart;

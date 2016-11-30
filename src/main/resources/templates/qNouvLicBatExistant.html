@@ -1,0 +1,74 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+<h3> List de bateau pour choisire une :</h3>
+<form  th:action="@{/creationLicence2}"   method="post" th:object="${LicForm}">
+    <button type="submit" >Creer une nouvelle licence</button>
+    <panel class="panel panel-danger">
+        <label class="radio-inline">
+            <input  type="radio"   th:field="*{regime}"  value="National" name="choixlic"   />
+            Regime National
+        </label>
+        <label class="radio-inline">
+            <input  type="radio"    th:field="*{regime}" value="Etranger"  name="choixlic" />
+            Regime Etranger
+        </label>
+    </panel>
+<table class="table">
+<thead>
+       <tr>
+           <th>...</th>
+           <th>numimm</th>
+           <th>nomnav</th>
+           <th>nomar</th>
+           <th>longg</th>
+           <th>puimot</th>
+           <th>nation.</th>
+           <th>balise</th>
+           <th>larg</th>
+           <th>count</th>
+           <th>nbrhomm</th>
+           <th>eff</th>
+           <th>calpoids</th>
+           <th>gt</th>
+           <th>kw</th>
+           <th>tjb</th>
+           <th>imo</th>
+      </tr>
+</thead>
+    <tbody>
+    <tr th:each="b:${LicForm.lstBat}">
+        <td>
+        <input  type="radio"   th:field="${LicForm.numSelected}"  name="selectedNum" th:value="${b.numimm}"   /></td>
+        <td th:text="${b.numimm}"></td>
+        <td th:text="${b.nomnav}"></td>
+        <td th:text="${b.nomar}"></td>
+        <td th:text="${b.longg}"></td>
+        <td th:text="${b.puimot}"></td>
+        <td th:text="${b.nation.designation}"></td>
+        <td th:text="${b.balise}"></td>
+        <td th:text="${b.larg}"></td>
+        <td th:text="${b.count}"></td>
+        <td th:text="${b.nbrhomm}"></td>
+        <td th:text="${b.eff}"></td>
+        <td th:text="${b.calpoids}"></td>
+        <td th:text="${b.gt}"></td>
+        <td th:text="${b.kw}"></td>
+        <td th:text="${b.tjb}"></td>
+        <td th:text="${b.imo}"></td>
+
+    </tr>
+    </tbody>
+</table>
+
+</form>
+</div>
+
+</body>
+</html>

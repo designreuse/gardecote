@@ -4,6 +4,8 @@
  */
 package com.gardecote.business.service;
 import com.gardecote.entities.qConcession;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 /**
@@ -16,6 +18,9 @@ public interface qConcessionService {
 	 * @param refConcession
 	 * @return entity
 	 */
+	boolean validate(String RefConcession);
+	Page<qConcession> getSuggConcession(String searcconcession);
+
 	qConcession findById(String refConcession) ;
 
 	/**

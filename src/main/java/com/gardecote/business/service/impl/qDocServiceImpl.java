@@ -130,7 +130,7 @@ public class qDocServiceImpl implements qDocService {
 
             qCarnet carnetDebut = debutp.getQcarnet();
             qCarnet carnetFin = finp.getQcarnet();
-        qRegistreNavire nv=carnetDebut.getQnavire();
+        qNavire nv=carnetDebut.getQnavire();
         qDocPK qpk=new qDocPK(nv.getNumimm(),dateDepartt);
 
         qDoc qdocc=qdocRepository.findOne(qpk);
@@ -239,7 +239,7 @@ public class qDocServiceImpl implements qDocService {
         qCarnet carnetFin = finp.getQcarnet();
         debutPrefix=carnetDebut.getPrefixNumerotation().toString();
 
-        qRegistreNavire qnav = carnetDebut.getQnavire();
+        qNavire qnav = carnetDebut.getQnavire();
         qConcession qconcess =carnetDebut.getQconcession();//qnav.getQlicencebatlastdernier().getQconcession(); // concession du dernier lic
         //carnetDebut.getQconcession();
         List<qEnginPecheDebar> choixEnginsDeb=new ArrayList<qEnginPecheDebar>();
@@ -299,7 +299,8 @@ public class qDocServiceImpl implements qDocService {
 
         qModelJP currentModel=qmodelRepository.findOne(enumPrefix.valueOf(debutPrefix));
        List<qCategRessource>  ours=new ArrayList<qCategRessource>();
-        ours.addAll(qnav.getQlicencebatlastdernier().getQcatressources());        // cat du dernier licence
+        carnetDebut.getQconcession().getCategoriesRessources();
+        ours.addAll(carnetDebut.getQconcession().getCategoriesRessources());        // cat du dernier licence
         if(seqActive.getQdoc()==null) {
             if (carnetDebut.getTypeDoc().equals(enumTypeDoc.Fiche_Debarquement)) {
                 if (carnetDebut.getPrefixNumerotation().equals(enumPrefix.PC)) {

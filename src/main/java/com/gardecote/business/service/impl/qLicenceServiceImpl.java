@@ -7,16 +7,17 @@ package com.gardecote.business.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
 
-
+import com.gardecote.data.repository.jpa.qRegistreNavireRepository;
+import com.gardecote.entities.qLic;
+import com.gardecote.entities.qNavire;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gardecote.entities.qLicence;
 import com.gardecote.business.service.qLicenceService;
 import com.gardecote.data.repository.jpa.qLicenceRepository;
 /**
@@ -28,37 +29,43 @@ public class qLicenceServiceImpl implements qLicenceService {
 
 	@Autowired
 	private qLicenceRepository codauthJpaRepository;
+	@Autowired
+	private qRegistreNavireRepository navRepository;
+
 
 	@Override
-	public qLicence findById(String codeauth) {
-		qLicence codauthEntity = codauthJpaRepository.findOne(codeauth);
+	public qLic findById(String codeauth) {
+		qLic codauthEntity = codauthJpaRepository.findOne(codeauth);
 		return codauthEntity;
 	}
 
-	@Override
-	public List<qLicence> findAll() {
-		Iterable<qLicence> entities = codauthJpaRepository.findAll();
-		List<qLicence> beans = new ArrayList<qLicence>();
-		for(qLicence codauthEntity : entities) {
-			beans.add(codauthEntity);
-		}
-		return beans;
+	//@Override
+	public Page<qLic> findAll(int p,int size) {
+
+	//	Iterable<qLic> entities = codauthJpaRepository.findAll(new PageRequest(p, size));
+		Page<qLic> entities = codauthJpaRepository.findAll(new PageRequest(p, size));
+	//	List<qLic> beans = new ArrayList<qLic>();
+//		for(qLic codauthEntity : entities) {
+	//		beans.add(codauthEntity);
+//		}
+	//	return beans;
+		return entities;
 	}
 
 	@Override
-	public qLicence save(qLicence codauth) {
+	public qLic save(qLic codauth) {
 		return update(codauth) ;
 	}
 
 	@Override
-	public qLicence create(qLicence codauth) {
-    	qLicence codauthEntitySaved = codauthJpaRepository.save(codauth);
+	public qLic create(qLic codauth) {
+    	qLic codauthEntitySaved = codauthJpaRepository.save(codauth);
 		return codauthEntitySaved ;
 	}
 
 	@Override
-	public qLicence update(qLicence codauth) {
-    	qLicence codauthEntitySaved = codauthJpaRepository.save(codauth);
+	public qLic update(qLic codauth) {
+    	qLic codauthEntitySaved = codauthJpaRepository.save(codauth);
 		return codauthEntitySaved;
 	}
 
@@ -75,8 +82,22 @@ public class qLicenceServiceImpl implements qLicenceService {
 		this.codauthJpaRepository = codauthJpaRepository;
 	}
 
-	public Page<qLicence> returnSuggNomNav(String searchNomnav){
+	public Page<qLic> returnSuggNomNav(String searchNomnav){
 		return codauthJpaRepository.returnSuggNomNav1(new PageRequest(0, 10),searchNomnav);
 	}
 
+	@Override
+	public boolean validatenav(qLic lic) {
+		qNavire  qnv=navRepository.findOne(lic.getNumimm());
+		if(qnv==null)  return false;
+		else           return true;
+
+}
+	@Override
+	public boolean validatenumlic(qLic lic) {
+		qLic  qlc=codauthJpaRepository.findOne(lic.getNumlic());
+		if(qlc==null)  return true;
+		else           return false;
+
+	}
 }

@@ -59,7 +59,7 @@ public class qJourDeb implements Serializable
 
 
     @OneToOne
-    private qRegistreNavire navire;
+    private qNavire navire;
 
     @OneToMany(mappedBy = "jourDeb",targetEntity=qCapture.class,cascade = CascadeType.ALL)
 
@@ -82,7 +82,7 @@ public class qJourDeb implements Serializable
         return qjp;
     }
 
-    public qJourDeb(Date datejourDeb, qRegistreNavire navire, List<qCapture> debarqDuJour, qPageDebarquement pagesDeb) {
+    public qJourDeb(Date datejourDeb, qNavire navire, List<qCapture> debarqDuJour, qPageDebarquement pagesDeb) {
         this.numImm = navire.getNumimm();
         this.dateJour = datejourDeb;
         this.navire = navire;
@@ -98,11 +98,11 @@ public class qJourDeb implements Serializable
         this.numImm = numImm;
     }
 
-    public qRegistreNavire getNavire() {
+    public qNavire getNavire() {
         return navire;
     }
 
-    public void setNavire(qRegistreNavire navire) {
+    public void setNavire(qNavire navire) {
         this.navire = navire;
     }
 

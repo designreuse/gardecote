@@ -7,6 +7,7 @@
                 <title>Garde Cote Maritime</title>
                 <!-- BOOTSTRAP STYLES-->
                 <link href="gcmcss/bootstrap.css" rel="stylesheet" />
+                <link     rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" />
                 <!-- FONTAWESOME STYLES-->
                 <link href="gcmcss/font-awesome.css" rel="stylesheet" />
                 <link href="gcmcss/angucomplete-alt.css" rel="stylesheet" />
@@ -20,7 +21,7 @@
 
             <body  ng-app="mygcmApp" ng-controller="searchpageController">
 
-            <div class="container-fluid"  >
+            <div class="container-fluid spacer"  >
 
                 <header class="row col-sm-12">
                    <nav role="navigation" class="navbar navbar-default">
@@ -47,11 +48,15 @@
                                 </li>
                                 <li><a href="#">Saisie de documents de pêche</a></li>
                                 <li class="dropdown">
-                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Saisie <b class="caret"></b></a>
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Registre de navire <b class="caret"></b></a>
                                     <ul role="menu" class="dropdown-menu">
-                                        <li><a href="docGeneration" class="active">JP et Debarquements</a></li>
-                                        <li><a href="#">Fiche de traitement usine</a></li>
 
+
+                                               <li><a href="/afficherLstLicence" class="active">Liste des licences</a></li>
+                                               <li><a href="/listBatASelectionner" class="active">Creer une licence pour un bâteau existant</a></li>
+                                               <li><a href="/NouvLicenceBatNouveau1" class="active">Creer une Licence pour un nouveau bâteau</a></li>
+
+                                               <li><a href="/listBatASelectionner" class="active">Liste de  bâteau</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown">
@@ -96,7 +101,9 @@
             </div>
 
 
-            <script src="gcmjs/jquery-1.10.2.js"></script>
+
+            <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+            <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
             <!-- BOOTSTRAP SCRIPTS -->
             <script src="gcmjs/bootstrap.min.js"></script>
@@ -114,6 +121,55 @@
             <script src="gcmjs/underscore.js"></script>
             <script src="gcmjs/myApp.js" th:src="@{gcmjs/myApp.js}"></script>
 
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $("#searchName" ).autocomplete({
+                        minLength: 1,
+                        delay: 500,
+                        //define callback to format results
+                        source: function (request, response) {
+                            $.getJSON("/autocomnomnav", request, function(result) {
+                                response($.map(result, function(item) {
+                                    return {
+                                        // following property gets displayed in drop down
+                                        label: item,
+                                        // following property gets entered in the textbox
+                                        value: item
+                                        // following property is added for our own use
+                                        //   tag_url: "http://" + window.location.host + "/tags/" + item.tagId + "/" + item.name
+                                    }
+                                }));
+                            });
+                        }
+
+                        //define select handler
+
+                    });
+
+                });
+                $("#licence\\.qconcession\\.refConcession").autocomplete({
+                    minLength: 1,
+                    delay: 500,
+                    //define callback to format results
+                    source: function (request, response) {
+                        $.getJSON("/autocomConcession", request, function(result) {
+                            response($.map(result, function(item) {
+                                return {
+                                    // following property gets displayed in drop down
+                                    label: item,
+                                    // following property gets entered in the textbox
+                                    value: item
+                                    // following property is added for our own use
+                                    //   tag_url: "http://" + window.location.host + "/tags/" + item.tagId + "/" + item.name
+                                }
+                            }));
+                        });
+                    }
+
+                    //define select handler
+
+                });
+            </script>
 
             </body>
             </html>

@@ -288,6 +288,7 @@ app.controller("searchpageController",function($scope,_,$http) {
     $scope.pageSize = 20;
     $scope.searchpage = '';
     $scope.finList = [];
+    refconcession=null;
     /* bein autocomplete*/
     var _selected;
     $scope.selected = undefined;
@@ -309,6 +310,23 @@ app.controller("searchpageController",function($scope,_,$http) {
 
         });
     };
+    $scope.getSuggConcession = function (val) {
+        return $http.get('autocomConcession', {
+            params: {
+                searchconcession: val
+
+            }
+        }).then(function (response) {
+            console.log("response");
+            console.log(response);
+            //   response.data.content.map on utilise pour une page retournee
+            return response.data.map(function (item) {
+                return item;
+            });
+
+
+        });
+    };
     $scope.generate = function () {
         $http.get("generate")
             .success(function(data){
@@ -317,6 +335,13 @@ app.controller("searchpageController",function($scope,_,$http) {
             });
 
 }
+
+    $scope.updateRefConcession = function (val) {
+
+
+
+
+    }
     $scope.updateFinds = function (val) {
 
         console.log("commencer finlist");
@@ -335,6 +360,7 @@ app.controller("searchpageController",function($scope,_,$http) {
 
 
     }
+
     $scope.creerDoc = function (val) {
 
         console.log("commencer creer Doc");

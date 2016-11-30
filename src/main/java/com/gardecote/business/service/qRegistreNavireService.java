@@ -1,9 +1,10 @@
 package com.gardecote.business.service;
 
-import com.gardecote.entities.qCapture;
-import com.gardecote.entities.qCategRessource;
-import com.gardecote.entities.qRegistreNavire;
+import com.gardecote.data.repository.jpa.qRegistreNavireRepository;
+import com.gardecote.entities.*;
+import org.springframework.data.domain.Page;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,38 +16,43 @@ public interface qRegistreNavireService {
      * @param idact
      * @return entity
      */
-    qRegistreNavire findById(String idact) ;
+    public qNavire findById(String idact) ;
+    public Page<qNavire> getSuggNavire(String searchpage);
 
     /**
      * Loads all entities.
      * @return all entities
      */
-    List<qRegistreNavire> findAll();
+    public Page<qNavire> findAll(int p, int size,String term);
+   public  List<qNavire> findAll();
 
     /**
      * Saves the given entity in the database (create or update)
      * @param entity
      * @return entity
      */
-    qRegistreNavire save(qRegistreNavire entity);
+    qNavire save(qNavire entity);
 
     /**
      * Updates the given entity in the database
      * @param entity
      * @return
      */
-    qRegistreNavire update(qRegistreNavire entity);
+    qNavire update(qNavire entity);
 
     /**
      * Creates the given entity in the database
      * @param entity
      * @return
      */
-    qRegistreNavire create(qRegistreNavire entity);
+    qNavire create(qNavire entity);
 
     /**
      * Deletes an entity using its Primary Key
      * @param idCapture
      */
     void delete(String idCapture);
+
+    List<qLic> retActLicences(qNavire navire);
+
 }
