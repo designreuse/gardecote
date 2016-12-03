@@ -23,7 +23,7 @@ public interface qRegistreNavireService {
      * Loads all entities.
      * @return all entities
      */
-    public Page<qNavire> findAll(int p, int size,String term);
+   public Page<qNavire> findAll(int p, int size,String term);
    public  List<qNavire> findAll();
 
     /**

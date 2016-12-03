@@ -15,7 +15,7 @@ import java.util.List;
 @NamedQueries ( {
         @NamedQuery ( name="qTypeConcession.countAll", query="SELECT COUNT(x) FROM qTypeConcession x" )
 } )
-public class qTypeConcession implements Serializable {
+public class qTypeConcession implements Serializable,Comparable<qTypeConcession> {
     @Id
  //   @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "qtypeconcessionpk",unique=true, nullable = false)
@@ -50,5 +50,8 @@ public class qTypeConcession implements Serializable {
         this.prefixNum = prefixNum;
     }
 
-
+    @Override
+    public int compareTo(qTypeConcession o) {
+        return (this.getQtypeconcessionpk()- o.getQtypeconcessionpk());
+    }
 }

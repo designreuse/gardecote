@@ -52,17 +52,17 @@
                                     <ul role="menu" class="dropdown-menu">
 
 
-                                               <li><a href="/afficherLstLicence" class="active">Liste des licences</a></li>
-                                               <li><a href="/listBatASelectionner" class="active">Creer une licence pour un bâteau existant</a></li>
-                                               <li><a href="/NouvLicenceBatNouveau1" class="active">Creer une Licence pour un nouveau bâteau</a></li>
+                                               <li><a th:href="@{afficherLstLicence}" class="active">Liste des licences</a></li>
+                                               <li><a th:href="@{listBatASelectionner}" class="active">Creer une licence pour un bâteau existant</a></li>
+                                               <li><a th:href="@{NouvLicenceBatNouveau1(zeroEtape=true)}" class="active">Creer une Licence pour un nouveau bâteau</a></li>
 
-                                               <li><a href="/listBatASelectionner" class="active">Liste de  bâteau</a></li>
+                                               <li><a th:href="@{listBatASelectionner}" class="active">Liste de  bâteau</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown">
                                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">Carnets <b class="caret"></b></a>
                                     <ul role="menu" class="dropdown-menu">
-                                        <li><a href="#" class="active">Saisie des carnets</a></li>
+                                        <li><a th:href="@{listCarnets}" class="active">Liste des carnets</a></li>
                                         <li><a href="#">Attribution au navire</a></li>
 
                                     </ul>
@@ -120,9 +120,14 @@
 
             <script src="gcmjs/underscore.js"></script>
             <script src="gcmjs/myApp.js" th:src="@{gcmjs/myApp.js}"></script>
-
+            <script src="gcmjs/jquery.chained.remote.min.js"></script>
             <script type="text/javascript">
                 $(document).ready(function() {
+                    $("#carnetSelected.prefixNumerotation").remoteChained({
+                        parents: "#carnetSelected.typeDoc",
+                        url: /*[[@{/getTypeDocPrefixesValues}]]*/ ""
+                    });
+
                     $("#searchName" ).autocomplete({
                         minLength: 1,
                         delay: 500,

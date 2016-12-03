@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
  */
 public interface qLicenceRepository extends PagingAndSortingRepository<qLic, String> {
 
-    @Query("select l from qLic  l where TRIM(l.nomnav) like %:searchNomnav% order by l.numlic")
+    @Query("select l from qLic  l where TRIM(l.nomnav) like %:searchNomnav% order by l.createdAt DESC")
     Page<qLic>  returnSuggNomNav1(Pageable pageable, @Param("searchNomnav") String searchNomnav);
     //@Query("select l from qLic  l ")
    // public Page<qLic>  findAll(Pageable pageable);

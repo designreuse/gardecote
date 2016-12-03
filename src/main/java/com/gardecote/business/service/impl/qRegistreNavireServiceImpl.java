@@ -78,7 +78,6 @@ public class qRegistreNavireServiceImpl implements qRegistreNavireService {
     public List<qLic> retActLicences(qNavire navire) {
       Date currentDate = new Date();
 
-
         return qRegistreNavireRepository.retActLicences(navire,currentDate);
 
 

@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 @Entity
-@Table(name="qNavire4", schema="dbo", catalog="GCM1" )
+@Table(name="qNavire5", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qNavire.countAll", query="SELECT COUNT(x) FROM qNavire x" )

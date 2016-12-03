@@ -6,20 +6,18 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <panel>
+    <label class="label label-danger" th:text="#{lic.numlic.empty}"></label>
 
-    </panel>
-
-    <form  th:action="@{NouvLicenceBatExistant}"  th:object="${LicForm.licence}" class="form-horizontal" method="post">
+    <form  th:action="@{NouvLicenceBatExistant}"  th:object="${LicForm}" class="form-horizontal" method="post">
         <b class="danger">
             Creation d'une nouvelle licence pour :<b></b> <span th:text="${LicForm.licence.qnavire.nomnav}"></span>
         </b>
         <div class="form-group">
             <label class="col-sm-2 control-label">Numero Concession</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="*{qconcession.refConcession}" />
-                <span class="label label-danger" th:errors="*{qconcession.refConcession}"></span>
-                <label class="label label-danger" th:text="${LicForm.RefMessage}"></label>
+                <input class="form-control" type="text" th:field="*{licence.qconcession.refConcession}" />
+                <span class="label label-danger" th:errors="*{licence.qconcession}"></span>
+
             </div>
 
         </div>
@@ -28,8 +26,9 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Numero Licence</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="*{numlic}" />
-                <span class="label label-danger" th:errors="*{numlic}"></span>
+                <input class="form-control" type="text" th:field="*{licence.numlic}" />
+
+                <span class="label label-danger" th:errors="*{licence.numlic}"></span>
             </div>
 
         </div>
@@ -37,16 +36,16 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">dateDebutAuth</label>
             <div class="col-sm-4">
-                <input class="form-control" type="date" th:field="*{{dateDebutAuth}}" th:value="*{dateDebutAuth != null}?*{#dates.format(dateDebutAuth, 'yyyy-MM-dd')}:''">13/11/2016</input>
-                <span class="label label-danger" th:errors="*{dateDebutAuth}"></span>
+                <input class="form-control" type="date" th:field="*{{licence.dateDebutAuth}}" th:value="*{licence.dateDebutAuth != null}?*{#dates.format(licence.dateDebutAuth, 'yyyy-MM-dd')}:''">13/11/2016</input>
+                <span class="label label-danger" th:errors="*{licence.dateDebutAuth}"></span>
             </div>
 
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">dateFinAuth</label>
             <div class="col-sm-4">
-                <input class="form-control" type="date" th:field="*{{dateFinAuth}}" th:value="*{dateFinAuth != null}?*{#dates.format(dateFinAuth, 'yyyy-MM-dd')}:''">13/11/2016</input>
-                <span class="label label-danger" th:errors="*{dateFinAuth}"></span>
+                <input class="form-control" type="date" th:field="*{{licence.dateFinAuth}}" th:value="*{licence.dateFinAuth != null}?*{#dates.format(licence.dateFinAuth, 'yyyy-MM-dd')}:''">13/11/2016</input>
+                <span class="label label-danger" th:errors="*{licence.dateFinAuth}"></span>
             </div>
 
         </div>
@@ -83,7 +82,7 @@
 
       </table>
 </div>
-            <span class="label label-danger" th:errors="*{qcatressources}"></span>
+            <span class="label label-danger" th:errors="*{licence.qcatressources}"></span>
             </div>
 
 
@@ -126,20 +125,26 @@
         </div>
 
 
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Numero Immatriculation de bâteau</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="text"  th:disabled="true" th:field="${LicForm.licence.qnavire.numimm}"  /><span th:errors="${LicForm.licence.balise}"></span>
+            </div>
 
+        </div>
 
         <div class="form-group">
             <label class="col-sm-2 control-label">Balise</label>
             <div class="col-sm-4">
                 <input class="form-control" type="text" th:field="${LicForm.licence.balise}"  /><span th:errors="${LicForm.licence.balise}"></span>
             </div>
-            <span  class="label label-danger" th:errors="*{balise}"></span>
+            <span  class="label label-danger" th:errors="*{licence.balise}"></span>
         </div>
 
         <div class="form-group">
             <label class="col-sm-2 control-label">Nom de navire</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.nomnav}" />
+                <input class="form-control" type="text"  th:field="${LicForm.licence.nomnav}" />
                 <span class="label label-danger" th:errors="${LicForm.licence.nomnav}"></span>
             </div>
 
@@ -156,7 +161,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Longueur</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.longg}" th:value="${LicForm.licence.qnavire.longg}" />
+                <input class="form-control" type="number" th:field="${LicForm.licence.longg}" th:value="${LicForm.licence.qnavire.longg}" />
                 <span class="label label-danger" th:errors="${LicForm.licence.longg}"></span>
             </div>
 
@@ -164,7 +169,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Largeur</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.larg}" />
+                <input class="form-control" type="number" th:field="${LicForm.licence.larg}" />
                 <span class="label label-danger" th:errors="${LicForm.licence.larg}"></span>
             </div>
 
@@ -172,7 +177,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Nombre equipage</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.count}" />
+                <input class="form-control" type="number" th:field="${LicForm.licence.count}" />
                 <span class="label label-danger" th:errors="${LicForm.licence.count}"></span>
             </div>
 
@@ -182,7 +187,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Nombre mauritaniens</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.nbrhomm}" />
+                <input class="form-control" type="number" th:field="${LicForm.licence.nbrhomm}" />
                 <span class="label label-danger" th:errors="${LicForm.licence.nbrhomm}"></span>
             </div>
 
@@ -190,7 +195,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Nombre etrangers</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.eff}" />
+                <input class="form-control" type="number" th:field="${LicForm.licence.eff}" />
                 <span class="label label-danger" th:errors="${LicForm.licence.eff}"></span>
             </div>
 
@@ -198,7 +203,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">anneeconstr</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.anneeconstr}" />
+                <input class="form-control" type="number" th:field="${LicForm.licence.anneeconstr}" />
                 <span class="label label-danger" th:errors="${LicForm.licence.anneeconstr}"></span>
             </div>
 
@@ -215,7 +220,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">gt</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.gt}" />
+                <input class="form-control" type="number" th:field="${LicForm.licence.gt}" />
                 <span class="label label-danger" th:errors="${LicForm.licence.gt}"></span>
             </div>
 
@@ -224,7 +229,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">kw</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.kw}" />
+                <input class="form-control" type="number" th:field="${LicForm.licence.kw}" />
                 <span class="label label-danger" th:errors="${LicForm.licence.kw}"></span>
             </div>
 
@@ -232,7 +237,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">tjb</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.tjb}" />
+                <input class="form-control" type="number" th:field="${LicForm.licence.tjb}" />
                 <span class="label label-danger" th:errors="${LicForm.licence.tjb}"></span>
             </div>
 
@@ -241,7 +246,7 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">imo</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.imo}" />
+                <input class="form-control" type="number" th:field="${LicForm.licence.imo}" />
                 <span class="label label-danger" th:errors="${LicForm.licence.imo}"></span>
             </div>
 

@@ -1,44 +1,44 @@
 <html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
 <head>
     <meta charset="UTF-8" />
-    <title>Title</title>
+    <title>List de licences</title>
 </head>
 <body>
 <div layout:fragment="content">
 <div class="row">
     <form  th:action="@{/lstLic}"   method="post" th:object="${lstLicForm}">
-        <h2>List des licences </h2>
-        <table class="table spacer">
+        <h2 ><p class="spacer"><kbd>Registre des licences</kbd></p> </h2>
+        <table class="table table-striped table-bordered table-hover spacer">
             <thead>
-            <tr>
-                <th>Numero </th>
-                <th>Mqtricul</th>
-                <th>Nom de nqvire</th>
-                <th>Armateur</th>
+            <tr class="warning">
+                <th>Numéro </th>
+                <th>Matricule</th>
+                <th>Navire</th>
 
-                <th>date Debut</th>
-                <th>date Fin</th>
-                <th>Categ ressources</th>
+
+                <th>Date Debut</th>
+                <th>Date Fin</th>
+                <th>Types de peches</th>
                 <th>Zone</th>
-                <th>Nation</th>
-                <th>Type bâteau</th>
+                <th>Nationalité</th>
+                <th>Type de bâteau</th>
 
 
                           </tr>
             </thead>
             <tbody>
             <tr th:each="b:${lstLicForm.licences.content}">
-                <td th:text="${b.numlic}"></td>
+                <td class="danger" th:text="${b.numlic}"></td>
                  <td th:text="${b.qnavire.numimm}"></td>
                 <td th:text="${b.nomnav}"></td>
-                <td th:text="${b.nomar}"></td>
-                <td th:text="${b.dateDebutAuth}"></td>
-                <td th:text="${b.dateFinAuth}"></td>
-                <td >
+
+                <td th:text="${#dates.format(b.dateDebutAuth, #messages.msg('app.dateformat'))}"></td>
+                <td th:text="${#dates.format(b.dateFinAuth, #messages.msg('app.dateformat'))}" ></td>
+                <td class="danger">
 
                     <table>
-                        <tr th:each="cat,catStat :${b.qcatressources}">
-                           <td  th:text="${catStat.index+1}"></td> <td   th:text="${b.qcatressources[__${catStat.index}__].typeconcessionConcernee}" ></td></tr>
+                        <tr  th:each="cat,catStat :${b.qcatressources}">
+                           <td ><span class="badge"  th:text="${catStat.index+1}"></span></td> <td   th:text="${b.qcatressources[__${catStat.index}__].typeconcessionConcernee}" ></td></tr>
                     </table>
                 </td>
                 <td th:text="${b.zone.nom}"></td>

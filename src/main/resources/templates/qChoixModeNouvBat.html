@@ -6,20 +6,20 @@
 <body>
 
 <div class="row "    layout:fragment="content">
-    <form  th:action="@{/NouvLicenceBatNouveau}" th:object="${LicForm}"  method="post" >
+    <form  th:action="@{/NouvLicenceBatNouveau1}" th:object="${LicForm}"  method="post" >
 
         <h3> Création d'une nouvelle licence pour un nouveau bâteau</h3>
 
        <div class="row well well-sm">
        <label class="radio-inline">
-        <input  type="radio"   th:field="*{typeOperation}"  value="National"   />
+        <input  type="radio" name="typeOperation"  th:field="*{typeOperation}"  th:value="National"   />
            Regime National
        </label>
        <label class="radio-inline">
-           <input  type="radio"    th:field="*{typeOperation}" value="Etranger"   />
+           <input  type="radio"   name="typeOperation"  th:field="*{typeOperation}" th:value="Etranger"   />
            Regime Etranger
        </label>
-       <button type="submit" name="firstEtape"  value="firstEtape">Creer une licence pour un nouveau bâteau</button>
+       <button type="submit" name="firstEtape" th:class="active" value="firstEtape" >Creer une licence pour un nouveau bâteau</button>
        </div>
 
     </form>

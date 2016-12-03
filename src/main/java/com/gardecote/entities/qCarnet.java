@@ -26,7 +26,7 @@ import org.springframework.format.annotation.NumberFormat;
  */
 
 @Entity
-@Table(name="qCarnet4", schema="dbo", catalog="GCM1" )
+@Table(name="qCarnet6", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qCarnet.countAll", query="SELECT COUNT(x) FROM qCarnet x" )
@@ -38,11 +38,10 @@ public class qCarnet implements Serializable
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-  //  @Enumerated(EnumType.STRING)
-    @Column(name="prefixNum", nullable=false, length=2)
-    private enumPrefix     prefixNumerotation    ;
+  // @Enumerated(EnumType.STRING)
+    @Column(name="prefixNum", nullable=false, length=5)
+    private String   prefixNumerotation    ;
     @Id
-
     @Column(name="debutPage1")
     private Long       numeroDebutPage    ;
     private enumTypeDoc  typeDoc;
@@ -55,12 +54,13 @@ public class qCarnet implements Serializable
     private Integer    nbrLigneParPage      ;
     @OneToOne(targetEntity = qNavire.class)
     @JoinColumn(name="qnavire")
-
-
     private qNavire      qnavire  ;
+
+    @OneToOne(targetEntity = qPrefix.class)
+    @JoinColumn(name="qprefix")
+    private qPrefix      qprefix  ;
+
     @OneToOne(targetEntity = qUsine.class)
-
-
     @JoinColumn(name="qusine")
     private qUsine     qusine  ;
     @OneToOne
@@ -79,6 +79,15 @@ public class qCarnet implements Serializable
    //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
+
+    public qPrefix getQprefix() {
+        return qprefix;
+    }
+
+    public void setQprefix(qPrefix qprefix) {
+        this.qprefix = qprefix;
+    }
+
     public qCarnet()
     {
 		super();
@@ -103,15 +112,16 @@ public class qCarnet implements Serializable
         this.qconcession = qconcession;
     }
 
-    public qCarnet(enumTypeDoc enumtypedoc, enumPrefix enumprefix, Long numeroDebutPage, Integer nbrPages) {
-       this.typeDoc=enumtypedoc;
+    public qCarnet(qPrefix prefix, Long numeroDebutPage, Integer nbrPages) {
+        this.qprefix=prefix;
+        this.typeDoc=prefix.getTypeDoc();
         this.numeroDebutPage = numeroDebutPage;
-        this.prefixNumerotation = enumprefix;
+        this.prefixNumerotation = prefix.getPrefix();
         this.qnavire = null;
         this.qusine = null;
         this.qconcession=null;
         this.nbrPages = nbrPages;
-        this.nbrLigneParPage=0;
+        this.nbrLigneParPage=prefix.getNbrLigneCarnet();
 
       //    this.modeCarnet = modeCarnet;
          //    this.refLicencement = refLicencement;this.pages = pages;
@@ -140,11 +150,11 @@ public class qCarnet implements Serializable
         this.typeDoc = typeDoc;
     }
 
-    public enumPrefix getPrefixNumerotation() {
+    public String getPrefixNumerotation() {
         return prefixNumerotation;
     }
 
-    public void setPrefixNumerotation(enumPrefix prefixNumerotation) {
+    public void setPrefixNumerotation(String prefixNumerotation) {
         this.prefixNumerotation = prefixNumerotation;
     }
 

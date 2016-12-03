@@ -35,6 +35,8 @@ import com.gardecote.LicenceAc;
 @RestController
 
 public class mainJsp  {
+	@Autowired
+	private qPrefixService prefixService;
 
 	@Autowired
 	private qCarnetService carnetService;
@@ -121,6 +123,22 @@ public class mainJsp  {
 	}
 	@RequestMapping(value="/generate",method = RequestMethod.GET)
 	public void generatecontent() {
+		qPrefix prefixPA=new qPrefix("PA",enumTypeDoc.Fiche_Debarquement,10,"typde de document pour la pêche artisanal");
+		qPrefix prefixPC=new qPrefix("PC",enumTypeDoc.Fiche_Debarquement,10,"typde de document pour la pêche cotiere");
+		qPrefix prefixPE=new qPrefix("PE",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier pelagique");
+		qPrefix prefixDEM=new qPrefix("DEM",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier demersal");
+		qPrefix prefixCRUST=new qPrefix("CRUST",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier crustacé");
+		qPrefix prefixCEPH=new qPrefix("CEPH",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier ceph ");
+		qPrefix prefixTR=new qPrefix("TR",enumTypeDoc.Fiche_Traitement,10,"typde de document pour les usines");
+        prefixService.save(prefixPA);
+		prefixService.save(prefixPC);
+		prefixService.save(prefixPE);
+		prefixService.save(prefixDEM);
+		prefixService.save(prefixCRUST);
+		prefixService.save(prefixCEPH);
+		prefixService.save(prefixTR);
+
+
 		qTypeConcession paCeph = new qTypeConcessionArtisanal(1, enumPrefix.PA, enumTypeConcessionArtisanal.Cephalopode);
 		qTypeConcession paCrust = new qTypeConcessionArtisanal(2, enumPrefix.PA, enumTypeConcessionArtisanal.Crustaces);
 		qTypeConcession paDem = new qTypeConcessionArtisanal(3, enumPrefix.PA, enumTypeConcessionArtisanal.Demersaux);
@@ -641,10 +659,11 @@ public class mainJsp  {
 
 //		seqService.create(seqActive);
 
+		qCarnet qcarnet=new qCarnet(prefixPA,1L,50);
 
-		qCarnet qcarnet=new qCarnet(enumTypeDoc.Fiche_Debarquement,enumPrefix.PC,1L,50);
 
 		qCarnet crn=carnetService.entrerDansLeSystem(qcarnet);
+		System.out.println(crn);
 		List<qLic> qlics=registrenavireService.retActLicences(qreg1);
 		qLic licenceChoisie=qlics.get(0);
 		carnetService.attribuerCarnetAuNavire(crn,qreg1,licenceChoisie,null);

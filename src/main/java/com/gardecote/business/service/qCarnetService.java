@@ -4,6 +4,7 @@
  */
 package com.gardecote.business.service;
 import com.gardecote.entities.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,7 +13,6 @@ import java.util.List;
  * Business Service Interface for entity Authprov.
  */
 public interface qCarnetService {
-
 	/**
 	 * Loads an entity from the database using its Primary Key
 	 * @param idcapture
@@ -20,6 +20,7 @@ public interface qCarnetService {
 	 */
 	qCarnet findById(qCarnetPK idcapture) ;
 
+	public Page<qCarnet> findAll(int p, int size);
 	/**
 	 * Loads all entities.
 	 * @return all entities

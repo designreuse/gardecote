@@ -1,6 +1,9 @@
 package com.gardecote.data.repository.jpa;
 
 import com.gardecote.entities.qCarnet;
+import com.gardecote.entities.qNavire;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import com.gardecote.entities.qCarnetPK;
 import org.springframework.data.repository.query.Param;

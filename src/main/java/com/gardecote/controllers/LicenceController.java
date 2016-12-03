@@ -13,25 +13,37 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 /**
  * Created by Dell on 12/11/2016.
  */
 @Controller
 
-@SessionAttributes(types = {CreateDocForm.class,lstBateauAchoisirForm.class,creationLicForm.class})
+@SessionAttributes(types = {CreateDocForm.class,lstBateauAchoisirForm.class,creationLicForm.class,attributionCarnetForm.class})
 
 @RequestMapping("/")
 public class LicenceController {
+  //  licenceValidatorBatExistant
+
+    @Autowired
+    MessageByLocaleService messageByLocaleService;
     @Autowired
     licenceValidator licValidator;
+    @Autowired
+    attributionValidator attrValidator;
 
+
+    @Autowired
+    private qPrefixService prefService;
     @Autowired
     private qCarnetService carnetService;
     @Autowired
@@ -106,6 +118,18 @@ public class LicenceController {
         return concessionService.findAll();
     }
 
+
+    @ModelAttribute("allPrefixes")
+    public List<qPrefix> getPrefixes() {
+        return prefService.findAll();
+    }
+    @ModelAttribute("typeDocs")
+    public List<enumTypeDoc> getTypesDoc() {
+        return Arrays.asList(enumTypeDoc.values());
+
+    }
+
+
     @ModelAttribute("allTypesBat")
     public List<enumTypeBat> populateTypeNav() {
         return Arrays.asList(enumTypeBat.values());
@@ -151,17 +175,17 @@ public class LicenceController {
 
 
     @RequestMapping(value="/NouvLicenceBatExistant", params={"addLicenceNational"},method = RequestMethod.POST)
-    public String validatethenadd(final  @Valid @ModelAttribute("LicForm") creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
+    public String validatethenadd(final  @Valid  @ModelAttribute("LicForm") creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model,SessionStatus session) {
 
         String validateURL=null;
 
         qLic licAct=LicForm.getLicence();
-        if (concessionService.validate(((qLicenceNational)licAct).getQconcession().getRefConcession()) == false)
-        {
-            LicForm.setRefMessage("concession invalide");
-            System.out.println(LicForm.getRefMessage());
-            return "qshowNewLicNational";
-        }
+     //   if (concessionService.validate(((qLicenceNational)licAct).getQconcession().getRefConcession()) == false)
+      //  {
+        //    LicForm.setRefMessage("concession invalide");
+            System.out.println(LicForm.getLicence().getQnavire());
+          //  return "qshowNewLicNational";
+       // }
         licValidator.validate(licAct, bindingresult);
         if(bindingresult.hasErrors()) {
             for(ObjectError obj:bindingresult.getFieldErrors()) {
@@ -174,6 +198,8 @@ public class LicenceController {
         else        {
 
             licenceService.create(LicForm.getLicence());
+        //
+
             model.clear();
             validateURL = "redirect:afficherLstLicence";
        }
@@ -202,7 +228,7 @@ public class LicenceController {
         return validateURL;
     }
     @RequestMapping(value="/NouvLicenceBatExistant", params={"addRow"},method = RequestMethod.POST)
-    public String addRowLBNB( final  @ModelAttribute("LicForm")  creationLicForm LicForm, final ModelMap model,final BindingResult bindingresult) {
+    public String addRowLBNB(final @ModelAttribute("LicForm") creationLicForm LicForm, final ModelMap model,final BindingResult bindingresult) {
 
         String url=null;
 
@@ -214,8 +240,11 @@ public class LicenceController {
         } else LicForm.getLicence().getQcatressources().add(new qCategRessource());
 
         model.addAttribute("LicForm",LicForm);
-if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
-        if(LicForm.getLicence() instanceof qLicenceLibre) url="qshowNewLicLibre";
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
+        else {
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibre";
+            else   System.out.println("jjjj");
+        }
         return url;
     }
     @RequestMapping(value="/afficherLstLicence", method = RequestMethod.GET)
@@ -237,8 +266,150 @@ if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
 
     }
 
-    @RequestMapping(value="/NouvLicenceBatExistant",method = RequestMethod.GET)
-    public String NouvelLicenceBatExistant(@RequestParam(name="numimm") String numimm,@RequestParam(name="action") String action , final ModelMap model){
+    @RequestMapping(value="/getTypeDocPrefixesValues",method = RequestMethod.GET)
+    public @ResponseBody
+    Map<String, String> getTypeDocPrefixesValues(@RequestParam("carnetSelected.typeDoc") String typeDoc) {
+        Map<String, String> prefixValues = new HashMap<>();
+        List<enumPrefix> prefixes=null;
+    if(typeDoc==enumTypeDoc.Fiche_Debarquement.toString()) {
+    prefixValues.put(String.valueOf(enumTypeDoc.Fiche_Debarquement), String.valueOf(enumPrefix.PA));
+    prefixValues.put(String.valueOf(enumTypeDoc.Fiche_Debarquement), String.valueOf(enumPrefix.PC));
+     }
+   if(typeDoc==enumTypeDoc.Fiche_Debarquement.toString()) {
+      prefixValues.put(String.valueOf(enumTypeDoc.Journal_Peche), String.valueOf(enumPrefix.PE));
+      prefixValues.put(String.valueOf(enumTypeDoc.Journal_Peche), String.valueOf(enumPrefix.CEPH));
+      prefixValues.put(String.valueOf(enumTypeDoc.Journal_Peche), String.valueOf(enumPrefix.CRUS));
+      prefixValues.put(String.valueOf(enumTypeDoc.Journal_Peche), String.valueOf(enumPrefix.DEM));
+  }
+
+
+        return prefixValues;
+    }
+
+
+
+
+       @RequestMapping(value="/attributionCarnet",method = RequestMethod.POST)
+        public String attribuerCarnets(@ModelAttribute(value="CarnetAttribue") attributionCarnetForm CarnetAttribue , final ModelMap model, final BindingResult bindingresult) {
+           String urlNav=null;
+           System.out.println(CarnetAttribue);
+           qCarnet currentCarnet=new qCarnet(CarnetAttribue.getCarnetSelected().getQprefix(),CarnetAttribue.getCarnetSelected().getNumeroDebutPage(),CarnetAttribue.getCarnetSelected().getNbrPages());
+
+           attrValidator.validate(currentCarnet,bindingresult);
+           if(!bindingresult.hasErrors()) {
+
+               qCarnet crn = carnetService.entrerDansLeSystem(currentCarnet);
+               carnetService.attribuerCarnetAuNavire(crn, CarnetAttribue.getNavireSelected(), CarnetAttribue.getLicenceSelected(), null);
+               CarnetAttribue.setMessage("success");
+           }
+           else {
+               CarnetAttribue.setMessage("echec");
+           }
+           return "carnets/attribution";
+        }
+
+    @RequestMapping(value="/listCarnets",method = RequestMethod.GET)
+    public String  listCarnets(final lstCarnetsAchoisirForm carnetForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="searchCarnet",defaultValue = "") String searchCarnet) {
+        int[] pages;
+        lstCarnetsAchoisirForm lstCarnet=new lstCarnetsAchoisirForm();
+        Page<qCarnet>  pgCarnet=carnetService.findAll(page,20);
+
+        pages=new int[pgCarnet.getTotalPages()];
+        for(int i=0;i<pgCarnet.getTotalPages();i++) pages[i]=i;
+        lstCarnet.setLstCarnets(pgCarnet);
+        lstCarnet.setPageCount(pgCarnet.getTotalPages());
+        lstCarnet.setNumPages(pages);
+        lstCarnet.setPageCourante(page);
+        lstCarnet.setSearchCarnet(searchCarnet);
+        lstCarnet.setFailedAnnulation("");
+        model.addAttribute("listCarnets",lstCarnet);
+        return "carnets/listCarnets";
+    }
+
+    @RequestMapping(value="/ActionCarnet",method = RequestMethod.GET)
+    public String  listCarnetsAA(final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="prefixPK") String prefixPK,@RequestParam(name="debutPagePK") Long debutPagePK) {
+        int[] pages;Integer compteurMarees=0,compteurDeb=0,compteurTrait=0;
+        System.out.println("kkkkkkkkkkkkkkk");
+        lstCarnetsAchoisirForm lstCarnet=new lstCarnetsAchoisirForm();
+        // supprimer la carnet et le valider avant ca
+       qCarnetPK crnpk=new qCarnetPK(prefixPK,debutPagePK);
+
+        qCarnet carnetAnnulle=carnetService.findById(crnpk);
+        System.out.println(carnetAnnulle);
+        if(carnetAnnulle.getTypeDoc()==enumTypeDoc.Journal_Peche) {
+            for (qPageCarnet qp : carnetAnnulle.getPages()) {
+                if (((qPageMarree)qp).getQmarree()!=null)
+                    compteurMarees++;
+                          }
+         }
+        if(carnetAnnulle.getTypeDoc()==enumTypeDoc.Fiche_Debarquement) {
+            for (qPageCarnet qp : carnetAnnulle.getPages()) {
+                if (((qPageDebarquement)qp).getQdebarquement()!=null)
+                    compteurDeb++;
+            }
+        }
+        if(carnetAnnulle.getTypeDoc()==enumTypeDoc.Fiche_Traitement) {
+            for (qPageCarnet qp : carnetAnnulle.getPages()) {
+                if (((qPageTraitement)qp).getOpTraitements()!=null)
+                    compteurTrait++;
+            }
+        }
+        if(compteurDeb==0 && compteurMarees==0 && compteurTrait==0) {
+            carnetService.delete(crnpk);
+            lstCarnet.setFailedAnnulation("annulle avec success");
+        }
+        else {
+            lstCarnet.setFailedAnnulation("Impossible d'annuler");
+        }
+        //
+        Page<qCarnet>  pgCarnet=carnetService.findAll(page,20);
+
+        pages=new int[pgCarnet.getTotalPages()];
+        for(int i=0;i<pgCarnet.getTotalPages();i++) pages[i]=i;
+        lstCarnet.setLstCarnets(pgCarnet);
+        lstCarnet.setPageCount(pgCarnet.getTotalPages());
+        lstCarnet.setNumPages(pages);
+        lstCarnet.setPageCourante(page);
+
+        model.addAttribute("listCarnets",lstCarnet);
+        return "carnets/listCarnets";
+    }
+
+
+        @RequestMapping(value="/AttribuerCarnet",method = RequestMethod.GET)
+        public String attribuerCarnet(@RequestParam(name="numimm") String numimm,@RequestParam(name="action") String action , final ModelMap model)
+        {
+            String urlNavigation=null;
+            attributionCarnetForm attrCrn=null;
+            attrCrn=new attributionCarnetForm();
+            qCarnet createdCarnet=new qCarnet();
+            qPrefix prefi=new qPrefix();
+            createdCarnet.setQprefix(prefi);
+            qNavire selectedNavire=registrenavireService.findById(numimm);
+            List<qLic> licencesActives=registrenavireService.retActLicences(selectedNavire);
+
+            attrCrn.setCarnetSelected(createdCarnet);
+            attrCrn.setNavireSelected(selectedNavire);
+            attrCrn.setLicenceActives(licencesActives);
+
+    // chercher les licences actives pour ce navire pour les afficher et choisisser une
+
+            model.addAttribute("CarnetAttribue",attrCrn);
+
+            if(action.equals("attribuerCarnet")) {
+
+           }
+
+             if(attrCrn.getLicenceActives().size()==0) urlNavigation="attributionImpossible";
+             else  urlNavigation="carnets/attribution";
+            return urlNavigation;
+        }
+        @RequestMapping(value="/NouvLicenceBatExistant",method = RequestMethod.GET)
+    public String NouvelLicenceBatExistant(@RequestParam(name="numimm") String numimm,@RequestParam(name="action") String action , final ModelMap model,HttpSession session){
+
+
+     //   model.addAttribute("LicForm", LicForm);
+
         qLic currentLicence=null;
         creationLicForm licform=new creationLicForm();
         qNavire currentNav=registrenavireService.findById(numimm);
@@ -267,12 +438,12 @@ if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
         return forwardURL;
     }
 
-    @RequestMapping(value="/NouvLicenceBatNouveau",params={"firstEtape"},method = RequestMethod.POST)
-    public String NouvelLicenceBatNouv(final  creationLicForm LicForm, final ModelMap model) {
+    @RequestMapping(value="/NouvLicenceBatNouveau1",params={"firstEtape"},method = RequestMethod.POST)
+    public String NouvelLicenceBatNouv(final @ModelAttribute("LicForm") creationLicForm LicForm, final ModelMap model) {
         qLic lic=null;
         String url=null;
         qNavire navire=new qNavire();
-
+         System.out.println("kkkkkkkkkkkkkkkkkk");
        if(LicForm.getTypeOperation().equals("National")) {lic=new qLicenceNational();lic.setQnavire(navire); url="qShowNewLicNationalNewBat";}
        if(LicForm.getTypeOperation().equals("Etranger")) {lic=new qLicenceLibre();lic.setQnavire(navire);url="qShowNewLicLibreNewBat";}
 
@@ -283,15 +454,23 @@ if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
     }
 
     @RequestMapping(value="/NouvLicenceBatNouveau1", method = RequestMethod.GET)
-    public String NouvelLicenceBatNouv77(final ModelMap model) {
+    public String NouvelLicenceBatNouv77(@RequestParam(name="zeroEtape") boolean zeroEtape,final ModelMap model) {
        System.out.println("tttttttttttttttttttt");
+        creationLicForm licf=new creationLicForm();
+        licf.setTypeOperation("National");
+        String urlnav=null;
         //if(!model.containsAttribute("LicForm"))
-         model.addAttribute("LicForm", new creationLicForm());
-          return "qChoixModeNouvBat";
+      if(zeroEtape==true)   {
+          model.addAttribute("LicForm", licf);
+
+          urlnav="qChoixModeNouvBat";
+      }
+        else { urlnav="redirect:start"; }
+        return urlnav;
     }
 
-    @RequestMapping(value="/NouvLicenceBatNouveau", params={"addRow"},method = RequestMethod.POST)
-    public String NouvLicenceBatExistantaddrow(final    creationLicForm LicForm, final ModelMap model,final BindingResult bindingresult) {
+    @RequestMapping(value="/NouvLicenceBatNouveau1", params={"addRow"},method = RequestMethod.POST)
+    public String NouvLicenceBatExistantaddrow(final  @ModelAttribute("LicForm") creationLicForm LicForm, final ModelMap model,final BindingResult bindingresult) {
         String url=null;
         List<qCategRessource> ens=new ArrayList<qCategRessource>();
 
@@ -301,12 +480,15 @@ if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
         } else LicForm.getLicence().getQcatressources().add(new qCategRessource());
        model.addAttribute("LicForm",LicForm);
        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNationalNewBat";
-       if(LicForm.getLicence() instanceof qLicenceLibre) url="qshowNewLicLibreNewBat";
+        else {
+           if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibreNewBat";
+           else System.out.println("jjjj");
+       }
         return url;
     }
 
-    @RequestMapping(value="/NouvLicenceBatNouveau",params = {"addNewLicNat"},method = RequestMethod.POST)
-    public String NouvLicenceBatNouveauadd(final  @Valid  creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
+    @RequestMapping(value="/NouvLicenceBatNouveau1",params = {"addNewLicNat"},method = RequestMethod.POST)
+    public String NouvLicenceBatNouveauadd(final  @Valid @ModelAttribute("LicForm") creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
 
         String validateURL=null;
         qLic licAct=LicForm.getLicence();
@@ -315,12 +497,12 @@ if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
       //  LicForm.getLicence().setKw(LicForm.getLicence().getQnavire().getKw());LicForm.getLicence().setLarg(LicForm.getLicence().getQnavire().getLarg());LicForm.getLicence().setLongg(LicForm.getLicence().getQnavire().getLongg());LicForm.getLicence().setNomnav(LicForm.getLicence().getQnavire().getNomnav());LicForm.getLicence().setRadio(LicForm.getLicence().getQnavire().getRadio());LicForm.getLicence().setPuimot(LicForm.getLicence().getQnavire().getPuimot());
 
 
-        if (concessionService.validate(((qLicenceNational)LicForm.getLicence()).getQconcession().getRefConcession()) == false)
-        {
-            LicForm.setRefMessage("concession invalide");
-            System.out.println(LicForm.getRefMessage());
-            return "qshowNewLicNationalNewBat";
-        }
+    //    if (concessionService.validate(((qLicenceNational)LicForm.getLicence()).getQconcession().getRefConcession()) == false)
+    //    {
+     //       LicForm.setRefMessage("concession invalide");
+    //        System.out.println(LicForm.getRefMessage());
+   //         return "qshowNewLicNationalNewBat";
+    //    }
         model.addAttribute("LicForm",LicForm);
 
         licValidator.validate(licAct, bindingresult);
@@ -346,8 +528,8 @@ if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
         }
         return validateURL;
     }
-    @RequestMapping(value="/NouvLicenceBatNouveau",params = {"addNewLicLib"},method = RequestMethod.POST)
-    public String NouvLicenceBatNouveauadd1(final  @Valid   creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
+    @RequestMapping(value="/NouvLicenceBatNouveau1",params = {"addNewLicLib"},method = RequestMethod.POST)
+    public String NouvLicenceBatNouveauadd1(final  @Valid  @ModelAttribute("LicForm") creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
         String validateURL=null;
 
         qLic licAct=LicForm.getLicence();

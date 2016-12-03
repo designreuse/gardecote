@@ -13,6 +13,9 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 //import javax.validation.constraints.* ;
@@ -42,6 +45,12 @@ public class qLic implements Serializable
   //  @NotEmpty(message = "le champs ne peut pas être null")
     @Column(name="numlic", length=255)
     private String     numlic       ;
+
+    @Column(name = "created_at")
+    public Date createdAt;
+
+    @Column(name = "updated_at")
+    public Date updatedAt;
 
     @Column(name="numimm", nullable=true)
         private String     numimm;
@@ -156,7 +165,20 @@ public class qLic implements Serializable
     private enumTypeBat    typb         ;
     // Ca c'est pour le format de nouvelle strategie
 
-    //----------------------------------------------------------------------
+    //----------------------------------------------------------------------vv
+    // @Override
+
+
+    @PrePersist
+    void createdAt() {
+        this.createdAt = this.updatedAt = new Date();
+    }
+
+    @PreUpdate
+    void updatedAt() {
+        this.updatedAt = new Date();
+    }
+
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
     public qLic()
@@ -422,4 +444,18 @@ public class qLic implements Serializable
         this.tjb = tjb;
     }
 
+    @Override
+    public String toString() {
+
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date rr=null,tt=null;
+        try {
+           rr=formatter.parse(formatter.format(dateDebutAuth));
+           tt=formatter.parse(formatter.format(dateFinAuth));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "Numéro:" + numlic + " de :"+dateDebutAuth +" a "+dateFinAuth;
+
+    }
 }

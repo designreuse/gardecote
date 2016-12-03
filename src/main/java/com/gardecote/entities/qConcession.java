@@ -202,27 +202,7 @@ public class qConcession implements Serializable
     //----------------------------------------------------------------------
     // toString METHOD
     //----------------------------------------------------------------------
-    public String toString() { 
-        StringBuffer sb = new StringBuffer(); 
-        sb.append("["); 
-        sb.append(refConcession);
-        sb.append("]:"); 
 
-        sb.append("|");
-        sb.append(categoriesRessources );
-        sb.append("|");
-        sb.append(qconsignataire);
-
-        sb.append("|");
-
-        sb.append("|");
-        sb.append(dateConcession);
-        sb.append("|");
-        sb.append(dateDebut);
-        sb.append("|");
-        sb.append(dateFin);
-        return sb.toString(); 
-    }
 
     public qConcession(String refConcession, qConsignataire concessionaire, Date dateLicence, Date dateDebut, Date dateFin, List<qCategRessource> categoriesRessources, List<qLicenceNational> qLicenceBatLastList) {
         this.refConcession = refConcession;

@@ -14,8 +14,11 @@ import javax.annotation.Resource;
 
 import com.gardecote.data.repository.jpa.qCarnetRepository;
 import com.gardecote.data.repository.jpa.qConcessionRepository;
+import com.gardecote.data.repository.jpa.qRegistreNavireRepository;
 import com.gardecote.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +50,12 @@ public class qCarnetServiceImpl implements qCarnetService {
 			beans.add(authprovEntity1);
 		}
 		return beans;
+	}
+
+	@Override
+	public Page<qCarnet> findAll(int p, int size) {
+		Page<qCarnet> entities = qCarnetRepository.findAll(new PageRequest(p, size));
+		return entities;
 	}
 
 	@Override
@@ -84,19 +93,19 @@ public class qCarnetServiceImpl implements qCarnetService {
 
 	@Override
 	public qCarnet entrerDansLeSystem(qCarnet carnet) {
+		carnet.setNbrLigneParPage(carnet.getQprefix().getNbrLigneCarnet());
 		List<qPageCarnet>  pgs=new ArrayList<qPageCarnet>();
 		if (carnet.getTypeDoc().equals(enumTypeDoc.Journal_Peche)){
-			carnet.setNbrLigneParPage(10);
-     			for(int i=0;i<carnet.getNbrPages();i++) {
-				qPageCarnet  qp= new qPageMarree(carnet.getPrefixNumerotation().toString()+Long.toString(carnet.getNumeroDebutPage()+i),
+    			for(int i=0;i<carnet.getNbrPages();i++) {
+				qPageCarnet  qp= new qPageMarree(carnet.getPrefixNumerotation()+Long.toString(carnet.getNumeroDebutPage()+i),
 						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null );
 				//   qp.setQcarnet(this);
 
 				pgs.add(qp);
-			}
+		    	}
 		}
 		if (carnet.getTypeDoc().equals(enumTypeDoc.Fiche_Debarquement)) {
-			carnet.setNbrLigneParPage(9);
+
 
 			for(int i=0;i<carnet.getNbrPages();i++) {
 				qPageCarnet  qp= new qPageDebarquement(carnet.getPrefixNumerotation().toString()+Long.toString(carnet.getNumeroDebutPage()+i),
@@ -114,8 +123,8 @@ public class qCarnetServiceImpl implements qCarnetService {
 			}
 		}
 		carnet.setPages(pgs);
-		qCarnetRepository.save(carnet);
-		return carnet;
+		//qCarnetRepository.save(carnet);
+		return qCarnetRepository.save(carnet);
 
 	}
 

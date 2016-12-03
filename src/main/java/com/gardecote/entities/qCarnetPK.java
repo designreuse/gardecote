@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 public class qCarnetPK implements Serializable {
 
-       private enumPrefix     prefixNumerotation    ;
+       private String     prefixNumerotation    ;
 
        private Long       numeroDebutPage    ;
 
@@ -18,16 +18,16 @@ public class qCarnetPK implements Serializable {
         super();
     }
 
-    public qCarnetPK(enumPrefix prefixNumerotation, Long numeroDebutPage) {
+    public qCarnetPK(String prefixNumerotation, Long numeroDebutPage) {
         this.prefixNumerotation = prefixNumerotation;
         this.numeroDebutPage = numeroDebutPage;
     }
 
-    public enumPrefix getPrefixNumerotation() {
+    public String getPrefixNumerotation() {
         return prefixNumerotation;
     }
 
-    public void setPrefixNumerotation(enumPrefix prefixNumerotation) {
+    public void setPrefixNumerotation(String prefixNumerotation) {
         this.prefixNumerotation = prefixNumerotation;
     }
 
@@ -46,15 +46,16 @@ public class qCarnetPK implements Serializable {
 
         qCarnetPK qCarnetPK = (qCarnetPK) o;
 
-        if (prefixNumerotation != qCarnetPK.prefixNumerotation) return false;
-        return numeroDebutPage.equals(qCarnetPK.numeroDebutPage);
+        if (getPrefixNumerotation() != null ? !getPrefixNumerotation().equals(qCarnetPK.getPrefixNumerotation()) : qCarnetPK.getPrefixNumerotation() != null)
+            return false;
+        return !(getNumeroDebutPage() != null ? !getNumeroDebutPage().equals(qCarnetPK.getNumeroDebutPage()) : qCarnetPK.getNumeroDebutPage() != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = prefixNumerotation.hashCode();
-        result = 31 * result + numeroDebutPage.hashCode();
+        int result = getPrefixNumerotation() != null ? getPrefixNumerotation().hashCode() : 0;
+        result = 31 * result + (getNumeroDebutPage() != null ? getNumeroDebutPage().hashCode() : 0);
         return result;
     }
 }

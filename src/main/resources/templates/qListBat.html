@@ -38,11 +38,12 @@
     <tr th:each="b:${lstBat.lstBat}">
         <td>
         <input  type="radio"   th:field="${lstBat.numSelected}"  name="selectedNum" th:value="${b.numimm}"   /></td>
-        <td>  <div class="dropdown">  <button th:field="${lstBat.numSelected}" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Creer une licence
+        <td>  <div class="dropdown">  <button th:field="${lstBat.numSelected}" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
                 <span class="caret"></span></button>
             <ul class="dropdown-menu">
-                <li><a th:href="@{NouvLicenceBatExistant(numimm=${b.numimm},action='createlicenceNational')}">Regime National</a></li>
-                <li><a th:href="@{NouvLicenceBatExistant(numimm=${b.numimm},action='createlicenceLibre')}">Regime Etranger</a></li>
+                <li><a th:href="@{NouvLicenceBatExistant(numimm=${b.numimm},action='createlicenceNational')}">Creer une Licence en Regime National</a></li>
+                <li><a th:href="@{NouvLicenceBatExistant(numimm=${b.numimm},action='createlicenceLibre')}">Creer une Licence en Regime Etranger</a></li>
+                <li><a th:href="@{AttribuerCarnet(numimm=${b.numimm},action='attribuerCarnet')}">Attribuer un nouveau carnet</a></li>
 
             </ul></div></td>
         <td th:text="${b.numimm}"></td>
