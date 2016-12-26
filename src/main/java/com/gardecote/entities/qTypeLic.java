@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Created by Dell on 09/10/2016.
  */
 @Entity
-@Table(name="qTypeLic4", schema="dbo", catalog="GCM1" )
+@Table(name="qTypeLic20", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qTypeLic.countAll", query="SELECT COUNT(x) FROM qTypeLic x" )

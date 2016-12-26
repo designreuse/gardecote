@@ -1,23 +1,26 @@
 package com.gardecote.entities;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Created by Dell on 25/10/2016.
  */
 
 @Entity
-@Table(name="qQuantiteExportee", schema="dbo", catalog="GCM1" )
+@Table(name="qQuantiteExportee20", schema="dbo", catalog="GCM1" )
+@IdClass(qDocPK.class)
 public class qQuantiteExportee implements Serializable {
+    @Id
+    String numImm;
+    @Id
+    Date depart;
     @Id
     private enumZonOrientation enumZonOrientationPeche;
 
     private Integer qte;
-@OneToOne
+    @OneToOne
     private qTraitement qtraitement;
 
     public qTraitement getQtraitement() {
@@ -28,9 +31,30 @@ public class qQuantiteExportee implements Serializable {
         this.qtraitement = qtraitement;
     }
 
-    public qQuantiteExportee(enumZonOrientation enumZonOrientationPeche, Integer qte) {
+
+
+    public qQuantiteExportee(enumZonOrientation enumZonOrientationPeche, Integer qte, qTraitement qtraitement) {
+        this.numImm = qtraitement.getNumImm();
+        this.depart = qtraitement.getDepart();
         this.enumZonOrientationPeche = enumZonOrientationPeche;
         this.qte = qte;
+        this.qtraitement = qtraitement;
+    }
+
+    public String getNumImm() {
+        return numImm;
+    }
+
+    public void setNumImm(String numImm) {
+        this.numImm = numImm;
+    }
+
+    public Date getDepart() {
+        return depart;
+    }
+
+    public void setDepart(Date depart) {
+        this.depart = depart;
     }
 
     public enumZonOrientation getEnumZonOrientationPeche() {

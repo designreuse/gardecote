@@ -31,7 +31,7 @@ public class attributionValidator implements Validator {
         qCarnet carnetDoublon=carnetService.findById(crn.getCarnetPK());
         if(carnetDoublon!=null)    errors.rejectValue("carnetSelected.qprefix", "carnetSelected.qprefix.doublon");
 
-        else  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "carnetSelected.qprefix", "carnetSelected.qprefix.empty");
+        else  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "carnetSelected.prefixNumerotation", "carnetSelected.qprefix.empty");
 
 
 

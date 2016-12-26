@@ -39,6 +39,7 @@ public class qDocPK implements  Serializable {
         super();
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

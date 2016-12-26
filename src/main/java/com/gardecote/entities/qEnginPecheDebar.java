@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Dell on 09/10/2016.
  */
 @Entity
-@Table(name="qEnginPecheDeb4", schema="dbo", catalog="GCM1" )
+@Table(name="qEnginPecheDeb20", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qEnginPecheDebar.countAll", query="SELECT COUNT(x) FROM qEnginPecheDebar x" )
@@ -48,8 +48,8 @@ public class qEnginPecheDebar implements Serializable {
     public qEnginPecheDebar(String numimm, Date dateDepart, enumEngin enginMar, enumEnginDeb enginDeb, Integer maillage, boolean flag) {
         this.numimm = numimm;
         this.dateDepart = dateDepart;
-        EnginMar = enginMar;
-        EnginDeb = enginDeb;
+        this.EnginMar = enginMar;
+        this.EnginDeb = enginDeb;
         this.maillage = maillage;
         this.flag = flag;
     }

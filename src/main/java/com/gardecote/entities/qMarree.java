@@ -14,17 +14,15 @@ import java.util.List;
 import java.util.Date;
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
-
 /**
  * Persistent class for entity stored in table "quotaMarrees"
  *
  * @author Telosys Tools Generator
  *
  */
-
 @Entity
 @DynamicUpdate
-@Table(name="qDoc4", schema="dbo", catalog="GCM1" )
+
 @DiscriminatorValue("MARREE")
 // @Table(name="qMarree", schema="dbo", catalog="DSPCM_DB" )
 // Define named queries here
@@ -33,21 +31,19 @@ import java.util.Date;
 } )
 
 @IdClass(qDocPK.class)
-
 public class qMarree extends qDoc implements Serializable
 {
     private static final long serialVersionUID = 1L;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------
-
-
     private enumJP typeJP;
-    @ManyToMany(cascade=CascadeType.ALL,targetEntity = qEnginPecheMar.class)
+    @ManyToMany(targetEntity = qEnginPecheMar.class,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocMarreeEngins")
     private List<qEnginPecheMar> qEngins;
 
-    @OneToMany(mappedBy="qmarree", targetEntity=qPageMarree.class)
+    @OneToMany(targetEntity=qPageMarree.class,cascade = CascadeType.ALL)
+    @JoinTable(name = "qAssocMareesPages")
     private List<qPageMarree> pages;
 
     //----------------------------------------------------------------------
@@ -64,13 +60,12 @@ public class qMarree extends qDoc implements Serializable
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
 
-
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
 
-    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavire qnavire,qConcession qconcess, enumJP typeJP, List<qEnginPecheMar> qEngins, List<qPageMarree> pages) {
-        super(enumtypedoc, depart, retour,qseq, qnavire,qconcess);
+    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavire qnavire,qUsine qusine,qConcession qconcess, enumJP typeJP, List<qEnginPecheMar> qEngins, List<qPageMarree> pages) {
+        super(enumtypedoc, depart, retour,qseq, qnavire,qusine,qconcess);
 
         this.typeJP = typeJP;
         this.qEngins = qEngins;
@@ -78,11 +73,7 @@ public class qMarree extends qDoc implements Serializable
     }
 
     //--- DATABASE MAPPING : Depart ( date )
-
-
-
-
-    public enumJP getTypeJP() {
+   public enumJP getTypeJP() {
         return typeJP;
     }
 

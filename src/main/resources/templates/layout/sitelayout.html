@@ -7,7 +7,7 @@
                 <title>Garde Cote Maritime</title>
                 <!-- BOOTSTRAP STYLES-->
                 <link href="gcmcss/bootstrap.css" rel="stylesheet" />
-                <link     rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" />
+                <link   rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" />
                 <!-- FONTAWESOME STYLES-->
                 <link href="gcmcss/font-awesome.css" rel="stylesheet" />
                 <link href="gcmcss/angucomplete-alt.css" rel="stylesheet" />
@@ -19,7 +19,7 @@
 
             </head>
 
-            <body  ng-app="mygcmApp" ng-controller="searchpageController">
+            <body >
 
             <div class="container-fluid spacer"  >
 
@@ -46,13 +46,19 @@
 
                                     </ul>
                                 </li>
-                                <li><a href="#">Saisie de documents de pêche</a></li>
                                 <li class="dropdown">
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Documents de captures <b class="caret"></b></a>
+
+
+                                    <ul role="menu" class="dropdown-menu">
+                                        <li>  <a th:href="@{createDocument(firstEtp=0)}">Saisie</a></li>
+                                        <li><a th:href="@{parametrerModels}" >Parametrage de models de captures</a></li>
+                                    </ul>
+                                </li>
+                              <li class="dropdown">
                                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">Registre de navire <b class="caret"></b></a>
                                     <ul role="menu" class="dropdown-menu">
-
-
-                                               <li><a th:href="@{afficherLstLicence}" class="active">Liste des licences</a></li>
+                                             <li><a th:href="@{afficherLstLicence}" class="active">Liste des licences</a></li>
                                                <li><a th:href="@{listBatASelectionner}" class="active">Creer une licence pour un bâteau existant</a></li>
                                                <li><a th:href="@{NouvLicenceBatNouveau1(zeroEtape=true)}" class="active">Creer une Licence pour un nouveau bâteau</a></li>
 
@@ -63,7 +69,7 @@
                                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">Carnets <b class="caret"></b></a>
                                     <ul role="menu" class="dropdown-menu">
                                         <li><a th:href="@{listCarnets}" class="active">Liste des carnets</a></li>
-                                        <li><a href="#">Attribution au navire</a></li>
+                                        <li><a th:href="@{attributionCarnet}">Attribution au navire</a></li>
 
                                     </ul>
                                 </li>
@@ -82,7 +88,7 @@
                                 </div>
                             </form>
                             <ul class="nav navbar-nav navbar-right">
-                                <li><button ng-click="generate()">Login</button></li>
+                                <li><button id="generate" name="generate">Login</button></li>
                             </ul>
                         </div>
                     </nav>
@@ -91,6 +97,7 @@
 
 
                 </header>
+                <div id="login" name="login"></div>
                 <div class="row col-sm-12 panel panel-primary" layout:fragment="content"  >
                </div>
                 <footer class="row col-sm-12">
@@ -104,9 +111,10 @@
 
             <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
             <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-
-            <!-- BOOTSTRAP SCRIPTS -->
             <script src="gcmjs/bootstrap.min.js"></script>
+            <!-- BOOTSTRAP SCRIPTS -->
+
+            <script src="gcmjs/confirm-bootstrap.js"></script>
             <!-- METISMENU SCRIPTS -->
             <script src="gcmjs/jquery.metisMenu.js"></script>
 
@@ -120,13 +128,11 @@
 
             <script src="gcmjs/underscore.js"></script>
             <script src="gcmjs/myApp.js" th:src="@{gcmjs/myApp.js}"></script>
-            <script src="gcmjs/jquery.chained.remote.min.js"></script>
+
             <script type="text/javascript">
+                /* <![CDATA[ */
                 $(document).ready(function() {
-                    $("#carnetSelected.prefixNumerotation").remoteChained({
-                        parents: "#carnetSelected.typeDoc",
-                        url: /*[[@{/getTypeDocPrefixesValues}]]*/ ""
-                    });
+                    $(".dropdown-toggle").dropdown();
 
                     $("#searchName" ).autocomplete({
                         minLength: 1,
@@ -151,7 +157,122 @@
 
                     });
 
+
+
+                    $("#numeroDebut").autocomplete({
+                        minLength: 1,
+                        delay: 500,
+                        //define callback to format results
+                        source: function (request, response) {
+
+                            $.getJSON("/autocomPages",  {
+                                typeDoc: $("#typeDoc").val(),
+                                numeroD: $("#numeroDebut").val()
+                            }, function(result) {
+                                response($.map(result, function(item) {
+                                    return {
+                                        // following property gets displayed in drop down
+                                        label: item,
+                                        // following property gets entered in the textbox
+                                        value: item
+                                        // following property is added for our own use
+                                        //   tag_url: "http://" + window.location.host + "/tags/" + item.tagId + "/" + item.name
+                                    }
+                                }));
+                            });
+                            clearFields();
+                            $("dateDebut").prop('disabled', true);
+                        }
+
+                        //define select handler
+
+                    });
+                    $("#but").click( function()
+                            {
+                                var url = /*[[@{/finList}]]*/ "/finList";
+                                if ($('#numeroDebut').val() !== '') {
+                                    url = url + '?debut=' + $('#numeroDebut').val()+"\u0026typeDoc="+$('#typeDoc').val();
+
+                                }
+                                $("#dependentContent").load(url);
+                            }
+                    );
+
+                    $("#numeroDebutAnnexe").autocomplete({
+                        minLength: 1,
+                        delay: 500,
+                        //define callback to format results
+                        source: function (request, response) {
+
+                            $.getJSON("/autocomPagesAnnexe",  {
+                                typeDoc: $("#typeDocAnnexe").val(),
+                                numeroD: $("#prefixeAnnexe").val()+$("#numeroDebutAnnexe").val()
+                            }, function(result) {
+                                response($.map(result, function(item) {
+                                    return {
+                                        // following property gets displayed in drop down
+                                        label: item,
+                                        // following property gets entered in the textbox
+                                        value: item
+                                        // following property is added for our own use
+                                        //   tag_url: "http://" + window.location.host + "/tags/" + item.tagId + "/" + item.name
+                                    }
+                                }));
+                            });
+                            clearFields();
+
+                        }
+
+                        //define select handler
+
+                    });
+                    $("#butAnnexe").click( function()
+                            {
+                                var url = /*[[@{/finList}]]*/ "/finListAnnexe";
+                                if ($('#numeroDebutAnnexe').val() !== '') {
+                                    url = url + '?debut=' +$("#prefixeAnnexe").val()+ $('#numeroDebutAnnexe').val()+"\u0026typeDoc="+$('#typeDocAnnexe').val();
+
+                                }
+                                $("#dependentContentAnnexe").load(url);
+                            }
+                    );
+
+                    $("#generate").click( function()
+                            {
+                                $("#login").load('/generate');
+                            }
+                    );
+
+
+                    $('#deleteA').confirmModal({
+                        confirmTitle     : 'Custom please confirm',
+                        confirmMessage   : 'Custom are you sure you want to perform this action ?',
+                        confirmOk        : 'Custom yes',
+                        confirmCancel    : 'Cutom cancel',
+                        confirmDirection : 'rtl',
+                        confirmStyle     : 'primary',
+                        confirmCallback: function (target) {
+                            //perform the deletion here, or leave this option
+                            //out to just follow link..
+                            var href = $('#deleteA').attr('href');
+
+                            var host= $('#deleteA').attr('hostname');
+                            console.log(href);
+                            window.location.href = href; //causes the browser to refresh and load the requested url
+                            alert(window.location.pathname);
+                        },
+                        confirmDismiss   : true,
+                        confirmAutoOpen  : false
+                    });
+
+
                 });
+
+                function clearFields() {
+                    $('#numeroFin').find('option').remove();
+
+                }
+
                 $("#licence\\.qconcession\\.refConcession").autocomplete({
                     minLength: 1,
                     delay: 500,
@@ -174,6 +295,17 @@
                     //define select handler
 
                 });
+
+
+
+                function loadPrefixes() {
+                    var url = /*[[@{/PrefixesByTypeDoc}]]*/ "/PrefixesByTypeDoc";
+                    if ($('#CarnetAttribue\\.carnetSelected\\.typeDoc').val() !== '') {
+                        url = url + '/' + $('#carnetSelected\\.typeDoc option:selected').text();
+                    }
+                    $("#divpref").load(url);
+                }
+                /* ]]> */
             </script>
 
             </body>

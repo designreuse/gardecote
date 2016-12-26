@@ -7,8 +7,6 @@ import com.gardecote.entities.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-
-
 /**
  * Business Service Interface for entity Authprov.
  */

@@ -4036,9 +4036,14 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav-tabs > li.active > a:focus {
   color: #555;
   cursor: default;
-  background-color: #fff;
+  background-color: #ffe4e1;
   border: 1px solid #ddd;
   border-bottom-color: transparent;
+}
+.nav-tabs > li.active  {
+
+  background-color: #FAD900;
+
 }
 .nav-tabs.nav-justified {
   width: 100%;
@@ -4157,6 +4162,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .tab-content > .active {
   display: block;
+  background-color:#ffe4e1;
 }
 .nav-tabs .dropdown-menu {
   margin-top: -1px;
@@ -5660,14 +5666,14 @@ button.list-group-item-danger.active:focus {
   border: 0;
 }
 .panel-group {
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 .panel-group .panel {
   margin-bottom: 0;
   border-radius: 4px;
 }
 .panel-group .panel + .panel {
-  margin-top: 5px;
+  margin-top: 0px;
 }
 .panel-group .panel-heading {
   border-bottom: 0;

@@ -23,7 +23,7 @@ import java.io.Serializable;
  */
 import java.util.Date;
 @Entity
-@Table(name="qCapture4", schema="dbo", catalog="GCM1" )
+@Table(name="qCapture20", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qCaptue.countAll", query="SELECT COUNT(x) FROM qCapture x" )
@@ -153,7 +153,7 @@ public class qCapture implements Serializable
         this.datedepart = qdoc.getDepart();
         this.nummimm = qdoc.getNumImm();
         if(qdoc.getEnumtypedoc().equals(enumTypeDoc.Fiche_Debarquement))this.dateJour = jourDeb.getDatejourDeb();
-        if(qdoc.getEnumtypedoc().equals(enumTypeDoc.Journal_Peche))this.dateJour = jourMere.getDatejourMere();
+        if(qdoc.getEnumtypedoc().equals(enumTypeDoc.Journal_Peche)) this.dateJour = jourMere.getDatejourMere();
         this.idespece = especeTypee.getQespeceId();
         this.esptype = especeTypee.getEnumesptype();
         this.qdoc = qdoc;

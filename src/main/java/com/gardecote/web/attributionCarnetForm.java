@@ -1,17 +1,17 @@
 package com.gardecote.web;
-
 import com.gardecote.entities.qCarnet;
 import com.gardecote.entities.qLic;
 import com.gardecote.entities.qNavire;
+import com.gardecote.entities.qUsine;
 
 import java.io.Serializable;
 import java.util.List;
-
 /**
  * Created by Dell on 01/12/2016.
  */
 public class attributionCarnetForm  {
     private qNavire navireSelected;
+    private qUsine usineSelected;
     private qCarnet carnetSelected;
     private qLic licenceSelected;
     private List<qLic> licenceActives;
@@ -55,5 +55,14 @@ public class attributionCarnetForm  {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public qUsine getUsineSelected() {
+        return usineSelected;
+    }
+
+
+    public void setUsineSelected(qUsine usineSelected) {
+        this.usineSelected = usineSelected;
     }
 }

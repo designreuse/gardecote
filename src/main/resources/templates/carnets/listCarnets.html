@@ -29,7 +29,7 @@
             <tbody>
             <tr th:each="crn:${listCarnets.lstCarnets}">
                <td>
-               <a th:href="@{ActionCarnet(prefixPK=${crn.prefixNumerotation},debutPagePK=${crn.numeroDebutPage})}">Annuler l'attribution</a>
+               <a th:href="@{ActionCarnet(prefixPK=${crn.prefixNumerotation},typeDoc=${crn.typeDoc},debutPagePK=${crn.numeroDebutPage})}">Annuler l'attribution</a>
                 </td>
                 <td th:text="${crn.prefixNumerotation}"></td>
                 <td th:text="${crn.numeroDebutPage}"></td>

@@ -2,8 +2,10 @@ package com.gardecote.business.service.impl;
 
 import com.gardecote.business.service.qPrefixService;
 import com.gardecote.data.repository.jpa.qPrefixRepository;
+import com.gardecote.entities.enumTypeDoc;
 import com.gardecote.entities.qNavire;
 import com.gardecote.entities.qPrefix;
+import com.gardecote.entities.qPrefixPK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,7 @@ public class qPrefixImpl implements qPrefixService {
     private qPrefixRepository prefixRepo;
 
     @Override
-    public qPrefix findById(String idpref) {
+    public qPrefix findById(qPrefixPK idpref) {
         qPrefix pref=prefixRepo.findOne(idpref);
         return pref;
     }
@@ -42,9 +44,13 @@ public class qPrefixImpl implements qPrefixService {
         return prefixRepo.save(entity);
     }
 
+    @Override
+    public void delete(qPrefixPK idPrefix) {
+           prefixRepo.delete(idPrefix);
+    }
 
     @Override
-    public void delete(String idPrefix) {
-           prefixRepo.delete(idPrefix);
+    public List<qPrefix> PrefixesByTypeDoc(enumTypeDoc typeDoc) {
+        return prefixRepo.prefixesByTypeDoc(typeDoc);
     }
 }

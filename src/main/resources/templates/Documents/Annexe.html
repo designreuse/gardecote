@@ -1,0 +1,58 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Gestion des documents</title>
+</head>
+<body>
+
+<div   layout:fragment="content">
+
+    <span class="label label-danger" th:text="${deletefeedback}"></span>
+    <span class="label label-danger" th:text="${deblocagefeedback}"></span>
+
+    <form th:action="@{createAnnexe}" method="post"  th:object="${frmAnnexe}" class="form-inline" >
+
+        <label   th:text="${frmAnnexe.nomnavAnnexe}" />
+        <label    th:text="${frmAnnexe.dateDepartAnnexe}" />
+        <label    th:text="${frmAnnexe.typeDocAnnexe}" />
+
+         <input type="hidden"   th:field="${frmAnnexe.prefixeAnnexe}" />
+        <input type="hidden"   th:field="${frmAnnexe.nomnavAnnexe}"/>
+        <input type="hidden"   th:field="${frmAnnexe.numImmAnnexe}"/>
+        <input type="hidden"   th:field="${frmAnnexe.dateDepartAnnexe}" />
+        <input type="hidden"   th:field="${frmAnnexe.typeDocAnnexe}" />
+
+        <div class="jumbotron text-left">
+
+
+            <label  >Numéro de debut de JP ANNEXE:</label>
+            <span class="label label-danger" th:text="${frmAnnexe.prefixeAnnexe}"></span> <input type="number"  th:field="${frmAnnexe.numeroDebutAnnexe}" onchange="clearFields()"/>
+            <span class="label label-danger" th:errors="${frmAnnexe.numeroDebutAnnexe}"></span>
+            <button type="button" id="butAnnexe" name="butAnnexe" ><span class="glyphicon glyphicon-search"></span></button>
+
+
+
+
+            <div id="dependentContentAnnexe">
+                <label th:fragment="finListFragAnnexe"  >Numero page fin JP Annexe :</label>
+
+                <select class="form-control"   th:field="${frmAnnexe.numeroFinAnnexe}" th:fragment="finListFragAnnexe"  >
+                    <option th:each="i : ${frmAnnexe.numsfinAnnexe}"
+                            th:value="${i}"
+                            th:text="${i}">
+
+                    </option>
+                </select>
+                <span class="label label-danger" th:errors="${frmAnnexe.numeroFinAnnexe}"></span>
+
+
+                <button type="submit"  id="creerAnnexe" name="creerAnnexe" th:disabled="${frmAnnexe.displayButtonAnnexe}" class="btn btn-lg btn-primary"  th:fragment="finListFragAnnexe" onsubmit="return confirm('Etes vous sûre?');"> Ajouter une JP Annexe &raquo; </button>
+
+            </div>
+        </div>
+
+    </form>
+    </div>
+</body>
+</html>

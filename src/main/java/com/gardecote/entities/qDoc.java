@@ -15,38 +15,183 @@ import java.util.List;
  */
 @Entity
 @DynamicUpdate
-@Table(name="qDoc4", schema="dbo", catalog="GCM1" )
+@Table(name="qDoc20", schema="dbo", catalog="GCM1" )
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
 public class qDoc implements Serializable {
-
     @Id
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-   private Date depart       ;
-
+    private Date depart       ;
     @Id
     private String numImm;
 
+
+    @OneToOne
+    private qLic licenceImputation;
+    private String segPeche;
+    private enumJP typePeche;
+
+    private Integer quota;
+    private Integer dureeConcession;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date dateExpiration;
+    private String nomNavire;
+    @Column(name="imo", nullable=true, length=10)
+    private String imo;
+    @Column(name="gt", nullable=true, length=10)
+    private String  GT;
+    @Column(name="nomcapitaine", nullable=true, length=20)
+    private String nomCapitaine;
+    @Column(name="debloquerModification", nullable=false, length=10)
+     private boolean debloquerModification;
+    @Column(name="bloquerDeletion", nullable=false, length=10)
+    private boolean bloquerDeletion;
+
+    private enumSupport support;
     @OneToOne( cascade = CascadeType.ALL,targetEntity = qSeq.class)
     private qSeq qseq;
 
+    @OneToOne( targetEntity = qNavire.class)
+    private qNavire qnavire;
 
+    @OneToOne( targetEntity = qUsine.class)
+    private qUsine qusine;
 
     @Column(name="Retour", nullable=true, length=10)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date     retour       ;
 
-
-
     @Column(name="doctype", nullable=false, length=10)
     private enumTypeDoc enumtypedoc;
+
+    public boolean isDebloquerModification() {
+        return debloquerModification;
+    }
+
+    public void setDebloquerModification(boolean debloquerModification) {
+        this.debloquerModification = debloquerModification;
+    }
 
     @OneToOne
     private qConcession qconcession;
 
+    public boolean isBloquerDeletion() {
+        return bloquerDeletion;
+    }
+
+    public void setBloquerDeletion(boolean bloquerDeletion) {
+        this.bloquerDeletion = bloquerDeletion;
+    }
+
+    public String getSegPeche() {
+        return segPeche;
+    }
+
+    public void setSegPeche(String segPeche) {
+        this.segPeche = segPeche;
+    }
+
+    public enumJP getTypePeche() {
+        return typePeche;
+    }
+
+    public qLic getLicenceImputation() {
+        return licenceImputation;
+    }
+
+    public void setLicenceImputation(qLic licenceImputation) {
+        this.licenceImputation = licenceImputation;
+    }
+
+    public void setTypePeche(enumJP typePeche) {
+        this.typePeche = typePeche;
+    }
+
+    public enumSupport getSupport() {
+        return support;
+    }
+
+    public void setSupport(enumSupport support) {
+        this.support = support;
+    }
+
+    public Integer getQuota() {
+        return quota;
+    }
+
+    public void setQuota(Integer quota) {
+        this.quota = quota;
+    }
+
+    public Integer getDureeConcession() {
+        return dureeConcession;
+    }
+
+    public void setDureeConcession(Integer dureeConcession) {
+        this.dureeConcession = dureeConcession;
+    }
+
+    public Date getDateExpiration() {
+        return dateExpiration;
+    }
+
+    public void setDateExpiration(Date dateExpiration) {
+        this.dateExpiration = dateExpiration;
+    }
+
+    public String getNomNavire() {
+        return nomNavire;
+    }
+
+    public void setNomNavire(String nomNavire) {
+        this.nomNavire = nomNavire;
+    }
+
+    public String getImo() {
+        return imo;
+    }
+
+    public void setImo(String imo) {
+        this.imo = imo;
+    }
+
+    public String getGT() {
+        return GT;
+    }
+
+    public void setGT(String GT) {
+        this.GT = GT;
+    }
+
+    public String getNomCapitaine() {
+        return nomCapitaine;
+    }
+
+    public void setNomCapitaine(String nomCapitaine) {
+        this.nomCapitaine = nomCapitaine;
+    }
+
+    private String prefix;
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
     public qDoc() {
 
+    }
+
+    public qNavire getQnavire() {
+        return qnavire;
+    }
+
+    public void setQnavire(qNavire qnavire) {
+        this.qnavire = qnavire;
     }
 
     public qConcession getQconcession() {
@@ -79,14 +224,16 @@ public class qDoc implements Serializable {
         this.qseq = qsec;
     }
 
-    public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour,qSeq qseq, qNavire   qnavire,qConcession qconcess){
+    public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour,qSeq qseq, qNavire   qnavire, qUsine   qusine,qConcession qconcess){
         this.qconcession=qconcess;
+        this.qnavire=qnavire;
+        this.qusine=qusine;
         this.enumtypedoc = enumtypedoc;
         this.depart=depart;
         this.qseq=qseq;
-        this.numImm=qnavire.getNumimm();
+        if(qnavire!=null)  this.numImm=qnavire.getNumimm();
+        if(qusine!=null)   this.numImm=qusine.getRefAgrement();
         this.retour = retour;
-
     }
 
     public enumTypeDoc getEnumtypedoc() {

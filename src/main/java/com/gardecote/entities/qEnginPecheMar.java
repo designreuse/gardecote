@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Dell on 09/10/2016.
  */
 @Entity
-@Table(name="qEnginPeche4", schema="dbo", catalog="GCM1" )
+@Table(name="qEnginPecheMar20", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qEnginPecheMar.countAll", query="SELECT COUNT(x) FROM qEnginPecheMar x" )
@@ -25,13 +25,15 @@ public class qEnginPecheMar implements Serializable {
     private enumEngin EnginMar;
     @Id
     private enumEnginDeb EnginDeb;
-
+    @Column(name = "maillage")
     private Integer maillage;
 
-    private boolean flage;
+    @Column(name = "flag")
+    private boolean flag;
 
-    @JsonBackReference
+
     @ManyToMany(mappedBy = "qEngins")
+    @JsonBackReference
     private List<qMarree> qmarrees;
 
 
@@ -43,7 +45,7 @@ public class qEnginPecheMar implements Serializable {
         this.EnginMar = enginMar;
         this.EnginDeb = enginDeb;
         this.maillage = maillage;
-        this.flage = flage;
+        this.flag = flage;
     }
 
     public qEnginPecheMar() {
@@ -51,6 +53,14 @@ public class qEnginPecheMar implements Serializable {
    public  qEnginPechePK getEnginPechePK(){
         qEnginPechePK engpk=new qEnginPechePK(this.numimm,this.dateDepart,this.getEnginMar(),null);
        return engpk;
+    }
+
+    public List<qMarree> getQmarrees() {
+        return qmarrees;
+    }
+
+    public void setQmarrees(List<qMarree> qmarrees) {
+        this.qmarrees = qmarrees;
     }
 
     public String getNumimm() {
@@ -85,12 +95,12 @@ public class qEnginPecheMar implements Serializable {
         EnginDeb = enginDeb;
     }
 
-    public boolean isFlage() {
-        return flage;
+    public boolean isFlag() {
+        return flag;
     }
 
-    public void setFlage(boolean flage) {
-        this.flage = flage;
+    public void setFlag(boolean flage) {
+        this.flag = flage;
     }
 
 

@@ -1,19 +1,19 @@
 package com.gardecote.entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-
+import java.util.List;
 /**
  * Created by Dell on 17/11/2016.
  */
 @Entity
-@Table(name="qCategDeb4", schema="dbo", catalog="GCM1" )
+@Table(name="qCategDeb20", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qCategDeb.countAll", query="SELECT COUNT(x) FROM qCategDeb x" )
 } )
-
 public class qCategDeb implements Serializable {
     @Id
     private String numimm;
@@ -25,8 +25,10 @@ public class qCategDeb implements Serializable {
     @OneToOne
     private qCategRessource cat;
 
-    @ManyToOne
-    private qDebarquement debar;
+
+    @ManyToMany(mappedBy = "categories")
+    @JsonBackReference
+    private List<qDebarquement> qdeb;
 
     private boolean flag;
 
@@ -36,6 +38,14 @@ public class qCategDeb implements Serializable {
         this.idCat =  cat.getIdtypeConcession();
         this.cat = cat;
         this.flag = flag;
+    }
+
+    public List<qDebarquement> getQdeb() {
+        return qdeb;
+    }
+
+    public void setQdeb(List<qDebarquement> qdeb) {
+        this.qdeb = qdeb;
     }
 
     public String getNumimm() {

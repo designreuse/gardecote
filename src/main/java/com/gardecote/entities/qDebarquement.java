@@ -1,5 +1,4 @@
 package com.gardecote.entities;
-
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
@@ -9,36 +8,31 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
 /**
  * Created by Dell on 23/10/2016.
  */
-
 @Entity
 @DynamicUpdate
-@Table(name="qDoc4", schema="dbo", catalog="GCM1" )
+@Table(name="qDoc20", schema="dbo", catalog="GCM1")
 @DiscriminatorValue("DEBARQUEMENT")
-
 public class qDebarquement extends qDoc implements Serializable {
     private static final long serialVersionUID = 1L;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
-
     @ManyToMany(targetEntity = qEnginPecheDebar.class,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocDebarqEnginPeche")
     private List<qEnginPecheDebar> Engins;
 
-    @OneToMany(mappedBy = "debar",targetEntity = qCategDeb.class,cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = qCategDeb.class,cascade = CascadeType.ALL)
+    @JoinTable(name = "qAssocDebarqCategories")
     private List<qCategDeb> categories;
 
     private enumTypeDebarquement typeDeb;
 
     @OneToMany(targetEntity=qPageDebarquement.class,cascade = CascadeType.ALL)
-
     @JoinTable(name = "qAssocDebarqPages")
     private List<qPageDebarquement> pages;
-
 
     public List<qEnginPecheDebar> getEngins() {
         return Engins;
@@ -73,11 +67,10 @@ public class qDebarquement extends qDoc implements Serializable {
         this.pages = pages;
     }
 
-    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,qSeq qseq,qNavire qnavire,  List<qEnginPecheDebar> qEngins, enumTypeDebarquement typeDeb,qConcession qconcess,List<qCategDeb> categories, List<qPageDebarquement> pages) {
-        super(enumtypedoc, depart, retour,qseq, qnavire,qconcess);
+    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,qSeq qseq,qNavire qnavire,qUsine qusine,  List<qEnginPecheDebar> qEngins, enumTypeDebarquement typeDeb,qConcession qconcess,List<qCategDeb> categories, List<qPageDebarquement> pages) {
+        super(enumtypedoc, depart, retour,qseq, qnavire,qusine,qconcess);
         this.categories=categories;
         this.Engins=qEngins;
-
         this.typeDeb = typeDeb;
         this.pages = pages;
     }

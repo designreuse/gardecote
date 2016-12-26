@@ -11,7 +11,9 @@ import java.util.List;
 import javax.annotation.Resource;
 import com.gardecote.data.repository.jpa.qPageCarnetRepository;
 
+import com.gardecote.entities.enumTypeDoc;
 import com.gardecote.entities.qCarnet;
+import com.gardecote.entities.qPageCarnetPK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -36,7 +38,7 @@ public class qPageCarnetServiceImpl implements qPageCarnetService {
 
 		
 	@Override
-	public qPageCarnet findById(String codesp) {
+	public qPageCarnet findById(qPageCarnetPK codesp) {
 		qPageCarnet codesEspEntity = qPageCarnetRepository.findOne(codesp);
 		return codesEspEntity;
 	}
@@ -66,14 +68,14 @@ public class qPageCarnetServiceImpl implements qPageCarnetService {
 
 	@Override
 	public qPageCarnet update(qPageCarnet codesEsp) {
-		qPageCarnet codesEspEntity = qPageCarnetRepository.findOne(codesEsp.getNumeroPage());
+		qPageCarnet codesEspEntity = qPageCarnetRepository.findOne(codesEsp.getPageCarnetPK());
 
 		qPageCarnet codesEspEntitySaved = qPageCarnetRepository.save(codesEspEntity);
 		return codesEspEntitySaved;
 	}
 
 	@Override
-	public void delete(String codesp) {
+	public void delete(qPageCarnetPK codesp) {
 		qPageCarnetRepository.delete(codesp);
 	}
 
@@ -86,16 +88,19 @@ public class qPageCarnetServiceImpl implements qPageCarnetService {
 	}
 
 	@Override
-	public Page<qPageCarnet> getSuggPage(String searchpage) {
-		return qPageCarnetRepository.returnSuggPage(new PageRequest(0, 10),searchpage);
+	public Page<qPageCarnet> getSuggPage(String searchpage,enumTypeDoc typeDoc) {
+		return qPageCarnetRepository.returnSuggPage(new PageRequest(0, 10),searchpage,typeDoc);
 	}
-
 	@Override
-	public ArrayList<qPageCarnet> getFinList(String debut) {
-		qCarnet carnet=qcarnetRepository.retCarnet(debut);
+	public Page<qPageCarnet> getSuggPageAnnexe(String searchpage,enumTypeDoc typeDoc) {
+		return qPageCarnetRepository.returnSuggPageAnnexe(new PageRequest(0, 10),searchpage,typeDoc);
+	}
+	@Override
+	public ArrayList<qPageCarnet> getFinList(String debut,enumTypeDoc typeDoc) {
+		qCarnet carnet=qcarnetRepository.retCarnet(debut,typeDoc);
 //		qPageCarnet gg=qPageCarnetRepository.findOne(debut);
 //		qCarnet carnet=gg.getQcarnet();
-		Long dd=qcarnetRepository.retNumOrdre(debut);
+		Long dd=qcarnetRepository.retNumOrdre(debut,typeDoc);
 		System.out.println(dd);
 		System.out.println(carnet.getPrefixNumerotation());
 		return qPageCarnetRepository.returnFinList(carnet,dd);

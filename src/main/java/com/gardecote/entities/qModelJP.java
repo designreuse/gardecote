@@ -10,34 +10,34 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
-
 /**
  * Persistent class for entity stored in table "quotaEspecesTypeConcession"
  *
  * @author Telosys Tools Generator
  *
  */
-
 @Entity
-@Table(name="qModelJP4", schema="dbo", catalog="GCM1" )
+@Table(name="qModelJP20", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qModelJP.countAll", query="SELECT COUNT(x) FROM qModelJP x" )
 } )
-
+@IdClass(qPrefixPK.class)
 public class qModelJP implements Serializable
 {
     private static final long serialVersionUID = 1L;
-
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
     @NotNull
-    @Column(name="prefixModel", nullable=false, length=2)
-    private enumPrefix prefixModel;
+    @Column(name="prefixModel", nullable=false, length=5)
+    private String prefix;
+    @Id
+    private enumTypeDoc typeDoc;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
@@ -46,14 +46,13 @@ public class qModelJP implements Serializable
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
+    @OneToOne
+    @NotNull
+    private qPrefix qprefix;
     @ManyToMany(cascade = CascadeType.MERGE,targetEntity =qEspeceTypee.class,fetch = FetchType.EAGER)
-    @JoinTable(name = "qAssocModelEspeceTypee")
+    @JoinTable(name = "qAssocModelEspeceTypee3")
     private List<qEspeceTypee> especestypees;
-
-
-
-
-    //----------------------------------------------------------------------
+   //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
     public qModelJP()
@@ -61,17 +60,39 @@ public class qModelJP implements Serializable
 		super();
     }
 
-    public qModelJP(enumPrefix prefixModel, List<qEspeceTypee> especestypees) {
-        this.prefixModel = prefixModel;
+    public qModelJP(qPrefix qprefix, List<qEspeceTypee> especestypees) {
+        this.prefix = qprefix.getPrefix();
+        this.typeDoc=qprefix.getTypeDoc();
+        this.qprefix=qprefix;
         this.especestypees = especestypees;
     }
 
-    public enumPrefix getPrefixModel() {
-        return prefixModel;
+public qPrefixPK getPrefixPK() {
+    qPrefixPK pr=new qPrefixPK(this.prefix,this.typeDoc);
+    return pr;
+}
+    public String getPrefix() {
+        return prefix;
     }
 
-    public void setPrefixModel(enumPrefix prefixModel) {
-        this.prefixModel = prefixModel;
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public enumTypeDoc getTypeDoc() {
+        return typeDoc;
+    }
+
+    public void setTypeDoc(enumTypeDoc typeDoc) {
+        this.typeDoc = typeDoc;
+    }
+
+    public qPrefix getQprefix() {
+        return qprefix;
+    }
+
+    public void setQprefix(qPrefix qprefix) {
+        this.qprefix = qprefix;
     }
 
     public List<qEspeceTypee> getEspecestypees() {

@@ -6,6 +6,8 @@
 
 package com.gardecote.entities;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.List;
  */
 import java.util.Date;
 @Entity
-@Table(name="qJourMere4", schema="dbo", catalog="GCM1" )
+@Table(name="qJourMere20", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJour.countAll", query="SELECT COUNT(x) FROM qJourMere x" )
@@ -41,6 +43,7 @@ public class qJourMere implements Serializable
 
     @Id
     @Column(name="dateJour", nullable=false, length=10)
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date     dateJour     ;
 
     @OneToOne
@@ -52,8 +55,9 @@ public class qJourMere implements Serializable
    //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(mappedBy="jourMere", targetEntity=qCapture.class)
+    @OneToMany(mappedBy="jourMere", targetEntity=qCapture.class,cascade = CascadeType.ALL)
     private List<qCapture> capturesDuMarree;
+
     @Column(name="totalCapturs", nullable=false, length=10)
     private Integer totalCapturs;
     @Column(name="totalCong", nullable=false, length=10)
@@ -103,7 +107,11 @@ public class qJourMere implements Serializable
         this.totalCong = totalCong;
         this.nbrCaisse = nbrCaisse;
         this.numImm=navire.getNumimm();
-        this.setPageMarree(pageMarree);
+        this.navire = navire;
+        this.pageMarree=pageMarree;
+
+
+
 
     }
 

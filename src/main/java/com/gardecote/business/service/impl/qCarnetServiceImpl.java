@@ -34,8 +34,6 @@ public class qCarnetServiceImpl implements qCarnetService {
 	@Autowired
 	private qConcessionRepository qconcessionRepository;
 
-
-
 	@Override
 	public qCarnet findById(qCarnetPK idcarnet) {
 		qCarnet authprovEntity = qCarnetRepository.findOne(idcarnet);
@@ -112,11 +110,24 @@ public class qCarnetServiceImpl implements qCarnetService {
 						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null);
 				pgs.add(qp);
 			}
+
+		}
+
+		if(carnet.getTypeDoc().equals(enumTypeDoc.Journal_Annexe)) {
+			carnet.setNbrLigneParPage(20);
+			for(int i=0;i<carnet.getNbrPages();i++) {
+				qPageCarnet  qp= new qPageAnnexe(carnet.getPrefixNumerotation().toString()+Long.toString(carnet.getNumeroDebutPage()+i),
+						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null);
+
+
+				pgs.add(qp);
+			}
 		}
 		if(carnet.getTypeDoc().equals(enumTypeDoc.Fiche_Traitement)) {
-			carnet.setNbrLigneParPage(8);
+			carnet.setNbrLigneParPage(20);
 			for(int i=0;i<carnet.getNbrPages();i++) {
-				qPageCarnet  qp= new qPageTraitement(carnet.getPrefixNumerotation().toString()+Long.toString(carnet.getNumeroDebutPage()+i),carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null,null);
+				qPageCarnet  qp= new qPageTraitement(Long.toString(carnet.getNumeroDebutPage()+i),
+						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null);
 
 
 				pgs.add(qp);

@@ -1,0 +1,51 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <h3> List de models existants </h3>
+    <form  th:action="@{/listBatASelectionner}"   method="post" th:object="${listModelsfrm}">
+
+
+        <table class="table">
+            <thead>
+            <tr>
+
+                <th>...</th>
+                <th>Prefix de numérotation</th>
+                <th>Nombre de lignes de page</th>
+                <th>Informations</th>
+                <th>Type de document</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="m:${listModelsfrm.lstModels}">
+
+                <td>  <div class="dropdown">
+                    <button th:field="${m.qprefix}" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{modifyModel(prefix=${m.prefix},typeDoc=${m.typeDoc})}">Definir les espéces</a></li>
+
+                    </ul></div></td>
+                <td th:text="${m.prefix}"></td>
+                <td th:text="${m.qprefix.nbrLigneCarnet}"></td>
+                <td th:text="${m.qprefix.information}"></td>
+                <td th:text="${m.typeDoc}"></td>
+
+            </tr>
+            </tbody>
+        </table>
+
+    </form>
+
+</div>
+
+</body>
+</html>

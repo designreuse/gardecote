@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymleaf.org">
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
 <head>
-<meta charset="utf-8" />
-<title>AuthentificationJOLOLO</title>
-  <link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css" th:href="@{css/bootstrap.css}" />
-  <link href="../static/css/myStyle1.css" rel="stylesheet" type="text/css" th:href="@{css/myStyle1.css}" />
-
+  <meta charset="UTF-8" />
+  <title>Document de pêche</title>
 </head>
-
 <body>
+<div layout:fragment="content">
 
- 
 <div class="Absolute-Center is-Responsive">
 <div id="logo-container">
 
@@ -20,11 +15,11 @@
 
 <div class="panel-body">
 
-<p >Erreur de connexion</p>
+<p th:text="${errorMsg}">Erreur de connexion</p>
 </div>
 </div>
 </div>
 </div>
-
+</div>
 </body>
 </html>

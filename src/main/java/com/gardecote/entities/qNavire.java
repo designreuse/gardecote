@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 @Entity
-@Table(name="qNavire5", schema="dbo", catalog="GCM1" )
+@Table(name="qNavire20", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qNavire.countAll", query="SELECT COUNT(x) FROM qNavire x" )
@@ -21,7 +21,8 @@ public class qNavire implements Serializable {
     @OneToMany(mappedBy = "qnavire")
     private List<qLic> licences;
 
-
+    @OneToMany(mappedBy = "qnavire")
+    private List<qDoc> documents;
     @Column(name="typb", length=100)
     private enumTypeBat    typb         ;
 

@@ -5,8 +5,11 @@
 */
 
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
-.input-mysize { width: 30px }
+.input-mysize { width: 60px }
 .spacer {
     margin-top:15px;
     margin-left:15px;
+}
+.dang {
+    background-color:#ffe4e1
 }

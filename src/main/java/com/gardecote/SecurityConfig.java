@@ -55,7 +55,7 @@ auth.jdbcAuthentication()
 	      
 	//   .defaultSuccessUrl("/start")
 	        
-	   .failureUrl("/error.html")
+	   .failureUrl("/errors")
 	  
 	 //  .successHandler(cust)
 	   .and()

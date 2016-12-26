@@ -8,6 +8,8 @@ import org.joda.time.DateTime;
 import com.gardecote.data.repository.jpa.qCategRessourceRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.context.embedded.ErrorPage;
 import org.springframework.context.ApplicationContext;
 import com.gardecote.data.repository.jpa.qConsignataireRepository;
 
@@ -56,6 +58,8 @@ import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 @SpringBootApplication
  // this does the trick
 public class GardecoteApplication {
+    private static final String PATH = "/errors";
+
     @Bean
     public Java8TimeDialect java8TimeDialect() {
         return new Java8TimeDialect();
@@ -64,6 +68,14 @@ public class GardecoteApplication {
     public static void main(String[] args) {
      ApplicationContext ctx = SpringApplication.run(GardecoteApplication.class, args);
           }
+    @Bean
+    public EmbeddedServletContainerCustomizer containerCustomizer() {
+        return (container -> {
+            //route all errors towards /error .
+            final ErrorPage errorPage=new ErrorPage(PATH);
+            container.addErrorPages(errorPage);
+        });
+    }
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();

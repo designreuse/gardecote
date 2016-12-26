@@ -6,6 +6,7 @@ package com.gardecote.controllers;
 import com.gardecote.business.service.*;
 import com.gardecote.entities.*;
 
+import com.gardecote.web.frmSearchPgsForDocCrea;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -91,8 +93,7 @@ public class mainJsp  {
 
 	@Autowired
 	private LicenceAc ourLic;
-
-	@RequestMapping(value = "/autocomnomnav",method = RequestMethod.GET)
+    @RequestMapping(value = "/autocomnomnav",method = RequestMethod.GET)
 	public @ResponseBody List<String> getCountryList(@RequestParam("term") String term) {
 		List<String> numpages=new ArrayList<>();
 		Page<qNavire> pq=registrenavireService.getSuggNavire(term);
@@ -102,15 +103,27 @@ public class mainJsp  {
 	}
 
 	@RequestMapping(value="/autocomPages",method = RequestMethod.GET)
-	public List<String> getAutocompletePages(@RequestParam String searchpage) {
+	public List<String> getAutocompletePages(@RequestParam("numeroD") String numeroD,@RequestParam("typeDoc") String typeDoc) {
 
-		System.out.println("numero de page : "+searchpage);
+		System.out.println("numero de page : "+numeroD);
 		List<String> numpages=new ArrayList<>();
-		Page<qPageCarnet> pq=pagecarnetService.getSuggPage(searchpage);
+		Page<qPageCarnet> pq=pagecarnetService.getSuggPage(numeroD,enumTypeDoc.valueOf(typeDoc));
 		for(qPageCarnet q:pq) {numpages.add(q.getNumeroPage().toString());System.out.println(q.getNumeroPage().toString());}
 
 		return numpages;
 	}
+
+	@RequestMapping(value="/autocomPagesAnnexe",method = RequestMethod.GET)
+	public List<String> getAutocompletePagesAnnexe(@RequestParam("numeroD") String numeroD,@RequestParam("typeDoc") String typeDoc) {
+
+		System.out.println("numero de page : "+numeroD);
+		List<String> numpages=new ArrayList<>();
+		Page<qPageCarnet> pq=pagecarnetService.getSuggPageAnnexe(numeroD,enumTypeDoc.Journal_Annexe);
+		for(qPageCarnet q:pq) { numpages.add(q.getNumeroPage().toString().replaceFirst(q.getQcarnet().getPrefixNumerotation(),""));System.out.println(q.getNumeroPage().toString());}
+
+		return numpages;
+	}
+
 	@RequestMapping(value="/autocomConcession",method = RequestMethod.GET)
 	public List<String> getAutocompleteConcession(@RequestParam("term") String searchconcession) {
 		System.out.println("numero de concession : "+searchconcession);
@@ -121,21 +134,37 @@ public class mainJsp  {
 
 		return numconcession;
 	}
+
 	@RequestMapping(value="/generate",method = RequestMethod.GET)
 	public void generatecontent() {
+
 		qPrefix prefixPA=new qPrefix("PA",enumTypeDoc.Fiche_Debarquement,10,"typde de document pour la pêche artisanal");
 		qPrefix prefixPC=new qPrefix("PC",enumTypeDoc.Fiche_Debarquement,10,"typde de document pour la pêche cotiere");
+
 		qPrefix prefixPE=new qPrefix("PE",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier pelagique");
 		qPrefix prefixDEM=new qPrefix("DEM",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier demersal");
 		qPrefix prefixCRUST=new qPrefix("CRUST",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier crustacé");
 		qPrefix prefixCEPH=new qPrefix("CEPH",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier ceph ");
+
+
 		qPrefix prefixTR=new qPrefix("TR",enumTypeDoc.Fiche_Traitement,10,"typde de document pour les usines");
+		qPrefix prefixPE2=new qPrefix("PE",enumTypeDoc.Journal_Annexe,10,"typde de document pour la pêche hautirier pelagique");
+		qPrefix prefixDEM2=new qPrefix("DEM",enumTypeDoc.Journal_Annexe,10,"typde de document pour la pêche hautirier demersal");
+		qPrefix prefixCRUST2=new qPrefix("CRUST",enumTypeDoc.Journal_Annexe,10,"typde de document pour la pêche hautirier crustacé");
+		qPrefix prefixCEPH2=new qPrefix("CEPH",enumTypeDoc.Journal_Annexe,10,"typde de document pour la pêche hautirier ceph ");
+
         prefixService.save(prefixPA);
 		prefixService.save(prefixPC);
 		prefixService.save(prefixPE);
 		prefixService.save(prefixDEM);
 		prefixService.save(prefixCRUST);
 		prefixService.save(prefixCEPH);
+
+		prefixService.save(prefixPE2);
+		prefixService.save(prefixDEM2);
+		prefixService.save(prefixCRUST2);
+		prefixService.save(prefixCEPH2);
+
 		prefixService.save(prefixTR);
 
 
@@ -147,6 +176,7 @@ public class mainJsp  {
 
 		qEnginsLicence qEng1 = new qEnginsLicence(enumEnginDeb.Casier, enumEngin.Indefini, 70);
 		qEnginsLicence qEng2 = new qEnginsLicence(enumEnginDeb.Palangre, enumEngin.Indefini, 30);
+
 		List<qEnginsLicence> qEnginsDeb = new ArrayList<qEnginsLicence>();
 		qEnginsDeb.add(qEng1);
 		qEnginsDeb.add(qEng2);
@@ -589,7 +619,7 @@ public class mainJsp  {
 		registrenavireService.save(qreg1);
 		licenceService.save(qlicencebatlast2);
 		Iterator<qLic> qlicencesIterator= licenceService.findAll(0,20).iterator();
-	Integer i=0;
+	    Integer i=0;
 		while(qlicencesIterator.hasNext())
 		{
 			Integer sz=qlicencesIterator.next().getQcatressources().size();
@@ -600,13 +630,14 @@ public class mainJsp  {
 //        q2.setQlicence(qlicencebatlast2);
 		// qcategressourcerepository.save(q2);
 		// crer les modeles et les associer avec  les especes
+		//qPrefix prefixPA ,prefixPC,prefixPE,prefixDEM,qPrefix prefixCRUST qPrefix prefixCEPH 	qPrefix prefixTR
 
-		qModelJP qmodelPA=new qModelJP(enumPrefix.PA,null);
-		qModelJP qmodelPC=new qModelJP(enumPrefix.PC,null);
-		qModelJP qmodelJPCEPH=new qModelJP(enumPrefix.CEPH,null);
-		qModelJP qmodelJPPE=new qModelJP(enumPrefix.PE,null);
-		qModelJP qmodelJPCRUS=new qModelJP(enumPrefix.CRUS,null);
-		qModelJP qmodelJPDEM=new qModelJP(enumPrefix.DEM,null);
+		qModelJP qmodelPA=new qModelJP(prefixPA,null);
+		qModelJP qmodelPC=new qModelJP(prefixPC,null);
+		qModelJP qmodelJPPE=new qModelJP(prefixPE,null);
+		qModelJP qmodelJPDEM=new qModelJP(prefixDEM,null);
+		qModelJP qmodelJPCRUS=new qModelJP(prefixCRUST,null);
+		qModelJP qmodelJPCEPH=new qModelJP(prefixCEPH,null);
 
 
 		// creer les especes
@@ -618,6 +649,7 @@ public class mainJsp  {
 		especeService.create(qespeceArts1);
 		especeService.create(qespeceArts2);
 		especeService.create(qespeceArts3);
+
 		modeljpService.create(qmodelPA);
 		modeljpService.create(qmodelPC);
 		modeljpService.create(qmodelJPCEPH);
@@ -635,16 +667,11 @@ public class mainJsp  {
 		esptypessCollection.add(qespecetypee1);
 		esptypessCollection.add(qespecetypee2);
 		esptypessCollection.add(qespecetypee3);
-		qmodelPC.setEspecestypees(esptypessCollection);
-		modeljpService.create(qmodelPC);
-
+		qmodelPA.setEspecestypees(esptypessCollection);
+		modeljpService.create(qmodelPA);
 
 		// creer les carnet et les pages automatiques
-
-
 		// creation d'une fiche de debarquement
-
-
 
 		// simulation de saisie d'un fiche de debarquement PC Non Pontee n de page = pc7
 		SimpleDateFormat sdfmt = new SimpleDateFormat("dd/MM/yy");
@@ -659,8 +686,7 @@ public class mainJsp  {
 
 //		seqService.create(seqActive);
 
-		qCarnet qcarnet=new qCarnet(prefixPA,1L,50);
-
+		qCarnet qcarnet=new qCarnet(prefixPA,1L,50,null,null);
 
 		qCarnet crn=carnetService.entrerDansLeSystem(qcarnet);
 		System.out.println(crn);
@@ -668,15 +694,14 @@ public class mainJsp  {
 		qLic licenceChoisie=qlics.get(0);
 		carnetService.attribuerCarnetAuNavire(crn,qreg1,licenceChoisie,null);
 	}
-	@RequestMapping(value="/finList",method = RequestMethod.GET)
-	public List<String> getFinList(@RequestParam String debut) {
+	@RequestMapping(value="/finListP",method = RequestMethod.GET)
+	public List<String> getFinList(@RequestParam String debut,@RequestParam String typeDoc) {
 		// creer les categories de ressource 5 PA  de 1 a 5
 		System.out.println("numero de page  : "+debut);
 		List<String> numsfin=new ArrayList<>();
-		List<qPageCarnet> pq=pagecarnetService.getFinList(debut);
+		List<qPageCarnet> pq=pagecarnetService.getFinList(debut,enumTypeDoc.valueOf(typeDoc));
 		for(qPageCarnet q:pq) numsfin.add(q.getNumeroPage().toString());
 		return numsfin;
-
 	}
 
 

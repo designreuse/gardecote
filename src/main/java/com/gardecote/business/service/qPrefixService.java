@@ -1,8 +1,6 @@
 package com.gardecote.business.service;
 
-import com.gardecote.entities.qLic;
-import com.gardecote.entities.qNavire;
-import com.gardecote.entities.qPrefix;
+import com.gardecote.entities.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -16,7 +14,7 @@ public interface qPrefixService {
      * @param idpref
      * @return entity
      */
-    public qPrefix findById(String idpref) ;
+    public qPrefix findById(qPrefixPK idpref) ;
 
 
     /**
@@ -34,7 +32,7 @@ public interface qPrefixService {
     qPrefix save(qPrefix entity);
 
 
-    void delete(String idPrefix);
-
+    void delete(qPrefixPK idPrefix);
+    List<qPrefix> PrefixesByTypeDoc(enumTypeDoc j);
 
 }

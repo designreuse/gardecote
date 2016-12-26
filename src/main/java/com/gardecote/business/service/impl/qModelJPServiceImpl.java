@@ -12,6 +12,7 @@ import com.gardecote.business.service.qModelJPService;
 
 import com.gardecote.data.repository.jpa.qModelJPRepository;
 import com.gardecote.entities.enumPrefix;
+import com.gardecote.entities.qPrefixPK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ public class qModelJPServiceImpl implements qModelJPService {
 	
 	
 	@Override
-	public qModelJP findById(enumPrefix id) {
+	public qModelJP findById(qPrefixPK id) {
 		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(id);
 		return codesAmendeEntity;
 	}
@@ -60,13 +61,13 @@ public class qModelJPServiceImpl implements qModelJPService {
 
 	@Override
 	public qModelJP update(qModelJP codesAmende) {
-		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getPrefixModel());
-		qModelJP codesAmendeEntitySaved = codesAmendeJpaRepository.save(codesAmendeEntity);
+//		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getPrefixModel());
+		qModelJP codesAmendeEntitySaved = codesAmendeJpaRepository.save(codesAmende);
 		return codesAmendeEntitySaved;
 	}
 
 	@Override
-	public void delete(enumPrefix id) {
+	public void delete(qPrefixPK  id) {
 		codesAmendeJpaRepository.delete(id);
 	}
 

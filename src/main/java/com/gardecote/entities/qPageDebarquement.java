@@ -34,30 +34,23 @@ import java.util.List;
 } )
 public class qPageDebarquement extends qPageCarnet implements Serializable
 {
-    private static final long serialVersionUID = 1L;
-
+     private static final long serialVersionUID = 1L;
 
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
-     // ENTITY DATA FIELDS
+    // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
+	// "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
 
-
-	// "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link 
-
-
-    @OneToOne(cascade = CascadeType.ALL)
+   @OneToOne(cascade = CascadeType.ALL)
     private qDebarquement qdebarquement;
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-
-
-    @OneToMany(mappedBy = "pagesDeb",targetEntity = qJourDeb.class,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-
-   // @NotFound(action=NotFoundAction.IGNORE)
+    @OneToMany(mappedBy = "pagesDeb",targetEntity = qJourDeb.class,cascade = CascadeType.ALL)
+      // @NotFound(action=NotFoundAction.IGNORE)
     private List<qJourDeb>  listJours;
 
     public qPageDebarquement(String numeroPage,Long numeroOrdrePage, enumEtatPage etat, qCarnet carnet, qDebarquement qdebarquement, List<qJourDeb> listJours) {

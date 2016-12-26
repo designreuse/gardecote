@@ -109,7 +109,7 @@ public class licenceValidator implements Validator {
         if( lic.getQnavire()==null) errors.rejectValue("licence.qnavire","lic.qnavire.mistm");
 
         if( lic.getTypb()==null) errors.rejectValue("licence.typb","lic.typb.mistm");
-      System.out.println(((qLicenceNational) lic).getQconcession());
+//      System.out.println(((qLicenceNational) lic).getQconcession());
               if(lic instanceof qLicenceNational) {
                   qConcession concessionActif=concessionService.findById(((qLicenceNational) lic).getQconcession().getRefConcession());
                System.out.println("oooo");

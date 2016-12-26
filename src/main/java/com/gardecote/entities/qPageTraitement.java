@@ -1,6 +1,8 @@
 package com.gardecote.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -11,57 +13,28 @@ import java.util.List;
 @NamedQueries ( {
         @NamedQuery ( name="qPageTraitement.countAll", query="SELECT COUNT(x) FROM qPageTraitement x" )
 } )
-public class qPageTraitement extends qPageCarnet {
+
+public class qPageTraitement extends qPageCarnet implements Serializable {
     private static final long serialVersionUID = 1L;
     //----------------------------------------------------------------------
-    // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
-    //----------------------------------------------------------------------
-    // ENTITY DATA FIELDS
-    //----------------------------------------------------------------------
-   // "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
-    @Column
-    @Enumerated
-    @ElementCollection(targetClass = enumAuthorisation.class)
-    private List<enumAuthorisation> segs;
 
     @OneToOne
     private qTraitement     qtraitement;
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-
-
-    @OneToMany(mappedBy = "pagesTraitement",targetEntity = qUniteTraitement.class)
-    private List<qUniteTraitement> opTraitements;
+    @OneToMany(mappedBy = "pagesTraitement",targetEntity = qOpTraitement.class)
+    private List<qOpTraitement> opTraitements;
     //----------------------------------------------------------------------
 
+   public qPageTraitement() {
+   }
 
-    public qPageTraitement(List<enumAuthorisation> segs, qTraitement qtraitement, List<qUniteTraitement> opTraitements) {
-        this.segs = segs;
+    public qPageTraitement(String numeroPage,Long numeroOrdrePage, enumEtatPage etat, qCarnet carnet, qTraitement qtraitement, List<qOpTraitement> opTraitements) {
+        super(numeroPage,  carnet,numeroOrdrePage,etat);
+
         this.qtraitement = qtraitement;
         this.opTraitements = opTraitements;
-    }
-
-
-
-    public qPageTraitement(Integer nbrLigne, List<enumAuthorisation> segs, qTraitement qtraitement, List<qUniteTraitement> opTraitements) {
-
-        this.segs = segs;
-        this.qtraitement = qtraitement;
-        this.opTraitements = opTraitements;
-    }
-
-
-    public qPageTraitement() {
-
-    }
-
-    public List<enumAuthorisation> getSegs() {
-        return segs;
-    }
-
-    public void setSegs(List<enumAuthorisation> segs) {
-        this.segs = segs;
     }
 
     public qTraitement getQtraitement() {
@@ -72,20 +45,15 @@ public class qPageTraitement extends qPageCarnet {
         this.qtraitement = qtraitement;
     }
 
-
-
-    public List<qUniteTraitement> getOpTraitements() {
+    public List<qOpTraitement> getOpTraitements() {
         return opTraitements;
     }
 
-    public void setOpTraitements(List<qUniteTraitement> opTraitements) {
+    public void setOpTraitements(List<qOpTraitement> opTraitements) {
         this.opTraitements = opTraitements;
     }
 
-    public qPageTraitement(String numeroPage,  Long numeroOrdrePage,enumEtatPage etat ,qCarnet carnet, List<enumAuthorisation> segs, qTraitement qtraitement, List<qUniteTraitement> opTraitements) {
-        super(numeroPage, carnet,numeroOrdrePage,etat);
-        this.segs = segs;
-        this.qtraitement = qtraitement;
-        this.opTraitements = opTraitements;
-    }
+
+
+
 }

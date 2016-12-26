@@ -10,15 +10,15 @@ import java.util.List;
  * Created by Dell on 25/10/2016.
  */
 @Entity
-@Table(name="qUsine4", schema="dbo", catalog="GCM1" )
+@Table(name="qUsine20", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qUsine.countAll", query="SELECT COUNT(x) FROM qUsine x" )
 } )
 public class qUsine implements Serializable {
     @Id
-    private String refUsine;
-    private String refEuropean;
+    private String refAgrement;
+    private String refAgrementUE;
     private String capaciteStockage;
     private String capaciteCongelation;
     private String nomUsine;
@@ -31,14 +31,14 @@ public class qUsine implements Serializable {
         @JsonIgnore
     private List<qCarnet> qcarnets;
     @OneToMany(mappedBy = "qusine")
-    private List<qTraitement>  traitements;
+    private List<qDoc>  traitements;
 
     public qUsine() {
     }
 
     public qUsine(String refUsine, String refEuropean, String capaciteStockage, String capaciteCongelation, String nomUsine, String address, String nomResp, String lieuImplementation, boolean signatureCapitaine) {
-        this.refUsine = refUsine;
-        this.refEuropean = refEuropean;
+        this.refAgrement = refUsine;
+        this.refAgrementUE = refEuropean;
         this.capaciteStockage = capaciteStockage;
         this.capaciteCongelation = capaciteCongelation;
         this.nomUsine = nomUsine;
@@ -48,11 +48,12 @@ public class qUsine implements Serializable {
         this.signatureCapitaine = signatureCapitaine;
     }
 
-    public List<qTraitement> getTraitements() {
+
+    public List<qDoc> getTraitements() {
         return traitements;
     }
 
-    public void setTraitements(List<qTraitement> traitements) {
+    public void setTraitements(List<qDoc> traitements) {
         this.traitements = traitements;
     }
 
@@ -64,20 +65,21 @@ public class qUsine implements Serializable {
         this.qcarnets = qcarnets;
     }
 
-    public String getRefUsine() {
-        return refUsine;
+
+    public String getRefAgrement() {
+        return refAgrement;
     }
 
-    public void setRefUsine(String refUsine) {
-        this.refUsine = refUsine;
+    public void setRefAgrement(String refAgrement) {
+        this.refAgrement = refAgrement;
     }
 
-    public String getRefEuropean() {
-        return refEuropean;
+    public String getRefAgrementUE() {
+        return refAgrementUE;
     }
 
-    public void setRefEuropean(String refEuropean) {
-        this.refEuropean = refEuropean;
+    public void setRefAgrementUE(String refAgrementUE) {
+        this.refAgrementUE = refAgrementUE;
     }
 
     public String getCapaciteStockage() {

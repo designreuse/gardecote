@@ -27,7 +27,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qConcession", schema="dbo", catalog="GCM1" )
+@Table(name="qConcession20", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qConcession.countAll", query="SELECT COUNT(x) FROM qConcession x" )
@@ -61,6 +61,8 @@ public class qConcession implements Serializable
 
    @Column(name="dateConcession")
     private Date     dateConcession  ;
+    @Column(name="quotaConcession")
+    private Integer     quotaEnTonne  ;
     @Column(name="dureeconcession" )
     private Integer dureeConcession;
     @Column(name="date_debut")
@@ -112,13 +114,21 @@ public class qConcession implements Serializable
         this.dureeConcession = dureeConcession;
     }
 
+
     public qConcession()
     {
 		super();
     }
 
 
-    
+    public Integer getQuotaEnTonne() {
+        return quotaEnTonne;
+    }
+
+    public void setQuotaEnTonne(Integer quotaEnTonne) {
+        this.quotaEnTonne = quotaEnTonne;
+    }
+
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------

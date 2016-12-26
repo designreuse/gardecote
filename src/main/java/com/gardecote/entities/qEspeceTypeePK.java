@@ -1,5 +1,6 @@
 package com.gardecote.entities;
 
+import javax.persistence.Id;
 import java.io.Serializable;
 
 /**

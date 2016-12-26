@@ -6,6 +6,8 @@ package com.gardecote.business.service;
 import com.gardecote.entities.enumPrefix;
 import com.gardecote.entities.qModelJP;
 import java.util.List;
+
+import com.gardecote.entities.qPrefixPK;
 import com.gardecote.entities.qTypeConcession;
 /**
  * Business Service Interface for entity Codauth.
@@ -17,7 +19,7 @@ public interface qModelJPService {
 	 * @param codeauth
 	 * @return entity
 	 */
-	qModelJP findById(enumPrefix codeauth) ;
+	qModelJP findById(qPrefixPK codeauth) ;
 
 	/**
 	 * Loads all entities.
@@ -50,7 +52,7 @@ public interface qModelJPService {
 	 * Deletes an entity using its Primary Key
 	 * @param codeauth
 	 */
-	void delete(enumPrefix codeauth);
+	void delete(qPrefixPK  codeauth);
 
 
 }

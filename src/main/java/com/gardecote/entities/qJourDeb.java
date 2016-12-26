@@ -27,7 +27,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qJourDeb4", schema="dbo", catalog="GCM1" )
+@Table(name="qJourDeb20", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJourDeb.countAll", query="SELECT COUNT(x) FROM qJourDeb x" )

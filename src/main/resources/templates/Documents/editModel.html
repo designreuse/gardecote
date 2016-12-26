@@ -1,0 +1,41 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Definition de model</title>
+</head>
+<body>
+<div layout:fragment="content">
+<form  th:action="@{saveModel}"  th:object="${editedModel}" class="form-horizontal" method="post">
+    <button  type="submit" name="addEspece" class="btn btn-success" >Ajouter une espéce </button>
+
+    <input type="text" th:disabled="true" th:field="${editedModel.prefix}" />
+    <input type="text" th:disabled="true" th:field="${editedModel.typeDoc}" />
+
+    <table class="table table-striped table-bordered table-hover">
+<tr th:each="model,modelStat : ${editedModel.especestypees}">
+
+    <td>
+       <select th:field="${editedModel.especestypees[__${modelStat.index}__].qespeceId}">
+            <option th:each="var : ${allEspeces}"
+                    th:value="${var.codeEsp}"
+                    th:text= "${var.nomFr} ">hhh</option>
+        </select>
+        <span class="label label-danger" th:errors="${editedModel.especestypees[__${modelStat.index}__].qespeceId}"></span>
+    </td>
+    <td>
+        <select th:field="${editedModel.especestypees[__${modelStat.index}__].enumesptype}">
+            <option th:each="var : ${allEspTypes}"
+                    th:value="${var}"
+                    th:text= "${var} ">hhh</option>
+        </select>
+    </td>
+<td> <button  type="submit"  th:value="${modelStat.index}" name="deleteEspece"  class="btn btn-success" >Supprimer </button></td>
+
+</tr>
+        </table>
+    <button  type="submit" name="saveEspece" value="saveEspece"  class="btn btn-success" >Enregistrer le model </button>
+    </form>
+    </div>
+</body>
+</html>

@@ -24,23 +24,16 @@ public class qPageMarree extends qPageCarnet implements Serializable {
     // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
     // "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
-
-
-
-
-    @OneToOne
+   @OneToOne(cascade = CascadeType.ALL)
     private qMarree     qmarree;
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-
-
-    @OneToMany(mappedBy = "pageMarree",targetEntity = qJourMere.class)
+    @OneToMany(mappedBy = "pageMarree",targetEntity = qJourMere.class,cascade = CascadeType.ALL)
     private List<qJourMere> listJours;
+
    //----------------------------------------------------------------------
-
-
     public qPageMarree() {
          }
     public qPageMarree(qMarree qmarree, List<qJourMere> listJours) {
@@ -62,8 +55,6 @@ public class qPageMarree extends qPageCarnet implements Serializable {
     public void setQmarree(qMarree qmarree) {
         this.qmarree = qmarree;
     }
-
-
 
     public List<qJourMere> getListJours() {
         return listJours;
