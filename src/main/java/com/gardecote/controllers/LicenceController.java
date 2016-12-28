@@ -41,6 +41,10 @@ public class LicenceController {
     @Autowired
     licenceValidator licValidator;
     @Autowired
+    attrUsineValidator attrUsineValidator;
+    @Autowired
+    usineValidator usineValidator;
+    @Autowired
     deleteDocValidator deleteDocValidator;
     @Autowired
     modelValidateur modelValidateur;
@@ -103,7 +107,8 @@ public class LicenceController {
     private qTypeLicService typelicService;
     @Autowired
     private qTypeNavService typenavService;
-
+    @Autowired
+    private qUsineService usineService;
     @Autowired
     private LicenceAc ourLic;
 
@@ -267,7 +272,100 @@ System.out.println("string id"+enumTypeDoc.valueOf(typeDoc));
         }
         return validateURL;
     }
-    @RequestMapping(value="/NouvLicenceBatExistant", params={"addRow"},method = RequestMethod.POST)
+
+
+    @RequestMapping(value="/ajouterUsine",method = RequestMethod.GET)
+    public String ajouterUsine(final ModelMap model) {
+        creationUsineForm usineform=new creationUsineForm() ;
+        String url=null;
+
+        List<qCategRessource> ens=new ArrayList<qCategRessource>();
+
+
+
+        model.addAttribute("UsineForm",usineform);
+
+        return "usine/newUsineForm";
+    }
+
+    @RequestMapping(value="/saveUsine",method = RequestMethod.POST)
+    public String saveUsine(final creationUsineForm UsineForm, final ModelMap model,final BindingResult bindingresult) {
+
+        String urlnav=null;
+
+
+        usineValidator.validate(UsineForm, bindingresult);
+        model.addAttribute("UsineForm",UsineForm);
+        if(!bindingresult.hasErrors()) {
+            System.out.println("jjjjj");
+          usineService.create(UsineForm.getCurrentusine());
+            urlnav="redirect:listUsines";
+        }
+        else {
+            urlnav="usine/newUsineForm";
+        }
+
+        return urlnav;
+
+    }
+
+    @RequestMapping(value="/attributionCarnetAuUsine",method = RequestMethod.POST)
+    public String attribuerCarnetsp(final attributionCarnetForm CarnetAttribue , final ModelMap model, final BindingResult bindingresult) {
+        String urlNav=null;
+        if(CarnetAttribue!=null && CarnetAttribue.getCarnetSelected()!=null && CarnetAttribue.getCarnetSelected().getQprefix().getPrefix()!=null && CarnetAttribue.getCarnetSelected().getQprefix().getTypeDoc()!=null) {
+            System.out.println(CarnetAttribue);
+            qPrefixPK prefpk = new qPrefixPK(CarnetAttribue.getCarnetSelected().getQprefix().getPrefix(), CarnetAttribue.getCarnetSelected().getQprefix().getTypeDoc());
+
+            System.out.println(" perf num "+CarnetAttribue.getCarnetSelected().getQprefix().getPrefix());
+            System.out.println("type doc "+CarnetAttribue.getCarnetSelected().getQprefix().getTypeDoc());
+            qPrefix pref = prefService.findById(prefpk);
+            qCarnet currentCarnet = new qCarnet(pref, CarnetAttribue.getCarnetSelected().getNumeroDebutPage(), CarnetAttribue.getCarnetSelected().getNbrPages(), null, null);
+            attrUsineValidator.validate(currentCarnet, bindingresult);
+            if (!bindingresult.hasErrors()) {
+                qCarnet crn = carnetService.entrerDansLeSystem(currentCarnet);
+                carnetService.attribuerCarnetAuNavire(crn,null, null,CarnetAttribue.getUsineSelected());
+                CarnetAttribue.setMessage("success");
+                urlNav= "redirect:listCarnets";
+
+            } else {
+                CarnetAttribue.setMessage("echec");
+                urlNav="usine/attribution";
+            }
+        }
+        model.addAttribute("CarnetAttribue",CarnetAttribue);
+        return urlNav;
+    }
+
+        @RequestMapping(value="/attribuerCarnetAuUsine",method = RequestMethod.GET)
+    public String attribuerCarnetAuUsine(@RequestParam(name="refAgr") String refAgr,@RequestParam(name="action") String action , final ModelMap model)
+    {
+        String urlNavigation=null;
+        attributionUsineForm attrCrn=null;
+        attrCrn=new attributionUsineForm();
+        qPrefix prefi=new qPrefix();
+        qCarnet createdCarnet=new qCarnet();
+        createdCarnet.setQprefix(prefi);
+        createdCarnet.setNbrPages(50);
+        //(prefi,78L,50,null,null);
+
+        qUsine selectedUsine=usineService.findById(refAgr);
+
+        attrCrn.setCarnetSelected(createdCarnet);
+        attrCrn.setNavireSelected(null);
+        attrCrn.setUsineSelected(selectedUsine);
+        createdCarnet.setTypeDoc(enumTypeDoc.Fiche_Traitement);
+        qPrefixPK prefPK=new qPrefixPK("TR",enumTypeDoc.Fiche_Traitement);
+        qPrefix prefSelected=prefService.findById(prefPK);
+        createdCarnet.setQprefix(prefSelected);
+        createdCarnet.setNbrPages(50);
+        // chercher les licences actives pour ce navire pour les afficher et choisisser une
+        attrCrn.setCarnetSelected(createdCarnet);
+        model.addAttribute("CarnetAttribue",attrCrn);
+
+        urlNavigation="usine/attribution";
+        return urlNavigation;
+    }
+        @RequestMapping(value="/NouvLicenceBatExistant", params={"addRow"},method = RequestMethod.POST)
     public String addRowLBNB(final @ModelAttribute("LicForm") creationLicForm LicForm, final ModelMap model,final BindingResult bindingresult) {
 
         String url=null;
@@ -288,6 +386,24 @@ System.out.println("string id"+enumTypeDoc.valueOf(typeDoc));
         return url;
     }
 
+    @RequestMapping(value="/listUsines", method = RequestMethod.GET)
+    public String afficherListUsines(final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page) {
+        lstUsineForm lst1=new lstUsineForm();
+        int[] pages;
+        Page<qUsine>   pgUsine=usineService.findAll(page,20);
+
+        pages=new int[pgUsine.getTotalPages()];
+        for(int i=0;i<pgUsine.getTotalPages();i++) pages[i]=i;
+        lst1.setUsines(pgUsine);
+        lst1.setPageCount(pgUsine.getTotalPages());
+        lst1.setNumPages(pages);
+        lst1.setPageCourante(page);
+        System.out.println(" Total est : "+lst1.getUsines().getTotalElements());
+        model.addAttribute("lstUsineForm",lst1);
+        return "usine/lstUsines";
+
+
+    }
     @RequestMapping(value="/afficherLstLicence", method = RequestMethod.GET)
     public String afficherListLicence(final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page) {
         lstLicForm lst1=new lstLicForm();

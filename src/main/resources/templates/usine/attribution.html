@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Attribution de carnets aux navires</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+<form action="#" th:action="@{/attributionCarnetAuUsine}"  th:object="${CarnetAttribue}" class="form-horizontal" method="post">
+
+    <panel>
+        <span class="label label-danger" th:text="${CarnetAttribue.message}"></span>
+
+        <b class="danger">
+            Attribution de carnet pour le navire :
+            <span th:field="${CarnetAttribue.usineSelected.nomusine}"></span>
+        </b>
+    </panel>
+
+
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Numéro debut de page</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="text" th:field="${CarnetAttribue.carnetSelected.numeroDebutPage}" />
+            <span class="label label-danger" th:errors="${CarnetAttribue.carnetSelected.numeroDebutPage}"></span>
+        </div>
+    </div>
+
+    <input type="hidden"   th:field="${CarnetAttribue.carnetSelected.qprefix.typeDoc}" />
+    <input type="hidden"   th:field="${CarnetAttribue.carnetSelected.qprefix.prefix}" />
+    <input type="hidden"   th:field="${CarnetAttribue.usineSelected.refAgrement}" />
+
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label"></label>
+        <div class="col-sm-4">
+            <button  type="submit"  name="attribuerCarnetAuUsine" class="btn btn-success" >Enregistrer</button>
+        </div>
+    </div>
+    <input type="hidden"      th:field="${CarnetAttribue.carnetSelected.nbrPages}" />
+    </form>
+    </div>
+</body>
+</html>

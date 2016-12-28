@@ -22,7 +22,7 @@ public class qTraitement extends  qDoc implements Serializable {
 
     @OneToMany(mappedBy = "qtraitement",targetEntity = qQuantiteExportee.class)
     private List<qQuantiteExportee> qQteExp;
-    @OneToMany(mappedBy = "traitement",targetEntity = qQuantitesTraites.class)
+    @OneToOne(mappedBy = "traitement",targetEntity = qQuantitesTraites.class)
     private qQuantitesTraites qQteTraitees;
     private Long qteDechu;
 

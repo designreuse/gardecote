@@ -152,4 +152,12 @@ public class qCarnetServiceImpl implements qCarnetService {
 		return carnet;
 
 	}
+
+	@Override
+	public boolean checkIfNumeroDebutValable(Long numDebut) {
+		Long k =(numDebut) % (50L);
+		if(k==1L) return true;
+		else return false;
+
+	}
 }

@@ -148,10 +148,12 @@ public class mainJsp  {
 
 
 		qPrefix prefixTR=new qPrefix("TR",enumTypeDoc.Fiche_Traitement,10,"typde de document pour les usines");
+
 		qPrefix prefixPE2=new qPrefix("PE",enumTypeDoc.Journal_Annexe,10,"typde de document pour la pêche hautirier pelagique");
 		qPrefix prefixDEM2=new qPrefix("DEM",enumTypeDoc.Journal_Annexe,10,"typde de document pour la pêche hautirier demersal");
 		qPrefix prefixCRUST2=new qPrefix("CRUST",enumTypeDoc.Journal_Annexe,10,"typde de document pour la pêche hautirier crustacé");
 		qPrefix prefixCEPH2=new qPrefix("CEPH",enumTypeDoc.Journal_Annexe,10,"typde de document pour la pêche hautirier ceph ");
+
 
         prefixService.save(prefixPA);
 		prefixService.save(prefixPC);

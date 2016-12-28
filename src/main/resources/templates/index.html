@@ -14,7 +14,7 @@
    <h1>Creer une marrée ou un debarquement</h1>
    <form th:action="@{creerDoc}" methode="get"  class="form-inline ">
 
-      <div class="form-group ">
+      <div class="form-group">
 
             <input type="text" class="form-control " id="debut" name="debut"  ng-model="$parent.debut" typeahead-on-select="updateFinds($parent.debut)"  typeahead-wait-ms="10" typeahead-editable="false" typeahead-min-length="1" placeholder="Numero page de debut" uib-typeahead="searchpage for searchpage in getSuggPages($viewValue)" typeahead-loading="loadingPages" typeahead-no-results="noResults" />
             <i ng-show="loadingPages" class="glyphicon glyphicon-refresh"></i>

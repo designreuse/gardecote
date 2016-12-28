@@ -1,0 +1,101 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <panel>
+        <b class="danger">
+            Creation d'une nouvelle usine
+        </b>
+    </panel>
+
+    <form  th:action="@{saveUsine}"  th:object="${UsineForm.currentusine}" class="form-horizontal" method="post">
+
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">refAgrement</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="text" th:field="*{refAgrement}" />
+                <span th:errors="*{refAgrement}"></span>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">refAgrementUE</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="text" th:field="*{refAgrementUE}" />
+                <span th:errors="*{refAgrementUE}"></span>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">capaciteStockage</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="text" th:field="*{capaciteStockage}" />
+                <span th:errors="*{capaciteStockage}"></span>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">capaciteCongelation</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="text" th:field="*{capaciteCongelation}" />
+                <span th:errors="*{capaciteCongelation}"></span>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">nomUsine</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="text" th:field="*{nomUsine}" />
+                <span th:errors="*{nomUsine}"></span>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">address</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="text" th:field="*{address}" />
+                <span th:errors="*{address}"></span>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">nomResp</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="text" th:field="*{nomResp}" />
+                <span th:errors="*{nomResp}"></span>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">lieuImplementation</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="text" th:field="*{lieuImplementation}" />
+                <span th:errors="*{lieuImplementation}"></span>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"> signatureCapitaine</label>
+            <div class="col-sm-4">
+
+                <input type="checkbox" th:field="*{signatureCapitaine}" />
+                <span th:errors="*{signatureCapitaine}"></span>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"></label>
+            <div class="col-sm-4">
+                <button  type="submit"  name="addLicenceLibre" class="btn btn-success" >Ajouter usine</button>
+            </div>
+        </div>
+      </form>
+</div>
+</body>
+</html>
