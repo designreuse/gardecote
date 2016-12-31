@@ -18,12 +18,12 @@ public class qPageTraitement extends qPageCarnet implements Serializable {
     private static final long serialVersionUID = 1L;
     //----------------------------------------------------------------------
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private qTraitement     qtraitement;
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(mappedBy = "pageTraitement",targetEntity = qOpTraitement.class)
+    @OneToMany(mappedBy = "pageTraitement",targetEntity = qOpTraitement.class,cascade = CascadeType.ALL)
     private List<qOpTraitement> opTraitements;
     //----------------------------------------------------------------------
 

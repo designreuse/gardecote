@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by Dell on 25/10/2016.
  */
 @Entity
-@Table(name="qTraitement20", schema="dbo", catalog="GCM1" )
+@Table(name="qTraitement22", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @DiscriminatorValue("TRAITEMENT")
 @NamedQueries ( {
@@ -15,19 +15,24 @@ import java.util.Date;
 } )
 
 public class qTraitement extends  qDoc implements Serializable {
-    @Column
-    @Enumerated
-    @ElementCollection(targetClass = enumSegPeche.class)
+
+    @OneToMany(targetEntity = qSegUsines.class,cascade = CascadeType.ALL)
+    @JoinTable(name = "qAssocTraitementSegments")
     private  List<qSegUsines> segs;
 
-    @OneToMany(mappedBy = "qtraitement",targetEntity = qQuantiteExportee.class)
+
+    @OneToMany(targetEntity=qQuantiteExportee.class,cascade = CascadeType.ALL)
+    @JoinTable(name = "qAssocTraitementQteExp2")
     private List<qQuantiteExportee> qQteExp;
-    @OneToOne(mappedBy = "traitement",targetEntity = qQuantitesTraites.class)
+
+    @OneToOne(cascade = CascadeType.ALL)
     private qQuantitesTraites qQteTraitees;
+
     private Long qteDechu;
 
     //@OneToMany
-    @OneToMany(mappedBy="qtraitement", targetEntity=qPageTraitement.class)
+    @OneToMany(targetEntity=qPageTraitement.class,cascade = CascadeType.ALL)
+    @JoinTable(name = "qAssocTraitPages")
     private List<qPageTraitement> pagesTraitement;
 
     public qTraitement(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavire qnavire, qUsine qusine, qConcession qconcess, String refAgrement, Date dateTraitement, List<qSegUsines> segs, List<qQuantiteExportee> qQteExp,qQuantitesTraites qQteTraitees, Long qteDechu, List<qPageTraitement> pagesTraitement) {

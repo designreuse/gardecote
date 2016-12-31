@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by Dell on 23/10/2016.
  */
 @Entity
-@Table(name="qSeq20", schema="dbo", catalog="GCM1" )
+@Table(name="qSeq21", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qSeq.countAll", query="SELECT COUNT(x) FROM qSeq x" )

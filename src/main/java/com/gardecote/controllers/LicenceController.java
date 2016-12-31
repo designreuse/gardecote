@@ -39,6 +39,8 @@ public class LicenceController {
     @Autowired
     MessageByLocaleService messageByLocaleService;
     @Autowired
+    saveDocValidator saveDocValidator;
+    @Autowired
     licenceValidator licValidator;
     @Autowired
     attrUsineValidator attrUsineValidator;
@@ -833,15 +835,27 @@ System.out.println("string id"+enumTypeDoc.valueOf(typeDoc));
 
         if(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc() instanceof qDebarquement)  {
             docService.save((qDebarquement)frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+            model.addAttribute("licencesRef", lics);
             urlNav="docEditDebarquement";
         }
 
         if(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc() instanceof qMarree)  {
             docService.save(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+            model.addAttribute("licencesRef", lics);
             urlNav="docEditMarree";
         }
+        if(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc() instanceof qTraitement)  {
+            saveDocValidator.validate(frmSearchPgsForDocCrea, result);
+
+            if(!result.hasErrors()) {
+                docService.save(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+            }
+
+               // docService.save(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+            urlNav="docEditTraitement";
+        }
         model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea);
-        model.addAttribute("licencesRef", lics);
+
         frmSearchPgsForDocCrea.getCreateDocFormm().setCurrentPage(0);
         return  urlNav;
     }
@@ -901,20 +915,30 @@ frmAnnexe1.setPrefixeAnnexe(pc.getQcarnet().getPrefixNumerotation());
         qDocPK dpk=new qDocPK(numimm,dateDepart);
         qDoc currentDoc =docService.findById(dpk);
         qSeq seq=currentDoc.getQseq();
-        lics=docService.retLicences(seq,enumTypeDoc.valueOf(typeDoc));
+
 
         if (currentDoc instanceof qMarree) {
+            lics=docService.retLicences(seq,enumTypeDoc.valueOf(typeDoc));
             docForm.setTypeDoc(enumTypeDoc.Journal_Peche);
             docForm.setTitre("Marrée");
             urlNav= "docEditMarree";
         }
 
         if (currentDoc instanceof qDebarquement) {
+            lics=docService.retLicences(seq,enumTypeDoc.valueOf(typeDoc));
             docForm.setTypeDoc(enumTypeDoc.Fiche_Debarquement);
 
             titre = "Débarquement" + ((qDebarquement) currentDoc).getTypeDeb().toString();
             docForm.setTitre(titre);
             urlNav= "docEditDebarquement";
+        }
+        if (currentDoc instanceof qTraitement) {
+            lics=null;
+            docForm.setTypeDoc(enumTypeDoc.Fiche_Traitement);
+
+            titre = "Fiche de Traitement" ;
+            docForm.setTitre(titre);
+            urlNav= "docEditTraitement";
         }
         docForm.setCurrentPage(0);
         docForm.setPageFin(seq.getFin());
@@ -936,7 +960,6 @@ frmAnnexe1.setPrefixeAnnexe(pc.getQcarnet().getPrefixNumerotation());
         model.addAttribute("licencesRef", lics);
         model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea);
         return urlNav;
-
 
     }
     @RequestMapping(value="/createAnnexe",params = {"creerAnnexe"},method = RequestMethod.POST)

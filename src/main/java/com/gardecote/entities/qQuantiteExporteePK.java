@@ -1,12 +1,13 @@
 package com.gardecote.entities;
 
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Dell on 20/12/2016.
  */
-public class qQuantiteExporteePK {
+public class qQuantiteExporteePK implements Serializable {
 
     String refAgrement;
 

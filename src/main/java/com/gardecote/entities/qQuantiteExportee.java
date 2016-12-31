@@ -9,19 +9,30 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name="qQuantiteExportee20", schema="dbo", catalog="GCM1" )
-@IdClass(qDocPK.class)
+@Table(name="qQuantiteExportee23", schema="dbo", catalog="GCM1" )
+@IdClass(qQuantiteExporteePK.class)
 public class qQuantiteExportee implements Serializable {
     @Id
-    String numImm;
+    String refAgrement;
     @Id
-    Date depart;
+    Date dateTraitement;
     @Id
     private enumZonOrientation enumZonOrientationPeche;
 
-    private Integer qte;
+
     @OneToOne
-    private qTraitement qtraitement;
+    private qTraitement     qtraitement;
+
+    private Integer qte;
+
+
+    public qQuantiteExportee(qTraitement qtraitement,enumZonOrientation enumZonOrientationPeche, Integer qte) {
+        this.refAgrement = qtraitement.getNumImm();
+        this.dateTraitement = qtraitement.getDepart();
+        this.enumZonOrientationPeche = enumZonOrientationPeche;
+        this.qte = qte;
+        this.qtraitement=qtraitement;
+    }
 
     public qTraitement getQtraitement() {
         return qtraitement;
@@ -31,30 +42,20 @@ public class qQuantiteExportee implements Serializable {
         this.qtraitement = qtraitement;
     }
 
-
-
-    public qQuantiteExportee(enumZonOrientation enumZonOrientationPeche, Integer qte, qTraitement qtraitement) {
-        this.numImm = qtraitement.getNumImm();
-        this.depart = qtraitement.getDepart();
-        this.enumZonOrientationPeche = enumZonOrientationPeche;
-        this.qte = qte;
-        this.qtraitement = qtraitement;
+    public String getRefAgrement() {
+        return refAgrement;
     }
 
-    public String getNumImm() {
-        return numImm;
+    public void setRefAgrement(String refAgrement) {
+        this.refAgrement = refAgrement;
     }
 
-    public void setNumImm(String numImm) {
-        this.numImm = numImm;
+    public Date getDateTraitement() {
+        return dateTraitement;
     }
 
-    public Date getDepart() {
-        return depart;
-    }
-
-    public void setDepart(Date depart) {
-        this.depart = depart;
+    public void setDateTraitement(Date dateTraitement) {
+        this.dateTraitement = dateTraitement;
     }
 
     public enumZonOrientation getEnumZonOrientationPeche() {

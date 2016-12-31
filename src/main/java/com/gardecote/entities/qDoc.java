@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Entity
 @DynamicUpdate
-@Table(name="qDoc20", schema="dbo", catalog="GCM1" )
+@Table(name="qDoc22", schema="dbo", catalog="GCM1" )
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
@@ -224,7 +224,15 @@ public class qDoc implements Serializable {
         this.qseq = qsec;
     }
 
-    public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour,qSeq qseq, qNavire   qnavire, qUsine   qusine,qConcession qconcess){
+    public qUsine getQusine() {
+        return qusine;
+    }
+
+    public void setQusine(qUsine qusine) {
+        this.qusine = qusine;
+    }
+
+    public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavire   qnavire, qUsine   qusine, qConcession qconcess){
         this.qconcession=qconcess;
         this.qnavire=qnavire;
         this.qusine=qusine;

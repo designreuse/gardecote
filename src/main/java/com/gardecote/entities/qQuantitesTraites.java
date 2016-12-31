@@ -1,21 +1,21 @@
 package com.gardecote.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Dell on 20/12/2016.
  */
 @Entity
-@Table(name="qQteTraites20", schema="dbo", catalog="GCM1" )
+@Table(name="qQteTraites21", schema="dbo", catalog="GCM1" )
 @IdClass(qDocPK.class)
-public class qQuantitesTraites {
+public class qQuantitesTraites implements Serializable{
     @Id
     String numImm;
     @Id
     Date depart;
-    @OneToOne
-    private qTraitement traitement;
+
 
     private Integer congelee;
     private  Integer frais;
@@ -24,18 +24,19 @@ public class qQuantitesTraites {
     private Integer fini;
     private Integer huile;
 
-    public qQuantitesTraites(qTraitement tr,Integer congelee, Integer frais, Integer elaboree, Integer transformee, Integer fini, Integer huile) {
-        this.numImm=tr.getNumImm();
-        this.depart=tr.getDepart();
+    public qQuantitesTraites(String numImm, Date depart, Integer congelee, Integer frais, Integer elaboree, Integer transformee, Integer fini, Integer huile) {
+        this.numImm = numImm;
+        this.depart = depart;
         this.congelee = congelee;
         this.frais = frais;
         this.elaboree = elaboree;
         this.transformee = transformee;
         this.fini = fini;
         this.huile = huile;
-        this.traitement=tr;
     }
 
+    public qQuantitesTraites() {
+    }
 
     public String getNumImm() {
         return numImm;
@@ -53,13 +54,7 @@ public class qQuantitesTraites {
         this.depart = depart;
     }
 
-    public qTraitement getTraitement() {
-        return traitement;
-    }
 
-    public void setTraitement(qTraitement traitement) {
-        this.traitement = traitement;
-    }
 
     public Integer getCongelee() {
         return congelee;

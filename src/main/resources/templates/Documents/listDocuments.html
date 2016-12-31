@@ -100,7 +100,7 @@
           </div></td>
             <td th:text="${b.depart}"></td>
             <td th:text="${b.retour}"></td>
-            <td th:text="${b.qnavire.nomnav}"></td>
+            <td th:text="${b.qnavire!=null?b.qnavire.nomnav:b.qusine.nomUsine}"></td>
             <td th:text="${b.qseq.debut}"></td>
             <td th:text="${b.qseq.fin}"></td>
 

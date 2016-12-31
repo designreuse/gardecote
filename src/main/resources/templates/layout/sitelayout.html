@@ -297,7 +297,34 @@
 
                 });
 
+                $(".form-control .input-sm").autocomplete({
+                    minLength: 1,
+                    delay: 500,
+                    //define callback to format results
+                    source: function (request, response) {
 
+                        $.getJSON("/autocomPagesAnnexe",  {
+                            typeDoc: $("#typeDocAnnexe").val(),
+                            numeroD: $("#prefixeAnnexe").val()+$("#numeroDebutAnnexe").val()
+                        }, function(result) {
+                            response($.map(result, function(item) {
+                                return {
+                                    // following property gets displayed in drop down
+                                    label: item,
+                                    // following property gets entered in the textbox
+                                    value: item
+                                    // following property is added for our own use
+                                    //   tag_url: "http://" + window.location.host + "/tags/" + item.tagId + "/" + item.name
+                                }
+                            }));
+                        });
+                        clearFields();
+
+                    }
+
+                    //define select handler
+
+                });
 
                 function loadPrefixes() {
                     var url = /*[[@{/PrefixesByTypeDoc}]]*/ "/PrefixesByTypeDoc";

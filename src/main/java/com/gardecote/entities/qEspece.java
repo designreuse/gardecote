@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qEspece20", schema="dbo", catalog="GCM1" )
+@Table(name="qEspece21", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qEspece.countAll", query="SELECT COUNT(x) FROM qEspece x" )
@@ -39,8 +39,8 @@ public class qEspece implements Serializable
 
   @OneToMany(cascade = CascadeType.ALL)
   private List<qEspeceTypee> qespecetypee;
-
-
+ //   @OneToMany
+  //  qOpTraitement qopTraitement;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    

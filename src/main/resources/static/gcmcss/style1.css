@@ -6,6 +6,7 @@
 
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 .input-mysize { width: 60px }
+.form-control .input-sm22 { width: 120px }
 .spacer {
     margin-top:15px;
     margin-left:15px;

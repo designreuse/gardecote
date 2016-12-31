@@ -19,132 +19,74 @@
           </div>
           <div id="collapse1" class="panel-collapse collapse" >
 
-              <div class="panel-body">
+   <div class="panel-body">
 
 <table class="table table-striped table-bordered table-hover" ><tr><td>
+<table>
+    <tr><th></th><th>Ceph</th><th>Dem</th><th>Pel</th><th>Crust</th><th>Autres</th>
 
-                  <div class="form-group form-group-sm">
-                    <div  >
-          <label th:text="*{currentDoc.segPeche}"></label>
-            <label th:each="var : ${allTypesPeches}">
-                          <input type="radio" th:field="*{currentDoc.typePeche}" th:value="${var}"  th:text="${var}" />
-            </label>
-</div>
-         </div>
-</td><td>
-
-
-                  <div class="form-group form-group-sm">
-                      <div  >
-
-                  ref concession:<label th:text="*{currentDoc.qconcession!=null?currentDoc.qconcession.refConcession:'non applicable'}"></label>
-                </div></div></td>
-
-<td>
-                  <div class="form-group form-group-sm">
-                      <div  >
-                 Consignataire:
-                          <label th:text="*{currentDoc.qconcession!=null?currentDoc.qconcession.qconsignataire.nomconsignataire:'non applicable'}"></label>
-</div></div>
-</td>
-<td>
-                  <div class="form-group form-group-sm">
-                      <div >
-                          Nom de navire
-                          <label class="control-label" th:text="*{currentDoc.qnavire.nomnav}" />
-                          </div>
-                      </div>
-
-</td><td>
-                  <div class="form-group form-group-sm">
-                      <div  >
-                         IMO
-                          <input type="text" class="control-label" th:field="*{currentDoc.imo}" />
-                      </div>
-                  </div>
-
-</td><td>
-                  <div class="form-group form-group-sm">
-                      <div >
-                         GT
-                          <input type="text" class="control-label"  th:field="*{currentDoc.GT}" />
-                      </div>
-                  </div>
-
-</td><td>
-                  <div class="form-group form-group-sm">
-                      <div  >
-                          Nom de capitaine
-                          <input type="text" class="control-label"  th:field="*{currentDoc.nomCapitaine}" />
-                      </div>
-                  </div>
-    </td>
     </tr>
-<tr>
-<td>
-
-    <div class="form-group form-group-sm">
-                          <div  >
-                      <label class="control-label">Numimm:</label>
-
-                      <input type="text"  class="form-control input-sm" th:disabled="true" th:field="*{currentDoc.numImm}" th:value="*{currentDoc.numImm}"   />
-</div></div>
-</td><td>
-
-                  <div class="form-group form-group-sm">
-                      <div  >
-                  <label> reference</label>
-                  <select th:field="*{currentDoc.licenceImputation}" >
-
-                      <option th:each="var : ${licencesRef}"
-                              th:value="${var.numlic}"
-                              th:text= "${var.numlic}">hhh</option>
-                  </select>
-</div></div> </td><td>
-
-
-
-        <div class="form-group form-group-sm">
-            <div  >
-            <label class="control-label">date de depart:</label>
-
-            <input type="date"  class="form-control input-sm" th:disabled="true"  th:field="*{currentDoc.depart}" th:value="*{#dates.format(currentDoc.depart, 'yyyy-MM-dd')}" />
-
+    <tr th:each="page, statg : *{currentDoc.segs}">
+        <td>
+       <div class="form-group form-group-sm">
+          <div>
+          <label th:text="*{currentDoc.segs[__${statg.index}__].segPeche}"></label>
+            <input type="checkbox" th:field="*{currentDoc.segs[__${statg.index}__].choix}" th:value="*{currentDoc.segs[__${statg.index}__].choix}"   />
+          </div>
          </div>
+        </td>
+        <td>
+            <div class="form-group form-group-sm">
+                <div>
+
+                    <input type="checkbox" th:field="*{currentDoc.segs[__${statg.index}__].ceph}" th:value="*{currentDoc.segs[__${statg.index}__].ceph}"   />
+                </div>
             </div>
+        </td>
+        <td>
+            <div class="form-group form-group-sm">
+                <div>
 
-</td><td>
-
-
-           <div class="form-group form-group-sm">
-            <div  >
-                <label class="control-label" >date de retour:</label>
-
-                <input type="date" class="form-control input-sm"  th:disabled="true" th:field="*{currentDoc.retour}"  />
+                    <input type="checkbox" th:field="*{currentDoc.segs[__${statg.index}__].demersal}" th:value="*{currentDoc.segs[__${statg.index}__].demersal}"   />
+                </div>
             </div>
-           </div>
+        </td>
+        <td>
+            <div class="form-group form-group-sm">
+                <div>
 
+                    <input type="checkbox" th:field="*{currentDoc.segs[__${statg.index}__].pel}" th:value="*{currentDoc.segs[__${statg.index}__].pel}"   />
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="form-group form-group-sm">
+                <div>
 
-</td><td>
-    <select th:field="*{currentDoc.support}" >
+                    <input type="checkbox" th:field="*{currentDoc.segs[__${statg.index}__].crust}" th:value="*{currentDoc.segs[__${statg.index}__].crust}"   />
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="form-group form-group-sm">
+                <div>
 
-        <option th:each="var : ${supports}"
-                th:value="${var}"
-                th:text= "${var}"></option>
-    </select>
-    Quota en Tonne :
+                    <input type="checkbox" th:field="*{currentDoc.segs[__${statg.index}__].autres}" th:value="*{currentDoc.segs[__${statg.index}__].autres}"   />
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
 
-    <label th:text="*{currentDoc.qconcession!=null?currentDoc.qconcession.quotaEnTonne:'non applicable'}"></label>
-</td><td> duree concession
-    <label th:text="*{currentDoc.qconcession!=null?currentDoc.qconcession.dureeConcession:'non applicable'}"></label>
 </td>
-<td>
-    date fin de concession
-    <label th:text="*{currentDoc.qconcession!=null?currentDoc.qconcession.dateFin:'non applicable'}"></label>
-</td>
-</tr></table>
+
+
+
+    </tr>
+</table>
               </div>
 </div>
+
 </div>
       </div>
 
@@ -158,34 +100,9 @@
                 <div id="collapse2" class="panel-collapse collapse" >
 
                     <div class="panel-body">
-        <div class="form-group form-group-sm">
-                <div class=" col-sm-6" >
 
 
-
-              <table class="table-bordered"  id="engins" >
-               <tr>
-                   <th th:each="enginmar, stat : *{currentDoc.qEngins}" th:text="*{currentDoc.qEngins[__${stat.index}__].EnginMar}"></th>
-               </tr>
-               <tr>
-
-              <td th:each="enginmar, statq : *{currentDoc.qEngins}">
-
-                  <input type="number" class="form-control input-sm input-mysize" th:field="*{currentDoc.qEngins[__${statq.index}__].maillage}"   th:value="*{currentDoc.qEngins[__${statq.index}__].maillage}"/>
-
-              </td>
-
-                </tr>
-                 <tr>
-
-            <td th:each="enginmar, stat : *{currentDoc.qEngins}">
-            <input type="checkbox"  th:field="*{currentDoc.qEngins[__${stat.index}__].flag}"  th:value="*{currentDoc.qEngins[__${stat.index}__].flag}"  /></td>
-              </tr>
-                   </table>
-
-                </div>
-
-</div></div></div></div></div>
+                    </div></div></div></div>
 
             <div class="panel-group" th:if="${frmSearchPgsForDocCrea.createDocFormm.typeDoc=='D'}">
                 <div class="panel panel-default">
@@ -198,19 +115,8 @@
 
                         <div class="panel-body">
 
-                        <table class="table-bordered" id="categ" >
-                <tr>
 
-      <th th:each="categ, stat : *{currentDoc.categories}"  th:text="*{currentDoc.categories[__${stat.index}__].cat.typeconcessionConcernee}">
 
-      </th>
-                </tr>
-                <tr>
-
-       <td th:each="categ, stat : *{currentDoc.categories}">
-                   <input type="checkbox"  th:field="*{currentDoc.categories[__${stat.index}__].flag}" th:value="*{currentDoc.categories[__${stat.index}__].flag}" /></td>
-                </tr>
-     </table>
                             </div></div></div></div>
 
 
@@ -218,27 +124,35 @@
 
 
         <ul class="nav nav-tabs">
-            <li  th:each="page, stat : *{currentDoc.pages}" th:class="${__${stat.index}__==__${frmSearchPgsForDocCrea.createDocFormm.currentPage}__}? active : ''"><a data-toggle="tab" th:href="'#page'+${stat.index}" th:text="'page '+*{currentDoc.pages[__${stat.index}__].numeroPage}"></a> </li>
+            <li  th:each="page, stat : *{currentDoc.pagesTraitement}" th:class="${__${stat.index}__==__${frmSearchPgsForDocCrea.createDocFormm.currentPage}__}? active : ''"><a data-toggle="tab" th:href="'#page'+${stat.index}" th:text="'page '+*{currentDoc.pagesTraitement[__${stat.index}__].numeroPage}"></a> </li>
 
         </ul>
 
         <div class="tab-content">
-            <div th:each="page, statp : *{currentDoc.pages}" th:attr="id='page'+${statp.index}" class="tab-pane fade in active" th:class="${__${statp.index}__==__${frmSearchPgsForDocCrea.createDocFormm.currentPage}__}? 'tab-pane fade in active' : 'tab-pane fade'" >
+            <div th:each="page, statp : *{currentDoc.pagesTraitement}" th:attr="id='page'+${statp.index}" class="tab-pane fade in active" th:class="${__${statp.index}__==__${frmSearchPgsForDocCrea.createDocFormm.currentPage}__}? 'tab-pane fade in active' : 'tab-pane fade'" >
 
-                <table class="table-bordered">
+                <table class="table table-condensed table-striped  table-hover">
                     <tr>
-                        <th >Date du jour</th>
-                        <th th:each="p, statesp : *{currentDoc.pages[__${statp.index}__].listJours[0].capturesDuMarree}">
-                            <span  th:text="*{currentDoc.pages[__${statp.index}__].listJours[0].capturesDuMarree[__${statesp.index}__].especeTypee.qespece.nomFr}" />
+                        <th >Code Esp</th>
+                        <th>
+                             Nom Esp
+                        </th>
+                        <th>
+                          Poids en Killogrammes
                         </th>
                     </tr>
-                    <tr th:each="jourLigne, statj : *{currentDoc.pages[__${statp.index}__].listJours}" class="danger">
+                    <tr th:each="jourLigne, statj : *{currentDoc.pagesTraitement[__${statp.index}__].opTraitements}" class="danger">
                         <td>
-                       <input type="date" class="form-control input-sm " th:disabled="true" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{#dates.format(currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour, 'yyyy-MM-dd')}" />
-                       </td>
-                        <td th:each="jourCap, statc : *{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree}">
-                        <input type="text" class="form-control input-sm " th:tabindex="((*{currentDoc.pages[__${statp.index}__].nbrLigne}*${statc.index})+${statj.index}+1)" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].quantite}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].quantite}"/>
+                            <input type="text" class="form-control input-sm" th:tabindex="((${statj.index}*3)+2)" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.codeEsp}"  />
                         </td>
+                        <td >
+                            <input type="text" class="form-control input-sm" th:tabindex="((${statj.index}*3)+3)"  th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.nomFr}"  />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm " th:tabindex="((${statj.index}*3)+4)"  th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].qte}"  />
+                        </td>
+
+
                     </tr>
                 </table>
 

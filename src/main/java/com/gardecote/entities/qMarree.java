@@ -38,6 +38,7 @@ public class qMarree extends qDoc implements Serializable
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------
     private enumJP typeJP;
+
     @ManyToMany(targetEntity = qEnginPecheMar.class,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocMarreeEngins")
     private List<qEnginPecheMar> qEngins;

@@ -2,10 +2,7 @@ package com.gardecote.web;
 
 import com.gardecote.business.service.qDocService;
 import com.gardecote.business.service.qSeqService;
-import com.gardecote.entities.qDoc;
-import com.gardecote.entities.qModelJP;
-import com.gardecote.entities.qSeq;
-import com.gardecote.entities.qSeqPK;
+import com.gardecote.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -75,9 +72,9 @@ else     ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numeroDebut", "frmSe
                 errors.rejectValue("numeroDebut", "frmSearchPgsForDocCrea.joursdup");
             if (lstDocPagesDupliquees.size() != 0)
                 errors.rejectValue("numeroDebut", "frmSearchPgsForDocCrea.pagesdup");
-            if (modelEncours == null)
+            if (modelEncours == null && (!frmValidated.getTypeDoc().equals(enumTypeDoc.Fiche_Traitement)))
                 errors.rejectValue("numeroDebut", "frmSearchPgsForDocCrea.modeinnexistant");
-            if(flag==false)
+            if(flag==false && (!frmValidated.getTypeDoc().equals(enumTypeDoc.Fiche_Traitement)))
                 errors.rejectValue("numeroDebut", "frmSearchPgsForDocCrea.lignesmoinsquejours");
         }
 

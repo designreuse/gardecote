@@ -489,23 +489,32 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
         qUsine qusine = carnetDebut.getQusine();
      //   qConcession qconcess;
         //qnav.getQlicencebatlastdernier().getQconcession(); // concession du dernier lic
+
         //carnetDebut.getQconcession();
+        documentCree = new qTraitement(enumTypeDoc.Fiche_Traitement, dateDepart, dateRetour, seqActive, null,qusine,
+                null,qusine.getRefAgrement() , dateDepart,null,null,null,0L, null);
+
         List<qSegUsines> lstSegUsine=new ArrayList<qSegUsines>();
-        qSegUsines seg1=new qSegUsines(null,enumSegPeche.Peche_Artisanal,false,false,false,false,false,false);
-        qSegUsines seg2=new qSegUsines(null,enumSegPeche.Pêche_Cotier,false,false,false,false,false,false);
-        qSegUsines seg3=new qSegUsines(null,enumSegPeche.Pêche_Hautiriere,false,false,false,false,false,false);
+        qSegUsines seg1=new qSegUsines(documentCree,enumSegPeche.Peche_Artisanal,false,false,false,false,false,false);
+        qSegUsines seg2=new qSegUsines(documentCree,enumSegPeche.Pêche_Cotier,false,false,false,false,false,false);
+        qSegUsines seg3=new qSegUsines(documentCree,enumSegPeche.Pêche_Hautiriere,false,false,false,false,false,false);
         lstSegUsine.add(seg1);lstSegUsine.add(seg2);lstSegUsine.add(seg3);
+
         List<qQuantiteExportee> lstQteExp=new ArrayList<qQuantiteExportee>();
-        qQuantiteExportee r1=new qQuantiteExportee(enumZonOrientation.AFRIC,0,null);
-        qQuantiteExportee r2=new qQuantiteExportee(enumZonOrientation.ASIE,0,null);
-        qQuantiteExportee r3=new qQuantiteExportee(enumZonOrientation.EUROPE,0,null);
-        qQuantiteExportee r4=new qQuantiteExportee(enumZonOrientation.AUTRES,0,null);
+        qQuantiteExportee r1=new qQuantiteExportee(documentCree,enumZonOrientation.AFRIC,0);
+        qQuantiteExportee r2=new qQuantiteExportee(documentCree,enumZonOrientation.ASIE,0);
+        qQuantiteExportee r3=new qQuantiteExportee(documentCree,enumZonOrientation.EUROPE,0);
+        qQuantiteExportee r4=new qQuantiteExportee(documentCree,enumZonOrientation.AUTRES,0);
         lstQteExp.add(r1);lstQteExp.add(r2);lstQteExp.add(r3);lstQteExp.add(r4);
 
-        qQuantitesTraites qtesTraitees=new qQuantitesTraites(null,0,0,0,0,0,0);
-        documentCree = new qTraitement(enumTypeDoc.Journal_Peche, dateDepart, dateRetour, seqActive, null,qusine,
-                null,qusine.getRefAgrement() , dateDepart,lstSegUsine,lstQteExp,qtesTraitees,0L, null);
+        qQuantitesTraites qtesTraitees=new qQuantitesTraites(qusine.getRefAgrement(),dateDepart,0,0,0,0,0,0);
+
+
+        documentCree.setSegs(lstSegUsine);
+        documentCree.setqQteExp(lstQteExp);
+        documentCree.setqQteTraitees(qtesTraitees);
         documentCree.setSegPeche(debutPrefix);
+
        // documentCree.setNomNavire(qnav.getNomnav());
 
         qPrefixPK pref=new qPrefixPK(debutPrefix,typeDoc);
@@ -527,7 +536,7 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
             // parcourir les ligne de page
             for (int k = 0; k < currp.getNbrLigne(); k++) {
 
-                    qOpTraitement uniteTr = new qOpTraitement((qTraitement) documentCree, null, 0L);
+                    qOpTraitement uniteTr = new qOpTraitement(currp, null, 0L);
 
                     uniteTr.setPageTraitement(currp);
                     opSTraitement.add(uniteTr);
@@ -608,11 +617,25 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
 
     @Override
     public qDoc checkIfDupDocExist(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc) {
+        qNavire qnav=null;
+        qUsine  qusine=null;
+        qDocPK docpk=null;
         qPageCarnet        debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(seqActive1.getDebut(),typeDoc));
         qCarnet carnetDebut = debutp.getQcarnet();
-        qNavire qnav = carnetDebut.getQnavire();
-        qDocPK docpk=new qDocPK(qnav.getNumimm(),dateDepart);
+         if(typeDoc.equals(enumTypeDoc.Fiche_Traitement))
+         {
+             qusine=carnetDebut.getQusine();
+             docpk=new qDocPK(qusine.getRefAgrement(),dateDepart);}
+         else
+         {
+         qnav = carnetDebut.getQnavire();
+         docpk=new qDocPK(qnav.getNumimm(),dateDepart);
+         }
+
+
         qDoc docdoublon=qdocRepository.findOne(docpk);
+
+
         if(docdoublon==null) return null;
         else return docdoublon;
     }

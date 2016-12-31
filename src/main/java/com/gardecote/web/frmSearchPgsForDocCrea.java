@@ -151,4 +151,5 @@ public class frmSearchPgsForDocCrea {
     public void setDisplayFinListfrg(boolean displayFinListfrg) {
         this.displayFinListfrg = displayFinListfrg;
     }
+
 }

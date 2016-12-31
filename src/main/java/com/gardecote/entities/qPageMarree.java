@@ -24,7 +24,7 @@ public class qPageMarree extends qPageCarnet implements Serializable {
     // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
     // "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
-   @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private qMarree     qmarree;
 
     //----------------------------------------------------------------------

@@ -1,25 +1,24 @@
 package com.gardecote.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Dell on 08/11/2016.
  */
 @Entity
-@Table(name="qSegUsines21", schema="dbo", catalog="GCM1" )
+@Table(name="qSegUsines22", schema="dbo", catalog="GCM1")
 @IdClass(qSegUsinesPK.class)
-public class qSegUsines {
+public class qSegUsines implements Serializable {
     @Id
     String refAgrement;
     @Id
     Date dateTraitement;
     @Id
     private enumSegPeche segPeche;
-   private  qTraitement traitement;
+    @OneToOne
+    private  qTraitement traitement;
     private boolean choix;
 
     private boolean ceph;
@@ -41,6 +40,9 @@ public class qSegUsines {
         this.pel = pel;
         this.crust = crust;
         this.autres = autres;
+    }
+
+    public qSegUsines() {
     }
 
     public enumSegPeche getSegPeche() {
