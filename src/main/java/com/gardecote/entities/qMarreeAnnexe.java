@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qMarreeAnnexe20", schema="dbo", catalog="GCM1")
+@Table(name="qMarreeAnnexe31", schema="dbo", catalog="GCM1")
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qMarreeAnnexe.countAll", query="SELECT COUNT(x) FROM qMarreeAnnexe x" )
@@ -26,7 +26,7 @@ public class qMarreeAnnexe  implements Serializable {
     private Date depart;
     @Id
     private String numImm;
-    @OneToOne
+    @OneToOne(targetEntity = qMarree.class,cascade = CascadeType.ALL)
     private qMarree marreePrincipal;
     @OneToMany(targetEntity=qPageAnnexe.class,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocMareesAnnexPages")
@@ -35,6 +35,8 @@ public class qMarreeAnnexe  implements Serializable {
     private String IMO;
     private String Nationalite;
     private String indicatifRadio;
+    @Column(name="bloquerDeletion", nullable=false, length=10)
+    private boolean bloquerDeletion;
 
     public qMarreeAnnexe(Date depart, String numImm, qMarree marreePrincipal, List<qPageAnnexe> pages, String navireReceveur, String IMO, String nationalite, String indicatifRadio) {
         this.depart = depart;
@@ -43,13 +45,21 @@ public class qMarreeAnnexe  implements Serializable {
         this.pages = pages;
         this.navireReceveur = navireReceveur;
         this.IMO = IMO;
-        Nationalite = nationalite;
+        this.Nationalite = nationalite;
         this.indicatifRadio = indicatifRadio;
     }
    public qDocPK getqDocPK(){
       qDocPK dpk=new qDocPK(this.numImm,this.depart);
       return dpk;
   }
+
+    public boolean isBloquerDeletion() {
+        return bloquerDeletion;
+    }
+
+    public void setBloquerDeletion(boolean bloquerDeletion) {
+        this.bloquerDeletion = bloquerDeletion;
+    }
 
     public qMarreeAnnexe() {
     }

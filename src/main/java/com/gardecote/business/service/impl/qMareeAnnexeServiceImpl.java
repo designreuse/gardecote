@@ -32,6 +32,15 @@ public class qMareeAnnexeServiceImpl implements qMareeAnnexeService {
         return authprovEntity;
     }
 
+    @Override
+    public List<qMarreeAnnexe> findAll() {
+        Iterable<qMarreeAnnexe>  lst= qmareeannexeRepository.findAll();
+        List<qMarreeAnnexe> annexes = new ArrayList<qMarreeAnnexe>();
+        for(qMarreeAnnexe annexesc : lst) {
+            annexes.add(annexesc);
+        }
+        return annexes;
+    }
 
     @Override
     public qMarreeAnnexe save(qMarreeAnnexe authprov) {
@@ -71,22 +80,24 @@ public class qMareeAnnexeServiceImpl implements qMareeAnnexeService {
         List<qJourMereAnnexe> jms=new ArrayList<qJourMereAnnexe>();
         if(ff instanceof qMarreeAnnexe) {
 
+            for (Iterator<qPageAnnexe> iter = ((qMarreeAnnexe) ff).getPages().iterator(); iter.hasNext(); ) {
+                qPageAnnexe currentp = iter.next();
 
-            for(Iterator<qPageAnnexe> iter = ((qMarreeAnnexe) ff).getPages().iterator(); iter.hasNext();) {
-                qPageAnnexe currentp=iter.next();
-
-                for (Iterator<qJourMereAnnexe> iter1 = currentp.getListJours().iterator(); iter1.hasNext(); )
-                {  qJourMereAnnexe currj=iter1.next();
+                for (Iterator<qJourMereAnnexe> iter1 = currentp.getListJours().iterator(); iter1.hasNext(); ) {
+                    qJourMereAnnexe currj = iter1.next();
                     currj.setPageMarree(null);
                     jms.add(currj);
                 }
                 currentp.setListJours(null);
                 currentp.setQmarreeAnexe(null);
+
                 qpagecarnetAnnexRepository.save(currentp);
             }
-            ((qMarreeAnnexe) ff).setPages(null);
-            qmareeannexeRepository.save(ff);
+
+            ((qMarreeAnnexe) ff).setMarreePrincipal(null);
+           qmareeannexeRepository.save(ff);
             for(qJourMereAnnexe jk:jms) {
+                jk.setPageMarree(null);
                 qjourmereAnnexeRepository.delete(jk);
             }
             qmareeannexeRepository.delete(ff.getqDocPK());

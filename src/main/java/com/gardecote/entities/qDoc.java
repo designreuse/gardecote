@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Entity
 @DynamicUpdate
-@Table(name="qDoc22", schema="dbo", catalog="GCM1" )
+@Table(name="qDoc31", schema="dbo", catalog="GCM1" )
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
@@ -44,7 +44,7 @@ public class qDoc implements Serializable {
     @Column(name="nomcapitaine", nullable=true, length=20)
     private String nomCapitaine;
     @Column(name="debloquerModification", nullable=false, length=10)
-     private boolean debloquerModification;
+    private boolean debloquerModification;
     @Column(name="bloquerDeletion", nullable=false, length=10)
     private boolean bloquerDeletion;
 

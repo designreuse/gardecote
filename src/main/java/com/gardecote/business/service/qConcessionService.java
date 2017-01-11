@@ -4,6 +4,7 @@
  */
 package com.gardecote.business.service;
 import com.gardecote.entities.qConcession;
+import com.gardecote.entities.qConsignataire;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public interface qConcessionService {
 	Page<qConcession> getSuggConcession(String searcconcession);
 
 	qConcession findById(String refConcession) ;
-
+	public Page<qConcession> findAll(int p, int size);
 	/**
 	 * Loads all entities.
 	 * @return all entities

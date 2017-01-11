@@ -67,7 +67,6 @@ public class qDocServiceImpl implements qDocService {
 
     @Override
     public qDoc save(qDoc authprov) {
-
  //     Session session = em.unwrap(Session.class);
         qDoc authprovEntity = qdocRepository.findOne(authprov.getqDocPK());
         return qdocRepository.save(authprov);
@@ -77,7 +76,7 @@ public class qDocServiceImpl implements qDocService {
    //     } else {
         //   session.evict(authprovEntity);
       //      return em.merge(authprov);
-   //     }
+    //     }
     }
 
     @Override
@@ -87,9 +86,6 @@ public class qDocServiceImpl implements qDocService {
   //      if( qdoc != null ) {
    //         throw new IllegalStateException("Document deja saisie");
     //    }
-
-
-
         qDoc authprovEntitySaved = qdocRepository.save(authprov);
         return authprovEntitySaved;
     }
@@ -107,8 +103,6 @@ public class qDocServiceImpl implements qDocService {
        qDoc ff= qdocRepository.findOne(idauthpr);
         List<qJourMere> jms=new ArrayList<qJourMere>();
         if(ff instanceof  qMarree) {
-
-
             for(Iterator<qPageMarree> iter=((qMarree) ff).getPages().iterator();iter.hasNext();) {
                 qPageMarree currentp=iter.next();
 
@@ -337,7 +331,7 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
 
             // parcourir les ligne de page
             for (int k = 0; k < currp.getNbrLigne(); k++) {
-                    qJourMereAnnexe jourMar = new qJourMereAnnexe(dateJourCourant, qnav, null, 0, null, currp);
+                    qJourMereAnnexe jourMar = new qJourMereAnnexe(k,"",dateDepart, qnav, null, 0, null, currp);
                     jourMar.setPageMarree(currp);
                     joursMar.add(jourMar);
                     Calendar cal = Calendar.getInstance();
@@ -348,6 +342,7 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
             }
             currp.setListJours(joursMar);
             //   joursMar.clear();
+            lstPgsMar.add(currp);
         }
 
         documentCree.setPages(lstPgsMar);
@@ -570,6 +565,7 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
             if (carnetDebut.getTypeDoc().equals(enumTypeDoc.Journal_Annexe)) {
                 documentCree = creerAnnexe(dateDepart,qCurrentMaree, spk, typeDoc);
                 retObj = documentCree;
+             //   ((qMarree) qCurrentMaree).setMarreeAnnexe(documentCree);
             }
 
 

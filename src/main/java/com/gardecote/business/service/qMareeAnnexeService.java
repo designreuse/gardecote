@@ -14,6 +14,7 @@ import java.util.List;
  */
 public interface qMareeAnnexeService {
     qMarreeAnnexe findById(qDocPK idcarnet);
+   List<qMarreeAnnexe>  findAll();
 
     qMarreeAnnexe save(qMarreeAnnexe authprov);
 

@@ -1,0 +1,53 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Gestion des documents</title>
+</head>
+<body>
+
+<div   layout:fragment="content">
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Depart</th>
+            <th>Page Debut</th>
+            <th>Page fin</th>
+            <th>navire receveur</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="annexe:${lstAnnexes}">
+            <td><div class="dropdown">
+                <button th:field="${annexe.numImm}" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
+                <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a th:if="${annexe.bloquerDeletion}" th:href="@{bloquerSuppressionAnnexe(numimm=${annexe.numImm},depart=${annexe.depart},action='bloquerAnnexe')}" onclick="return confirm('Are you sure?');">bloquer  la suppression</a>
+                        <a th:unless="${annexe.bloquerDeletion}" th:href="@{debloquerSuppressionAnnexe(numimm=${annexe.numImm},depart=${annexe.depart},action='bloquerAnnexe')}" onclick="return confirm('Are you sure?');">Débloquer la suppression</a>
+                    </li>
+                    <li >
+                        <a  th:href="@{editAnnexe(numimm=${annexe.numImm},depart=${annexe.depart},action='modifyAnnexe')}" onclick="return confirm('Are you sure?');" >Editer</a>
+                    </li>
+                    <li th:if="${annexe.bloquerDeletion}">
+                        <a   th:href="@{deleteAnnexe(numimm=${annexe.numImm},depart=${annexe.depart},action='deleteAnnexe')}" onclick="return confirm('Are you sure?');">Supprimer</a>
+                    </li>
+
+
+                </ul>
+
+
+            </div></td>
+            <td th:text="${annexe.depart}"></td>
+            <td th:text="${annexe.marreePrincipal.qseq.debut}"></td>
+            <td th:text="${annexe.marreePrincipal.qseq.fin}"></td>
+            <td th:text="${annexe.navireReceveur}"></td>
+        </tr>
+        </tbody>
+        </table>
+
+    </div>
+</body>
+</html>

@@ -6,6 +6,8 @@ package com.gardecote.business.service;
 
 import java.util.List;
 import com.gardecote.entities.qConsignataire;
+import org.springframework.data.domain.Page;
+
 /**
  * Business Service Interface for entity Pvcom.
  */
@@ -17,7 +19,7 @@ public interface qConsignataireService {
 	 * @return entity
 	 */
 	qConsignataire findById(String idCondifnataire) ;
-
+	public Page<qConsignataire> findAll(int p, int size);
 	/**
 	 * Loads all entities.
 	 * @return all entities

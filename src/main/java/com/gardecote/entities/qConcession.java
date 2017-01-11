@@ -7,6 +7,7 @@
 package com.gardecote.entities;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qConcession22", schema="dbo", catalog="GCM1" )
+@Table(name="qConcession30", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qConcession.countAll", query="SELECT COUNT(x) FROM qConcession x" )
@@ -60,15 +61,20 @@ public class qConcession implements Serializable
 
 
    @Column(name="dateConcession")
+   @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date     dateConcession  ;
+
     @Column(name="quotaConcession")
     private Integer     quotaEnTonne  ;
     @Column(name="dureeconcession" )
+
     private Integer dureeConcession;
     @Column(name="date_debut")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateDebut    ;
 
     @Column(name="date_fin")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date     dateFin      ;
 
     //----------------------------------------------------------------------

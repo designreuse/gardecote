@@ -2,6 +2,7 @@ package com.gardecote.web;
 
 import com.gardecote.business.service.qDocService;
 import com.gardecote.business.service.qEspeceService;
+import com.gardecote.business.service.qPageCarnetService;
 import com.gardecote.business.service.qSeqService;
 import com.gardecote.entities.*;
 import org.jgroups.util.UUID;
@@ -23,6 +24,8 @@ public class saveDocValidator  implements Validator {
 
     @Autowired
     qSeqService seqService;
+    @Autowired
+    qPageCarnetService pcService;
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -43,15 +46,19 @@ public class saveDocValidator  implements Validator {
                        qEspece currentEsp = espService.findById(optr.getEsp().getCodeEsp());
                        if (currentEsp==null) {
                            qEspece especeToCreate=new qEspece(String.valueOf(UUID.randomUUID()),optr.getEsp().getNomFr(),optr.getEsp().getNomFr(),0);
+                           espService.create(especeToCreate);
                            optr.setEsp(especeToCreate);
+
                        }
+                       else   optr.setEsp(currentEsp);
                    }
-                     else   optr.setEsp(null);
+
                    }
                    else {
                        optr.setEsp(null);
                    }
                }
+                pcService.save(pagetr);
             }
         }
     }

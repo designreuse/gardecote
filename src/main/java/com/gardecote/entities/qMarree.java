@@ -46,7 +46,8 @@ public class qMarree extends qDoc implements Serializable
     @OneToMany(targetEntity=qPageMarree.class,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocMareesPages")
     private List<qPageMarree> pages;
-
+    @OneToOne(targetEntity = qMarreeAnnexe.class)
+    private qMarreeAnnexe marreeAnnexe;
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -60,6 +61,14 @@ public class qMarree extends qDoc implements Serializable
 //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
+
+    public qMarreeAnnexe getMarreeAnnexe() {
+        return marreeAnnexe;
+    }
+
+    public void setMarreeAnnexe(qMarreeAnnexe marreeAnnexe) {
+        this.marreeAnnexe = marreeAnnexe;
+    }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;

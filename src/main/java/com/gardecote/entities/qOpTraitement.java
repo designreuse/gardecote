@@ -16,7 +16,7 @@ import java.util.List;
  * Created by Dell on 25/10/2016.
  */
 @Entity
-@Table(name="qOpTraitement21", schema="dbo", catalog="GCM1" )
+@Table(name="qOpTraitement30", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qOpTraitement.countAll", query="SELECT COUNT(x) FROM qOpTraitement x" )
@@ -25,9 +25,9 @@ public class qOpTraitement implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long IdOpTraitement;
-  //  @OneToOne(targetEntity = qEspece.class,cascade = {CascadeType.PERSIST,CascadeType.REFRESH })
-   // @NotFound(action = NotFoundAction.IGNORE)
-  @OneToOne(targetEntity = qEspece.class,cascade = CascadeType.ALL)
+  @OneToOne(targetEntity = qEspece.class,cascade = {CascadeType.PERSIST,CascadeType.REFRESH })
+  @NotFound(action = NotFoundAction.IGNORE)
+   // @OneToOne(targetEntity = qEspece.class)
     private qEspece esp;
     private Long qte;
 

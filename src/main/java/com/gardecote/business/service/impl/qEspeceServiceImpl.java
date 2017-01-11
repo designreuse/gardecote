@@ -12,7 +12,12 @@ import javax.annotation.Resource;
 ;
 
 import com.gardecote.data.repository.jpa.qEspeceRepository;
+import com.gardecote.data.repository.jpa.qPageCarnetRepository;
+import com.gardecote.entities.enumTypeDoc;
+import com.gardecote.entities.qPageCarnet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.entities.qEspece;
@@ -77,6 +82,10 @@ public class qEspeceServiceImpl implements qEspeceService {
 		this.changmentactJpaRepository = changmentactJpaRepository;
 	}
 
-	
+
+	@Override
+	public Page<qEspece> getSuggEsp(String esp) {
+		return changmentactJpaRepository.returnSuggPage(new PageRequest(0, 10),esp);
+	}
 
 }

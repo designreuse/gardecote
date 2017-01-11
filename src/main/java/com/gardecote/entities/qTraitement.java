@@ -7,11 +7,11 @@ import java.util.Date;
  * Created by Dell on 25/10/2016.
  */
 @Entity
-@Table(name="qTraitement22", schema="dbo", catalog="GCM1" )
+@Table(name="qTraitement30", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @DiscriminatorValue("TRAITEMENT")
 @NamedQueries ( {
-        @NamedQuery ( name="qTraitement.countAll", query="SELECT COUNT(x) FROM qTraitement x" )
+        @NamedQuery ( name="qTraitement.countAll", query="SELECT COUNT(x) FROM qTraitement x")
 } )
 
 public class qTraitement extends  qDoc implements Serializable {
@@ -37,7 +37,6 @@ public class qTraitement extends  qDoc implements Serializable {
 
     public qTraitement(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavire qnavire, qUsine qusine, qConcession qconcess, String refAgrement, Date dateTraitement, List<qSegUsines> segs, List<qQuantiteExportee> qQteExp,qQuantitesTraites qQteTraitees, Long qteDechu, List<qPageTraitement> pagesTraitement) {
         super(enumtypedoc, depart, retour, qseq, qnavire, qusine, qconcess);
-
         this.segs = segs;
         this.qQteExp = qQteExp;
         this.qQteTraitees = qQteTraitees;

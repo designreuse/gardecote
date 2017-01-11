@@ -32,7 +32,6 @@ public class qPageTraitement extends qPageCarnet implements Serializable {
 
     public qPageTraitement(String numeroPage,Long numeroOrdrePage, enumEtatPage etat, qCarnet carnet, qTraitement qtraitement, List<qOpTraitement> opTraitements) {
         super(numeroPage,  carnet,numeroOrdrePage,etat);
-
         this.qtraitement = qtraitement;
         this.opTraitements = opTraitements;
     }

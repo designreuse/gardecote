@@ -32,13 +32,16 @@ public class attributionValidator implements Validator {
         boolean priznak=carnetService.checkIfNumeroDebutValable(((qCarnet) o).getNumeroDebutPage());
         if(carnetDoublon!=null)    errors.rejectValue("carnetSelected.qprefix", "carnetSelected.qprefix.doublon");
 
-        else  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "carnetSelected.prefixNumerotation", "carnetSelected.qprefix.empty");
-        if(priznak==false)  errors.rejectValue("numeroDebutPage","carnetSelected.numeroDebut.invalide");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "carnetSelected.prefixNumerotation", "carnetSelected.qprefix.empty");
+        if(priznak==false)  errors.rejectValue("carnetSelected.numeroDebutPage","carnetSelected.numeroDebut.invalide");
 
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numeroDebutPage", "carnetSelected.numeroDebutPage.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "carnetSelected.numeroDebutPage", "carnetSelected.numeroDebutPage.empty");
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nbrPages", "carnetSelected.nbrPages.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "carnetSelected.nbrPages", "carnetSelected.nbrPages.empty");
+
+        if(crn.getQusine()!=null)  errors.rejectValue("carnetSelected.numeroDebutPage","carnetSelected.qusine.notnull");
+        if(crn.getQnavire()==null)  errors.rejectValue("carnetSelected.numeroDebutPage","carnetSelected.qnavire.invalid");
 
     }
 }

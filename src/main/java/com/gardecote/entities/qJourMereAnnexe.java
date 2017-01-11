@@ -22,12 +22,12 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qJourMereAnnexe21", schema="dbo", catalog="GCM1" )
+@Table(name="qJourMereAnnexe30", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJourAnnexe.countAll", query="SELECT COUNT(x) FROM qJourMereAnnexe x" )
 } )
-@IdClass(qJourPK.class)
+@IdClass(qJourPKAnnexe.class)
 public class qJourMereAnnexe implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -38,12 +38,13 @@ public class qJourMereAnnexe implements Serializable
     @Id
     @Column(name="numimmJour", nullable=false)
     private String       numImm   ;
-
     @Id
     @Column(name="dateJour", nullable=false, length=10)
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date     dateJour     ;
-
+    @Id
+    @Column(name="indexLigne", nullable=false)
+    private Integer       indexLigne   ;
     @OneToOne
     private qNavire navire;
     //----------------------------------------------------------------------
@@ -54,6 +55,7 @@ public class qJourMereAnnexe implements Serializable
     //----------------------------------------------------------------------
     @OneToOne
     private qEspece especeDebarque;
+    private String  designation;
     private Integer poidEnKg;
     private String presentation;
     @ManyToOne
@@ -66,22 +68,64 @@ public class qJourMereAnnexe implements Serializable
     {
 		super();
     }
-    public qJourMereAnnexe(Date datejourMere, qNavire navire,qEspece espece,Integer poids,String presentation,  qPageAnnexe pageMarree) {
-        this.dateJour = datejourMere;
+    public qJourMereAnnexe(Integer index,String designation,Date datejourMere, qNavire navire,qEspece espece,Integer poids,String presentation,  qPageAnnexe pageMarree) {
+        this.dateJour = pageMarree.getQmarreeAnexe().getDepart();
         this.especeDebarque=espece;
         this.poidEnKg=poids;
         this.presentation=presentation;
         this.numImm=navire.getNumimm();
         this.navire = navire;
         this.pageMarree=pageMarree;
+        this.indexLigne=index;
+        this.designation=designation;
    }
+
+    public Integer getIndexLigne() {
+        return indexLigne;
+    }
+
+    public void setIndexLigne(Integer indexLigne) {
+        this.indexLigne = indexLigne;
+    }
+
+    public qEspece getEspeceDebarque() {
+        return especeDebarque;
+    }
+
+    public void setEspeceDebarque(qEspece especeDebarque) {
+        this.especeDebarque = especeDebarque;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public Integer getPoidEnKg() {
+        return poidEnKg;
+    }
+
+    public void setPoidEnKg(Integer poidEnKg) {
+        this.poidEnKg = poidEnKg;
+    }
+
+    public String getPresentation() {
+        return presentation;
+    }
+
+    public void setPresentation(String presentation) {
+        this.presentation = presentation;
+    }
 
     public String getNumImm() {
         return numImm;
     }
-    public qJourPK getJourMerPK(){
-    qJourPK qjourpk=new qJourPK(this.getDatejourMere(),this.getNumImm().toString());
-      return qjourpk;
+    public qJourPKAnnexe getJourMerPKAnnexe(){
+    qJourPKAnnexe qjourpkAnnexe=new qJourPKAnnexe(this.getDatejourMere(),this.getNumImm().toString(),this.indexLigne);
+      return qjourpkAnnexe;
     }
     public void setNumImm(String numImm) {
         this.numImm = numImm;

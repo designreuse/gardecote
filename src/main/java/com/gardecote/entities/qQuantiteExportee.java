@@ -9,7 +9,7 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name="qQuantiteExportee23", schema="dbo", catalog="GCM1" )
+@Table(name="qQuantiteExportee30", schema="dbo", catalog="GCM1" )
 @IdClass(qQuantiteExporteePK.class)
 public class qQuantiteExportee implements Serializable {
     @Id

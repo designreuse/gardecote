@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Entity
 @DynamicUpdate
-@Table(name="qDoc20", schema="dbo", catalog="GCM1")
+@Table(name="qDoc30", schema="dbo", catalog="GCM1")
 @DiscriminatorValue("DEBARQUEMENT")
 public class qDebarquement extends qDoc implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -41,6 +41,11 @@ public class qConcessionServiceImpl implements qConcessionService {
 		}
 		return beans;
 	}
+	@Override
+	public Page<qConcession> findAll(int p, int size) {
+		Page<qConcession> entities = qConcessionRepository.findAll(new PageRequest(p, size));
+		return entities;
+	}
 
 	@Override
 	public qConcession save(qConcession bateaucomplet) {

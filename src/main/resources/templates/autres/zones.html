@@ -1,0 +1,41 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <h3><p class="spacer"><kbd> Liste de carnets </kbd></p></h3>
+    <form  th:action="@{/ActionZones}"   method="post" th:object="${zones}">
+
+
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr class="warning">
+                <th>...</th>
+                <th>Id</th>
+                <th>Zone</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="zn:${zones}">
+                <td>
+                    <a th:href="@{ActionZones(zonePK=${zn.IdZone},typeDoc=${zn.nom})}">Annuler l'attribution</a>
+                </td>
+                <td th:text="${zn.IdZone}"></td>
+                <td th:text="${zn.nom}"></td>
+
+            </tr>
+            </tbody>
+        </table>
+
+    </form>
+</div>
+
+</body>
+
+</html>

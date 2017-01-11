@@ -1,0 +1,84 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <span th:text="${feedback!=null}?${feedback}:''"> Création d'une nouvelle concession pour le consignataire: </span>
+    <h3><p class="spacer"><kbd>Liste de concessions</kbd></p></h3>
+    <form  th:action="@{/submitConcession}"  th:object="${newConcession}" method="post">
+
+        <div class="panel panel-primary">
+            <div class="panel-heading"><b class="danger">
+                <span> Création d'une nouvelle concession pour le consignataire: </span>
+            </b></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Ref de concession</label>
+                    <input type="text" th:field="${newConcession.refConcession}" th:value="${newConcession.refConcession}" />
+                    <span class="label label-danger" th:errors="${newConcession.refConcession}"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Consignataire</label>
+                    <input th:field="${newConcession.qconsignataire.nomconsignataire}" th:value="${newConcession.qconsignataire.nomconsignataire}" />
+                    <span class="label label-danger" th:errors="${newConcession.qconsignataire.nomconsignataire}"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">date de concession</label>
+                    <input type="date" th:field="${newConcession.dateConcession}" th:value="${newConcession.dateConcession!=null}?${#dates.format(newConcession.dateConcession, 'yyyy-MM-dd')}:''" />
+                    <span class="label label-danger" th:errors="${newConcession.dateConcession}"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">quota En Tonne</label>
+                    <input type="number" th:field="${newConcession.quotaEnTonne}" th:value="${newConcession.quotaEnTonne}" />
+                    <span class="label label-danger" th:errors="${newConcession.quotaEnTonne}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">date debut</label>
+                    <input type="date" th:field="${newConcession.dateDebut}"  />
+                    <span class="label label-danger" th:errors="${newConcession.dateDebut}"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">date fin</label>
+                    <input type="date" th:field="${newConcession.dateFin}" th:value="${newConcession.dateFin}"/>
+                    <span class="label label-danger" th:errors="${newConcession.dateFin}"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">durée de concession</label>
+                    <input type="number" th:field="${newConcession.dureeConcession}" th:value="${newConcession.dureeConcession}" />
+                    <span class="label label-danger" th:errors="${newConcession.dureeConcession}"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Categories associés:</label>
+                    <button  type="submit" name="addRow" value="addRow"  class="btn btn-success" >Ajouter une categ </button>
+                    <table class="table">
+                        <tr th:each="cat,catStat : ${newConcession.categoriesRessources}">
+                            <td> <select th:field="${newConcession.categoriesRessources[__${catStat.index}__]}">
+
+                                <option th:each="var : ${allCategoriesConcessions1}"
+                                        th:value="${var.typeconcessionConcernee.qtypeconcessionpk}"
+                                        th:text= "${var.typeconcessionConcernee} ">hhh</option>
+                            </select>
+                                <span class="label label-danger" th:errors="${newConcession.categoriesRessources}"></span>
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="form-group">
+                    <button  type="submit" name="saveConcession" value="saveConcession"  class="btn btn-success" >Enregistrer</button>
+               </div>
+
+                </div>
+            </div>
+
+
+    </form>
+    </div>
+
+</body>
+</html>

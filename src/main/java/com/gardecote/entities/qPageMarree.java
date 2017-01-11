@@ -11,9 +11,9 @@ import java.util.List;
 //@Table(name="qPageMarree", schema="dbo", catalog="DSPCM_DB" )
 @DiscriminatorValue("PMARREE")
 // Define named queries here
-@NamedQueries ( {
+@NamedQueries ({
         @NamedQuery ( name="qPageMarree.countAll", query="SELECT COUNT(x) FROM qPageMarree x" )
-} )
+})
 public class qPageMarree extends qPageCarnet implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,7 +40,6 @@ public class qPageMarree extends qPageCarnet implements Serializable {
         this.qmarree = qmarree;
         this.listJours = listJours;
     }
-
 
     public qPageMarree(String numeroPage,Long numeroOrdrePage,  enumEtatPage etat,qCarnet carnet, qMarree qmarree, List<qJourMere> listJours) {
         super(numeroPage,  carnet,numeroOrdrePage,etat);

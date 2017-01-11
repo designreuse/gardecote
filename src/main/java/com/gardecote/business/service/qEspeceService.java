@@ -4,6 +4,8 @@
  */
 package com.gardecote.business.service;
 import com.gardecote.entities.qEspece;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 /**
@@ -51,5 +53,5 @@ public interface qEspeceService {
 	 */
 	void delete(String idBatobs);
 
-
+	public Page<qEspece> getSuggEsp(String esp);
 }

@@ -23,7 +23,7 @@ import org.springframework.format.annotation.NumberFormat;
  *
  */
 @Entity
-@Table(name="qCarnet21", schema="dbo", catalog="GCM1" )
+@Table(name="qCarnet30", schema="dbo", catalog="GCM1" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qCarnet.countAll", query="SELECT COUNT(x) FROM qCarnet x" )

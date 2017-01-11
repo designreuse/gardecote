@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by Dell on 20/12/2016.
  */
 @Entity
-@Table(name="qQteTraites21", schema="dbo", catalog="GCM1" )
+@Table(name="qQteTraites30", schema="dbo", catalog="GCM1" )
 @IdClass(qDocPK.class)
 public class qQuantitesTraites implements Serializable{
     @Id

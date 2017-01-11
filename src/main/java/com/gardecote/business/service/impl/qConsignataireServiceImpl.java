@@ -13,6 +13,8 @@ import javax.annotation.Resource;
 
 import com.gardecote.data.repository.jpa.qConsignataireRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +45,11 @@ public class qConsignataireServiceImpl implements qConsignataireService {
 		}
 		return beans;
 	}
-
+	@Override
+	public Page<qConsignataire> findAll(int p, int size) {
+		Page<qConsignataire> entities = batobservJpaRepository.findAll(new PageRequest(p, size));
+		return entities;
+	}
 	@Override
 	public qConsignataire save(qConsignataire batobserv) {
 		return update(batobserv) ;

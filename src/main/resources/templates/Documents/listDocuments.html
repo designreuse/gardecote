@@ -76,8 +76,8 @@
           <td>  <div class="dropdown">  <button th:field="${frmSearchPgsForDocCrea.numSelected}" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
                 <span class="caret"></span></button>
                 <ul class="dropdown-menu">
-                    <li>
-                        <a  th:href="@{ajouterAnnexe(numimm=${b.numImm},typeDoc=${b.enumtypedoc},depart=${b.depart},action='ajouterAnnexe')}" onclick="return confirm('Are you sure?');" >JP Annexe</a>
+                    <li th:if="${#strings.equals(b.enumtypedoc,'Journal_Peche')}" >
+                        <a  th:href="@{ajouterAnnexe(numimm=${b.numImm},typeDoc=${b.enumtypedoc},depart=${b.depart},action='ajouterAnnexe')}"   onclick="return confirm('Are you sure?');" >JP Annexe</a>
                     </li>
                     <li th:if="${b.debloquerModification}">
                      <a  th:href="@{editDoc(numimm=${b.numImm},typeDoc=${b.enumtypedoc},depart=${b.depart},action='modifyDoc')}" onclick="return confirm('Are you sure?');" >Editer</a>

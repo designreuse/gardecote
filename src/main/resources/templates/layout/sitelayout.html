@@ -66,20 +66,20 @@
                                         <li><a th:href="@{listUsines}" class="active">Liste des  usines</a></li>
                                     </ul>
                                 </li>
-                                <li class="dropdown">
-                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Carnets <b class="caret"></b></a>
-                                    <ul role="menu" class="dropdown-menu">
-                                        <li><a th:href="@{listCarnets}" class="active">Liste des carnets</a></li>
-                                        <li><a th:href="@{attributionCarnet}">Attribution au navire</a></li>
 
-                                    </ul>
-                                </li>
                                 <li class="dropdown">
-                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Concession <b class="caret"></b></a>
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Concessions <b class="caret"></b></a>
                                     <ul role="menu" class="dropdown-menu">
-                                        <li><a href="#" class="active">Saisie des concession</a></li>
-                                        <li><a href="#">Attribution de licences</a></li>
-
+                                        <li><a th:href="@{listConcessions}" class="active">Saisie des Concession</a></li>
+                                        <li><a th:href="@{listConcessionnaires}">Saisie des Concessionnaires</a></li>
+                                        <li><a th:href="@{listPrefixes}" class="active">Liste prefixes</a></li>
+                                        <li><a th:href="@{listTypesConcession}" class="active">Liste des types de concession</a></li>
+                                        <li><a th:href="@{listCategRessources}" class="active">Liste des categories de ressources</a></li>
+                                        <li><a th:href="@{listModels}" class="active">Liste des models</a></li>
+                                        <li><a th:href="@{listZones}" class="active">Liste des zones de peches</a></li>
+                                        <li><a th:href="@{listNationalites}" class="active">Liste des zones de nationalités</a></li>
+                                        <li><a th:href="@{listTypesLicences}" class="active">Liste des type licences</a></li>
+                                        <li><a th:href="@{genererCATEGMODELS}" class="active">Initialiser la base  </a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -132,7 +132,15 @@
 
             <script type="text/javascript">
                 /* <![CDATA[ */
+                function jq( myid ) {
+
+                    return  "#"+myid.replace( /(:|\.|\[|\]|,|=)/g, "\\$1" );
+
+                }
+                var selectedState;
                 $(document).ready(function() {
+                    var selectedState;
+
                     $(".dropdown-toggle").dropdown();
 
                     $("#searchName" ).autocomplete({
@@ -297,35 +305,58 @@
 
                 });
 
-                $(".form-control .input-sm").autocomplete({
+                $("[id$=esp\\.nomFr]").autocomplete({
+
                     minLength: 1,
                     delay: 500,
                     //define callback to format results
                     source: function (request, response) {
 
-                        $.getJSON("/autocomPagesAnnexe",  {
-                            typeDoc: $("#typeDocAnnexe").val(),
-                            numeroD: $("#prefixeAnnexe").val()+$("#numeroDebutAnnexe").val()
+                        $this = $(this.element).val();
+
+                        var text = $(this.element).attr('id').replace('nomFr','codeEsp');
+                    //    alert(text);
+
+                     //    alert($this);
+                        $.getJSON("/autocomNomEspece",  {
+
+                            esp: $this
                         }, function(result) {
+                            var selectedState='';
                             response($.map(result, function(item) {
+                                selectedState = item.codeEsp;
                                 return {
                                     // following property gets displayed in drop down
-                                    label: item,
+                                    label: item.nomFr,
                                     // following property gets entered in the textbox
-                                    value: item
-                                    // following property is added for our own use
-                                    //   tag_url: "http://" + window.location.host + "/tags/" + item.tagId + "/" + item.name
-                                }
-                            }));
-                        });
-                        clearFields();
+                                    value: item.nomFr,
+                                    //following property is added for our own use
+                                    codeEsp: item.codeEsp
 
+                                }
+                           }));
+                           ret(jq(text),selectedState);
+
+                        });
+
+              //      $(jq(text)).text("rrr");
+                        //$("input[id='" + jq(text) + "']").val("hh");
+                       //alert("input[id='" + jq(text) + "']");
+                      // $(jq(text)).val();
+                      //  var t=document.getDocumentById(jq(text)).value
+                       // alert(cde);
+                  //      alert($(jq(text)).val());
+               //         $(jq(text)).val(selectedState);
                     }
 
                     //define select handler
 
                 });
+                function ret(idToUpdate,valueToUpdate) {
 
+                    $(idToUpdate).attr('value',valueToUpdate);
+
+                }
                 function loadPrefixes() {
                     var url = /*[[@{/PrefixesByTypeDoc}]]*/ "/PrefixesByTypeDoc";
                     if ($('#CarnetAttribue\\.carnetSelected\\.typeDoc').val() !== '') {
