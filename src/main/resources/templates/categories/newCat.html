@@ -1,0 +1,65 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <h3>Ajout de nouveau prefixe </h3>
+
+
+    <form  th:action="@{/ModifierCategorieSave}"   method="post" th:object="${newPrefixe}">
+        <div class="panel panel-primary">
+            <div class="panel-heading"><b class="danger">
+                <span> Création d'une nouvelle concession pour le consignataire: </span>
+            </b></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Prefixe de document</label>
+
+                    <input  type="text" th:field="*{prefix}" />
+                    <span th:errors="*{prefix}"></span>
+
+
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Type de document</label>
+
+
+
+                    <select th:field="*{typeDoc}" >
+                        <option value="00" >selectionner un type</option>
+                        <option th:each="var : ${allTypesDoc}"
+                                th:value="${var}"
+                                th:text= "${var}">hhh</option>
+                    </select>
+                    <span th:errors="*{typeDoc}"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Nombre des lignes du carnet</label>
+
+                    <input  type="text" th:field="*{nbrLigneCarnet}" />
+                    <span th:errors="*{nbrLigneCarnet}"></span>
+
+
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Information à propos le prefixe</label>
+
+                    <input  type="text" th:field="*{information}" />
+                    <span th:errors="*{information}"></span>
+
+
+                </div>
+                <div class="form-group">
+                    <button  type="submit"   class="btn btn-success" >Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

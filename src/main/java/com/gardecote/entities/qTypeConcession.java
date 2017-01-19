@@ -1,6 +1,7 @@
 package com.gardecote.entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 /**
@@ -10,28 +11,45 @@ import java.util.List;
 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_CONCESSION", discriminatorType=DiscriminatorType.STRING, length=20)
-@Table(name="qTypeConcession30", schema="dbo", catalog="GCM1" )
+@Table(name="qTypeConcession30", schema="dbo", catalog="GCM1")
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qTypeConcession.countAll", query="SELECT COUNT(x) FROM qTypeConcession x" )
 } )
 public class qTypeConcession implements Serializable,Comparable<qTypeConcession> {
     @Id
- //   @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "qtypeconcessionpk",unique=true, nullable = false)
      private Integer qtypeconcessionpk;
 
+    @NotNull
+    @Column(name="prefixModel", nullable=false, length=5)
+    private String prefixNum;
 
-    @Column(name="prefixNum", nullable=false, length=2)
-    private enumPrefix     prefixNum    ;
+    private enumTypeDoc typeDoc;
+
+    @OneToOne
+    @NotNull
+    private qPrefix    prefix;
+    private String  designation;
 
     public qTypeConcession() {
         super();
     }
 
-    public qTypeConcession(Integer qtypeconcessionpk,enumPrefix prefixNum) {
-        this.qtypeconcessionpk=qtypeconcessionpk;
-        this.prefixNum = prefixNum;
+    public qTypeConcession(Integer qtypeconcessionpk, qPrefix prefix, String designation) {
+        this.qtypeconcessionpk = qtypeconcessionpk;
+        this.prefixNum = prefix.getPrefix();
+        this.typeDoc = prefix.getTypeDoc();
+        this.prefix = prefix;
+        this.designation = designation;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
     }
 
     public Integer getQtypeconcessionpk() {
@@ -42,12 +60,28 @@ public class qTypeConcession implements Serializable,Comparable<qTypeConcession>
         this.qtypeconcessionpk = libelle;
     }
 
-    public enumPrefix getPrefixNum() {
+    public String getPrefixNum() {
         return prefixNum;
     }
 
-    public void setPrefixNum(enumPrefix prefixNum) {
+    public void setPrefixNum(String prefixNum) {
         this.prefixNum = prefixNum;
+    }
+
+    public enumTypeDoc getTypeDoc() {
+        return typeDoc;
+    }
+
+    public void setTypeDoc(enumTypeDoc typeDoc) {
+        this.typeDoc = typeDoc;
+    }
+
+    public qPrefix getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(qPrefix prefix) {
+        this.prefix = prefix;
     }
 
     @Override

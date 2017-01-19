@@ -1,0 +1,209 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <h3>Modification de  type de concession </h3>
+
+    <label class="label label-danger" th:text="${feedbacksave!=null?feedbacksave:''}"></label>
+    <form  th:action="@{/modifierTypeConcessionSave}"   method="post" th:object="${modifiedTypeConcession}">
+        <span> Création d'un nouveau type concession </span>
+
+        <div class="form-group">
+            <label type="text"   th:text="*{typeOp}"   />
+          <input type="hidden"   th:field="*{typeOp}" th:value="*{typeOp}"  />
+        </div>
+
+        <div th:switch="${modifiedTypeConcession.typeOp}" >
+            <div th:case="'Artisanal'" class="col-sm-3 form-group">
+
+                <div class="form-group">
+                    <label >Identificateur numerique</label>
+                    <label    class="form-control" th:text="*{typeConcession.qtypeconcessionpk}" />
+                    <input  type="hidden"  class="form-control" th:field="*{typeConcession.qtypeconcessionpk}" />
+                    <span class="label label-danger" th:errors="*{typeConcession.qtypeconcessionpk}"></span>
+
+                </div>
+
+                <div class=" form-group">
+                    <label>Designation de type de concession</label>
+
+                    <input  type="text" class="form-control" th:field="*{typeConcession.designation}" />
+                    <span class="label label-danger" th:errors="*{typeConcession.designation}"></span>
+                </div>
+
+                <div class=" form-group">
+                    <label class=" control-label">type de document</label>
+                    <input  type="hidden" class="form-control" th:field="*{typeConcession.typeDoc}" />
+                    <select th:disabled="true"  class="form-control" th:field="*{typeConcession.typeDoc}">
+                        <option th:each="var : ${typeDocs}"
+                                th:value="${var}"
+                                th:text= "${var}">hhh</option>
+                    </select>
+                    <span class="label label-danger" th:errors="*{typeConcession.typeDoc}"></span>
+                </div>
+                <div class=" form-group">
+                    <label class=" control-label">Prefix de numerotation </label>
+                    <input type="hidden"   class="form-control" th:field="*{typeConcession.prefixNum}" />
+                    <select th:disabled="true"    class="form-control" th:field="*{typeConcession.prefixNum}">
+                        <option th:each="var : ${allPrefixess}"
+                                th:value="${var}"
+                                th:text= "${var}"></option>
+                    </select>
+                    <span class="label label-danger" th:errors="*{typeConcession.prefixNum}"></span>
+                </div>
+                <div class="form-group">
+                    <button  type="submit"  name="action" class="btn btn-success" value="Enregistrer" >Enregistrer</button>
+                </div>
+
+            </div>
+
+            <div th:case="'CotiereNonPontee'" class="col-sm-3 form-group">
+                <div class="form-group">
+                    <label >Identificateur numerique</label>
+                    <label   class="form-control" th:text="*{typeConcession.qtypeconcessionpk}" />
+                    <input  type="hidden" class="form-control" th:field="*{typeConcession.qtypeconcessionpk}" />
+                    <span class="label label-danger" th:errors="*{typeConcession.qtypeconcessionpk}"></span>
+                </div>
+                <div class="form-group">
+                    <label >Designation de type de concession</label>
+                    <label class="form-control" th:text="*{typeConcession.designation}" />
+                    <input  type="hidden" class="form-control" th:field="*{typeConcession.designation}" />
+                    <span class="label label-danger" th:errors="*{typeConcession.designation}"></span>
+                </div>
+                <div class="form-group">
+                    <label >Prefix de numérotation de carnnet</label>
+                    <input  type="hidden" class="form-control" th:field="*{typeConcession.prefixNum}" />
+                    <select th:disabled="true" class="form-control" th:field="*{typeConcession.prefixNum}">
+
+                        <option th:each="var : ${allPrefixes}"
+                                th:value="${var.prefix}"
+                                th:text= "${var.prefix}">hhh</option>
+                    </select>
+
+                    <span class="label label-danger" th:errors="*{typeConcession.prefixNum}"></span>
+                </div>
+                <div class="form-group">
+                    <label >type de document</label>
+                    <input  type="hidden" class="form-control" th:field="*{typeConcession.typeDoc}" />
+                    <select th:disabled="true" class="form-control" th:field="*{typeConcession.typeDoc}">
+
+                        <option th:each="var : ${typeDocs}"
+                                th:value="${var}"
+                                th:text= "${var}">hhh</option>
+                    </select>
+                    <span class="label label-danger" th:errors="*{typeConcession.typeDoc}"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label   th:text="*{typeConcession.enumTypePecheCotiere}" />
+
+                    <input  type="hidden" th:disabled="true" th:field="*{typeConcession.enumTypePecheCotiere}" />
+
+                </div>
+                <div class="form-group">
+                    <button  type="submit"  name="action" class="btn btn-success" value="Enregistrer" >Enregistrer</button>
+                </div>
+            </div>
+            <div th:case="'CotierePontee'" class="col-sm-3 form-group">
+                <div class="form-group">
+                    <label>Identificateur numerique</label>
+                    <label   class="form-control" th:text="*{typeConcession.qtypeconcessionpk}" />
+                    <input  type="hidden" class="form-control" th:field="*{typeConcession.qtypeconcessionpk}" />
+                    <span class="label label-danger" th:errors="*{typeConcession.qtypeconcessionpk}"></span>
+                </div>
+                <div class="form-group">
+                    <label >Designation de type de concession</label>
+                    <label   class="form-control" th:text="*{typeConcession.designation}" />
+                    <input  type="hidden" class="form-control" th:field="*{typeConcession.designation}" />
+                    <span class="label label-danger" th:errors="*{typeConcession.designation}"></span>
+                </div>
+                <div class="form-group">
+                    <label >Prefix de numérotation de carnnet</label>
+                    <input type="hidden" class="form-control" th:disabled="true" th:field="*{typeConcession.prefixNum}" />
+                    <select class="form-control" th:disabled="true" th:field="*{typeConcession.prefixNum}">
+                        <option th:each="var : ${allPrefixes}"
+                                th:value="${var.prefix}"
+                                th:text= "${var.prefix}">hhh</option>
+                    </select>
+                    <span class="label label-danger" th:errors="*{typeConcession.prefixNum}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label >type de document</label>
+                    <input type="hidden" class="form-control" th:disabled="true" th:field="*{typeConcession.typeDoc}" />
+                    <select class="form-control" th:disabled="true" th:field="*{typeConcession.typeDoc}">
+                        <option th:each="var : ${typeDocs}"
+                                th:value="${var}"
+                                th:text= "${var}">hhh</option>
+                    </select>
+                    <span class="label label-danger" th:errors="*{typeConcession.typeDoc}"></span>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label   th:text="*{typeConcession.enumTypePecheCotiere}" />
+                    <input  type="hidden"  th:field="*{typeConcession.enumTypePecheCotiere}" />
+
+                </div>
+                <div class="form-group">
+                    <button  type="submit"  name="action" class="btn btn-success" value="Enregistrer" >Enregistrer</button>
+                </div>
+            </div>
+            <div th:case="'Hautiriere'" class="col-sm-3 form-group">
+                <div class="form-group" >
+                    <label >Identificateur numerique</label>
+                    <label   class="form-control" th:text="*{typeConcession.qtypeconcessionpk}" />
+                    <input  type="hidden" class="form-control" th:field="*{typeConcession.qtypeconcessionpk}" />
+                    <span class="label label-danger" th:errors="*{typeConcession.qtypeconcessionpk}"></span>
+                </div>
+                <div class="form-group">
+                    <label >Designation de type de concession</label>
+                    <input  type="text" class="form-control" th:field="*{typeConcession.designation}" />
+                    <span class="label label-danger" th:errors="*{typeConcession.designation}"></span>
+                </div>
+                <div class="form-group">
+                    <label >Prefix de numérotation de carnnet</label>
+                    <input type="hidden" class="form-control" th:field="*{typeConcession.prefixNum}" />
+                    <select th:disabled="true" class="form-control" th:field="*{typeConcession.prefixNum}">
+
+                        <option th:each="var : ${allPrefixes}"
+                                th:value="${var.prefix}"
+                                th:text= "${var.prefix}">hhh</option>
+                    </select>
+
+                    <span class="label label-danger" th:errors="*{typeConcession.prefixNum}"></span>
+                </div>
+                <div class="form-group">
+                    <label >type de document</label>
+                    <input type="hidden" class="form-control" th:field="*{typeConcession.typeDoc}" />
+                    <select th:disabled="true" class="form-control" th:field="*{typeConcession.typeDoc}">
+
+                        <option th:each="var : ${typeDocs}"
+                                th:value="${var}"
+                                th:text= "${var}">hhh</option>
+                    </select>
+
+
+                    <span class="label label-danger" th:errors="*{typeConcession.typeDoc}"></span>
+                </div>
+                <div class="form-group">
+                    <button  type="submit"  name="action" class="btn btn-success" value="Enregistrer" >Enregistrer</button>
+                </div>
+
+            </div>
+
+            <div th:case="*">User is some other thing</div>
+        </div>
+
+
+    </form>
+</div>
+
+</body>
+</html>

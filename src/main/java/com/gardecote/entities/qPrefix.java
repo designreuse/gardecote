@@ -10,8 +10,10 @@ import java.io.Serializable;
         @NamedQuery( name="qPrefix.countAll", query="SELECT COUNT(x) FROM qPrefix  x" )
 } )
 @IdClass(qPrefixPK.class)
-public class qPrefix implements Serializable
+public class qPrefix implements Serializable,Comparable<qPrefix>
 {
+
+
     @Id
     private String prefix;
     @Id
@@ -20,7 +22,12 @@ public class qPrefix implements Serializable
     private int nbrLigneCarnet;
     private String information;
 
-
+   public qPrefixPK getPrefixPK() {
+    qPrefixPK prefpk=new qPrefixPK();
+    prefpk.setPrefix(this.getPrefix());
+    prefpk.setTypeDoc(this.typeDoc);
+    return prefpk;
+     }
     public enumTypeDoc getTypeDoc() {
         return typeDoc;
     }
@@ -63,26 +70,9 @@ public class qPrefix implements Serializable
     public qPrefix() {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof qPrefix)) return false;
+    public int compareTo(qPrefix o) {
 
-        qPrefix qPrefix = (qPrefix) o;
-
-        if (getNbrLigneCarnet() != qPrefix.getNbrLigneCarnet()) return false;
-        if (!getPrefix().equals(qPrefix.getPrefix())) return false;
-        if (getTypeDoc() != qPrefix.getTypeDoc()) return false;
-        return getInformation().equals(qPrefix.getInformation());
-
+        return (this.getPrefix().compareTo(o.getPrefix()));
     }
 
-    @Override
-    public int hashCode() {
-        int result = getPrefix().hashCode();
-        result = 31 * result + getTypeDoc().hashCode();
-        result = 31 * result + getNbrLigneCarnet();
-        result = 31 * result + getInformation().hashCode();
-        return result;
-    }
 }

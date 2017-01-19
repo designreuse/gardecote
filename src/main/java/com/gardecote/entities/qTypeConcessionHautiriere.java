@@ -10,30 +10,17 @@ import java.io.Serializable;
 @Entity
 @DiscriminatorValue("THAUTIRIERE")
 public class qTypeConcessionHautiriere extends qTypeConcession implements Serializable {
-    private enumTypeConcessionHautiriere enumTypeConcessionHautiriere;
+
     private enumTypePecheHautiriere  enumTypePecheHautiriere;
-
-    public qTypeConcessionHautiriere(com.gardecote.entities.enumTypeConcessionHautiriere enumTypeConcessionHautiriere, com.gardecote.entities.enumTypePecheHautiriere enumTypePecheHautiriere) {
-        this.enumTypeConcessionHautiriere = enumTypeConcessionHautiriere;
-        this.enumTypePecheHautiriere = enumTypePecheHautiriere;
-    }
-
-    public com.gardecote.entities.enumTypeConcessionHautiriere getEnumTypeConcessionHautiriere() {
-        return enumTypeConcessionHautiriere;
-    }
-
-    public void setEnumTypeConcessionHautiriere(com.gardecote.entities.enumTypeConcessionHautiriere enumTypeConcessionHautiriere) {
-        this.enumTypeConcessionHautiriere = enumTypeConcessionHautiriere;
-    }
 
 
     public qTypeConcessionHautiriere() {
 
     }
 
-    public qTypeConcessionHautiriere(Integer qtypeconcessionpk,enumPrefix prefixNum, com.gardecote.entities.enumTypeConcessionHautiriere enumTypeConcessionHautiriere, com.gardecote.entities.enumTypePecheHautiriere enumTypePecheHautiriere) {
-        super(qtypeconcessionpk,prefixNum);
-        this.enumTypeConcessionHautiriere = enumTypeConcessionHautiriere;
+
+    public qTypeConcessionHautiriere(Integer qtypeconcessionpk,  qPrefix prefix, String designation, com.gardecote.entities.enumTypePecheHautiriere enumTypePecheHautiriere) {
+        super(qtypeconcessionpk,  prefix, designation);
         this.enumTypePecheHautiriere = enumTypePecheHautiriere;
     }
 
@@ -45,9 +32,5 @@ public class qTypeConcessionHautiriere extends qTypeConcession implements Serial
         this.enumTypePecheHautiriere = enumTypePecheHautiriere;
     }
 
-    @Override
-    public String toString() {
 
-        return "Hautiriere-"+ enumTypeConcessionHautiriere + " - " + enumTypePecheHautiriere;
-    }
 }

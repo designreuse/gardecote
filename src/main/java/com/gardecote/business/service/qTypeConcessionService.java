@@ -26,6 +26,7 @@ public interface qTypeConcessionService {
 	 * @return entity
 	 */
 	qTypeConcession save(qTypeConcession entity);
+   List<qCategRessource> check(qTypeConcession conc);
 	/**
 	 * Updates the given entity in the database
 	 * @param entity

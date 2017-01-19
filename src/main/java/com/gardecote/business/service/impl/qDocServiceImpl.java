@@ -70,6 +70,7 @@ public class qDocServiceImpl implements qDocService {
  //     Session session = em.unwrap(Session.class);
         qDoc authprovEntity = qdocRepository.findOne(authprov.getqDocPK());
         return qdocRepository.save(authprov);
+        //     Session session = em.unwrap(Session.class);
  //       if (authprovEntity == null) {
    //         em.persist(authprov);
    //         return authprov;

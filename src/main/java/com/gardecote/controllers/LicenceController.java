@@ -46,6 +46,10 @@ public class LicenceController {
     @Autowired
     attrUsineValidator attrUsineValidator;
     @Autowired
+    attrTypeConcessionModif attrTypeConcessionModifValidator;
+    @Autowired
+    attrTypeConcession attrTypeConcessionValidator;
+    @Autowired
     usineValidator usineValidator;
     @Autowired
     deleteDocValidator deleteDocValidator;
@@ -125,7 +129,38 @@ public class LicenceController {
         this.licValidator = licValidator;
     }
 // pour les liste deroulantes.
+@ModelAttribute("allEnginsDeb")
+public List<enumEnginDeb> getEnginsDeb() {
 
+    return Arrays.asList(enumEnginDeb.values());
+}
+
+    @ModelAttribute("allEnginsMar")
+    public List<enumEngin> getEnginsMar() {
+
+        return Arrays.asList(enumEngin.values());
+    }
+
+@ModelAttribute("allTypesConcessionArtisanal")
+public List<enumTypeConcessionArtisanal> populateConcessionArtisanal() {
+    return Arrays.asList(enumTypeConcessionArtisanal.values());
+
+}
+@ModelAttribute("allTypesPecheHautiriere")
+public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
+    return Arrays.asList(enumTypePecheHautiriere.values());
+
+}
+    @ModelAttribute("allTypesConcessionCotiere")
+    public List<enumTypeConcessionCotiere> populateConcessionHautiriere() {
+        return Arrays.asList(enumTypeConcessionCotiere.values());
+
+    }
+    @ModelAttribute("allTypesConcessionHautiriere")
+    public List<enumTypeConcessionCotiere> populateConcessionCotiere() {
+        return Arrays.asList(enumTypeConcessionCotiere.values());
+
+    }
     @ModelAttribute("allEspeces")
     public List<qEspece> populateEspeces() {
        return especeService.findAll();
@@ -162,6 +197,11 @@ public class LicenceController {
     @ModelAttribute("allPrefixes")
     public List<qPrefix> getPrefixes() {
         return prefService.findAll();
+    }
+
+    @ModelAttribute("allPrefixess")
+    public List<String> getPrefixess() {
+        return prefService.findAlls();
     }
     @ModelAttribute("typeDocs")
     public List<enumTypeDoc> getTypesDoc() {
@@ -458,7 +498,8 @@ System.out.println("string id"+enumTypeDoc.valueOf(typeDoc));
                System.out.println(CarnetAttribue);
                qPrefixPK prefpk = new qPrefixPK(CarnetAttribue.getCarnetSelected().getPrefixNumerotation(), CarnetAttribue.getCarnetSelected().getTypeDoc());
                qPrefix pref = prefService.findById(prefpk);
-               qCarnet currentCarnet = new qCarnet(pref, CarnetAttribue.getCarnetSelected().getNumeroDebutPage(), CarnetAttribue.getCarnetSelected().getNbrPages(), null, null);
+               qNavire navireselected=registrenavireService.findById(CarnetAttribue.getNavireSelected().getNumimm());
+               qCarnet currentCarnet = new qCarnet(pref, CarnetAttribue.getCarnetSelected().getNumeroDebutPage(), CarnetAttribue.getCarnetSelected().getNbrPages(), navireselected, null);
 
                attrValidator.validate(currentCarnet, bindingresult);
                if (!bindingresult.hasErrors()) {
@@ -1515,7 +1556,7 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
         qPrefix prefixDEM=new qPrefix("DEM",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier demersal");
         qPrefix prefixCRUST=new qPrefix("CRUST",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier crustacé");
         qPrefix prefixCEPH=new qPrefix("CEPH",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier ceph ");
-
+        qPrefix prefixIND=new qPrefix("IND",enumTypeDoc.Journal_Peche,10,"typde de document pour la pêche hautirier ceph ");
 
         qPrefix prefixTR=new qPrefix("TR",enumTypeDoc.Fiche_Traitement,10,"typde de document pour les usines");
 
@@ -1536,15 +1577,18 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
         prefService.save(prefixDEM2);
         prefService.save(prefixCRUST2);
         prefService.save(prefixCEPH2);
-
+        prefService.save(prefixIND);
         prefService.save(prefixTR);
 
 
-        qTypeConcession paCeph = new qTypeConcessionArtisanal(1, enumPrefix.PA, enumTypeConcessionArtisanal.Cephalopode);
-        qTypeConcession paCrust = new qTypeConcessionArtisanal(2, enumPrefix.PA, enumTypeConcessionArtisanal.Crustaces);
-        qTypeConcession paDem = new qTypeConcessionArtisanal(3, enumPrefix.PA, enumTypeConcessionArtisanal.Demersaux);
-        qTypeConcession paPel = new qTypeConcessionArtisanal(4, enumPrefix.PA, enumTypeConcessionArtisanal.Pelagique);
-        qTypeConcession paAlAut = new qTypeConcessionArtisanal(5, enumPrefix.PA, enumTypeConcessionArtisanal.Algues_et_autres_Mollusques);
+
+
+
+        qTypeConcession paCeph = new qTypeConcessionArtisanal(1, prefixPA, "Artisanal Cephalopode");
+        qTypeConcession paCrust = new qTypeConcessionArtisanal(2, prefixPA, "Artisanal Crustacé");
+        qTypeConcession paDem = new qTypeConcessionArtisanal(3, prefixPA, "Artisanal Demersal");
+        qTypeConcession paPel = new qTypeConcessionArtisanal(4, prefixPA, "Artisanal pelagique");
+        qTypeConcession paAlAut = new qTypeConcessionArtisanal(5, prefixPA, "Artisanal Algues et autres Mollusques");
 
         qEnginsLicence qEng1 = new qEnginsLicence(enumEnginDeb.Casier, enumEngin.Indefini, 70);
         qEnginsLicence qEng2 = new qEnginsLicence(enumEnginDeb.Palangre, enumEngin.Indefini, 30);
@@ -1585,12 +1629,15 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
         categService.create(qPAPel);
         categService.create(qPAAlAut);
         //-------------------------------------------------------------------------------------------
+
+
+
         // creer les categories de ressource 10 PC de 6 a 12
-        qTypeConcessionCotiere pcNPCeph = new qTypeConcessionCotiere(6, enumPrefix.CEPH, enumTypeConcessionCotiere.Cepholopode, enumTypePechCotiere.NON_PONTEE);
-        qTypeConcessionCotiere pcNPCrust = new qTypeConcessionCotiere(7, enumPrefix.CRUS, enumTypeConcessionCotiere.Crustaces, enumTypePechCotiere.NON_PONTEE);
-        qTypeConcessionCotiere pcNPDem = new qTypeConcessionCotiere(8, enumPrefix.DEM, enumTypeConcessionCotiere.Demersaux, enumTypePechCotiere.NON_PONTEE);
-        qTypeConcessionCotiere pcNPPelSenneursM26 = new qTypeConcessionCotiere(9, enumPrefix.PE, enumTypeConcessionCotiere.Pelagique, enumTypePechCotiere.NON_PONTEE);
-        qTypeConcessionCotiere pcNPAutreMol = new qTypeConcessionCotiere(12, enumPrefix.IND, enumTypeConcessionCotiere.Autres_Mollusques, enumTypePechCotiere.NON_PONTEE);
+        qTypeConcessionCotiere pcNPCeph = new qTypeConcessionCotiere(6, prefixCEPH, "Cepholopode Non Pontée", enumTypePechCotiere.NON_PONTEE);
+        qTypeConcessionCotiere pcNPCrust = new qTypeConcessionCotiere(7, prefixCRUST, "Crustaces Non Pontée", enumTypePechCotiere.NON_PONTEE);
+        qTypeConcessionCotiere pcNPDem = new qTypeConcessionCotiere(8, prefixDEM, "Demersaux Non Pontée", enumTypePechCotiere.NON_PONTEE);
+        qTypeConcessionCotiere pcNPPelSenneursM26 = new qTypeConcessionCotiere(9, prefixPE, "Pelagique Non Pontée" , enumTypePechCotiere.NON_PONTEE);
+        qTypeConcessionCotiere pcNPAutreMol = new qTypeConcessionCotiere(12,prefixIND, "Autres_Mollusques Non Pontée", enumTypePechCotiere.NON_PONTEE);
         typeconcessionService.create(pcNPCeph);
         typeconcessionService.create(pcNPCrust);
         typeconcessionService.create(pcNPDem);
@@ -1612,11 +1659,12 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
 
         // peche cotier pontee 13 a 19
 
-        qTypeConcessionCotiere pcPCeph = new qTypeConcessionCotiere(13, enumPrefix.PC, enumTypeConcessionCotiere.Cepholopode, enumTypePechCotiere.PONTEE);
-        qTypeConcessionCotiere pcPCrust = new qTypeConcessionCotiere(14, enumPrefix.PC, enumTypeConcessionCotiere.Crustaces, enumTypePechCotiere.PONTEE);
-        qTypeConcessionCotiere pcPDem = new qTypeConcessionCotiere(15, enumPrefix.PC, enumTypeConcessionCotiere.Demersaux, enumTypePechCotiere.PONTEE);
-        qTypeConcessionCotiere pcPPelSenneursM26 = new qTypeConcessionCotiere(16, enumPrefix.PC, enumTypeConcessionCotiere.Pelagique, enumTypePechCotiere.PONTEE);
-        qTypeConcessionCotiere pcPAutreMol = new qTypeConcessionCotiere(19, enumPrefix.PC, enumTypeConcessionCotiere.Autres_Mollusques, enumTypePechCotiere.PONTEE);
+
+        qTypeConcessionCotiere pcPCeph = new qTypeConcessionCotiere(13, prefixPC, "Cepholopode Pontée", enumTypePechCotiere.PONTEE);
+        qTypeConcessionCotiere pcPCrust = new qTypeConcessionCotiere(14, prefixPC, "Crustaces Pontée", enumTypePechCotiere.PONTEE);
+        qTypeConcessionCotiere pcPDem = new qTypeConcessionCotiere(15, prefixPC, "Demersaux Pontée", enumTypePechCotiere.PONTEE);
+        qTypeConcessionCotiere pcPPelSenneursM26 = new qTypeConcessionCotiere(16, prefixPC, "Pelagique Pontée", enumTypePechCotiere.PONTEE);
+        qTypeConcessionCotiere pcPAutreMol = new qTypeConcessionCotiere(19, prefixPC, "Autres_Mollusques Pontée", enumTypePechCotiere.PONTEE);
 
         typeconcessionService.create(pcPCeph);
         typeconcessionService.create(pcPCrust);
@@ -1638,15 +1686,17 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
         categService.create(qPCPAlAut);
 
         // creer les categories de ressource 9 PH de 19 a  27
-        qTypeConcessionHautiriere phNCeph = new qTypeConcessionHautiriere(20, enumPrefix.CEPH, enumTypeConcessionHautiriere.Cephalopode, enumTypePecheHautiriere.National);
-        qTypeConcessionHautiriere phNAutres = new qTypeConcessionHautiriere(21, enumPrefix.IND, enumTypeConcessionHautiriere.Autres_Mollusques, enumTypePecheHautiriere.National);
-        qTypeConcessionHautiriere phNCrab = new qTypeConcessionHautiriere(22, enumPrefix.IND, enumTypeConcessionHautiriere.Crabe_profond, enumTypePecheHautiriere.National);
-        qTypeConcessionHautiriere phNCrv = new qTypeConcessionHautiriere(23, enumPrefix.IND, enumTypeConcessionHautiriere.Crevettes, enumTypePecheHautiriere.National);
-        qTypeConcessionHautiriere phNLangRose = new qTypeConcessionHautiriere(24, enumPrefix.IND, enumTypeConcessionHautiriere.Langouste_rose, enumTypePecheHautiriere.National);
-        qTypeConcessionHautiriere phNMerlu = new qTypeConcessionHautiriere(25, enumPrefix.IND, enumTypeConcessionHautiriere.Merlus, enumTypePecheHautiriere.National);
-        qTypeConcessionHautiriere phNPel = new qTypeConcessionHautiriere(26, enumPrefix.PE, enumTypeConcessionHautiriere.Pelagique, enumTypePecheHautiriere.National);
-        qTypeConcessionHautiriere phNDemAQM = new qTypeConcessionHautiriere(27, enumPrefix.DEM, enumTypeConcessionHautiriere.Demersaux_autre_que_merlu, enumTypePecheHautiriere.National);
-        qTypeConcessionHautiriere phNThon = new qTypeConcessionHautiriere(28, enumPrefix.IND, enumTypeConcessionHautiriere.Thons, enumTypePecheHautiriere.National);
+
+
+        qTypeConcessionHautiriere phNCeph = new qTypeConcessionHautiriere(20, prefixCEPH, "Cephalopode-National", enumTypePecheHautiriere.National);
+        qTypeConcessionHautiriere phNAutres = new qTypeConcessionHautiriere(21, prefixIND, "Autres_Mollusques-National", enumTypePecheHautiriere.National);
+        qTypeConcessionHautiriere phNCrab = new qTypeConcessionHautiriere(22, prefixIND, "Crabe_profond-National", enumTypePecheHautiriere.National);
+        qTypeConcessionHautiriere phNCrv = new qTypeConcessionHautiriere(23, prefixIND, "Crevettes-National", enumTypePecheHautiriere.National);
+        qTypeConcessionHautiriere phNLangRose = new qTypeConcessionHautiriere(24, prefixIND, ".Langouste_rose-National", enumTypePecheHautiriere.National);
+        qTypeConcessionHautiriere phNMerlu = new qTypeConcessionHautiriere(25, prefixIND, "Merlus-National", enumTypePecheHautiriere.National);
+        qTypeConcessionHautiriere phNPel = new qTypeConcessionHautiriere(26, prefixPE, "Pelagique-National", enumTypePecheHautiriere.National);
+        qTypeConcessionHautiriere phNDemAQM = new qTypeConcessionHautiriere(27, prefixDEM, "Demersaux_autre_que_merlu-National", enumTypePecheHautiriere.National);
+        qTypeConcessionHautiriere phNThon = new qTypeConcessionHautiriere(28, prefixIND, "Thons-National", enumTypePecheHautiriere.National);
 
         typeconcessionService.create(phNCeph);
         typeconcessionService.create(phNAutres);
@@ -1677,15 +1727,15 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
         categService.create(qRCphNDemAQM);
 
 
-        qTypeConcessionHautiriere phACeph = new qTypeConcessionHautiriere(29, enumPrefix.CEPH, enumTypeConcessionHautiriere.Cephalopode, enumTypePecheHautiriere.Affraite);
-        qTypeConcessionHautiriere phAAutres = new qTypeConcessionHautiriere(30, enumPrefix.IND, enumTypeConcessionHautiriere.Autres_Mollusques, enumTypePecheHautiriere.Affraite);
-        qTypeConcessionHautiriere phACrab = new qTypeConcessionHautiriere(31, enumPrefix.IND, enumTypeConcessionHautiriere.Crabe_profond, enumTypePecheHautiriere.Affraite);
-        qTypeConcessionHautiriere phACrv = new qTypeConcessionHautiriere(32, enumPrefix.IND, enumTypeConcessionHautiriere.Crevettes, enumTypePecheHautiriere.Affraite);
-        qTypeConcessionHautiriere phALangRose = new qTypeConcessionHautiriere(33, enumPrefix.IND, enumTypeConcessionHautiriere.Langouste_rose, enumTypePecheHautiriere.Affraite);
-        qTypeConcessionHautiriere phAMerlu = new qTypeConcessionHautiriere(34, enumPrefix.IND, enumTypeConcessionHautiriere.Merlus, enumTypePecheHautiriere.Affraite);
-        qTypeConcessionHautiriere phAPel = new qTypeConcessionHautiriere(35, enumPrefix.IND, enumTypeConcessionHautiriere.Pelagique, enumTypePecheHautiriere.Affraite);
-        qTypeConcessionHautiriere phADemAQM = new qTypeConcessionHautiriere(36, enumPrefix.DEM, enumTypeConcessionHautiriere.Demersaux_autre_que_merlu, enumTypePecheHautiriere.Affraite);
-        qTypeConcessionHautiriere phAThon = new qTypeConcessionHautiriere(37, enumPrefix.IND, enumTypeConcessionHautiriere.Thons, enumTypePecheHautiriere.Affraite);
+        qTypeConcessionHautiriere phACeph = new qTypeConcessionHautiriere(29, prefixCEPH, "Cephalopode-Affreté", enumTypePecheHautiriere.Affraite);
+        qTypeConcessionHautiriere phAAutres = new qTypeConcessionHautiriere(30, prefixIND, "Autres_Mollusques-Affreté", enumTypePecheHautiriere.Affraite);
+        qTypeConcessionHautiriere phACrab = new qTypeConcessionHautiriere(31, prefixIND, "Crabe_profond-Affreté", enumTypePecheHautiriere.Affraite);
+        qTypeConcessionHautiriere phACrv = new qTypeConcessionHautiriere(32, prefixIND, "Crevettes-Affreté", enumTypePecheHautiriere.Affraite);
+        qTypeConcessionHautiriere phALangRose = new qTypeConcessionHautiriere(33, prefixIND, "Langouste_rose-Affreté", enumTypePecheHautiriere.Affraite);
+        qTypeConcessionHautiriere phAMerlu = new qTypeConcessionHautiriere(34, prefixIND, "Merlus-Affreté", enumTypePecheHautiriere.Affraite);
+        qTypeConcessionHautiriere phAPel = new qTypeConcessionHautiriere(35, prefixIND, "Pelagique-Affreté", enumTypePecheHautiriere.Affraite);
+        qTypeConcessionHautiriere phADemAQM = new qTypeConcessionHautiriere(36, prefixDEM, "Demersaux_autre_que_merlu-Affreté", enumTypePecheHautiriere.Affraite);
+        qTypeConcessionHautiriere phAThon = new qTypeConcessionHautiriere(37, prefixIND, "Thons-Affreté", enumTypePecheHautiriere.Affraite);
 
         typeconcessionService.create(phACeph);
         typeconcessionService.create(phAAutres);
@@ -1718,15 +1768,15 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
         categService.create(qRCphADemAQM);
         categService.create(qRCphAThon);
 
-        qTypeConcessionHautiriere phLCeph = new qTypeConcessionHautiriere(38, enumPrefix.CEPH, enumTypeConcessionHautiriere.Cephalopode, enumTypePecheHautiriere.Licence);
-        qTypeConcessionHautiriere phLAutres = new qTypeConcessionHautiriere(39, enumPrefix.IND, enumTypeConcessionHautiriere.Autres_Mollusques, enumTypePecheHautiriere.Licence);
-        qTypeConcessionHautiriere phLCrab = new qTypeConcessionHautiriere(40, enumPrefix.IND, enumTypeConcessionHautiriere.Crabe_profond, enumTypePecheHautiriere.Licence);
-        qTypeConcessionHautiriere phLCrv = new qTypeConcessionHautiriere(41, enumPrefix.IND, enumTypeConcessionHautiriere.Crevettes, enumTypePecheHautiriere.Licence);
-        qTypeConcessionHautiriere phLLangRose = new qTypeConcessionHautiriere(42, enumPrefix.IND, enumTypeConcessionHautiriere.Langouste_rose, enumTypePecheHautiriere.Licence);
-        qTypeConcessionHautiriere phLMerlu = new qTypeConcessionHautiriere(43, enumPrefix.IND, enumTypeConcessionHautiriere.Merlus, enumTypePecheHautiriere.Licence);
-        qTypeConcessionHautiriere phLPel = new qTypeConcessionHautiriere(44, enumPrefix.IND, enumTypeConcessionHautiriere.Pelagique, enumTypePecheHautiriere.Licence);
-        qTypeConcessionHautiriere phLDemAQM = new qTypeConcessionHautiriere(45, enumPrefix.DEM, enumTypeConcessionHautiriere.Demersaux_autre_que_merlu, enumTypePecheHautiriere.Licence);
-        qTypeConcessionHautiriere phLThon = new qTypeConcessionHautiriere(46, enumPrefix.IND, enumTypeConcessionHautiriere.Thons, enumTypePecheHautiriere.Licence);
+        qTypeConcessionHautiriere phLCeph = new qTypeConcessionHautiriere(38, prefixCEPH, "Cephalopode-Libre", enumTypePecheHautiriere.Licence);
+        qTypeConcessionHautiriere phLAutres = new qTypeConcessionHautiriere(39, prefixIND, "Autres_Mollusques-Libre", enumTypePecheHautiriere.Licence);
+        qTypeConcessionHautiriere phLCrab = new qTypeConcessionHautiriere(40, prefixIND, "Crabe_profond-Libre", enumTypePecheHautiriere.Licence);
+        qTypeConcessionHautiriere phLCrv = new qTypeConcessionHautiriere(41, prefixIND, "Crevettes-Libre", enumTypePecheHautiriere.Licence);
+        qTypeConcessionHautiriere phLLangRose = new qTypeConcessionHautiriere(42, prefixIND, "Langouste_rose-Libre", enumTypePecheHautiriere.Licence);
+        qTypeConcessionHautiriere phLMerlu = new qTypeConcessionHautiriere(43, prefixIND,"Merlus-Libre", enumTypePecheHautiriere.Licence);
+        qTypeConcessionHautiriere phLPel = new qTypeConcessionHautiriere(44, prefixIND, "Pelagique-Libre", enumTypePecheHautiriere.Licence);
+        qTypeConcessionHautiriere phLDemAQM = new qTypeConcessionHautiriere(45, prefixDEM, "Demersaux_autre_que_merlu-Libre", enumTypePecheHautiriere.Licence);
+        qTypeConcessionHautiriere phLThon = new qTypeConcessionHautiriere(46, prefixIND, "Thons-Libre", enumTypePecheHautiriere.Licence);
 
         typeconcessionService.create(phLCeph);
         typeconcessionService.create(phLAutres);
@@ -2018,6 +2068,88 @@ qConsignataire deletedConsignataire=consignataireService.findById(refConcessionn
         return "concessions/nouvelleConcession";
     }
 
+
+
+    @RequestMapping(value="/AjouterPrefixe",method = RequestMethod.GET)
+    public String AjouterPrefixe(final ModelMap model) {
+        qPrefix newPrefix=new qPrefix();
+        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+
+
+        model.addAttribute("newPrefixe",newPrefix);
+
+        return "prefixes/newPrefixe";
+    }
+    @RequestMapping(value="/AjouterPrefixeSave",method = RequestMethod.POST)
+    public String AjouterPrefixeSave(final qPrefix prefixe,final ModelMap model) {
+
+
+    prefService.save(prefixe);
+
+
+
+        return "redirect:listPrefixes";
+    }
+    @RequestMapping(value="/ModifyPrefixeSave",method = RequestMethod.POST)
+    public String ModifyPrefixeSave(final ModelMap model) {
+        qPrefix newPrefix=new qPrefix();
+        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+
+
+        model.addAttribute("newPrefixe",newPrefix);
+
+        return "prefixes/newPrefixe";
+    }
+    @RequestMapping(value="/ActionPrefixesModify",method = RequestMethod.GET)
+
+        public String ActionPrefixesModify(final @RequestParam(name="prefixPK") String prefixPK, final @RequestParam(name="typeDoc") String typeDoc,final ModelMap model) {
+
+        qPrefixPK prefPK=new qPrefixPK(prefixPK,enumTypeDoc.valueOf(typeDoc));
+
+            qPrefix modifiedPrefix=prefService.findById(prefPK);
+            //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+
+
+            model.addAttribute("modifiedPrefixe",modifiedPrefix);
+
+            return "prefixes/modifyPrefix";
+        }
+
+    @RequestMapping(value="/ActionPrefixesModifySave",method = RequestMethod.POST)
+
+    public String ActionPrefixesModifySave(final @ModelAttribute("modifiedPrefixe") qPrefix modifiedPrefixe,final ModelMap model) {
+
+        qPrefix modifiedPrefix=prefService.save(modifiedPrefixe);
+        model.addAttribute("modifiedPrefixe",modifiedPrefix);
+
+        return "prefixes/modifyPrefix";
+    }
+
+    @RequestMapping(value="/AjouterConcessionnaire",method = RequestMethod.GET)
+    public String AjouterConcessionnaire(final ModelMap model) {
+        qConsignataire newConcessionnaire=new qConsignataire();
+      //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+
+
+        model.addAttribute("newConcessionnaire",newConcessionnaire);
+
+        return "concessions/newConcessionnaire";
+    }
+
+    @RequestMapping(value="/AjouterConcessionnaireSave",method = RequestMethod.POST)
+    public String AjouterConcessionnaireSave(final qConsignataire newConcessionnaire,final ModelMap model) {
+
+        if(newConcessionnaire!=null) {
+          consignataireService.create(newConcessionnaire);
+
+      }
+        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+          model.addAttribute("newConcessionnaire",newConcessionnaire);
+
+
+
+        return "concessions/newConcessionnaire";
+    }
     @RequestMapping(value="/submitConcession", params={"addRow"},method = RequestMethod.POST)
     public String submitConcessionAddRow(final   qConcession newConcession,final BindingResult bindingresult,final ModelMap model) {
         List<qCategRessource> ens=new ArrayList<qCategRessource>();
@@ -2062,4 +2194,198 @@ qConsignataire deletedConsignataire=consignataireService.findById(refConcessionn
 
 
     }
+
+
+
+
+
+    //------------------------------------------------------------------------
+    @RequestMapping(value="/ajouterTypeConcessionSave",method = RequestMethod.POST)
+    public String ajouterTypeConcessionSave(final @ModelAttribute("addedTypeConcession") typeConcessionForm typeConcessionform,final ModelMap model,final BindingResult bindingresult) {
+        System.out.println("action printed :");
+        System.out.println(typeConcessionform.getAction());
+        if(typeConcessionform.getAction()!=null) {
+            attrTypeConcessionValidator.validate(typeConcessionform, bindingresult);
+
+            if(!bindingresult.hasErrors()) {
+           System.out.println("8888888888888888888888888888");
+           typeconcessionService.create(typeConcessionform.getTypeConcession());
+            System.out.println("99999999999999999999999999");
+        } }
+
+    if(typeConcessionform.getAction()==null) {
+        qTypeConcession typeConcession=null;
+        System.out.println(typeConcessionform.getTypeOp());
+        if (typeConcessionform.getTypeOp().equals("Artisanal")) {
+
+             typeConcession=new qTypeConcessionArtisanal();
+            typeConcessionform.setTypeConcession(typeConcession);
+            model.addAttribute("addedTypeConcession", typeConcessionform);
+        }
+        if (typeConcessionform.getTypeOp().equals("CotiereNonPontee")) {
+            typeConcession=new qTypeConcessionCotiere();
+            ((qTypeConcessionCotiere)typeConcession).setEnumTypePecheCotiere(enumTypePechCotiere.NON_PONTEE);
+            typeConcessionform.setTypeConcession(typeConcession);
+            model.addAttribute("addedTypeConcession", typeConcessionform);
+            //typeconcessionform.setTypeConcession(typeConcession);
+        }
+        if (typeConcessionform.getTypeOp().equals("CotierePontee")) {
+            typeConcession=new qTypeConcessionCotiere();
+            ((qTypeConcessionCotiere)typeConcession).setEnumTypePecheCotiere(enumTypePechCotiere.PONTEE);
+            typeConcessionform.setTypeConcession(typeConcession);
+
+            model.addAttribute("addedTypeConcession", typeConcessionform);
+        }
+        if (typeConcessionform.getTypeOp().equals("Hautiriere")) {
+            typeConcession=new qTypeConcessionHautiriere();
+
+            typeConcessionform.setTypeConcession(typeConcession);
+            model.addAttribute("addedTypeConcession", typeConcessionform);
+        }
     }
+        model.addAttribute("addedTypeConcession", typeConcessionform);
+
+        return "typesConcession/ajouterTypeConcession";
+
+    }
+
+    @RequestMapping(value="/modifierTypeConcessionSave",method = RequestMethod.POST)
+    public String modifierTypesConcessionSave(final @ModelAttribute("modifiedTypeConcession") typeConcessionForm qtypeconcessionform,final ModelMap model,final BindingResult bindingresult) {
+        qTypeConcession typeConcession=null;
+        qPrefixPK pr = null;
+
+        attrTypeConcessionModifValidator.validate(qtypeconcessionform, bindingresult);
+        if(!bindingresult.hasErrors()) {
+            pr = new qPrefixPK(qtypeconcessionform.getTypeConcession().getPrefixNum(), qtypeconcessionform.getTypeConcession().getTypeDoc());
+            qPrefix prefixCurrent = prefService.findById(pr);
+            qtypeconcessionform.getTypeConcession().setPrefix(prefixCurrent);
+            System.out.println("ggggggg");
+            System.out.println( qtypeconcessionform.getTypeConcession().toString());
+            qTypeConcession tt=typeconcessionService.findById(qtypeconcessionform.getTypeConcession().getQtypeconcessionpk());
+            tt.setPrefix(qtypeconcessionform.getTypeConcession().getPrefix());
+            tt.setTypeDoc(qtypeconcessionform.getTypeConcession().getTypeDoc());
+            tt.setDesignation(qtypeconcessionform.getTypeConcession().getDesignation());
+            tt.setPrefixNum(qtypeconcessionform.getTypeConcession().getPrefixNum());
+            typeconcessionService.update(tt);
+            //   typeconcessionService.save(qtypeconcession);
+            model.addAttribute("feedbacksave","le type de concession a été bien enregistrée");
+            model.addAttribute("modifiedTypeConcession", qtypeconcessionform);
+
+        }
+        return "typesConcession/modifierTypeConcession";
+    }
+
+
+    @RequestMapping(value="/ supprimerTypeConcession",method = RequestMethod.GET)
+    public String  supprimerTypeConcession(final  RedirectAttributes red,final Integer idtypeconcession,final ModelMap model) {
+        qTypeConcession typeConcessionDeleted=typeconcessionService.findById(idtypeconcession);
+        if(typeConcessionDeleted!=null && typeconcessionService.check(typeConcessionDeleted).size()==0)
+        {
+            typeconcessionService.delete(idtypeconcession);
+        red.addAttribute("suppmessage","supprimé avec succéss");}
+        else   red.addAttribute("suppmessage","impossible de supprimer");
+        return "redirect:listTypesConcession";
+    }
+    @RequestMapping(value="/modifierTypeConcession",method = RequestMethod.GET)
+    public String modifierTypesConcession(final Integer idtypeconcession,final ModelMap model) {
+     String typeOp=null;
+     qTypeConcession typeConcession=typeconcessionService.findById(idtypeconcession);
+     typeConcessionForm typeconcessionform=new typeConcessionForm();
+        typeconcessionform.setTypeConcession(typeConcession);
+        if(typeConcession instanceof qTypeConcessionArtisanal)  typeOp="Artisanal";
+        if(typeConcession instanceof qTypeConcessionCotiere) {
+            if(((qTypeConcessionCotiere) typeConcession).getEnumTypePecheCotiere().equals(enumTypePechCotiere.NON_PONTEE))
+            typeOp="CotiereNonPontee";
+            if(((qTypeConcessionCotiere) typeConcession).getEnumTypePecheCotiere().equals(enumTypePechCotiere.PONTEE))
+                typeOp="CotierePontee";
+
+        }
+        if(typeConcession instanceof qTypeConcessionHautiriere)  typeOp="Hautiriere";
+
+        typeconcessionform.setTypeOp(typeOp);
+        model.addAttribute("modifiedTypeConcession", typeconcessionform);
+
+        return "typesConcession/modifierTypeConcession";
+    }
+        @RequestMapping(value="/ajouterTypeConcession",method = RequestMethod.GET)
+    public String ajouterTypeConcession(final @RequestParam(name="typeOp") String typeOp,final ModelMap model) {
+        qTypeConcession typeConcession=null;
+
+        if(typeOp.equals("Artisanal"))
+        {
+        typeConcession=new qTypeConcessionArtisanal();
+        typeConcessionForm typeconcessionform=new typeConcessionForm();
+        typeconcessionform.setTypeOp(typeOp);
+        typeconcessionform.setTypeConcession(typeConcession);
+        model.addAttribute("addedTypeConcession",typeconcessionform);
+        }
+        if(typeOp.equals("CotiereNonPontee"))
+        {
+            typeConcession=new qTypeConcessionCotiere();
+            typeConcessionForm typeconcessionform=new typeConcessionForm();
+            typeconcessionform.setTypeOp(typeOp);
+
+            ( (qTypeConcessionCotiere)typeConcession).setEnumTypePecheCotiere(enumTypePechCotiere.NON_PONTEE);
+            model.addAttribute("addedTypeConcession",typeconcessionform);
+            //typeconcessionform.setTypeConcession(typeConcession);
+        }
+        if(typeOp.equals("CotierePontee"))
+        {
+            typeConcession=new qTypeConcessionCotiere();
+            typeConcessionForm typeconcessionform=new typeConcessionForm();
+            typeconcessionform.setTypeOp(typeOp);
+            ( (qTypeConcessionCotiere)typeConcession).setEnumTypePecheCotiere(enumTypePechCotiere.PONTEE);
+            //typeconcessionform.setTypeConcession(typeConcession);
+            model.addAttribute("addedTypeConcession",typeconcessionform);
+        }
+        if(typeOp.equals("Hautiriere"))
+        {
+            typeConcession=new qTypeConcessionHautiriere();
+            typeConcessionForm typeconcessionform=new typeConcessionForm();
+            typeconcessionform.setTypeOp(typeOp);
+          //  typeconcessionform.setTypeConcession(typeConcession);
+            model.addAttribute("addedTypeConcession",typeconcessionform);
+        }
+
+        return "typesConcession/ajouterTypeConcession";
+    }
+    //------------------------------------------------------------------------
+
+    @RequestMapping(value="/AjouterCategorie",method = RequestMethod.GET)
+    public String AjouterCategorie(final ModelMap model) {
+        qCategRessource newCat=new qCategRessource();
+        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+        model.addAttribute("newCat",newCat);
+        return "categories/newCat";
+    }
+    @RequestMapping(value="/AjouterCategorieSave",method = RequestMethod.POST)
+    public String AjouterCategorieSave(final qCategRessource modifCat,final ModelMap model) {
+        categService.save(modifCat);
+        return "redirect:listCategRessources";
+    }
+    @RequestMapping(value="/ModifierCategorie",method = RequestMethod.GET)
+    public String ModifierCategorie(final @RequestParam(name="catPK") Integer catPK,final ModelMap model) {
+qCategRessource categRessource=categService.findById(catPK);
+        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+        model.addAttribute("modifCat",categRessource);
+        return "categories/modifCat";
+    }
+
+    @RequestMapping(value="/ModifierCategorieSave",method = RequestMethod.POST)
+    public String ModifierCategorieSave(final @ModelAttribute("modifCat") qCategRessource modifCat,final ModelMap model) {
+        categService.save(modifCat);
+        model.addAttribute("modifCat",modifCat);
+        return "categories/modifCat";
+    }
+    @RequestMapping(value="/ModifierCategorieSave", params={"addEngin"},method = RequestMethod.POST)
+    public String ModifierCategorieSaveAddRow(final   @ModelAttribute("modifCat") qCategRessource modifCat,final BindingResult bindingresult,final ModelMap model) {
+        List<qEnginsLicence> ens=new ArrayList<qEnginsLicence>();
+       if (modifCat.getEngins() == null) {
+            ens.add(new qEnginsLicence());
+            modifCat.setEngins(ens);
+        } else modifCat.getEngins().add(new qEnginsLicence());
+        model.addAttribute("modifCat",modifCat);
+        return "categories/modifCat";
+    }
+
+}

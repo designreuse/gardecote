@@ -55,4 +55,5 @@ public class qPrefixPK implements Serializable{
         this.prefix = prefix;
         this.typeDoc = typeDoc;
     }
+
 }

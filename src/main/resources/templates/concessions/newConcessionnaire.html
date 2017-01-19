@@ -1,0 +1,30 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <span th:text="${feedback!=null}?${feedback}:''"> Création d'une nouvelle concession pour le consignataire: </span>
+    <h3><p class="spacer"><kbd>Liste de concessions</kbd></p></h3>
+    <form  th:action="@{/AjouterConcessionnaireSave}"  th:object="${newConcessionnaire}" method="post">
+        <div class="panel panel-primary">
+            <div class="panel-heading"><b class="danger">
+                <span> Création d'une nouvelle concession pour le consignataire: </span>
+            </b></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">nomconsignataire</label>
+                    <input type="text" th:field="${newConcessionnaire.nomconsignataire}" th:value="${newConcessionnaire.nomconsignataire}" />
+                    <span class="label label-danger" th:errors="${newConcessionnaire.nomconsignataire}"></span>
+                </div>
+             </div>
+            <div class="form-group">
+                <button  type="submit" name="saveConcession" value="saveConcession"  class="btn btn-success" >Enregistrer</button>
+            </div>
+            </div>
+
+    </form>
+    </div>
+</body>
+</html>

@@ -23,7 +23,7 @@ public interface qPrefixService {
      */
 
     public List<qPrefix> findAll();
-
+    public List<String> findAlls();
     /**
      * Saves the given entity in the database (create or update)
      * @param entity

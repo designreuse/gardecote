@@ -9,6 +9,7 @@
 <div layout:fragment="content">
 
     <h3><p class="spacer"><kbd> Liste de carnets </kbd></p></h3>
+    <a th:href="@{AjouterConcessionnaire}">Ajouter un concessionnaire </a>
     <form  th:action="@{/ActionCarnet}"   method="post" th:object="${listConcessionnaires}">
         <span th:text="${listConcessionnaires.failedSuppression}"></span>
         <input type="text" th:field="*{searchConcessionnaire}" />
@@ -20,7 +21,7 @@
             <tr class="warning">
 
                 <th>nom Concessionnaire</th>
-<th></th>
+                <th></th>
                 <th>...</th>
             </tr>
             </thead>

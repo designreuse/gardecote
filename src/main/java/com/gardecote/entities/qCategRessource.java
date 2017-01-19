@@ -92,8 +92,6 @@ public class qCategRessource implements Serializable {
         Engins = engins;
     }
 
-
-
     public List<qConcession> getQconcession() {
         return qconcession;
     }

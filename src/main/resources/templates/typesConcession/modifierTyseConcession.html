@@ -1,0 +1,45 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <h3>modifier type de concession </h3>
+
+    <form  th:action="@{/modifierTypeConcessionSave}"   method="post" th:object="${modifiedTypeConcession}">
+        <div class="panel panel-primary">
+            <div class="panel-heading"><b class="danger">
+                <span> Modification de  type concession </span>
+            </b></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">qtypeconcessionpk</label>
+
+                    <input  type="text" th:field="*{qtypeconcessionpk}" />
+                    <span th:errors="*{qtypeconcessionpk}"></span>
+
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Nombre des lignes du carnet</label>
+
+                    <input  type="text" th:field="*{prefixNum}" />
+                    <span th:errors="*{prefixNum}"></span>
+
+
+                </div>
+
+                <div class="form-group">
+                    <button  type="submit"   class="btn btn-success" >Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

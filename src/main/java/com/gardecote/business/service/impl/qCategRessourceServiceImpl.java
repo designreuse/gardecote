@@ -56,9 +56,9 @@ public class qCategRessourceServiceImpl implements qCategRessourceService {
 
     @Override
     public qCategRessource update(qCategRessource authprov) {
-        qCategRessource authprovEntity = qCategRessourceRepository.findOne(authprov.getIdtypeConcession());
+      //  qCategRessource authprovEntity = qCategRessourceRepository.findOne(authprov.getIdtypeConcession());
 
-        qCategRessource authprovEntitySaved = qCategRessourceRepository.save(authprovEntity);
+        qCategRessource authprovEntitySaved = qCategRessourceRepository.save(authprov);
         return authprovEntitySaved ;
     }
 
