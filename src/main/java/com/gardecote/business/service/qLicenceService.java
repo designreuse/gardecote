@@ -7,7 +7,9 @@ package com.gardecote.business.service;
 import com.gardecote.entities.qLic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ public interface qLicenceService {
 	 * @return entity
 	 */
 	qLic findById(String idchact) ;
-
+	public void  importerLicences(MultipartFile file, HttpServletRequest request);
 	/**
 	 * Loads all entities.
 	 * @return all entities

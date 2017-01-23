@@ -3,6 +3,7 @@ package com.gardecote.entities;
 /**
  * Created by Dell on 23/10/2016.
  */
+
 public enum enumTypeBat {
     CONGELATION_FARINE,
     Congelateur_RTMS,
@@ -17,5 +18,6 @@ public enum enumTypeBat {
     SURGELATION,
     Vivier,
     Vivier_Congelateur,
-    Vivier_Glacier
+    Vivier_Glacier,
+    PIROG
 }

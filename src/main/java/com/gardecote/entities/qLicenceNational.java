@@ -47,12 +47,14 @@ public class qLicenceNational extends qLic implements Serializable
     @JsonBackReference
     private qConcession     qconcession ;
 
-    public qLicenceNational(qTypeLic qtypnav, qZone zone, qNation qNation, List<qCategRessource> qcatressources, qNavire qnavire, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, String numlic,  qConcession qconcession) {
-        super(qtypnav, zone, qNation, qcatressources, qnavire, typb, dateDebutAuth, dateFinAuth, qnavire.getAnneeconstr(), qnavire.getBalise(), qnavire.getCalpoids(), qnavire.getCount(),qnavire.getEff(),qnavire.getGt(), qnavire.getImo(), qnavire.getKw(), qnavire.getLarg(), qnavire.getLongg(), qnavire.getNbrhomm(), qnavire.getNomar(), qnavire.getNomnav(), numlic, qnavire.getPort(), qnavire.getPuimot(), qnavire.getRadio(), qnavire.getTjb());
-         this.qconcession = qconcession;
-    }
+
 
     public qLicenceNational() {
+    }
+
+    public qLicenceNational(qTypeLic qtypnav, qZone zone, qNation qNation, List<qCategRessource> qcatressources, qNavire qnavire, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, String balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomnav, String numlic, String port, String puimot, String radio, float tjb, qConcession qconcession) {
+        super(qtypnav, zone, qNation, qcatressources, qnavire, typb, dateDebutAuth, dateFinAuth, anneeconstr, balise, calpoids, count, eff, gt, imo, kw, larg, longg, nbrhomm, nomar, nomnav, numlic, port, puimot, radio, tjb);
+        this.qconcession = qconcession;
     }
 
     public qConcession getQconcession() {

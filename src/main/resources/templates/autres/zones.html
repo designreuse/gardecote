@@ -6,8 +6,8 @@
 </head>
 <body>
 <div layout:fragment="content">
-
-    <h3><p class="spacer"><kbd> Liste de carnets </kbd></p></h3>
+    <a th:href="@{/AjouterZone}">Ajouter une zone</a>
+    <h3><p class="spacer"><kbd> Liste de zones </kbd></p></h3>
     <form  th:action="@{/ActionZones}"   method="post" th:object="${zones}">
 
 
@@ -24,7 +24,7 @@
             <tbody>
             <tr th:each="zn:${zones}">
                 <td>
-                    <a th:href="@{ActionZones(zonePK=${zn.IdZone},typeDoc=${zn.nom})}">Annuler l'attribution</a>
+                 <a th:href="@{ModifierZone(zonePK=${zn.IdZone},typeDoc=${zn.nom})}">Modifier</a>
                 </td>
                 <td th:text="${zn.IdZone}"></td>
                 <td th:text="${zn.nom}"></td>

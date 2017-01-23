@@ -53,9 +53,9 @@ public class qNationServiceImpl implements qNationService {
 
     @Override
     public qNation update(qNation authprov) {
-        qNation authprovEntity = qNationRepository.findOne(authprov.getIdNation());
+      //  qNation authprovEntity = qNationRepository.findOne(authprov.getIdNation());
 
-        qNation authprovEntitySaved = qNationRepository.save(authprovEntity);
+        qNation authprovEntitySaved = qNationRepository.save(authprov);
         return authprovEntitySaved ;
     }
 

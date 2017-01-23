@@ -2359,14 +2359,22 @@ qConsignataire deletedConsignataire=consignataireService.findById(refConcessionn
         return "categories/newCat";
     }
     @RequestMapping(value="/AjouterCategorieSave",method = RequestMethod.POST)
-    public String AjouterCategorieSave(final qCategRessource modifCat,final ModelMap model) {
-        categService.save(modifCat);
+    public String AjouterCategorieSave(final RedirectAttributes myred,final @ModelAttribute("newCat") qCategRessource newCat,final ModelMap model) {
+        newCat.setIdtypeConcession(newCat.getTypeconcessionConcernee().getQtypeconcessionpk());
+        qCategRessource founded=categService.findById(newCat.getIdtypeConcession());
+        if(founded==null)  {
+            categService.create(newCat);
+            myred.addFlashAttribute("successmes","ajouté avec success");
+            }
+        else  {
+            myred.addFlashAttribute("successmes","impossible d'ajouter");
+        }
         return "redirect:listCategRessources";
     }
     @RequestMapping(value="/ModifierCategorie",method = RequestMethod.GET)
     public String ModifierCategorie(final @RequestParam(name="catPK") Integer catPK,final ModelMap model) {
-qCategRessource categRessource=categService.findById(catPK);
-        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+     qCategRessource categRessource=categService.findById(catPK);
+     //qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
         model.addAttribute("modifCat",categRessource);
         return "categories/modifCat";
     }
@@ -2377,6 +2385,7 @@ qCategRessource categRessource=categService.findById(catPK);
         model.addAttribute("modifCat",modifCat);
         return "categories/modifCat";
     }
+
     @RequestMapping(value="/ModifierCategorieSave", params={"addEngin"},method = RequestMethod.POST)
     public String ModifierCategorieSaveAddRow(final   @ModelAttribute("modifCat") qCategRessource modifCat,final BindingResult bindingresult,final ModelMap model) {
         List<qEnginsLicence> ens=new ArrayList<qEnginsLicence>();
@@ -2387,5 +2396,142 @@ qCategRessource categRessource=categService.findById(catPK);
         model.addAttribute("modifCat",modifCat);
         return "categories/modifCat";
     }
+    @RequestMapping(value="/AjouterCategorieSave", params={"addEngin"},method = RequestMethod.POST)
+    public String AjouterCategorieSaveAddRow(final   @ModelAttribute("newCat") qCategRessource newCat,final BindingResult bindingresult,final ModelMap model) {
+        List<qEnginsLicence> ens=new ArrayList<qEnginsLicence>();
+        if (newCat.getEngins() == null) {
+            ens.add(new qEnginsLicence());
+            newCat.setEngins(ens);
+        } else newCat.getEngins().add(new qEnginsLicence());
+        model.addAttribute("newfCat",newCat);
+        return "categories/newCat";
+    }
+
+    @RequestMapping(value="/AjouterModel",method = RequestMethod.GET)
+    public String AjouterModel(final ModelMap model) {
+        qModelJP newModel=new qModelJP();
+        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+        model.addAttribute("newModel",newModel);
+        return "models/newModel";
+    }
+    @RequestMapping(value="/ModifierModel",method = RequestMethod.GET)
+    public String ModifierModel(final @RequestParam(name="modelPK") String modelPK,final @RequestParam(name="typeDoc") String typeDoc,final ModelMap model) {
+        qPrefixPK prefPK=new qPrefixPK(modelPK,enumTypeDoc.valueOf(typeDoc));
+        qModelJP modeljp=modeljpService.findById(prefPK);
+        //qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+        model.addAttribute("modifiedModel",modeljp);
+        return "models/modifyModel";
+    }
+
+    @RequestMapping(value="/ActionModelAjoutSave",method = RequestMethod.POST)
+    public String ActionModelAjoutSave(final RedirectAttributes myred,final @ModelAttribute("newModel") qModelJP newModel,final ModelMap model) {
+qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
+        qPrefix pref=prefService.findById(prefPK);
+        if(pref!=null) {
+
+        qModelJP founded=modeljpService.findById(newModel.getPrefixPK());
+        if(founded==null)  {
+            newModel.setQprefix(pref);
+            modeljpService.create(newModel);
+            myred.addFlashAttribute("successmes","ajouté avec success");
+        }
+        else  {
+            myred.addFlashAttribute("successmes","impossible d'ajouter");
+        }}
+        else  myred.addFlashAttribute("prefnontrouve","prefix non trouvé");
+        return "redirect:listModels";
+    }
+    @RequestMapping(value="/ActionModelModifySave",method = RequestMethod.POST)
+    public String ActionModelModifySave(final @ModelAttribute("modifiedModel") qModelJP modifModel,final ModelMap model) {
+        modeljpService.save(modifModel);
+        model.addAttribute("modifModel",modifModel);
+        return "models/modifyModel";
+    }
+
+
+    // zone urls
+
+    @RequestMapping(value="/AjouterZone",method = RequestMethod.GET)
+    public String AjouterZone(final ModelMap model) {
+        qZone newZone=new qZone();
+        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+        model.addAttribute("newZone",newZone);
+        return "zones/newZone";
+    }
+    @RequestMapping(value="/ModifierZone",method = RequestMethod.GET)
+    public String ModifierZone(final @RequestParam(name="zonePK") Integer zonePK,final ModelMap model) {
+
+        qZone zone=zoneService.findById(zonePK);
+        //qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+        model.addAttribute("modifiedZone",zone);
+        return "zones/modifyZone";
+    }
+
+    @RequestMapping(value="/ActionZoneAjoutSave",method = RequestMethod.POST)
+    public String ActionZoneAjoutSave(final RedirectAttributes myred,final @ModelAttribute("newZone") qZone newZone,final ModelMap model) {
+
+
+        if(newZone!=null) {
+
+            qZone zn=zoneService.findById(newZone.getIdZone());
+            if(zn==null)  {
+
+               zoneService.create(newZone);
+                myred.addFlashAttribute("successmes","ajouté avec success");
+            }
+            else  {
+                myred.addFlashAttribute("successmes","impossible d'ajouter");
+            }}
+        else  myred.addFlashAttribute("prefnontrouve","prefix non trouvé");
+        return "redirect:listZones";
+    }
+    @RequestMapping(value="/Actiony ZoneModifySave",method = RequestMethod.POST)
+    public String ActionZoneModifySave(final @ModelAttribute("modifiedZone") qZone modifiedZone,final ModelMap model) {
+        zoneService.save(modifiedZone);
+        model.addAttribute("modifZone",modifiedZone);
+        return "zones/modifyZone";
+    }
+
+    // nationalites
+
+    @RequestMapping(value="/AjouterNationalite",method = RequestMethod.GET)
+    public String AjouterNationalite(final ModelMap model) {
+        qNation newNation=new qNation();
+        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+        model.addAttribute("newNationalite",newNation);
+        return "nationalites/newNationalite";
+    }
+    @RequestMapping(value="/ModifierNationalite",method = RequestMethod.GET)
+    public String ModifierNationalite(final @RequestParam(name="nationPK") Integer nationPK,final ModelMap model) {
+
+        qNation nationjp=nationService.findById(nationPK);
+        //qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+        model.addAttribute("modifiedNationalite",nationjp);
+        return "nationalites/modifyNationalite";
+    }
+
+    @RequestMapping(value="/ActionNationaliteAjoutSave",method = RequestMethod.POST)
+    public String ActionNationaliteAjoutSave(final RedirectAttributes myred,final @ModelAttribute("newNationalite") qNation newNationalite,final ModelMap model) {
+        if(newNationalite!=null) {
+               nationService.create(newNationalite);
+               myred.addFlashAttribute("successmes","ajouté avec success");
+        }
+        else  myred.addFlashAttribute("prefnontrouve","prefix non trouvé");
+        return "redirect:listNationalites";
+    }
+
+    @RequestMapping(value="/ActionNationaliteModifySave",method = RequestMethod.POST)
+    public String ActionNationaliteModifySave(final @ModelAttribute("modifiedNation") qNation modifNation,final ModelMap model) {
+        nationService.save(modifNation);
+        model.addAttribute("modifiedNationalite",modifNation);
+        return "nationalites/modifyNationalite";
+    }
+
+    @RequestMapping(value="/importerCarnets",method = RequestMethod.POST)
+    public void  importerCarnets(@RequestParam("fileUpload") MultipartFile fileUpload,HttpServletRequest request) {
+
+        collectMetier.importerCarnets(fileUpload,request);
+    }
+
 
 }

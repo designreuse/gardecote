@@ -1,9 +1,11 @@
 package com.gardecote.entities;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 @Entity
 @Table(name="qNavire30", schema="dbo", catalog="GCM1" )
@@ -17,6 +19,11 @@ public class qNavire implements Serializable {
     @Column(name="numimm", nullable=false)
     @NotEmpty
     private String     numimm;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name="createdOn", nullable=false)
+    @NotEmpty
+    private Date updatedOn;
 
     @OneToMany(mappedBy = "qnavire")
     private List<qLic> licences;
@@ -228,6 +235,14 @@ public class qNavire implements Serializable {
 
     public void setGt(float gt) {
         this.gt = gt;
+    }
+
+    public Date getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
     }
 
     public float getKw() {

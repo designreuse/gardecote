@@ -85,11 +85,9 @@ public class qConcession implements Serializable
 
     private List<qLicenceNational>     qLicenceBatLastList;
 
-
-
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "qAssocConessionCategRessources")
-     private List<qCategRessource>     categoriesRessources ;
+    private List<qCategRessource>     categoriesRessources ;
 
     //private List<qCategRessource>     categoriesRessources ;
    //----------------------------------------------------------------------

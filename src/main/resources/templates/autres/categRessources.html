@@ -7,7 +7,9 @@
 <body>
 <div layout:fragment="content">
 
-    <h3><p class="spacer"><kbd> Liste de carnets </kbd></p></h3>
+    <h3><p class="spacer"><kbd>Liste de categories de ressources </kbd></p></h3>
+
+    <label th:text="${successmes!=null?successmes:''}"></label>
     <form  th:action="@{/ActionCategRessources}"   method="post" th:object="${categRessources}">
         <a th:href="@{/AjouterCategorie}">Ajouter une categorie de ressource</a>
         <table class="table table-striped table-bordered table-hover">

@@ -7,6 +7,7 @@
 package com.gardecote.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -34,10 +35,10 @@ import java.util.List;
 public class qLicenceLibre extends qLic implements Serializable
 {
 
-
-
     //  @NotNull
+    @OneToOne
     private qTypeEnc    typencad     ;
+
 
 
     public qLicenceLibre(qTypeLic qtypnav, qZone zone, qNation qNation, List<qCategRessource> qcatressources, qNavire qnavire, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, String balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomnav, String numlic, String port, String puimot, String radio, float tjb, qTypeEnc typencad) {

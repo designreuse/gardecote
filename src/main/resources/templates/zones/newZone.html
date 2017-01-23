@@ -1,0 +1,41 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <h3>Ajout de Zone </h3>
+
+
+    <form  th:action="@{/ActionZoneAjoutSave}"   method="post" th:object="${newZone}">
+        <div class="panel panel-primary">
+            <div class="panel-heading"><b class="danger">
+                <span> Ajout de Zone : </span>
+            </b></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Id de Zone</label>
+                    <input type="text" th:field="*{IdZone}" />
+                    <span th:errors="*{IdZone}"></span>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Nom de zone</label>
+                    <input type="text" th:field="*{nom}" />
+                    <span th:errors="*{nom}"></span>
+              </div>
+                <div class="form-group">
+                    <button  type="submit"  name="action" class="btn btn-success" value="Enregistrer" >Enregistrer</button>
+                </div>
+
+            </div>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

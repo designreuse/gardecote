@@ -25,7 +25,6 @@ public class qTypeHorsConcession extends qTypeConcession  implements Serializabl
 
     public void setEnumAncCategRessource(com.gardecote.entities.enumAncCategRessource enumAncCategRessource) {
         this.enumAncCategRessource = enumAncCategRessource;
-
     }
 
     public qTypeHorsConcession() {

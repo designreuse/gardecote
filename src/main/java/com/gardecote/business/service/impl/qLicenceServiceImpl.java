@@ -4,13 +4,19 @@
  */
 package com.gardecote.business.service.impl;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-
+import com.gardecote.business.service.*;
 import com.gardecote.data.repository.jpa.qRegistreNavireRepository;
-import com.gardecote.entities.qLic;
-import com.gardecote.entities.qNavire;
+import com.gardecote.entities.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,21 +24,29 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gardecote.business.service.qLicenceService;
 import com.gardecote.data.repository.jpa.qLicenceRepository;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Implementation of CodauthService
  */
 @Service
 @Transactional
 public class qLicenceServiceImpl implements qLicenceService {
-
+	@Autowired
+	private qTypeLicService typlicService;
+	@Autowired
+	private qZoneService zoneService;
+	@Autowired
+	private qCategRessourceService catService;
+	@Autowired
+	private qNationService nationRepository;
 	@Autowired
 	private qLicenceRepository codauthJpaRepository;
 	@Autowired
 	private qRegistreNavireRepository navRepository;
-
-
 	@Override
 	public qLic findById(String codeauth) {
 		qLic codauthEntity = codauthJpaRepository.findOne(codeauth);
@@ -93,11 +107,192 @@ public class qLicenceServiceImpl implements qLicenceService {
 		else           return true;
 
 }
+
 	@Override
 	public boolean validatenumlic(qLic lic) {
 		qLic  qlc=codauthJpaRepository.findOne(lic.getNumlic());
 		if(qlc==null)  return true;
 		else           return false;
+
+	}
+
+	@Transactional
+	public void  importerLicence(MultipartFile file, HttpServletRequest request) {
+		Long nCarnet,nDebut;
+		Integer ngroupe,nbrCons,nbrTotal;
+		double valeurTk;
+		qLic lic;
+		List<qCategRessource> newCat=null;
+
+		Long Id_Lic;
+		Date createdOn=null,DEBAUT=null,FINAUTO=null;
+		Integer Id_TypeLic,ID_NATION,Id_Zone,Consignataire,TYPENCAD;
+		String NUMIMM,NUMENR,NUMLIC,TYPAUTO,	TYPLIC,	MINTYPLIC,	NOMNAV,	NOMEX,	NOMAR,TYPNAV,MINTYPNAV,TJB,CALPOIDS,PUIMOT,KW,LONGG,LARG,PORT,RADIO,NATION1,ANCONS,ZONE,MAIL,ENGIN,ENGIN1,MAIL1,ENGIN2,MAIL2,ENGIN3,MAIL3,EFF,NBRHOMM,COUNT,typb,imo,balise,code_type_supp_droit,id_concessionnaire,id_type_concession,id_segment_peche,ref_contrat_concession,GT;
+		qLic currentLic=null;
+		qNavire currentNavire=null;
+		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
+
+		Long k=0L;
+
+		try {
+
+			file.transferTo(new File(rootDirectory  + file.getOriginalFilename()));
+		} catch (IllegalStateException e) {
+		}  catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// Read test file.
+		BufferedReader bufferedReader = null;
+		try {
+			FileReader reader = new FileReader(rootDirectory  + file.getOriginalFilename());
+			bufferedReader = new BufferedReader(reader);
+			String next, line = bufferedReader.readLine();
+			for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+				last = ((next = bufferedReader.readLine()) == null);
+				if(!first) {
+					newCat=new ArrayList<qCategRessource>();
+					String splitarray[] = line.split("\t");
+					Id_Lic=Long.valueOf(splitarray[0]);
+					Id_TypeLic=Integer.valueOf(splitarray[1]);
+					ID_NATION=Integer.valueOf(splitarray[2]);
+					Id_Zone=Integer.valueOf(splitarray[3]);
+					NUMIMM=String.valueOf(splitarray[4]);
+					NUMENR=String.valueOf(splitarray[5]);
+					NUMLIC=String.valueOf(splitarray[1]);
+					TYPAUTO=String.valueOf(splitarray[1]);
+					TYPLIC=String.valueOf(splitarray[1]);
+					MINTYPLIC=String.valueOf(splitarray[1]);
+					NOMNAV=String.valueOf(splitarray[1]);
+					NOMEX=String.valueOf(splitarray[1]);
+					NOMAR=String.valueOf(splitarray[1]);
+					SimpleDateFormat sdfmt1 = new SimpleDateFormat("dd/MM/yyyy");
+					try {
+						DEBAUT=sdfmt1.parse(splitarray[1]);
+
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					try {
+						FINAUTO=sdfmt1.parse(splitarray[1]);
+
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					//DEBAUT=Date.valueOf(splitarray[1]);
+					//FINAUTO=Date.valueOf(splitarray[1]);
+					TYPNAV=String.valueOf(splitarray[1]);
+					MINTYPNAV=String.valueOf(splitarray[1]);
+					TJB=String.valueOf(splitarray[1]);
+					CALPOIDS=String.valueOf(splitarray[1]);
+					PUIMOT=String.valueOf(splitarray[1]);
+					KW=String.valueOf(splitarray[1]);
+					LONGG=String.valueOf(splitarray[1]);
+					LARG=String.valueOf(splitarray[1]);
+					PORT=String.valueOf(splitarray[1]);
+					RADIO=String.valueOf(splitarray[1]);
+                    ANCONS=String.valueOf(splitarray[1]);
+					NATION1=String.valueOf(splitarray[1]);
+					ZONE=String.valueOf(splitarray[1]);
+					MAIL=String.valueOf(splitarray[1]);
+					ENGIN=String.valueOf(splitarray[1]);
+					ENGIN1=String.valueOf(splitarray[1]);
+					MAIL1=String.valueOf(splitarray[1]);
+					ENGIN2=String.valueOf(splitarray[1]);
+					MAIL2=String.valueOf(splitarray[1]);
+					ENGIN3=String.valueOf(splitarray[1]);
+					MAIL3=String.valueOf(splitarray[1]);
+					EFF=String.valueOf(splitarray[1]);
+					NBRHOMM=String.valueOf(splitarray[1]);
+					COUNT=String.valueOf(splitarray[1]);
+					typb=String.valueOf(splitarray[1]);
+					Consignataire=Integer.valueOf(splitarray[1]);
+					TYPENCAD=Integer.valueOf(splitarray[1]);
+					imo=String.valueOf(splitarray[1]);
+					balise=String.valueOf(splitarray[1]);
+					code_type_supp_droit=String.valueOf(splitarray[1]);
+					id_concessionnaire=String.valueOf(splitarray[1]);
+					id_type_concession=String.valueOf(splitarray[1]);
+					id_segment_peche=String.valueOf(splitarray[1]);
+					ref_contrat_concession=String.valueOf(splitarray[1]);
+					GT=String.valueOf(splitarray[1]);
+
+				//
+                    currentNavire=navRepository.findOne(NUMIMM);
+					if(currentNavire!=null) {
+						createdOn=currentNavire.getUpdatedOn();
+						if(createdOn.before(DEBAUT))
+						{currentNavire.setNomnav(NOMNAV);
+						currentNavire.setUpdatedOn(DEBAUT);
+						navRepository.save(currentNavire);}
+					}
+					else
+					{
+
+						currentNavire=new qNavire(NUMIMM,NOMNAV, NOMAR, LONGG, PUIMOT, nation, LARG, COUNT, NBRHOMM, EFF, 0, CALPOIDS, 0,0,0, 0, PORT, RADIO,balise);
+					}
+
+
+                    qTypeLic typlic=typlicService.findById(Id_TypeLic);
+					qNation nation=nationRepository.findById(ID_NATION);
+					qZone zone=zoneService.findById(Id_Zone);
+
+	 qCategRessource catRess=catService.findById();
+
+     String  typeNavire=null;
+	 qTypeEnc encadrement=null ;
+
+	if(TYPNAV=="A") typeNavire=enumTypeBat.PIROG.toString();
+	if(TYPNAV=="C") typeNavire=enumTypeBat.Congelateur_glacier.toString();
+	if(TYPNAV=="C1") typeNavire=enumTypeBat.Congelateur_RTMS.toString();
+	if(TYPNAV=="C2") typeNavire=enumTypeBat.Congelateur_RTMA.toString();
+	if(TYPNAV=="C3") typeNavire=enumTypeBat.Congelateur_BMRT.toString();
+	if(TYPNAV=="C4") typeNavire=enumTypeBat.Congelateur_RTMA.toString();
+	if(TYPNAV=="CG") typeNavire=enumTypeBat.Congelateur_glacier.toString();
+	if(TYPNAV=="COT") typeNavire=enumTypeBat.Congelateur_RTMA.toString();
+	if(TYPNAV=="G") typeNavire=enumTypeBat.COTIERE.toString();
+	if(TYPNAV=="GR") typeNavire=enumTypeBat.GLACIER_Refrigeration.toString();
+	if(TYPNAV=="REF") typeNavire=enumTypeBat.REFRIGERATION.toString();
+	if(TYPNAV=="SG") typeNavire=enumTypeBat.SURGELATION.toString();
+	if(TYPNAV=="V") typeNavire=enumTypeBat.Vivier.toString();
+	if(TYPNAV=="VC") typeNavire=enumTypeBat.Vivier_Congelateur.toString();
+	if(TYPNAV=="VG") typeNavire=enumTypeBat.Vivier_Glacier.toString();
+	if(TYPENCAD==1)   encadrement=qTypeEnc.MRT;
+	if(TYPENCAD==2)   encadrement=qTypeEnc.ASIATIQUE;
+	if(TYPENCAD==3)   encadrement=qTypeEnc.UE;
+	if(TYPENCAD==4)   encadrement=qTypeEnc.AFRIC;
+	if(TYPENCAD==5)   encadrement=qTypeEnc.Autres;
+	if(TYPENCAD==0)   encadrement=qTypeEnc.INDET;
+	if(TYPENCAD==-1)   encadrement=qTypeEnc.INDET;
+
+
+	if(TYPENCAD==1)
+		{
+		currentLic=new qLicenceNational(typlic, zone, nation, null, currentNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,balise,CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,null);
+		}
+		else {
+		currentLic=new qLicenceLibre(typlic, zone, nation, null, currentNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,balise,CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,encadrement);
+        	}
+		codauthJpaRepository.save(currentLic);
+
+
+					System.out.println("l'index est : "+k);
+				}
+				k++;
+
+			}
+
+
+			reader.close();
+
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+		}
 
 	}
 }
