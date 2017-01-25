@@ -36,7 +36,7 @@ public class qLicenceLibre extends qLic implements Serializable
 {
 
     //  @NotNull
-    @OneToOne
+  //(   @OneToOne
     private qTypeEnc    typencad     ;
 
 
@@ -46,9 +46,7 @@ public class qLicenceLibre extends qLic implements Serializable
         this.typencad = typencad;
     }
 
-    public qLicenceLibre(qTypeLic qtypnav, qZone zone, qNation qNation, List<qCategRessource> qcatressources, qNavire qnavire, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, String balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomnav, String numlic, String port, String puimot, String radio, float tjb) {
-        super(qtypnav, zone, qNation, qcatressources, qnavire, typb, dateDebutAuth, dateFinAuth, anneeconstr, balise, calpoids, count, eff, gt, imo, kw, larg, longg, nbrhomm, nomar, nomnav, numlic, port, puimot, radio, tjb);
-    }
+
 
     public qTypeEnc getTypencad() {
         return typencad;

@@ -23,6 +23,7 @@ import com.gardecote.data.repository.jpa.qCapturesRepository;
 
 import com.gardecote.data.repository.jpa.qJourMereRepository;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 import java.util.List;
@@ -50,6 +51,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
@@ -68,6 +70,7 @@ public class GardecoteApplication {
     public static void main(String[] args) {
      ApplicationContext ctx = SpringApplication.run(GardecoteApplication.class, args);
           }
+
     @Bean
     public EmbeddedServletContainerCustomizer containerCustomizer() {
         return (container -> {
@@ -76,6 +79,9 @@ public class GardecoteApplication {
             container.addErrorPages(errorPage);
         });
     }
+
+
+
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();

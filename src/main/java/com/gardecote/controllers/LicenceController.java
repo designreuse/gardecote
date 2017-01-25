@@ -3,23 +3,31 @@ package com.gardecote.controllers;
 import com.gardecote.LicenceAc;
 import com.gardecote.business.service.*;
 import com.gardecote.entities.*;
+
 import com.gardecote.web.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -34,7 +42,29 @@ import java.util.*;
 
 @RequestMapping("/")
 public class LicenceController {
+
   //  licenceValidatorBatExistant
+  private static String UPLOAD_LOCATION="C:/mytemp/";
+
+    @Autowired
+    FileValidator fileValidator;
+
+
+    @Autowired
+    MultiFileValidator multiFileValidator;
+
+
+    @InitBinder("fileBucket")
+    protected void initBinderFileBucket(WebDataBinder binder) {
+        binder.setValidator(fileValidator);
+    }
+
+
+    @InitBinder("multiFileBucket")
+    protected void initBinderMultiFileBucket(WebDataBinder binder) {
+        binder.setValidator(multiFileValidator);
+    }
+
     @Autowired
     concessionValidator concessionValidator;
     @Autowired
@@ -2527,10 +2557,39 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
         return "nationalites/modifyNationalite";
     }
 
-    @RequestMapping(value="/importerCarnets",method = RequestMethod.POST)
-    public void  importerCarnets(@RequestParam("fileUpload") MultipartFile fileUpload,HttpServletRequest request) {
+    @RequestMapping(value="/importerLicences",method = RequestMethod.GET)
+    public String importerLicencesGET(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileBucket", fileModel);
+        return "imports/importer";
 
-        collectMetier.importerCarnets(fileUpload,request);
+    }
+
+
+
+    @RequestMapping(value="/importerLicencestr",method = RequestMethod.POST)
+    public String handleFileUploadtr(@Valid FileBucket fileBucket, BindingResult result, ModelMap model) throws IOException {
+
+     //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+        //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+
+            //Now do something with file...
+        //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            licenceService.importerLicence(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+         //   return "success";
+        }
+
+        //
+
+        return "redirect:importerLicences";
     }
 
 

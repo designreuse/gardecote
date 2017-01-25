@@ -47,8 +47,6 @@ public class qLicenceNational extends qLic implements Serializable
     @JsonBackReference
     private qConcession     qconcession ;
 
-
-
     public qLicenceNational() {
     }
 

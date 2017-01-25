@@ -23,7 +23,7 @@ public interface qLicenceService {
 	 * @return entity
 	 */
 	qLic findById(String idchact) ;
-	public void  importerLicences(MultipartFile file, HttpServletRequest request);
+	void  importerLicence(MultipartFile file, String fullname);
 	/**
 	 * Loads all entities.
 	 * @return all entities
@@ -36,6 +36,7 @@ public interface qLicenceService {
 	 * @return entity
 	 */
 	qLic save(qLic entity);
+
 
 	/**
 	 * Updates the given entity in the database

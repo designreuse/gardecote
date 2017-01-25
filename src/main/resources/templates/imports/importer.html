@@ -1,135 +1,37 @@
-<!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
 <head>
-    <meta charset="utf-8">
-    <title>Importer la configuration</title>
+    <meta charset="UTF-8" />
+    <title>Title</title>
 </head>
+
 <body>
-<div class="row" ng-if="sharedLicence.validationStatus=='LICENSE_VALID'">
+<div layout:fragment="content">
+
+    <form  th:action="@{/importerLicencestr}"   class="form-horizontal" enctype="multipart/form-data" th:object="${fileBucket}" method="post">
+
+<div class="row" >
     <div>
-        <h2>Import des quartiers</h2>
+        <h2>Import des licences</h2>
+        <label th:path="${fileName!=null?fileName:''}"></label>
         <table class="table">
 
             <tr>
-                <td><input type="file" class="custom-file-input" type="file" file-model="$parent.quartierFile" ></td>
+                <td><input type="file" class="custom-file-input" th:field="*{file}"    />
+                    <span th:errors="*{file}"></span>
+                </td>
 
             </tr>
-            <tr>
-                <td><button  ng-click="importerQuartier()">Importer </button></td>
-            </tr>
+
         </table>
-        {{successm}}
+
     </div>
-    <div ng-if="messag!=null" class="alert alert-success">
-        {{messag}}.
-    </div>
+    <input type="submit" value="Upload" class="btn btn-primary btn-sm"/>
 
-    <hr>
-    <div  >
-        <h2>Import des zones</h2>
-        <table class="table">
-
-            <tr>
-                <td><input type="file" class="custom-file-input" file-model="$parent.zoneFile" ></td>
-
-            </tr>
-            <tr>
-                <td><button ng-click="importerZones()">Importer </button></td>
-            </tr>
-        </table>
-    </div>
-    <div ng-if="messag!=null" class="alert alert-success">
-        {{messag}}.
-    </div>
-    <hr>
-    <div  >
-        <h2>Import des activités</h2>
-        <table class="table">
-
-            <tr>
-                <td><input type="file" class="custom-file-input" file-model="$parent.activitiesFile" ></td>
-
-            </tr>
-            <tr>
-                <td><button ng-click="importerActivities()">Importer </button></td>
-            </tr>
-        </table>
-    </div>
-    <div ng-if="messag!=null" class="alert alert-success">
-        {{messag}}
-    </div>
-    <hr>
-    <div  >
-        <h2>Import des categories</h2>
-        <table class="table">
-
-            <tr>
-                <td><input type="file" class="custom-file-input" file-model="$parent.categoriesFile" ></td>
-
-            </tr>
-            <tr>
-                <td><button ng-click="importerCategories()">Importer </button></td>
-            </tr>
-        </table>
-    </div>
-    <div ng-if="messag!=null" class="alert alert-success">
-        {{messag}}.
-    </div>
-    <hr>
-    <div  >
-        <h2>Import des groupes</h2>
-        <table class="table">
-
-            <tr>
-                <td><input type="file" class="custom-file-input" file-model="$parent.groupesFile" ></td>
-
-            </tr>
-            <tr>
-                <td><button ng-click="importerGroupes()">Importer </button></td>
-            </tr>
-        </table>
-        <div ng-if="messag!=null" class="alert alert-success">
-            {{messag}}.
-        </div>
-    </div>
-    <hr>
-    <div  >
-        <h2>Import des locals</h2>
-        <table class="table">
-
-            <tr>
-                <td><input type="file" class="custom-file-input" file-model="$parent.localsFile" ></td>
-
-            </tr>
-            <tr>
-                <td><button ng-click="importerLocals()">Importer </button></td>
-            </tr>
-        </table>
-        <div ng-if="messag!=null" class="alert alert-success">
-            {{messag}}.
-        </div>
-    </div>
-    <hr>
-    <div  >
-        <h2>Import des carnets</h2>
-        <table class="table">
-
-            <tr>
-                <td><input type="file" class="custom-file-input" file-model="$parent.carnetsFile" ></td>
-
-            </tr>
-            <tr>
-                <td><button ng-click="importerCarnets()">Importer </button></td>
-            </tr>
-        </table>
-        <div ng-if="messag!=null" class="alert alert-success">
-            {{messag}}.
-        </div>
-    </div>
 </div>
 
-<div class="row" ng-if="sharedLicence.validationStatus!='LICENSE_VALID'">
-    <h2>Code:2203 ....... lecture</h2>
+</form>
+
 </div>
 </body>
 </html>
