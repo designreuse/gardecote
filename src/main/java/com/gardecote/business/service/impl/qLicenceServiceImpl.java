@@ -46,7 +46,7 @@ public class qLicenceServiceImpl implements qLicenceService {
 	@Autowired
 	private qLicenceRepository codauthJpaRepository;
 	@Autowired
-	private qRegistreNavireRepository navRepository;
+	private qRegistreNavireService navService;
 	@Override
 	public qLic findById(String codeauth) {
 		qLic codauthEntity = codauthJpaRepository.findOne(codeauth);
@@ -102,7 +102,7 @@ public class qLicenceServiceImpl implements qLicenceService {
 
 	@Override
 	public boolean validatenav(qLic lic) {
-		qNavire  qnv=navRepository.findOne(lic.getNumimm());
+		qNavire  qnv=navService.findById(lic.getNumimm());
 		if(qnv==null)  return false;
 		else           return true;
 
@@ -129,7 +129,7 @@ public class qLicenceServiceImpl implements qLicenceService {
 		Integer Id_TypeLic,ID_NATION,Id_Zone,Consignataire,TYPENCAD;
 		String NUMIMM,NUMENR,NUMLIC,TYPAUTO,	TYPLIC,	MINTYPLIC,	NOMNAV,	NOMEX,	NOMAR,TYPNAV,MINTYPNAV,TJB,CALPOIDS,PUIMOT,KW,LONGG,LARG,PORT,RADIO,NATION1,ANCONS,ZONE,MAIL,ENGIN,ENGIN1,MAIL1,ENGIN2,MAIL2,ENGIN3,MAIL3,EFF,NBRHOMM,COUNT,typb,imo,balise,code_type_supp_droit,id_concessionnaire,id_type_concession,id_segment_peche,ref_contrat_concession,GT;
 		qLic currentLic=null;
-		qNavire currentNavire=null;
+		qNavire currentNavire=null,insertedNavire=null;
 
 
 		Long k=0L;
@@ -152,8 +152,11 @@ public class qLicenceServiceImpl implements qLicenceService {
 			for (boolean first = true, last = (line == null); !last; first = false, line = next) {
 				last = ((next = bufferedReader.readLine()) == null);
 				if(!first) {
+					k++;
+					System.out.println(k);
 					newCat=new ArrayList<qCategRessource>();
 					String splitarray[] = line.split("\t");
+					System.out.println(splitarray[0]);
 					Id_Lic=Long.valueOf(splitarray[0]);
 					Id_TypeLic=Integer.valueOf(splitarray[1]);
 					ID_NATION=Integer.valueOf(splitarray[2]);
@@ -170,13 +173,11 @@ public class qLicenceServiceImpl implements qLicenceService {
 					SimpleDateFormat sdfmt1 = new SimpleDateFormat("dd/MM/yyyy");
 					try {
 						DEBAUT=sdfmt1.parse(splitarray[13]);
-
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
 					try {
 						FINAUTO=sdfmt1.parse(splitarray[14]);
-
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
@@ -205,57 +206,50 @@ public class qLicenceServiceImpl implements qLicenceService {
 					ENGIN3=String.valueOf(splitarray[34]);
 					MAIL3=String.valueOf(splitarray[35]);
 					EFF=String.valueOf(splitarray[36]);
-					NBRHOMM=String.valueOf(splitarray[1]);
-					COUNT=String.valueOf(splitarray[1]);
-					typb=String.valueOf(splitarray[1]);
-					Consignataire=Integer.valueOf(splitarray[1]);
-					TYPENCAD=Integer.valueOf(splitarray[1]);
-					imo=String.valueOf(splitarray[1]);
-					balise="0";
-
+					NBRHOMM=String.valueOf(splitarray[37]);
+					COUNT=String.valueOf(splitarray[38]);
+					typb=String.valueOf(splitarray[39]);
+					Consignataire=Integer.valueOf(splitarray[40]);
+					TYPENCAD=Integer.valueOf(splitarray[41]);
 					GT="0";
-
 					//
 					qTypeLic typlic=typlicService.findById(Id_TypeLic);
 					qNation nation=nationRepository.findById(ID_NATION);
 					qZone zone=zoneService.findById(Id_Zone);
 
 					//qCategRessource catRess=catService.findById();
-					currentNavire=navRepository.findOne(NUMIMM);
-					if(currentNavire!=null) {
-						createdOn=currentNavire.getUpdatedOn();
-						if(createdOn.before(DEBAUT))
-						{currentNavire.setNomnav(NOMNAV);
-							currentNavire.setUpdatedOn(DEBAUT);
-							navRepository.save(currentNavire);}
-					}
-					else
-					{
-
-						currentNavire=new qNavire(NUMIMM,NOMNAV, NOMAR, LONGG, PUIMOT, nation, LARG, COUNT, NBRHOMM, EFF, 0, CALPOIDS, 0,0,0, 0, PORT, RADIO,balise);
-					}
 
 
 
+					currentNavire=navService.findById(NUMIMM);
+					currentNavire=null;
+					qNavire newNavire=null;
 
 					String  typeNavire=null;
 					qTypeEnc encadrement=null ;
 
-					if(TYPNAV=="A") typeNavire=enumTypeBat.PIROG.toString();
-					if(TYPNAV=="C") typeNavire=enumTypeBat.Congelateur_glacier.toString();
-					if(TYPNAV=="C1") typeNavire=enumTypeBat.Congelateur_RTMS.toString();
-					if(TYPNAV=="C2") typeNavire=enumTypeBat.Congelateur_RTMA.toString();
-					if(TYPNAV=="C3") typeNavire=enumTypeBat.Congelateur_BMRT.toString();
-					if(TYPNAV=="C4") typeNavire=enumTypeBat.Congelateur_RTMA.toString();
-					if(TYPNAV=="CG") typeNavire=enumTypeBat.Congelateur_glacier.toString();
-					if(TYPNAV=="COT") typeNavire=enumTypeBat.Congelateur_RTMA.toString();
-					if(TYPNAV=="G") typeNavire=enumTypeBat.COTIERE.toString();
-					if(TYPNAV=="GR") typeNavire=enumTypeBat.GLACIER_Refrigeration.toString();
-					if(TYPNAV=="REF") typeNavire=enumTypeBat.REFRIGERATION.toString();
-					if(TYPNAV=="SG") typeNavire=enumTypeBat.SURGELATION.toString();
-					if(TYPNAV=="V") typeNavire=enumTypeBat.Vivier.toString();
-					if(TYPNAV=="VC") typeNavire=enumTypeBat.Vivier_Congelateur.toString();
-					if(TYPNAV=="VG") typeNavire=enumTypeBat.Vivier_Glacier.toString();
+					if(MINTYPNAV.equals("A")) typeNavire=enumTypeBat.PIROG.toString();
+					if(MINTYPNAV.equals("C")) typeNavire=enumTypeBat.Congelateur_glacier.toString();
+					if(MINTYPNAV.equals("C1")) typeNavire=enumTypeBat.Congelateur_RTMS.toString();
+					if(MINTYPNAV.equals("C2")) typeNavire=enumTypeBat.Congelateur_RTMA.toString();
+					if(MINTYPNAV.equals("C3")) typeNavire=enumTypeBat.Congelateur_BMRT.toString();
+					if(MINTYPNAV.equals("C4")) typeNavire=enumTypeBat.Congelateur_RTMA.toString();
+					if(MINTYPNAV.equals("CG")) typeNavire=enumTypeBat.Congelateur_glacier.toString();
+					if(MINTYPNAV.equals("COT")) typeNavire=enumTypeBat.Congelateur_RTMA.toString();
+					if(MINTYPNAV.equals("G")) typeNavire=enumTypeBat.COTIERE.toString();
+					if(MINTYPNAV.equals("GR")) typeNavire=enumTypeBat.GLACIER_Refrigeration.toString();
+					if(MINTYPNAV.equals("REF")) typeNavire=enumTypeBat.REFRIGERATION.toString();
+					if(MINTYPNAV.equals("SG")) typeNavire=enumTypeBat.SURGELATION.toString();
+					if(MINTYPNAV.equals("V")) typeNavire=enumTypeBat.Vivier.toString();
+					if(MINTYPNAV.equals("VC")) typeNavire=enumTypeBat.Vivier_Congelateur.toString();
+					if(MINTYPNAV.equals("VG")) typeNavire=enumTypeBat.Vivier_Glacier.toString();
+					if(MINTYPNAV.equals("REF")) typeNavire=enumTypeBat.REF.toString();
+					if(MINTYPNAV.equals("C.F.")) typeNavire=enumTypeBat.Congelateur_Refrigerateur.toString();
+					if(MINTYPNAV.equals("INDEF")) typeNavire=enumTypeBat.INDEF.toString();
+
+
+					if(MINTYPNAV.equals("INDEF")) typeNavire=enumTypeBat.INDEF.toString();
+
 					if(TYPENCAD==1)   encadrement=qTypeEnc.MRT;
 					if(TYPENCAD==2)   encadrement=qTypeEnc.ASIATIQUE;
 					if(TYPENCAD==3)   encadrement=qTypeEnc.UE;
@@ -264,14 +258,50 @@ public class qLicenceServiceImpl implements qLicenceService {
 					if(TYPENCAD==0)   encadrement=qTypeEnc.INDET;
 					if(TYPENCAD==-1)  encadrement=qTypeEnc.INDET;
 
-
 					if(TYPENCAD==1)
 					{
-						currentLic=new qLicenceNational(typlic, zone, nation, null, currentNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,balise,CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,null);
+						if(currentNavire!=null) {
+							insertedNavire=currentNavire;
+							createdOn=currentNavire.getUpdatedOn();
+							System.out.println(createdOn);
+							System.out.println(DEBAUT);
+							if(createdOn.before(DEBAUT))
+							{currentNavire.setNomnav(NOMNAV);
+								currentNavire.setUpdatedOn(DEBAUT);
+								navService.update(currentNavire);}
+						}
+						else
+						{
+							newNavire=new qNavire(NUMIMM,NOMNAV, NOMAR, LONGG, PUIMOT, nation, LARG, COUNT, NBRHOMM, EFF, 0, CALPOIDS, 0,0,0, 0, PORT, RADIO,"0",DEBAUT);
+							navService.create(newNavire);
+							insertedNavire=newNavire;
+						}
+
+						currentLic=new qLicenceNational(typlic, zone, nation, null, insertedNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,"0",CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,null);
 					}
 					else {
-						currentLic=new qLicenceLibre(typlic, zone, nation, null, currentNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,balise,CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,encadrement);
-					}
+						System.out.println("type navire :"+typeNavire);
+						System.out.println("type navire :"+MINTYPNAV);
+						System.out.println("num lic :"+NUMLIC);
+						if(currentNavire!=null) {
+							insertedNavire=currentNavire;
+							createdOn=currentNavire.getUpdatedOn();
+							if(createdOn.before(DEBAUT))
+							{currentNavire.setNomnav(NOMNAV);
+								currentNavire.setUpdatedOn(DEBAUT);
+								navService.save(currentNavire);}
+						}
+						else
+						{
+
+							newNavire=new qNavire(NUMIMM,NOMNAV, NOMAR, LONGG, PUIMOT, nation, LARG, COUNT, NBRHOMM, EFF, 0, CALPOIDS, 0,0,0, 0, PORT, RADIO,"0",DEBAUT);
+							navService.create(newNavire);
+							insertedNavire=newNavire;
+						}
+
+						currentLic=new qLicenceLibre(typlic, zone, nation, null, insertedNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,"0",CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,encadrement);
+
+				}
 					codauthJpaRepository.save(currentLic);
 					System.out.println("l'index est : "+k);
 				}

@@ -271,7 +271,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
     @RequestMapping(value = "/PrefixesByTypeDoc/{typeDoc}", method = RequestMethod.GET)
     public String getPrefixesByTypeDoc(@PathVariable("typeDoc") String typeDoc,Model model) {
-System.out.println("string id"+enumTypeDoc.valueOf(typeDoc));
+        System.out.println("string id"+enumTypeDoc.valueOf(typeDoc));
         System.out.println(prefService.PrefixesByTypeDoc(enumTypeDoc.valueOf(typeDoc)).size());
         model.addAttribute("selectedPrefixes",prefService.PrefixesByTypeDoc(enumTypeDoc.valueOf(typeDoc)));
            return "carnets/attribution::renderPrefixes";

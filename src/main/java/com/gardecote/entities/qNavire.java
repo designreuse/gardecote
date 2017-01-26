@@ -22,7 +22,7 @@ public class qNavire implements Serializable {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name="createdOn", nullable=false)
-    @NotEmpty
+
     private Date updatedOn;
 
     @OneToMany(mappedBy = "qnavire")
@@ -38,15 +38,15 @@ public class qNavire implements Serializable {
     private String     nomnav;
 
     @Column(name="nomar", length=255)
-    @NotEmpty
+  //  @NotEmpty
     private String     nomar;
 
     @Column(name="longueur", length=255)
-    @NotEmpty
+    // @NotEmpty
     private String     longg        ;
 
     @Column(name="puimot", length=255)
-    @NotEmpty
+    // @NotEmpty
     private String     puimot  ;
 
     @OneToOne
@@ -62,58 +62,58 @@ public class qNavire implements Serializable {
     }
 
     @Column(name="larg", length=255)
-    @NotEmpty
+    //  @NotEmpty
     private String     larg         ;
 
 
     @Column(name="count", length=255)
-    @NotEmpty
+    //@NotEmpty
     private String     count        ;
 
     @Column(name="nbrhomm", length=255)
-    @NotEmpty
+    //@NotEmpty
     private String     nbrhomm      ;
 
     @Column(name="eff", length=255)
-    @NotEmpty
+    //@NotEmpty
     private String     eff ;
 
     @Column(name="ancons", length=255)
-    @NotNull
+    // @NotNull
     private Integer     anneeconstr       ;
 
     @Column(name="calpoids", length=255)
-    @NotEmpty
+    // @NotEmpty
     private String     calpoids     ;
 
 
     @Column(name="gt")
-    @NotNull
+    // @NotNull
     private float    gt           ;
 
 
     @Column(name="kw" )
-    @NotNull
+    // @NotNull
     private float    kw           ;
 
 
     @Column(name="tjb")
-    @NotNull
+    //  @NotNull
     private float     tjb          ;
     @Column(name="imo")
-    @NotNull
+    //  @NotNull
     private Integer    imo          ;
 
     @Column(name="port", length=255)
-    @NotEmpty
+    // @NotEmpty
     private String     port         ;
 
     @Column(name="radio", length=255)
-    @NotEmpty
+    //  @NotEmpty
     private String     radio        ;
 
     @Column(name="balise")
-    @NotEmpty
+    //  @NotEmpty
     private String   balise           ;
 
 
@@ -288,7 +288,7 @@ public class qNavire implements Serializable {
     public qNavire() {
     }
 
-    public qNavire(String numimm, String nomnav, String nomar, String longg, String puimot, qNation nation, String larg, String count, String nbrhomm, String eff, Integer anneeconstr, String calpoids, float gt, float kw, float tjb, Integer imo, String port, String radio,String balise) {
+    public qNavire(String numimm, String nomnav, String nomar, String longg, String puimot, qNation nation, String larg, String count, String nbrhomm, String eff, Integer anneeconstr, String calpoids, float gt, float kw, float tjb, Integer imo, String port, String radio,String balise,Date updatedOn) {
         this.numimm = numimm;
         this.nomnav = nomnav;
         this.nomar = nomar;
@@ -308,5 +308,6 @@ public class qNavire implements Serializable {
         this.port = port;
         this.radio = radio;
         this.balise = balise;
+        this.updatedOn=updatedOn;
     }
 }

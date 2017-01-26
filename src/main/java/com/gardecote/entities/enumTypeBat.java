@@ -19,5 +19,8 @@ public enum enumTypeBat {
     Vivier,
     Vivier_Congelateur,
     Vivier_Glacier,
-    PIROG
+    PIROG,
+    REF,
+    Congelateur_Refrigerateur,
+    INDEF
 }

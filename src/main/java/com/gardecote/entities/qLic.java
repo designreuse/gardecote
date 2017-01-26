@@ -224,7 +224,6 @@ public class qLic implements Serializable
         this.longg = longg;
         this.nbrhomm = nbrhomm;
         this.nomar = nomar;
-
         this.numimm = this.qnavire.getNumimm();
         this.numlic = numlic;
         this.port = port;

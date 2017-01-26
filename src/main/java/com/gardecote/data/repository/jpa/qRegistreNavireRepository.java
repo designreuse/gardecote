@@ -17,12 +17,10 @@ import java.util.List;
 /**
  * Created by Dell on 25/10/2016.
  */
+
 public interface qRegistreNavireRepository extends PagingAndSortingRepository<qNavire, String> {
-
-
     @Query("select l from qLic  l where l.qnavire=:navire and l.dateDebutAuth<=:currentDate and l.dateFinAuth>=:currentDate order by l.dateDebutAuth")
     List<qLic> retActLicences(@Param("navire") qNavire navire,@Param("currentDate") Date currentDate);
-
     @Query("select l from qNavire  l where TRIM(l.nomnav) like %:searchNomnav% order by l.nomnav")
     Page<qNavire>  returnSuggNomNav1(Pageable pageable, @Param("searchNomnav") String searchNomnav);
     @Query("select l from qNavire  l where TRIM(l.nomnav) like %:terme% order by l.nomnav")
