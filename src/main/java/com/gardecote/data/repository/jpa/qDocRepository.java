@@ -25,4 +25,11 @@ public interface qDocRepository extends PagingAndSortingRepository<qDoc,qDocPK> 
     @Query("select lic from qLic lic where lic.qnavire=:qnav")
     public List<qLic> retLicences(@Param("qnav") qNavire qnav);
 
+    @Query("select pcrn from qPageCarnet pcrn where pcrn.typeDoc=:prefix and pcrn.qcarnet.qprefix.typeDoc=:typeDoc")
+    public List<qPageCarnet> checkPrefix(@Param("prefix") String prefix,@Param("typeDoc") String typeDoc);
+
+    @Query("select doc from qDoc doc where doc.depart=:searchDateCapture and doc.numImm=:searchBat")
+    public Page<qDoc> findAllMatchedDocs(Pageable pageable,@Param("searchDateCapture") Date searchDateCapture,@Param("searchBat") String searchBat);
+
+
 }

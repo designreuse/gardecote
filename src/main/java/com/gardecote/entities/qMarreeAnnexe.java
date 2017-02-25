@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qMarreeAnnexe31", schema="dbo", catalog="GCM1")
+@Table(name="qMarreeAnnexe33", schema="dbo", catalog="GCM3")
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qMarreeAnnexe.countAll", query="SELECT COUNT(x) FROM qMarreeAnnexe x" )
@@ -26,10 +26,10 @@ public class qMarreeAnnexe  implements Serializable {
     private Date depart;
     @Id
     private String numImm;
-    @OneToOne(targetEntity = qMarree.class,cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = qMarree.class,cascade =CascadeType.ALL)
     private qMarree marreePrincipal;
-    @OneToMany(targetEntity=qPageAnnexe.class,cascade = CascadeType.ALL)
-    @JoinTable(name = "qAssocMareesAnnexPages")
+    @OneToMany(targetEntity=qPageAnnexe.class)
+    @JoinTable(name = "qAssocMareesAnnexPagesBIS")
     private List<qPageAnnexe> pages;
     private String navireReceveur;
     private String IMO;
@@ -37,7 +37,6 @@ public class qMarreeAnnexe  implements Serializable {
     private String indicatifRadio;
     @Column(name="bloquerDeletion", nullable=false, length=10)
     private boolean bloquerDeletion;
-
     public qMarreeAnnexe(Date depart, String numImm, qMarree marreePrincipal, List<qPageAnnexe> pages, String navireReceveur, String IMO, String nationalite, String indicatifRadio) {
         this.depart = depart;
         this.numImm = numImm;

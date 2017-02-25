@@ -3,10 +3,7 @@ package com.gardecote.business.service.impl;
 import com.gardecote.business.service.qCategRessourceService;
 import com.gardecote.data.repository.jpa.qCarnetRepository;
 import com.gardecote.data.repository.jpa.qCategRessourceRepository;
-import com.gardecote.entities.qCarnet;
-import com.gardecote.entities.qCarnetPK;
-import com.gardecote.entities.qCategPK;
-import com.gardecote.entities.qCategRessource;
+import com.gardecote.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +26,16 @@ public class qCategRessourceServiceImpl implements qCategRessourceService {
     public qCategRessource findById(Integer idcarnet) {
         qCategRessource authprovEntity = qCategRessourceRepository.findOne(idcarnet);
         return authprovEntity;
+    }
+
+    @Override
+    public List<qEnginsLicence> getEngL(Integer idTypeConcession) {
+        return qCategRessourceRepository.findEngLicence(idTypeConcession);
+    }
+
+    @Override
+    public List<qCategRessource> getCategories(String refConcession) {
+        return qCategRessourceRepository.findCategByConcession(refConcession);
     }
 
     @Override
@@ -75,4 +82,5 @@ public class qCategRessourceServiceImpl implements qCategRessourceService {
     public void setqCarnetRepository(qCategRessourceRepository qCarnetRepository) {
         this.qCategRessourceRepository = qCarnetRepository;
     }
+
 }

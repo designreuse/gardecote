@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Created by Dell on 09/10/2016.
  */
 @Entity
-@Table(name="qTypeLic30", schema="dbo", catalog="GCM1" )
+@Table(name="qTypeLic33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qTypeLic.countAll", query="SELECT COUNT(x) FROM qTypeLic x" )
@@ -22,12 +22,12 @@ public class qTypeLic implements Serializable {
   public qTypeLic() {
   }
 
-  private char codelic;
+  private String codelic;
 
-  private char codeaut;
+  private String codeaut;
   private String descr;
 
-  public qTypeLic(char codelic, char codeaut, String descr) {
+  public qTypeLic(String codelic, String codeaut, String descr) {
     this.codelic = codelic;
     this.codeaut = codeaut;
     this.descr = descr;
@@ -41,19 +41,19 @@ public class qTypeLic implements Serializable {
     this.idTypeLic = idTypeLic;
   }
 
-  public char getCodelic() {
+  public String getCodelic() {
     return codelic;
   }
 
-  public void setCodelic(char codelic) {
+  public void setCodelic(String codelic) {
     this.codelic = codelic;
   }
 
-  public char getCodeaut() {
+  public String getCodeaut() {
     return codeaut;
   }
 
-  public void setCodeaut(char codeaut) {
+  public void setCodeaut(String codeaut) {
     this.codeaut = codeaut;
   }
 

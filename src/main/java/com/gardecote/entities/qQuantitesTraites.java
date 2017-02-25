@@ -1,5 +1,7 @@
 package com.gardecote.entities;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -8,14 +10,14 @@ import java.util.Date;
  * Created by Dell on 20/12/2016.
  */
 @Entity
-@Table(name="qQteTraites30", schema="dbo", catalog="GCM1" )
-@IdClass(qDocPK.class)
-public class qQuantitesTraites implements Serializable{
+@Table(name="qQteTraites33", schema="dbo", catalog="GCM3")
+@IdClass(qQuantTraitPK.class)
+public class qQuantitesTraites implements Serializable {
     @Id
-    String numImm;
+    private String numImm;
     @Id
-    Date depart;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date depart;
 
     private Integer congelee;
     private  Integer frais;
@@ -103,4 +105,5 @@ public class qQuantitesTraites implements Serializable{
     public void setHuile(Integer huile) {
         this.huile = huile;
     }
+
 }

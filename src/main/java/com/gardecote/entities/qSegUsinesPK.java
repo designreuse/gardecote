@@ -8,11 +8,11 @@ import java.util.Date;
  * Created by Dell on 20/12/2016.
  */
 public class qSegUsinesPK  implements Serializable{
-    @Id
-    String refAgrement;
-    @Id
-    Date dateTraitement;
-    @Id
+
+    private String refAgrement;
+
+    private Date dateTraitement;
+
     private enumSegPeche segPeche;
 
     @Override

@@ -27,6 +27,7 @@
             <tr th:each="m:${models}">
                 <td>
                     <a th:href="@{ModifierModel(modelPK=${m.prefix},typeDoc=${m.typeDoc})}">Modifier</a>
+                    <a th:href="@{DeleteModel(modelPK=${m.prefix},typeDoc=${m.typeDoc})}">Supprimer</a>
                 </td>
                 <td th:text="${m.prefix}"></td>
                 <td th:text="${m.typeDoc}"></td>

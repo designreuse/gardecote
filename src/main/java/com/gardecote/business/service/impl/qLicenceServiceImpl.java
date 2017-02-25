@@ -10,18 +10,26 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import com.gardecote.business.service.*;
 import com.gardecote.data.repository.jpa.qRegistreNavireRepository;
+import com.gardecote.dto.StatusResponse;
 import com.gardecote.entities.*;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gardecote.data.repository.jpa.qLicenceRepository;
@@ -36,7 +44,13 @@ import javax.servlet.http.HttpServletRequest;
 @Transactional
 public class qLicenceServiceImpl implements qLicenceService {
 	@Autowired
+	JobLauncher jobLauncher;
+	@Autowired
+	Job licencesImportJob;
+	@Autowired
 	private qTypeLicService typlicService;
+	@Autowired
+	private qDocService docService;
 	@Autowired
 	private qZoneService zoneService;
 	@Autowired
@@ -51,6 +65,17 @@ public class qLicenceServiceImpl implements qLicenceService {
 	public qLic findById(String codeauth) {
 		qLic codauthEntity = codauthJpaRepository.findOne(codeauth);
 		return codauthEntity;
+	}
+
+	@Override
+	public List<qLic> findAll() {
+		Iterable<qLic> entities = codauthJpaRepository.findAll();
+		List<qLic> beans = new ArrayList<qLic>();
+		for(qLic qCapture1 : entities) {
+			beans.add(qCapture1);
+		}
+		return beans;
+
 	}
 
 	//@Override
@@ -109,6 +134,11 @@ public class qLicenceServiceImpl implements qLicenceService {
 }
 
 	@Override
+	public List<qLic> checkNation(qNation nationjp) {
+		return codauthJpaRepository.echec(nationjp);
+	}
+
+	@Override
 	public boolean validatenumlic(qLic lic) {
 		qLic  qlc=codauthJpaRepository.findOne(lic.getNumlic());
 		if(qlc==null)  return true;
@@ -116,6 +146,49 @@ public class qLicenceServiceImpl implements qLicenceService {
 
 	}
 
+	@Override
+	public boolean checkPrefix(qPrefix deletedPrefix) {
+		if(docService.checkPrefix(deletedPrefix)==true) return true;
+		else                               return false;
+
+	}
+
+	@Override
+	public boolean checkZones(qZone zone) {
+		List<qLic> licences=codauthJpaRepository.checkZone(zone);
+		if(licences.size()>0) return true;
+		else return false;
+	}
+
+	@Override
+
+		public String importerLicenceNV(MultipartFile file, String fullpatchname) {
+
+		System.out.println("jjjjj");
+		try {
+
+			file.transferTo(new File(fullpatchname));
+			try {
+				Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
+				parameters.put("date", new JobParameter(new Date()));
+				parameters.put("pathToFile", new JobParameter(fullpatchname));
+
+				jobLauncher.run(licencesImportJob, new JobParameters(parameters));
+				return "est encours";
+
+			} catch (JobInstanceAlreadyCompleteException ex) {
+				return "This job has been completed already!";
+
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}  catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+return "OK";
+
+	}
 	@Override
 	public void importerLicence(MultipartFile file, String fullpatchname) {
 		Long nCarnet,nDebut;
@@ -130,8 +203,6 @@ public class qLicenceServiceImpl implements qLicenceService {
 		String NUMIMM,NUMENR,NUMLIC,TYPAUTO,	TYPLIC,	MINTYPLIC,	NOMNAV,	NOMEX,	NOMAR,TYPNAV,MINTYPNAV,TJB,CALPOIDS,PUIMOT,KW,LONGG,LARG,PORT,RADIO,NATION1,ANCONS,ZONE,MAIL,ENGIN,ENGIN1,MAIL1,ENGIN2,MAIL2,ENGIN3,MAIL3,EFF,NBRHOMM,COUNT,typb,imo,balise,code_type_supp_droit,id_concessionnaire,id_type_concession,id_segment_peche,ref_contrat_concession,GT;
 		qLic currentLic=null;
 		qNavire currentNavire=null,insertedNavire=null;
-
-
 		Long k=0L;
 
 		try {
@@ -171,16 +242,20 @@ public class qLicenceServiceImpl implements qLicenceService {
 					NOMEX=String.valueOf(splitarray[11]);
 					NOMAR=String.valueOf(splitarray[12]);
 					SimpleDateFormat sdfmt1 = new SimpleDateFormat("dd/MM/yyyy");
+				//	if((!splitarray[13].equals("VIDE")) || (!splitarray[14].equals("VIDE"))) {
 					try {
-						DEBAUT=sdfmt1.parse(splitarray[13]);
+      					DEBAUT=sdfmt1.parse(splitarray[13]);
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
+
 					try {
 						FINAUTO=sdfmt1.parse(splitarray[14]);
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
+
+
 					//DEBAUT=Date.valueOf(splitarray[1]);
 					//FINAUTO=Date.valueOf(splitarray[1]);
 					TYPNAV=String.valueOf(splitarray[15]);
@@ -195,7 +270,6 @@ public class qLicenceServiceImpl implements qLicenceService {
 					RADIO=String.valueOf(splitarray[24]);
 					NATION1=String.valueOf(splitarray[25]);
 					ANCONS=String.valueOf(splitarray[26]);
-
 					ZONE=String.valueOf(splitarray[27]);
 					MAIL=String.valueOf(splitarray[28]);
 					ENGIN=String.valueOf(splitarray[29]);
@@ -216,11 +290,7 @@ public class qLicenceServiceImpl implements qLicenceService {
 					qTypeLic typlic=typlicService.findById(Id_TypeLic);
 					qNation nation=nationRepository.findById(ID_NATION);
 					qZone zone=zoneService.findById(Id_Zone);
-
 					//qCategRessource catRess=catService.findById();
-
-
-
 					currentNavire=navService.findById(NUMIMM);
 					currentNavire=null;
 					qNavire newNavire=null;
@@ -246,6 +316,7 @@ public class qLicenceServiceImpl implements qLicenceService {
 					if(MINTYPNAV.equals("REF")) typeNavire=enumTypeBat.REF.toString();
 					if(MINTYPNAV.equals("C.F.")) typeNavire=enumTypeBat.Congelateur_Refrigerateur.toString();
 					if(MINTYPNAV.equals("INDEF")) typeNavire=enumTypeBat.INDEF.toString();
+					if(MINTYPNAV.equals("0")) typeNavire=enumTypeBat.INDEF.toString();
 
 
 					if(MINTYPNAV.equals("INDEF")) typeNavire=enumTypeBat.INDEF.toString();
@@ -266,7 +337,7 @@ public class qLicenceServiceImpl implements qLicenceService {
 							System.out.println(createdOn);
 							System.out.println(DEBAUT);
 							if(createdOn.before(DEBAUT))
-							{currentNavire.setNomnav(NOMNAV);
+							{   currentNavire.setNomnav(NOMNAV);
 								currentNavire.setUpdatedOn(DEBAUT);
 								navService.update(currentNavire);}
 						}

@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qConcession30", schema="dbo", catalog="GCM1" )
+@Table(name="qConcession33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qConcession.countAll", query="SELECT COUNT(x) FROM qConcession x" )
@@ -41,7 +41,6 @@ public class qConcession implements Serializable
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-
     @Size(min = 2, max = 14)
     @Column(name="ref_concession", nullable=false)
     private String     refConcession ;

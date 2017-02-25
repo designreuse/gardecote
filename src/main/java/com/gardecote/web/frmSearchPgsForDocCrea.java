@@ -5,6 +5,7 @@ import com.gardecote.entities.qDoc;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * Created by Dell on 03/12/2016.
  */
-public class frmSearchPgsForDocCrea {
+public class frmSearchPgsForDocCrea implements Serializable{
     private String numeroDebut;
     private String numeroFin;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

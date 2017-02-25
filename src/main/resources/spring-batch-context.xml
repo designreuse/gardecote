@@ -1,0 +1,304 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:batch="http://www.springframework.org/schema/batch"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <import resource="classpath:context-datasource.xml" />
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+
+
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+          p:jobRepository-ref="jobRepository"
+          p:taskExecutor-ref="taskExecutor"/>
+    <!-- 4.3. Configuring a JobLauncher asynchronously -->
+    <bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
+
+    <!-- http://forum.springsource.org/showthread.php?59779-Spring-Batch-1-1-2-Standard-JPA-does-not-support-custom-isolation-levels-use-a-sp -->
+    <job-repository id="jobRepository" xmlns="http://www.springframework.org/schema/batch"
+                    isolation-level-for-create="READ_COMMITTED"
+                    transaction-manager="transactionManager"
+                   />
+    <!-- ItemReader which reads from database and returns the row mapped by
+        rowMapper -->
+    <!-- Optional JobExecutionListener to perform business logic before and after the job -->
+  <bean id="jobListener" class="com.gardecote.springbatch.qLicenceModelJobListener" />
+  <bean id="licencesItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
+        <property name="dataSource" ref="dataSource" />
+        <property name="sql"
+                  value="SELECT typelicence, numlic, ancons, balise, calpoids, count, created_at, debaut, finauto, eff, gt, imo, kw, larg, longueur, nbrhomm, nomar, nomnav, numimm, port, puimot, radio, tjb, typb, updated_at, typencad, nation_idNation, qnavire_numimm, qtypnav_id_typelic, zone_IdZone, qConcessionid FROM dbo.qlic30" />
+        <property name="rowMapper">
+            <bean class="com.gardecote.springbatch.qLicRowMapper" />
+        </property>
+    </bean>
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+    <bean id="licencesItemProcessorExport" class="com.gardecote.springbatch.LicItemProcessor" />
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+    <bean id="itemProcessor1" class="com.gardecote.springbatch.jobs.qLicenceItemProcessor" />
+    <!-- ItemWriter writes a line into output flat file -->
+    <bean id="licencesItemWriterExport" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
+        <property name="resource" value="file:c:/tt/licencesimp.txt" />
+        <property name="lineAggregator">
+            <!-- An Aggregator which converts an object into delimited list of strings -->
+            <bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+                <property name="delimiter" value="|" />
+                <property name="fieldExtractor">
+                    <!-- Extractor which returns the value of beans property through reflection -->
+                    <bean
+                            class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+                        <property name="names" value="typelicence, numlic, ancons, balise, calpoids, count, createdAt, debaut, finauto, eff, gt, imo, kw, larg, longueur, nbrhomm, nomar, nomnav, numimm, port, puimot, radio, tjb, typb, updatedAt, typencad, nationIdnation, qnavireNumimm, qtypnavIdTypelic, zoneIdzone, qconcessionid " />
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+
+    <!-- Types de Navires Export -->
+
+    <bean id="TypesNavireItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
+        <property name="dataSource" ref="dataSource" />
+        <property name="sql"
+                  value="SELECT [idqTypeNav],[descr] FROM [GCM1].[dbo].[qTypeNav30]" />
+        <property name="rowMapper">
+            <bean class="com.gardecote.springbatch.qTypesNavireRowMapper" />
+        </property>
+    </bean>
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+    <bean id="TypesNavireItemProcessorExport" class="com.gardecote.springbatch.qTypeNavItemProcessor" />
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+
+    <!-- ItemWriter writes a line into output flat file -->
+    <bean id="TypesNavireItemWriterExport" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
+        <property name="resource" value="file:c:/tt/typesnavimp.txt" />
+        <property name="lineAggregator">
+            <!-- An Aggregator which converts an object into delimited list of strings -->
+            <bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+                <property name="delimiter" value="|" />
+                <property name="fieldExtractor">
+                    <!-- Extractor which returns the value of beans property through reflection -->
+                    <bean  class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+                        <property name="names" value="idqTypeNav, descr" />
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+
+    <!-- Zones Export -->
+
+    <bean id="ZonesItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
+        <property name="dataSource" ref="dataSource" />
+        <property name="sql"
+                  value="SELECT  [IdZone] ,[nom] FROM [GCM1].[dbo].[qZone30]" />
+        <property name="rowMapper">
+                   <bean class="com.gardecote.springbatch.qZoneRowMapper" />
+        </property>
+    </bean>
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+    <bean id="ZonesItemProcessorExport" class="com.gardecote.springbatch.qZoneItemProcessor" />
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+    <!-- ItemWriter writes a line into output flat file -->
+    <bean id="ZonesItemWriterExport" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
+        <property name="resource" value="file:c:/tt/zonesimp.txt" />
+        <property name="lineAggregator">
+            <!-- An Aggregator which converts an object into delimited list of strings -->
+            <bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+                <property name="delimiter" value="|" />
+                <property name="fieldExtractor">
+                    <!-- Extractor which returns the value of beans property through reflection -->
+                    <bean
+                            class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+                        <property name="names" value="IdZone,nom " />
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <!-- Nations Export -->
+
+    <bean id="NationsItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
+        <property name="dataSource" ref="dataSource" />
+        <property name="sql"
+                  value="SELECT  [idNation],[designation] FROM [GCM1].[dbo].[qNation30]" />
+        <property name="rowMapper">
+            <bean class="com.gardecote.springbatch.qNationsRowMapper" />
+        </property>
+    </bean>
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+    <bean id="NationsItemProcessorExport" class="com.gardecote.springbatch.qNationItemProcessor" />
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+
+    <!-- ItemWriter writes a line into output flat file -->
+    <bean id="NationsItemWriterExport" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
+        <property name="resource" value="file:c:/tt/nationsimp.txt" />
+        <property name="lineAggregator">
+            <!-- An Aggregator which converts an object into delimited list of strings -->
+            <bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+                <property name="delimiter" value="|" />
+                <property name="fieldExtractor">
+                    <!-- Extractor which returns the value of beans property through reflection -->
+                    <bean
+                            class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+                        <property name="names" value="idNation,designation" />
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Categories de ressources Export -->
+    <bean id="categoriesRessourcesItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
+        <property name="dataSource" ref="dataSource" />
+        <property name="sql"
+                  value="SELECT  [idcateg],[typeSupport],[typeconcessionConcernee_qtypeconcessionpk] FROM [GCM1].[dbo].[qCategoriesRessources30]" />
+        <property name="rowMapper">
+            <bean class="com.gardecote.springbatch.qCategoriesRessourcesRowMapper" />
+        </property>
+    </bean>
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+    <bean id="categoriesRessourcesItemProcessorExport" class="com.gardecote.springbatch.categoriesRessourcesItemProcessor " />
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+
+    <!-- ItemWriter writes a line into output flat file -->
+    <bean id="categoriesRessourcesItemWriterExport" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
+        <property name="resource" value="file:c:/tt/categressourcesimp.txt" />
+        <property name="lineAggregator">
+         <!-- An Aggregator which converts an object into delimited list of strings -->
+            <bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+                <property name="delimiter" value="|" />
+                <property name="fieldExtractor">
+                    <!-- Extractor which returns the value of beans property through reflection -->
+                    <bean
+                            class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+                        <property name="names" value="idtypeConcession, typeSupport,Engins,typeconcessionConcernee " />
+
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Concession Export  -->
+
+    <bean id="ConcessionsItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
+        <property name="dataSource" ref="dataSource" />
+        <property name="sql"
+                  value="SELECT [ref_concession],[dateConcession],[date_debut],[date_fin],[dureeconcession],[quotaConcession] ,[qconsignataire_nomconsignataire],[qconsignataire_idconsignataire] FROM [GCM1].[dbo].[qConcession30]" />
+        <property name="rowMapper">
+            <bean class="com.gardecote.springbatch.qConcessionRowMapper" />
+        </property>
+    </bean>
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+    <bean id="ConcessionsItemProcessorExport" class="com.gardecote.springbatch.ConcessionItemProcessor" />
+    <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
+
+    <!-- ItemWriter writes a line into output flat file -->
+    <bean id="ConcessionsItemWriterExport" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
+        <property name="resource" value="file:c:/tt/concessionimp.txt" />
+        <property name="lineAggregator">
+            <!-- An Aggregator which converts an object into delimited list of strings -->
+            <bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+                <property name="delimiter" value="|" />
+                <property name="fieldExtractor">
+                    <!-- Extractor which returns the value of beans property through reflection -->
+                    <bean     class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+                        <property name="names" value="ref_concession,dateConcession,date_debut,date_fin,dureeconcession,quotaConcession ,qconsignataire_nomconsignataire,qconsignataire_idconsignataire"  />
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <!-- Export Job -->
+    <batch:job id="licencesExportJob">
+        <batch:step id="licencesExport" next="typesNaviresExport">
+            <batch:tasklet transaction-manager="transactionManager" >
+                <batch:chunk reader="licencesItemReaderExport" writer="licencesItemWriterExport"
+                             processor="licencesItemProcessorExport" commit-interval="10" />
+
+            </batch:tasklet>
+        </batch:step>
+        <batch:step id="typesNaviresExport" next="ZonesExport">
+            <batch:tasklet transaction-manager="transactionManager">
+                <batch:chunk reader="TypesNavireItemReaderExport" writer="TypesNavireItemWriterExport"
+                             processor="TypesNavireItemProcessorExport" commit-interval="10" />
+
+            </batch:tasklet>
+        </batch:step>
+        <batch:step id="ZonesExport" next="NationsExport">
+        <batch:tasklet transaction-manager="transactionManager">
+            <batch:chunk reader="ZonesItemReaderExport" writer="ZonesItemWriterExport"
+                         processor="ZonesItemProcessorExport" commit-interval="10" />
+
+        </batch:tasklet>
+    </batch:step>
+        <batch:step id="NationsExport" next="categoriesRessourcesExport">
+        <batch:tasklet transaction-manager="transactionManager">
+            <batch:chunk reader="NationsItemReaderExport" writer="NationsItemWriterExport"
+                         processor="NationsItemProcessorExport" commit-interval="10" />
+
+        </batch:tasklet>
+    </batch:step>
+        <batch:step id="categoriesRessourcesExport" next="concessionsExport">
+            <batch:tasklet transaction-manager="transactionManager">
+                <batch:chunk reader="categoriesRessourcesItemReaderExport" writer="categoriesRessourcesItemWriterExport"
+                             processor="categoriesRessourcesItemProcessorExport" commit-interval="10" />
+
+            </batch:tasklet>
+        </batch:step>
+        <batch:step id="concessionsExport">
+            <batch:tasklet transaction-manager="transactionManager">
+                <batch:chunk reader="ConcessionsItemReaderExport" writer="ConcessionsItemWriterExport"
+                             processor="ConcessionsItemProcessorExport" commit-interval="10" />
+
+            </batch:tasklet>
+        </batch:step>
+        <batch:listeners>
+            <batch:listener ref="jobListener" />
+        </batch:listeners>
+    </batch:job>
+
+
+
+    <!--  licences -->
+
+    <bean id="licencesItemReaderImport" class="org.springframework.batch.item.file.FlatFileItemReader" scope="step">
+        <!-- Read a csv file -->
+        <property name="resource" value="file:#{jobParameters[pathToFile]}" />
+        <property name="lineMapper">
+            <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+                <!-- split it -->
+                <property name="lineTokenizer">
+                    <bean  class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="delimiter"         value="|"/>
+                        <property name="strict"         value="false"/>
+                        <property name="names" value="typelicence, numlic, ancons, balise, calpoids, count, created_at, debaut, finauto, eff, gt, imo, kw, larg, longueur, nbrhomm, nomar, nomnav, numimm, port, puimot, radio, tjb, typb, updated_at, typencad, nation_idNation, qnavire_numimm, qtypnav_id_typelic, zone_IdZone, qConcessionid" />
+                    </bean>
+                </property>
+                <property name="fieldSetMapper" >
+                    <!-- return back to reader, rather than a mapped object. -->
+                    <bean class="com.gardecote.springbatch.jobs.SuggestedFieldSetMapper" />
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="licencesItemWriterImport" class="com.gardecote.springbatch.jobs.Writer" scope="step" />
+    <bean id="licencesItemProcessorImport" class="com.gardecote.springbatch.jobs.qLicenceItemProcessor" />
+
+    <batch:job id="licencesImportJob">
+        <batch:step id="licencesImport">
+            <batch:tasklet transaction-manager="transactionManager">
+                <batch:chunk reader="licencesItemReaderImport" writer="licencesItemWriterImport"
+                             processor="licencesItemProcessorImport" commit-interval="10" />
+            </batch:tasklet>
+        </batch:step>
+
+    </batch:job>
+</beans>

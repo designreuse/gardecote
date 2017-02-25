@@ -25,4 +25,8 @@ public interface qRegistreNavireRepository extends PagingAndSortingRepository<qN
     Page<qNavire>  returnSuggNomNav1(Pageable pageable, @Param("searchNomnav") String searchNomnav);
     @Query("select l from qNavire  l where TRIM(l.nomnav) like %:terme% order by l.nomnav")
     Page<qNavire>  findAll(Pageable pageable,@Param("terme") String terme);
+
+    @Query("select l from qNavire  l where TRIM(l.nomnav) = :searchBat")
+    qNavire  findByName(@Param("searchBat") String searchBat);
+
 }

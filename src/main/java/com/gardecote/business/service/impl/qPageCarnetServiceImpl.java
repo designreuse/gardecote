@@ -9,6 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import com.gardecote.data.repository.jpa.qPageCarnetRepository;
 
 import com.gardecote.entities.enumTypeDoc;
@@ -30,6 +33,8 @@ import com.gardecote.data.repository.jpa.qCarnetRepository;
 @Service
 @Transactional
 public class qPageCarnetServiceImpl implements qPageCarnetService {
+@PersistenceContext
+EntityManager entityManager;
 
 	@Autowired
 	private qPageCarnetRepository qPageCarnetRepository;
@@ -56,7 +61,16 @@ public class qPageCarnetServiceImpl implements qPageCarnetService {
 
 	@Override
 	public qPageCarnet save(qPageCarnet codesEsp) {
-		return update(codesEsp) ;
+		qPageCarnet tt=entityManager.find(qPageCarnet.class,codesEsp.getPageCarnetPK());
+		//      System.out.println(tt.toString());
+		if (tt!=null){
+			System.out.println(tt.toString());
+			entityManager.merge(codesEsp);
+		}else{
+			entityManager.persist(codesEsp);
+		}
+
+	 return codesEsp ;
 	}
 
 	@Override
@@ -68,9 +82,9 @@ public class qPageCarnetServiceImpl implements qPageCarnetService {
 
 	@Override
 	public qPageCarnet update(qPageCarnet codesEsp) {
-		qPageCarnet codesEspEntity = qPageCarnetRepository.findOne(codesEsp.getPageCarnetPK());
+//		qPageCarnet codesEspEntity = qPageCarnetRepository.findOne(codesEsp.getPageCarnetPK());
 
-		qPageCarnet codesEspEntitySaved = qPageCarnetRepository.save(codesEspEntity);
+		qPageCarnet codesEspEntitySaved = qPageCarnetRepository.save(codesEsp);
 		return codesEspEntitySaved;
 	}
 

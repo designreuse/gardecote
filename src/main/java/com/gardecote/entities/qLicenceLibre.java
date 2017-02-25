@@ -26,7 +26,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qlicence30", schema="dbo", catalog="GCM1" )
+@Table(name="qlic33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 @DiscriminatorValue("LICENCELIBRE")
 @NamedQueries ( {

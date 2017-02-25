@@ -1,9 +1,6 @@
 package com.gardecote.business.service;
 
-import com.gardecote.entities.qCapture;
-import com.gardecote.entities.qCapturePK;
-import com.gardecote.entities.qCategPK;
-import com.gardecote.entities.qCategRessource;
+import com.gardecote.entities.*;
 
 import java.util.List;
 
@@ -23,7 +20,8 @@ public interface qCategRessourceService {
      * @return all entities
      */
     List<qCategRessource> findAll();
-
+    List<qEnginsLicence> getEngL(Integer idTypeConcession);
+    List<qCategRessource> getCategories(String refConcession);
     /**
      * Saves the given entity in the database (create or update)
      * @param entity

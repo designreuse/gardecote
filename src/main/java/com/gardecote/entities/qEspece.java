@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qEspece30", schema="dbo", catalog="GCM1" )
+@Table(name="qEspece33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qEspece.countAll", query="SELECT COUNT(x) FROM qEspece x" )
@@ -28,7 +28,6 @@ import java.util.List;
 public class qEspece implements Serializable
 {
     private static final long serialVersionUID = 1L;
-
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
@@ -39,9 +38,9 @@ public class qEspece implements Serializable
 
   @OneToMany(cascade = CascadeType.ALL)
   private List<qEspeceTypee> qespecetypee;
- //   @OneToMany
+  // @OneToMany
   //  qOpTraitement qopTraitement;
-    //----------------------------------------------------------------------
+   //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
     @Column(name="Nom_Ar", nullable=false, length=50)

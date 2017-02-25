@@ -24,7 +24,7 @@ import java.util.List;
  *
  */
 @Entity
-@Table(name="qPageCarnet30", schema="dbo", catalog="GCM1" )
+@Table(name="qPageCarnet33", schema="dbo", catalog="GCM3" )
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_PAGE", discriminatorType=DiscriminatorType.STRING, length=20)
 // Define named queries here
@@ -47,6 +47,7 @@ public class qPageCarnet implements Serializable
     @Id
     @Column(name="typeDoc", nullable=false, length=50)
     private enumTypeDoc    typeDoc;
+
     private Integer    nbrLigne ;
 
     private  enumEtatPage etatPage;

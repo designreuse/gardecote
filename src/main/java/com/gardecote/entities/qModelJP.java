@@ -20,7 +20,7 @@ import java.util.Set;
  *
  */
 @Entity
-@Table(name="qModelJP30", schema="dbo", catalog="GCM1" )
+@Table(name="qModelJP33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qModelJP.countAll", query="SELECT COUNT(x) FROM qModelJP x" )
@@ -50,7 +50,7 @@ public class qModelJP implements Serializable
     @NotNull
     private qPrefix qprefix;
     @ManyToMany(cascade = CascadeType.MERGE,targetEntity =qEspeceTypee.class,fetch = FetchType.EAGER)
-    @JoinTable(name = "qAssocModelEspeceTypee3")
+    @JoinTable(name = "qAssocModelEspeceTypee3BIS")
     private List<qEspeceTypee> especestypees;
    //----------------------------------------------------------------------
     // CONSTRUCTOR(S)

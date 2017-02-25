@@ -16,30 +16,35 @@ import java.util.List;
  * Created by Dell on 25/10/2016.
  */
 @Entity
-@Table(name="qOpTraitement30", schema="dbo", catalog="GCM1" )
+@Table(name="qOpTraitement33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qOpTraitement.countAll", query="SELECT COUNT(x) FROM qOpTraitement x" )
 } )
+@IdClass(qOpTrPK.class)
 public class qOpTraitement implements Serializable {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long IdOpTraitement;
+ @Id
+ private Integer IdOpTraitement;
+ @Id
+ private String numeroPage;
+
   @OneToOne(targetEntity = qEspece.class,cascade = {CascadeType.PERSIST,CascadeType.REFRESH })
   @NotFound(action = NotFoundAction.IGNORE)
-   // @OneToOne(targetEntity = qEspece.class)
+   // @OneToOne(targetEntity = qEspece.class,cascade = CascadeType.ALL)
     private qEspece esp;
     private Long qte;
 
     public qOpTraitement() {
     }
 
-    @OneToOne
+    @OneToOne(targetEntity = qPageTraitement.class)
     private qPageTraitement pageTraitement;
 
-    public qOpTraitement(qPageTraitement tr,qEspece esp, Long qte) {
+    public qOpTraitement(Integer idLigne,String numPage,qPageTraitement tr,qEspece esp, Long qte) {
         this.pageTraitement=tr;
-
+        this.numeroPage=numPage;
+        this.IdOpTraitement=idLigne;
+        this.numeroPage=tr.getNumeroPage();
         this.esp = esp;
         this.qte = qte;
     }
@@ -60,11 +65,11 @@ public class qOpTraitement implements Serializable {
         this.qte = qte;
     }
 
-    public Long getIdOpTraitement() {
+    public Integer getIdOpTraitement() {
         return IdOpTraitement;
     }
 
-    public void setIdOpTraitement(Long idOpTraitement) {
+    public void setIdOpTraitement(Integer idOpTraitement) {
         IdOpTraitement = idOpTraitement;
     }
 
@@ -74,5 +79,13 @@ public class qOpTraitement implements Serializable {
 
     public void setPageTraitement(qPageTraitement pageTraitement) {
         this.pageTraitement = pageTraitement;
+    }
+
+    public String getNumeroPage() {
+        return numeroPage;
+    }
+
+    public void setNumeroPage(String numeroPage) {
+        this.numeroPage = numeroPage;
     }
 }

@@ -27,7 +27,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qJourDeb30", schema="dbo", catalog="GCM1" )
+@Table(name="qJourDeb33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJourDeb.countAll", query="SELECT COUNT(x) FROM qJourDeb x" )
@@ -52,6 +52,10 @@ public class qJourDeb implements Serializable
 
     @DateTimeFormat (pattern="yyyy-MM-dd")
     private Date  dateJour ;
+    @Id
+    private Integer       indexLigne   ;
+    @Id
+    private String      numPage   ;
 
    //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
@@ -82,7 +86,9 @@ public class qJourDeb implements Serializable
         return qjp;
     }
 
-    public qJourDeb(Date datejourDeb, qNavire navire, List<qCapture> debarqDuJour, qPageDebarquement pagesDeb) {
+    public qJourDeb(Integer indexLigne,String numPage,Date datejourDeb, qNavire navire, List<qCapture> debarqDuJour, qPageDebarquement pagesDeb) {
+        this.indexLigne=indexLigne;
+        this.numPage=numPage;
         this.numImm = navire.getNumimm();
         this.dateJour = datejourDeb;
         this.navire = navire;

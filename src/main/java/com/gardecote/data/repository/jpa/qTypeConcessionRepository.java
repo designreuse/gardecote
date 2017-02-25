@@ -18,6 +18,8 @@ import java.util.List;
 public  interface qTypeConcessionRepository extends PagingAndSortingRepository<qTypeConcession, Integer> {
     @Query("select ctg from qCategRessource ctg where ctg.typeconcessionConcernee=:typeconcession")
     public List<qCategRessource> checkTypeconcession(@Param("typeconcession") qTypeConcession typeconcession);
+    @Query("select ctg from qTypeConcession ctg where ctg.prefixNum=:prefix and ctg.typeDoc=:typeDoc ")
+    public List<qTypeConcession> getTypes(@Param("prefix") String prefix,@Param("typeDoc") String typeDoc);
 
 }
 

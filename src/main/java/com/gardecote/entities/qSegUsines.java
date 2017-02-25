@@ -1,5 +1,7 @@
 package com.gardecote.entities;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -8,17 +10,18 @@ import java.util.Date;
  * Created by Dell on 08/11/2016.
  */
 @Entity
-@Table(name="qSegUsines30", schema="dbo", catalog="GCM1")
+@Table(name="qSegUsines33", schema="dbo", catalog="GCM3")
 @IdClass(qSegUsinesPK.class)
 public class qSegUsines implements Serializable {
     @Id
-    String refAgrement;
+    private String refAgrement;
     @Id
-    Date dateTraitement;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date dateTraitement;
     @Id
     private enumSegPeche segPeche;
-    @OneToOne
-    private  qTraitement traitement;
+
+
     private boolean choix;
 
     private boolean ceph;
@@ -27,12 +30,10 @@ public class qSegUsines implements Serializable {
     private boolean crust;
     private boolean autres;
 
+    public qSegUsines(String num,Date depart ,enumSegPeche segPeche, boolean choix, boolean ceph, boolean demersal, boolean pel, boolean crust, boolean autres) {
+        this.refAgrement = num;
+        this.dateTraitement = depart;
 
-
-    public qSegUsines(qTraitement traitement, enumSegPeche segPeche, boolean choix, boolean ceph, boolean demersal, boolean pel, boolean crust, boolean autres) {
-        this.refAgrement = traitement.getNumImm();
-        this.dateTraitement = traitement.getDepart();
-        this.traitement=traitement;
         this.segPeche = segPeche;
         this.choix = choix;
         this.ceph = ceph;
@@ -49,13 +50,7 @@ public class qSegUsines implements Serializable {
         return segPeche;
     }
 
-    public qTraitement getTraitement() {
-        return traitement;
-    }
 
-    public void setTraitement(qTraitement traitement) {
-        this.traitement = traitement;
-    }
 
     public void setSegPeche(enumSegPeche segPeche) {
         this.segPeche = segPeche;
@@ -123,5 +118,25 @@ public class qSegUsines implements Serializable {
 
     public void setAutres(boolean autres) {
         this.autres = autres;
+    }
+
+    public boolean isCeph() {
+        return ceph;
+    }
+
+    public boolean isDemersal() {
+        return demersal;
+    }
+
+    public boolean isPel() {
+        return pel;
+    }
+
+    public boolean isCrust() {
+        return crust;
+    }
+
+    public boolean isAutres() {
+        return autres;
     }
 }

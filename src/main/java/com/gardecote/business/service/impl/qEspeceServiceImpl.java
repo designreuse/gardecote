@@ -50,8 +50,11 @@ public class qEspeceServiceImpl implements qEspeceService {
 
 	@Override
 	public qEspece save(qEspece changmentact) {
-		return update(changmentact) ;
+
+			return changmentactJpaRepository.save(changmentact) ;
+
 	}
+
 
 	@Override
 	public qEspece create(qEspece changmentact) {
@@ -64,8 +67,10 @@ public class qEspeceServiceImpl implements qEspeceService {
 	@Override
 	public qEspece update(qEspece changmentact) {
 		qEspece changmentactEntity = changmentactJpaRepository.findOne(changmentact.getCodeEsp());
+		qEspece changmentactEntitySaved=null;
+      if(changmentactEntity!=null)
+		changmentactEntitySaved = changmentactJpaRepository.save(changmentact);
 
-		qEspece changmentactEntitySaved = changmentactJpaRepository.save(changmentactEntity);
 		return changmentactEntitySaved;
 	}
 

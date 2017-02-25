@@ -1,5 +1,7 @@
 package com.gardecote.entities;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -9,38 +11,33 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name="qQuantiteExportee30", schema="dbo", catalog="GCM1" )
+@Table(name="qQuantiteExportee33", schema="dbo", catalog="GCM3" )
 @IdClass(qQuantiteExporteePK.class)
 public class qQuantiteExportee implements Serializable {
     @Id
     String refAgrement;
     @Id
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     Date dateTraitement;
     @Id
     private enumZonOrientation enumZonOrientationPeche;
 
 
-    @OneToOne
-    private qTraitement     qtraitement;
 
     private Integer qte;
 
 
-    public qQuantiteExportee(qTraitement qtraitement,enumZonOrientation enumZonOrientationPeche, Integer qte) {
-        this.refAgrement = qtraitement.getNumImm();
-        this.dateTraitement = qtraitement.getDepart();
+    public qQuantiteExportee(String refAg,Date dep,enumZonOrientation enumZonOrientationPeche, Integer qte) {
+        this.refAgrement = refAg;
+        this.dateTraitement = dep;
         this.enumZonOrientationPeche = enumZonOrientationPeche;
         this.qte = qte;
-        this.qtraitement=qtraitement;
+
     }
 
-    public qTraitement getQtraitement() {
-        return qtraitement;
-    }
 
-    public void setQtraitement(qTraitement qtraitement) {
-        this.qtraitement = qtraitement;
-    }
+
+
 
     public String getRefAgrement() {
         return refAgrement;

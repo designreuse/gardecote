@@ -5,44 +5,71 @@
    <meta name="viewport" content="width=device-width, initial-scale=1" />
    <meta name="description" content="" />
    <meta name="author" content="" />
-
    <!-- Bootstrap core CSS -->
-
 </head>
 <body>
-<div class="jumbotron "  layout:fragment="content">
-   <h1>Creer une marrée ou un debarquement</h1>
-   <form th:action="@{creerDoc}" methode="get"  class="form-inline ">
+<div class="jumbotron "  layout:fragment="content"   >
+   <h3>Chercher un document de capture</h3>
+
+    <span class="label label-danger" th:text="${notfounddoc}"></span>
+   <form th:action="@{searchDocCapture}" method="post" th:object="${sacc}" >
 
       <div class="form-group">
 
-            <input type="text" class="form-control " id="debut" name="debut"  ng-model="$parent.debut" typeahead-on-select="updateFinds($parent.debut)"  typeahead-wait-ms="10" typeahead-editable="false" typeahead-min-length="1" placeholder="Numero page de debut" uib-typeahead="searchpage for searchpage in getSuggPages($viewValue)" typeahead-loading="loadingPages" typeahead-no-results="noResults" />
-            <i ng-show="loadingPages" class="glyphicon glyphicon-refresh"></i>
-            <div ng-show="noResults">
-               <i class="glyphicon glyphicon-remove"></i> pas des resultats trouvés
-            </div>
+          <label class="col-sm-2 control-label">Date départ</label>
+          <div class="col-sm-4">
+              <input class="form-control" type="date" th:field="*{searchDateCapture}" th:value="*{searchDateCapture != null}?*{#dates.format(searchDateCapture, 'yyyy-MM-dd')}:''" />
+
+          </div>
+
 
       </div>
 
       <div class="form-group">
 
-            <select ng-if="$parent.debut!=null" class="form-control" id="fin" name="fin" ng-model="$parent.fin"  ng-options="item as item for item in finList track by item" ></select>
 
+          <label class="col-sm-2 control-label">Bâteau</label>
+          <div class="col-sm-4">
+              <input class="form-control" type="text" th:field="*{searchBat}"/>
+
+          </div>
 
 
       </div>
-      <div class="form-group ">
 
-            <input  ng-if="$parent.debut!=null" type="date" class="form-control " id="dateDepart1" name="dateDepart1" />
-
-
-      </div>
-      <div class="form-group" ng-if="$parent.debut!=null">
-         <p><button class="btn btn-lg btn-primary" type="submit"> creer document &raquo; </button></p>
+      <div class="form-group" >
+         <p><button class="btn btn-lg btn-primary" type="submit"> Trouver &raquo; </button></p>
 
       </div>
    </form>
 
+    <h3>Chercher un document de traitement</h3>
+    <form th:action="@{searchDocTraitement}" method="post" th:object="${sacc}" >
+
+        <div class="form-group">
+
+            <label class="col-sm-2 control-label">Date de document</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="text" th:field="*{searchDateTraitement}" th:value="*{searchDateTraitement != null}?*{#dates.format(searchDateTraitement, 'yyyy-MM-dd')}:''"  />
+            </div>
+
+
+        </div>
+
+        <div class="form-group">
+
+
+            <label class="col-sm-2 control-label">Usine</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="date" th:field="*{searchUsine}"/>
+            </div>
+        </div>
+
+        <div class="form-group" >
+            <p><button class="btn btn-lg btn-primary" type="submit"> Trouver &raquo; </button></p>
+
+        </div>
+    </form>
 </div>
 </body>
 </html>

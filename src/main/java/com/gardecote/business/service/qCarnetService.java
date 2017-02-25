@@ -32,6 +32,7 @@ public interface qCarnetService {
 	 */
 	qCarnet save(qCarnet entity);
 
+
 	/**
 	 * Updates the given entity in the database
 	 * @param entity

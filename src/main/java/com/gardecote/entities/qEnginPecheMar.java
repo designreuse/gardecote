@@ -1,5 +1,4 @@
 package com.gardecote.entities;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
@@ -10,10 +9,10 @@ import java.util.List;
  * Created by Dell on 09/10/2016.
  */
 @Entity
-@Table(name="qEnginPecheMar30", schema="dbo", catalog="GCM1" )
+@Table(name="qEnginPecheMar33", schema="dbo", catalog="GCM3")
 // Define named queries here
 @NamedQueries ( {
-        @NamedQuery ( name="qEnginPecheMar.countAll", query="SELECT COUNT(x) FROM qEnginPecheMar x" )
+        @NamedQuery ( name="qEnginPecheMar.countAll", query="SELECT COUNT(x) FROM qEnginPecheMar x")
 } )
 @IdClass(qEnginPechePK.class)
 public class qEnginPecheMar implements Serializable {
@@ -31,12 +30,9 @@ public class qEnginPecheMar implements Serializable {
     @Column(name = "flag")
     private boolean flag;
 
-
     @ManyToMany(mappedBy = "qEngins")
     @JsonBackReference
     private List<qMarree> qmarrees;
-
-
 
 
     public qEnginPecheMar(String numimm, Date dateDepart, enumEngin enginMar, enumEnginDeb enginDeb, Integer maillage, boolean flage) {

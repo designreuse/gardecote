@@ -8,6 +8,8 @@ public class qJourPK implements Serializable {
     private Date dateJour;
 
     private String numImm;
+    private Integer       indexLigne   ;
+    private String      numPage   ;
 
     public qJourPK(Date dateJour, String numImm) {
         this.dateJour = dateJour;
@@ -26,8 +28,24 @@ public class qJourPK implements Serializable {
         return numImm;
     }
 
+    public String getNumPage() {
+        return numPage;
+    }
+
+    public void setNumPage(String numPage) {
+        this.numPage = numPage;
+    }
+
     public void setNumImm(String numImm) {
         this.numImm = numImm;
+    }
+
+    public Integer getIndexLigne() {
+        return indexLigne;
+    }
+
+    public void setIndexLigne(Integer indexLigne) {
+        this.indexLigne = indexLigne;
     }
 
     public qJourPK() {
@@ -40,15 +58,19 @@ public class qJourPK implements Serializable {
 
         qJourPK qJourPK = (qJourPK) o;
 
-        if (!dateJour.equals(qJourPK.dateJour)) return false;
-        return numImm.equals(qJourPK.numImm);
+        if (!getDateJour().equals(qJourPK.getDateJour())) return false;
+        if (!getNumImm().equals(qJourPK.getNumImm())) return false;
+        if (!getIndexLigne().equals(qJourPK.getIndexLigne())) return false;
+        return getNumPage().equals(qJourPK.getNumPage());
 
     }
 
     @Override
     public int hashCode() {
-        int result = dateJour.hashCode();
-        result = 31 * result + numImm.hashCode();
+        int result = getDateJour().hashCode();
+        result = 31 * result + getNumImm().hashCode();
+        result = 31 * result + getIndexLigne().hashCode();
+        result = 31 * result + getNumPage().hashCode();
         return result;
     }
 }

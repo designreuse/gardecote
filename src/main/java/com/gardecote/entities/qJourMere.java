@@ -23,7 +23,7 @@ import java.util.List;
  */
 import java.util.Date;
 @Entity
-@Table(name="qJourMere30", schema="dbo", catalog="GCM1" )
+@Table(name="qJourMere33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJour.countAll", query="SELECT COUNT(x) FROM qJourMere x" )
@@ -45,7 +45,10 @@ public class qJourMere implements Serializable
     @Column(name="dateJour", nullable=false, length=10)
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date     dateJour     ;
-
+    @Id
+    private Integer       indexLigne   ;
+    @Id
+    private String      numPage   ;
     @OneToOne
     private qNavire navire;
     //----------------------------------------------------------------------
@@ -100,7 +103,9 @@ public class qJourMere implements Serializable
         this.nbrCaisse = nbrCaisse;
     }
 
-    public qJourMere(Date datejourMere,qNavire navire, List<qCapture> capturesDuMarree, Integer totalCapturs, Integer totalCong, Integer nbrCaisse,qPageMarree pageMarree) {
+    public qJourMere(Integer idLigne,String numPage,Date datejourMere,qNavire navire, List<qCapture> capturesDuMarree, Integer totalCapturs, Integer totalCong, Integer nbrCaisse,qPageMarree pageMarree) {
+      this.indexLigne=idLigne;
+        this.numPage=numPage;
         this.dateJour = datejourMere;
         this.capturesDuMarree = capturesDuMarree;
         this.totalCapturs = totalCapturs;

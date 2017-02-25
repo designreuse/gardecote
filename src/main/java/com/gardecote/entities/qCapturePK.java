@@ -9,15 +9,20 @@ import java.util.Date;
  */
 
 public class qCapturePK implements Serializable{
-    @Id
+
     private Date           datedepart;
-    @Id
+
+
     private    String      nummimm;
-    @Id
+
     private    Date        dateJour;
-    @Id
+
+    private Integer          indexLigne;
+
+    private String         numPage ;
+
     private    String      idespece;
-    @Id
+
     private    enumEspType esptype;
 
     public qCapturePK(Date datedepart, String nummimm, Date dateJour, String idespece, enumEspType esptype) {
@@ -31,34 +36,26 @@ public class qCapturePK implements Serializable{
     public qCapturePK() {
     }
 
+    public Integer getIndexLigne() {
+        return indexLigne;
+    }
+
+    public void setIndexLigne(Integer indexLigne) {
+        this.indexLigne = indexLigne;
+    }
+
+    public String getNumPage() {
+        return numPage;
+    }
+
+    public void setNumPage(String numPage) {
+        this.numPage = numPage;
+    }
+
     public Date getDatedepart() {
         return datedepart;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof qCapturePK)) return false;
-
-        qCapturePK that = (qCapturePK) o;
-
-        if (!datedepart.equals(that.datedepart)) return false;
-        if (!nummimm.equals(that.nummimm)) return false;
-        if (!dateJour.equals(that.dateJour)) return false;
-        if (!idespece.equals(that.idespece)) return false;
-        return esptype == that.esptype;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = datedepart.hashCode();
-        result = 31 * result + nummimm.hashCode();
-        result = 31 * result + dateJour.hashCode();
-        result = 31 * result + idespece.hashCode();
-        result = 31 * result + esptype.hashCode();
-        return result;
-    }
 
     public void setDatedepart(Date datedepart) {
         this.datedepart = datedepart;
@@ -94,5 +91,34 @@ public class qCapturePK implements Serializable{
 
     public void setEsptype(enumEspType esptype) {
         this.esptype = esptype;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof qCapturePK)) return false;
+
+        qCapturePK that = (qCapturePK) o;
+
+        if (!getDatedepart().equals(that.getDatedepart())) return false;
+        if (!getNummimm().equals(that.getNummimm())) return false;
+        if (!getDateJour().equals(that.getDateJour())) return false;
+        if (!getIndexLigne().equals(that.getIndexLigne())) return false;
+        if (!getNumPage().equals(that.getNumPage())) return false;
+        if (!getIdespece().equals(that.getIdespece())) return false;
+        return getEsptype() == that.getEsptype();
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getDatedepart().hashCode();
+        result = 31 * result + getNummimm().hashCode();
+        result = 31 * result + getDateJour().hashCode();
+        result = 31 * result + getIndexLigne().hashCode();
+        result = 31 * result + getNumPage().hashCode();
+        result = 31 * result + getIdespece().hashCode();
+        result = 31 * result + getEsptype().hashCode();
+        return result;
     }
 }

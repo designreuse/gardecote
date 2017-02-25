@@ -22,12 +22,12 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qJourMereAnnexe30", schema="dbo", catalog="GCM1" )
+@Table(name="qJourMereAnnexe33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJourAnnexe.countAll", query="SELECT COUNT(x) FROM qJourMereAnnexe x" )
 } )
-@IdClass(qJourPKAnnexe.class)
+@IdClass(qJourPK.class)
 public class qJourMereAnnexe implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -45,6 +45,8 @@ public class qJourMereAnnexe implements Serializable
     @Id
     @Column(name="indexLigne", nullable=false)
     private Integer       indexLigne   ;
+    @Id
+    private String      numPage   ;
     @OneToOne
     private qNavire navire;
     //----------------------------------------------------------------------
@@ -68,8 +70,10 @@ public class qJourMereAnnexe implements Serializable
     {
 		super();
     }
-    public qJourMereAnnexe(Integer index,String designation,Date datejourMere, qNavire navire,qEspece espece,Integer poids,String presentation,  qPageAnnexe pageMarree) {
+
+    public qJourMereAnnexe(Integer index,String numPage,String designation,Date datejourMere, qNavire navire,qEspece espece,Integer poids,String presentation,  qPageAnnexe pageMarree) {
         this.dateJour = pageMarree.getQmarreeAnexe().getDepart();
+        this.numPage=numPage;
         this.especeDebarque=espece;
         this.poidEnKg=poids;
         this.presentation=presentation;

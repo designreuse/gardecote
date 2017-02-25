@@ -1,4 +1,6 @@
-<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sd="http://www.w3.org/1999/xhtml"
+      layout:decorator="layout/sitelayout">
 <head>
     <meta charset="UTF-8" />
     <title>List de licences</title>
@@ -6,6 +8,8 @@
 <body>
 <div layout:fragment="content">
 <div class="row">
+
+    <a th:href="@{/launchjob}">Exporter vers Excel</a>
     <form  th:action="@{/lstLic}"   method="post" th:object="${lstLicForm}">
         <h2 ><p class="spacer"><kbd>Registre des licences</kbd></p> </h2>
         <table class="table table-striped table-bordered table-hover spacer">
@@ -14,8 +18,6 @@
                 <th>Numéro </th>
                 <th>Matricule</th>
                 <th>Navire</th>
-
-
                 <th>Date Debut</th>
                 <th>Date Fin</th>
                 <th>Types de peches</th>
@@ -29,17 +31,21 @@
             <tbody>
             <tr th:each="b:${lstLicForm.licences.content}">
                 <td class="danger" th:text="${b.numlic}"></td>
-                 <td th:text="${b.qnavire.numimm}"></td>
+                <td th:text="${b.qnavire.numimm}"></td>
                 <td th:text="${b.nomnav}"></td>
 
-                <td th:text="${#dates.format(b.dateDebutAuth, #messages.msg('app.dateformat'))}"></td>
-                <td th:text="${#dates.format(b.dateFinAuth, #messages.msg('app.dateformat'))}" ></td>
+                <td th:text="${#dates.format(b.dateDebutAuth, 'yyyy-MM-dd')}"></td>
+
+                <td th:text="${#dates.format(b.dateFinAuth, 'yyyy-MM-dd')}" ></td>
+
                 <td class="danger">
 
                     <table>
                         <tr  th:each="cat,catStat :${b.qcatressources}">
                            <td ><span class="badge"  th:text="${catStat.index+1}"></span></td> <td   th:text="${b.qcatressources[__${catStat.index}__].typeconcessionConcernee}" ></td></tr>
+
                     </table>
+                    <label th:text="${b.qtypnav!=null ? b.qtypnav.descr:''}" />
                 </td>
                 <td th:text="${b.zone.nom}"></td>
                 <td th:text="${b.nation.designation}"></td>
@@ -52,14 +58,35 @@
 
     </form>
 </div>
-    <div class="container">
 
-        <ul class="nav nav-pills">
-            <li th:each="p:${lstLicForm.numPages}"  th:class="${p==lstLicForm.pageCourante}?active:''">
-<a th:text="${p}" th:href="@{afficherLstLicence(page=${p})}"></a>
+
+    <div class="table-pagination">
+        <ul class="pagination">
+            <li th:class="${lstLicForm.licences.number eq 0} ? 'disabled' : ''">
+                <a th:if="${not lstLicForm.licences.first}" th:href="@{${'/afficherLstLicence'}(page=${lstLicForm.licences.number-1})}">Previous</a>
+                <a th:if="${lstLicForm.licences.first}" href="javascript:void(0);">Previous</a>
+            </li>
+
+            <li th:each="pageNo : ${#numbers.sequence(0, lstLicForm.licences.totalPages - 1)}" th:class="${lstLicForm.licences.number eq pageNo}? 'active' : ''">
+                <a th:if="${lstLicForm.licences.number  eq pageNo}" href="javascript:void(0);">
+                    <span th:text="${pageNo + 1}"></span>
+                </a>
+                <a th:if="${not (lstLicForm.licences.number  eq pageNo)}" th:href="@{${'/afficherLstLicence'}(page=${pageNo},size=${lstLicForm.licences.size})}">
+                    <span th:text="${pageNo + 1}"></span>
+                </a>
+
+            </li>
+            <li th:class="${lstLicForm.licences.number + 1 ge lstLicForm.licences.totalPages} ? 'disabled' : ''">
+                <a th:if="${not lstLicForm.licences.last}" th:href="@{${'/afficherLstLicence'}(page=${lstLicForm.licences.number+1},size=${lstLicForm.licences.size})}">Next</a>
+                <a th:if="${lstLicForm.licences.last}" href="javascript:void(0);">Next</a>
             </li>
         </ul>
     </div>
+
+
+
+
+
 </div>
 
 </body>

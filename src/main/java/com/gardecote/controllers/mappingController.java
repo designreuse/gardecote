@@ -5,6 +5,7 @@ import com.gardecote.entities.*;
 import com.gardecote.web.CreateDocForm;
 import com.gardecote.web.creationLicForm;
 import com.gardecote.web.lstLicForm;
+import com.gardecote.web.searchAccueil;
 import com.sun.xml.internal.ws.policy.sourcemodel.ModelNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -35,9 +37,7 @@ import java.util.List;
 
 @RequestMapping("/")
 public class mappingController {
-
-
-    @Autowired
+   @Autowired
     private qCarnetService carnetService;
     @Autowired
     private qConcessionService concessionService;
@@ -93,7 +93,10 @@ public class mappingController {
     private LicenceAc ourLic;
 
     @RequestMapping(value="/start")
-    public String ggg(){
+    public String ggg(final ModelMap model){
+        searchAccueil sacc=new searchAccueil();
+
+        model.addAttribute("sacc",sacc);
         return "index";
     }
     @RequestMapping(value="/startDP")

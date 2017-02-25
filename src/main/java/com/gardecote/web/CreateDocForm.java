@@ -11,11 +11,12 @@ import java.util.List;
  */
 public class CreateDocForm implements Serializable{
    private Integer currentPage=0;
+    private Integer currentPageAnnexe=0;
     private String pageFin=null;
     private String interference=null;
     private qDoc currentDoc=null; // en cas de ecrasement on verifie s'i s'agit de different seq alors supprimer l'ancien et si est le meme seq juste il faut l'ouvrire pour modification
     private List<qDoc> lstDoc=new ArrayList<qDoc>();
-    private List<qTraitement> lstTraitement=new ArrayList<qTraitement>();
+
 
 
 
@@ -40,6 +41,14 @@ public class CreateDocForm implements Serializable{
 
 //
 
+
+    public Integer getCurrentPageAnnexe() {
+        return currentPageAnnexe;
+    }
+
+    public void setCurrentPageAnnexe(Integer currentPageAnnexe) {
+        this.currentPageAnnexe = currentPageAnnexe;
+    }
 
     public String getSegmentPeche() {
         return SegmentPeche;
@@ -76,12 +85,12 @@ public class CreateDocForm implements Serializable{
         this.modelJP = modelJP;
     }
 
-    public CreateDocForm(Integer currentPage, String pageFin, qDoc currentDoc, List<qDoc> lstDoc, List<qTraitement> lstTraitement, enumTypeDoc typeDoc, String titre) {
+    public CreateDocForm(Integer currentPage, String pageFin, qDoc currentDoc, List<qDoc> lstDoc,  enumTypeDoc typeDoc, String titre) {
         this.currentPage = currentPage;
         this.pageFin = pageFin;
         this.currentDoc = currentDoc;
         this.lstDoc = lstDoc;
-        this.lstTraitement = lstTraitement;
+
         this.typeDoc = typeDoc;
         this.titre = titre;
     }
@@ -158,13 +167,7 @@ public class CreateDocForm implements Serializable{
         this.lstDoc = lstDoc;
     }
 
-    public List<qTraitement> getLstTraitement() {
-        return lstTraitement;
-    }
 
-    public void setLstTraitement(List<qTraitement> lstTraitement) {
-        this.lstTraitement = lstTraitement;
-    }
 
     public enumTypeDoc getTypeDoc() {
         return typeDoc;

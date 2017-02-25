@@ -7,6 +7,7 @@
 <body>
 <div layout:fragment="content">
     <a th:href="@{/AjouterNationalite}">Ajouter une nationalité</a>
+    <label class="label label-danger" th:text="${successmsg!=null?successmsg:''}"></label>
     <h3><p class="spacer"><kbd> Liste de pays </kbd></p></h3>
     <form  th:action="@{/ActionPrefixes}"   method="post" th:object="${nations}">
 
@@ -25,6 +26,7 @@
             <tr th:each="ns:${nations}">
                 <td>
                     <a th:href="@{ModifierNationalite(nationPK=${ns.idNation})}">Modifier</a>
+                    <a th:href="@{DeleteNationalite(nationPK=${ns.idNation})}">Supprimer</a>
                 </td>
                 <td th:text="${ns.idNation}"></td>
                 <td th:text="${ns.designation}"></td>

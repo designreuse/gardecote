@@ -1,6 +1,7 @@
 package com.gardecote;
 import com.fasterxml.jackson.databind.util.ArrayIterator;
 import com.gardecote.entities.*;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.gardecote.data.repository.jpa.qPageDebarquementRepository;
@@ -10,6 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.ErrorPage;
+import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.ApplicationContext;
 import com.gardecote.data.repository.jpa.qConsignataireRepository;
 
@@ -51,13 +53,17 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
 @SpringBootApplication
+@EnableBatchProcessing
  // this does the trick
 public class GardecoteApplication {
     private static final String PATH = "/errors";
@@ -95,4 +101,6 @@ public class GardecoteApplication {
         messageSource.setCacheSeconds(3600); //refresh cache once per hour
         return messageSource;
     }
+
+
  }

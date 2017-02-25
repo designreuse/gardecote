@@ -11,7 +11,7 @@ import java.util.List;
 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_CONCESSION", discriminatorType=DiscriminatorType.STRING, length=20)
-@Table(name="qTypeConcession30", schema="dbo", catalog="GCM1")
+@Table(name="qTypeConcession33", schema="dbo", catalog="GCM3")
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qTypeConcession.countAll", query="SELECT COUNT(x) FROM qTypeConcession x" )
@@ -87,5 +87,10 @@ public class qTypeConcession implements Serializable,Comparable<qTypeConcession>
     @Override
     public int compareTo(qTypeConcession o) {
         return (this.getQtypeconcessionpk()- o.getQtypeconcessionpk());
+    }
+
+    @Override
+    public String toString() {
+        return designation;
     }
 }

@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qlic30", schema="dbo", catalog="GCM1" )
+@Table(name="qlic33", schema="dbo", catalog="GCM3")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPELICENCE", discriminatorType=DiscriminatorType.STRING, length=20)
 // Define named queries here
@@ -56,7 +56,7 @@ public class qLic implements Serializable
         private String     numimm;
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinTable(name = "qAssocLicencesCategRessources")
+    @JoinTable(name = "qAssocLicencesCategRessourcesBIS")
     @JsonBackReference
     //   @NotNull
     private List<qCategRessource>   qcatressources;
@@ -207,6 +207,7 @@ public class qLic implements Serializable
         this.zone = zone;
         this.nation = qNation;
         this.qcatressources=qcatressources;
+        this.nomnav=nomnav;
         // this.qcatressources = qcatressources;
         this.qnavire = qnavire;
         this.typb = typb;

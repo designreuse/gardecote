@@ -3,23 +3,22 @@ package com.gardecote.business.service.impl;
 import com.gardecote.business.service.qDocService;
 import com.gardecote.data.repository.jpa.*;
 import com.gardecote.entities.*;
-import org.hibernate.Session;
+
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.hibernate.Session;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
-import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Dell on 08/11/2016.
@@ -27,11 +26,11 @@ import java.util.regex.Pattern;
 @Service
 @Transactional
 public class qDocServiceImpl implements qDocService {
-    @PersistenceContext
-    private EntityManager em;
+
     @Autowired
     private qMarreeAnnexeRepository qmarreeannexeRepository;
-
+    @PersistenceContext
+    private EntityManager em;
     @Autowired
     private qDocRepository qdocRepository;
     @Autowired
@@ -43,11 +42,15 @@ public class qDocServiceImpl implements qDocService {
     private qCarnetRepository qcarnetRepository;
     @Autowired
     private qModelJPRepository qmodelRepository;
+
     @Autowired
     private qPageCarnetRepository qpagecarnetRepository;
     @Autowired
     private qJourMereRepository qjourmereRepository;
-
+    @Autowired
+    private qJourMereAnnexeRepository qjourmereannexeRepository;
+    @Autowired
+    private qRegistreNavireRepository navRepository;
 
     @Override
     public qDoc findById(qDocPK idcarnet) {
@@ -67,18 +70,19 @@ public class qDocServiceImpl implements qDocService {
 
     @Override
     public qDoc save(qDoc authprov) {
- //     Session session = em.unwrap(Session.class);
-        qDoc authprovEntity = qdocRepository.findOne(authprov.getqDocPK());
-        return qdocRepository.save(authprov);
-        //     Session session = em.unwrap(Session.class);
- //       if (authprovEntity == null) {
-   //         em.persist(authprov);
-   //         return authprov;
-   //     } else {
-        //   session.evict(authprovEntity);
-      //      return em.merge(authprov);
-    //     }
-    }
+
+        qDoc tt=em.find(qDoc.class,authprov.getqDocPK());
+        //      System.out.println(tt.toString());
+        if (tt!=null){
+            System.out.println(tt.toString());
+            em.merge(authprov);
+        }else{
+            em.persist(authprov);
+        }
+
+       return qdocRepository.save(authprov);
+
+   }
 
     @Override
     public qDoc create(qDoc authprov) {
@@ -94,7 +98,6 @@ public class qDocServiceImpl implements qDocService {
     @Override
     public qDoc update(qDoc authprov) {
       // qDoc authprovEntity = qdocRepository.findOne(authprov.getqDocPK());
-
         qDoc authprovEntitySaved = qdocRepository.save(authprov);
         return authprovEntitySaved ;
     }
@@ -103,30 +106,60 @@ public class qDocServiceImpl implements qDocService {
     public void delete(qDocPK  idauthpr) {
        qDoc ff= qdocRepository.findOne(idauthpr);
         List<qJourMere> jms=new ArrayList<qJourMere>();
+        List<qJourMereAnnexe> jmsAX=new ArrayList<qJourMereAnnexe>();
         if(ff instanceof  qMarree) {
             for(Iterator<qPageMarree> iter=((qMarree) ff).getPages().iterator();iter.hasNext();) {
                 qPageMarree currentp=iter.next();
-
                 for (Iterator<qJourMere> iter1 = currentp.getListJours().iterator(); iter1.hasNext(); )
-                {  qJourMere currj=iter1.next();
+                {
+                    qJourMere currj=iter1.next();
                     currj.setPageMarree(null);
                     jms.add(currj);
                 }
                 currentp.setListJours(null);
                 currentp.setQmarree(null);
-                  qpagecarnetRepository.save(currentp);
-            }
+                qpagecarnetRepository.save(currentp);
+                 }
             ((qMarree) ff).setPages(null);
-            qdocRepository.save(ff);
+     //       qdocRepository.save(ff);
             for(qJourMere jk:jms) {
+                //qjourmereRepository.save(jk);
                 qjourmereRepository.delete(jk);
             }
-            qdocRepository.delete(ff.getqDocPK());
+            qMarreeAnnexe marrAnnexe=((qMarree) ff).getMarreeAnnexe();
+            if(marrAnnexe!=null) {
+                ((qMarree) ff).setMarreeAnnexe(null);
+                marrAnnexe.setMarreePrincipal(null);
+                qdocRepository.save(ff);
+
+                qmarreeannexeRepository.save(marrAnnexe);
+                for(Iterator<qPageAnnexe> iter2= marrAnnexe.getPages().iterator();iter2.hasNext();) {
+                    qPageAnnexe currPX = iter2.next();
+                    for (Iterator<qJourMereAnnexe> iter1 = currPX.getListJours().iterator(); iter1.hasNext(); )
+                    {
+                        qJourMereAnnexe currjAX=iter1.next();
+                        currjAX.setPageMarree(null);
+                        jmsAX.add(currjAX);
+                    }
+                    currPX.setListJours(null);
+                    currPX.setQmarreeAnexe(null);
+                    qpagecarnetRepository.save(currPX);
+                }
+                marrAnnexe.setPages(null);
+                qmarreeannexeRepository.save(marrAnnexe);
+                for(qJourMereAnnexe jk:jmsAX) {
+               //     qjourmereannexeRepository.save(jk);
+                    qjourmereannexeRepository.delete(jk);
+                }
+             //   qmarreeannexeRepository.save(marrAnnexe);
+                qmarreeannexeRepository.delete(marrAnnexe.getqDocPK());
+                }
+          //  qmarreeannexeRepository.delete(ff.getqDocPK());
+           //qdocRepository.save(ff);
+   //         qdocRepository.delete(ff.getqDocPK());
+            }
         }
-
-   }
-
-    public qDocRepository getAuthprovJpaRepository() {
+   public qDocRepository getAuthprovJpaRepository() {
         return qdocRepository;
     }
 
@@ -153,11 +186,16 @@ public class qDocServiceImpl implements qDocService {
 
     }
 
-
-
+    @Override
+    public boolean checkPrefix(qPrefix deletedPrefix) {
+        boolean result = true;
+       List<qPageCarnet> pgs=qdocRepository.checkPrefix(deletedPrefix.getPrefix(),deletedPrefix.getTypeDoc().toString());
+       if(pgs.size()>0)  return true;
+           else          return false;
+    }
 
     @Override
-public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc) {
+  public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc) {
 //    qSeq seqActive=qseqRepository.findOne(seqActive1.getSeqPK());
     qSeq seqActive=seqActive1;
     String numeroDebut = seqActive.getDebut(),numeroFin = seqActive.getFin(), debutPrefix = null,finPrefix = null;
@@ -258,12 +296,12 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
             for (int k = 0; k < currp.getNbrLigne(); k++) {
                 if (dateJourCourant.before(documentCree.getRetour()) || dateJourCourant.equals(documentCree.getRetour())) {
 
-                    qJourDeb jourDeb = new qJourDeb(dateJourCourant, qnav, null, currp);
+                    qJourDeb jourDeb = new qJourDeb(k,currp.getNumeroPage(),dateJourCourant, qnav, null, currp);
                     List<qCapture> capturesLine = new ArrayList<qCapture>();
                     // traitement des captures
 
                     for (qEspeceTypee esptypee : currentModel.getEspecestypees()) {
-                        qCapture qcapture = new qCapture(documentCree, esptypee, 0, null, jourDeb);
+                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee, 0, null, jourDeb);
                         qcapture.setQdoc(documentCree);
                         qcapture.setJourDeb(jourDeb);
                         qcapture.setDatedepart(documentCree.getDepart());
@@ -332,7 +370,7 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
 
             // parcourir les ligne de page
             for (int k = 0; k < currp.getNbrLigne(); k++) {
-                    qJourMereAnnexe jourMar = new qJourMereAnnexe(k,"",dateDepart, qnav, null, 0, null, currp);
+                    qJourMereAnnexe jourMar = new qJourMereAnnexe(k,currp.getNumeroPage(),"",dateDepart, qnav, null, 0, null, currp);
                     jourMar.setPageMarree(currp);
                     joursMar.add(jourMar);
                     Calendar cal = Calendar.getInstance();
@@ -423,19 +461,20 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
         }
         Iterator<qPageMarree> qmarpages = lstPgsMar.iterator();
         Date dateJourCourant = documentCree.getDepart();
-        List<qJourMere> joursMar = new ArrayList<qJourMere>();
+        List<qJourMere> joursMar = null;
         while (qmarpages.hasNext()) {
             qPageMarree currp = qmarpages.next();
             currp.setEtatPage(enumEtatPage.DRAFT);
             currp.setQmarree((qMarree) documentCree);
             // parcourir les ligne de page
+            joursMar = new ArrayList<qJourMere>();
             for (int k = 0; k < currp.getNbrLigne(); k++) {
                 if (dateJourCourant.before(documentCree.getRetour()) || dateJourCourant.equals(documentCree.getRetour())) {
-                    qJourMere jourMar = new qJourMere(dateJourCourant, qnav, null, 0, 0, 0, currp);
+                    qJourMere jourMar = new qJourMere(k,currp.getNumeroPage(),dateJourCourant, qnav, null, 0, 0, 0, currp);
                     // traitement des captures
                     List<qCapture> capturesLine = new ArrayList<qCapture>();
                     for (qEspeceTypee esptypee : currentModel.getEspecestypees()) {
-                        qCapture qcapture = new qCapture(documentCree, esptypee, 0, jourMar, null);
+                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee, 0, jourMar, null);
                         qcapture.setQdoc(documentCree);
                         qcapture.setJourMere(jourMar);
                         qcapture.setDatedepart(documentCree.getDepart());
@@ -491,19 +530,19 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
                 null,qusine.getRefAgrement() , dateDepart,null,null,null,0L, null);
 
         List<qSegUsines> lstSegUsine=new ArrayList<qSegUsines>();
-        qSegUsines seg1=new qSegUsines(documentCree,enumSegPeche.Peche_Artisanal,false,false,false,false,false,false);
-        qSegUsines seg2=new qSegUsines(documentCree,enumSegPeche.Pêche_Cotier,false,false,false,false,false,false);
-        qSegUsines seg3=new qSegUsines(documentCree,enumSegPeche.Pêche_Hautiriere,false,false,false,false,false,false);
+        qSegUsines seg1=new qSegUsines(documentCree.getNumImm(),documentCree.getDepart(),enumSegPeche.Peche_Artisanal,false,false,false,false,false,false);
+        qSegUsines seg2=new qSegUsines(documentCree.getNumImm(),documentCree.getDepart(),enumSegPeche.Pêche_Cotier,false,false,false,false,false,false);
+        qSegUsines seg3=new qSegUsines(documentCree.getNumImm(),documentCree.getDepart(),enumSegPeche.Pêche_Hautiriere,false,false,false,false,false,false);
         lstSegUsine.add(seg1);lstSegUsine.add(seg2);lstSegUsine.add(seg3);
 
         List<qQuantiteExportee> lstQteExp=new ArrayList<qQuantiteExportee>();
-        qQuantiteExportee r1=new qQuantiteExportee(documentCree,enumZonOrientation.AFRIC,0);
-        qQuantiteExportee r2=new qQuantiteExportee(documentCree,enumZonOrientation.ASIE,0);
-        qQuantiteExportee r3=new qQuantiteExportee(documentCree,enumZonOrientation.EUROPE,0);
-        qQuantiteExportee r4=new qQuantiteExportee(documentCree,enumZonOrientation.AUTRES,0);
+        qQuantiteExportee r1=new qQuantiteExportee(documentCree.getNumImm(),documentCree.getDepart(),enumZonOrientation.AFRIC,0);
+        qQuantiteExportee r2=new qQuantiteExportee(documentCree.getNumImm(),documentCree.getDepart(),enumZonOrientation.ASIE,0);
+        qQuantiteExportee r3=new qQuantiteExportee(documentCree.getNumImm(),documentCree.getDepart(),enumZonOrientation.EUROPE,0);
+        qQuantiteExportee r4=new qQuantiteExportee(documentCree.getNumImm(),documentCree.getDepart(),enumZonOrientation.AUTRES,0);
         lstQteExp.add(r1);lstQteExp.add(r2);lstQteExp.add(r3);lstQteExp.add(r4);
 
-        qQuantitesTraites qtesTraitees=new qQuantitesTraites(qusine.getRefAgrement(),dateDepart,0,0,0,0,0,0);
+        qQuantitesTraites qtesTraitees=new qQuantitesTraites(documentCree.getNumImm(),documentCree.getDepart(),0,0,0,0,0,0);
 
 
         documentCree.setSegs(lstSegUsine);
@@ -522,19 +561,22 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
         for (qPageCarnet qpc : pagesConcernees) {
             lstPgsTait.add((qPageTraitement) qpc);
         }
+        List<qPageTraitement> lstPgsTaitM = new ArrayList<qPageTraitement>();
         Iterator<qPageTraitement> qmarpages = lstPgsTait.iterator();
         Date dateJourCourant = documentCree.getDepart();
         List<qOpTraitement> opSTraitement = new ArrayList<qOpTraitement>();
         while (qmarpages.hasNext()) {
             qPageTraitement currp = qmarpages.next();
+            currp.setQtraitement(documentCree);
+
             currp.setEtatPage(enumEtatPage.DRAFT);
-            currp.setQtraitement((qTraitement) documentCree);
+
             // parcourir les ligne de page
             for (int k = 0; k < currp.getNbrLigne(); k++) {
 
-                    qOpTraitement uniteTr = new qOpTraitement(currp, null, 0L);
+                    qOpTraitement uniteTr = new qOpTraitement(k,currp.getNumeroPage(),currp, null, 0L);
 
-                    uniteTr.setPageTraitement(currp);
+                  //  uniteTr.setPageTraitement(currp);
                     opSTraitement.add(uniteTr);
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(dateJourCourant);
@@ -543,17 +585,20 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
                     //    capturesLine.clear();
 
             }
+
             currp.setOpTraitements( opSTraitement);
+            lstPgsTaitM.add(currp);
             //   joursMar.clear();
         }
+        //documentCree.setPagesTraitement(lstPgsTaitM);
         documentCree.setQseq(seqActive);
-        documentCree.setPagesTraitement(lstPgsTait);
+       documentCree.setPagesTraitement(lstPgsTait);
         //   ((qDebarquement)qdoc).setCaptures(capturesTotal);
         return documentCree;
     }
     @Override
     public qMarreeAnnexe creerNouvAnnexe(Date dateDepart,qMarree qCurrentMaree,qSeqPK spk,enumTypeDoc typeDoc) {
-        //    qSeq seqActive = qseqRepository.findOne(seqActive1.getSeqPK());
+        // qSeq seqActive = qseqRepository.findOne(seqActive1.getSeqPK());
         qMarreeAnnexe documentCree = null;
         qMarreeAnnexe retObj = null;
         qTraitement traitement = null;
@@ -562,14 +607,11 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
         qCarnet carnetDebut = debutp.getQcarnet();
         if (typeDoc.equals(enumTypeDoc.Journal_Annexe)) {
 
-
             if (carnetDebut.getTypeDoc().equals(enumTypeDoc.Journal_Annexe)) {
                 documentCree = creerAnnexe(dateDepart,qCurrentMaree, spk, typeDoc);
                 retObj = documentCree;
-             //   ((qMarree) qCurrentMaree).setMarreeAnnexe(documentCree);
+                //((qMarree) qCurrentMaree).setMarreeAnnexe(documentCree);
             }
-
-
 
         }
         return retObj;
@@ -790,6 +832,14 @@ public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq se
        return lstDoc;
     }
 
-
+    @Override
+    public Page<qDoc> findAllMatchedDocs(Date searchDateCapture, String searchBat) {
+        String currentnumimm=null;
+         qNavire seletetedNavire=navRepository.findByName(searchBat);
+        if(seletetedNavire==null) currentnumimm=null;
+        else currentnumimm=seletetedNavire.getNumimm();
+        Page<qDoc> pgdocs= qdocRepository.findAllMatchedDocs(new PageRequest(0, 10),searchDateCapture, currentnumimm);
+        return pgdocs;
+    }
 }
 

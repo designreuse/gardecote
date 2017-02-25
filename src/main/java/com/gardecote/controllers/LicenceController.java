@@ -1,16 +1,27 @@
 package com.gardecote.controllers;
-
 import com.gardecote.LicenceAc;
 import com.gardecote.business.service.*;
+import com.gardecote.dto.StatusResponse;
 import com.gardecote.entities.*;
-
+import com.gardecote.reports.bateauExcelView;
+import com.gardecote.reports.licencesExcelView;
+import com.gardecote.reports.zoneExcelView;
 import com.gardecote.web.*;
+import org.jgroups.util.*;
+import org.jgroups.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.*;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.FileCopyUtils;
@@ -21,44 +32,41 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-
 /**
  * Created by Dell on 12/11/2016.
- */
+*/
+
 @Controller
-
-@SessionAttributes(types = {qModelJP.class,frmSearchPgsForDocCrea.class,CreateDocForm.class,lstBateauAchoisirForm.class,creationLicForm.class,attributionCarnetForm.class})
-
+@SessionAttributes(types = {qModelJP.class,frmSearchPgsForDocCrea.class,lstBateauAchoisirForm.class,creationLicForm.class,attributionCarnetForm.class})
 @RequestMapping("/")
 public class LicenceController {
-
-  //  licenceValidatorBatExistant
-  private static String UPLOAD_LOCATION="C:/mytemp/";
-
+    @Autowired
+    JobLauncher jobLauncher;
+    @Autowired @Qualifier("licencesExportJob")
+    Job job1;
+    private static String UPLOAD_LOCATION="C:/mytemp/";
     @Autowired
     FileValidator fileValidator;
-
-
     @Autowired
     MultiFileValidator multiFileValidator;
-
-
     @InitBinder("fileBucket")
     protected void initBinderFileBucket(WebDataBinder binder) {
         binder.setValidator(fileValidator);
     }
-
 
     @InitBinder("multiFileBucket")
     protected void initBinderMultiFileBucket(WebDataBinder binder) {
@@ -66,37 +74,40 @@ public class LicenceController {
     }
 
     @Autowired
-    concessionValidator concessionValidator;
+    private concessionValidator concessionValidator;
     @Autowired
-    MessageByLocaleService messageByLocaleService;
+    private MessageByLocaleService messageByLocaleService;
     @Autowired
-    saveDocValidator saveDocValidator;
+    private saveDocValidator saveDocValidator;
     @Autowired
-    licenceValidator licValidator;
+    private licenceValidator licValidator;
     @Autowired
-    attrUsineValidator attrUsineValidator;
+    private attrUsineValidator attrUsineValidator;
     @Autowired
-    attrTypeConcessionModif attrTypeConcessionModifValidator;
+    private attrTypeConcessionModif attrTypeConcessionModifValidator;
     @Autowired
     attrTypeConcession attrTypeConcessionValidator;
     @Autowired
-    usineValidator usineValidator;
+    private usineValidator usineValidator;
     @Autowired
-    deleteDocValidator deleteDocValidator;
+    private deleteDocValidator deleteDocValidator;
     @Autowired
-    modelValidateur modelValidateur;
+    private modelValidateur modelValidateur;
     @Autowired
-    attributionValidator attrValidator;
+    private attributionValidator attrValidator;
     @Autowired
-    creerDocValidator creerValidateur;
+    private creerDocValidator creerValidateur;
     @Autowired
-    creerAnnexeValidateur creerAnnexeValidateur;
+    private creerAnnexeValidateur creerAnnexeValidateur;
     @Autowired
     private qPrefixService prefService;
     @Autowired
     private qCarnetService carnetService;
     @Autowired
     private qConcessionService concessionService;
+    @Autowired
+    private  qTraitementService traitementService;
+
     @Autowired
     private qConsignataireService consignataireService;
     @Autowired
@@ -158,12 +169,12 @@ public class LicenceController {
     public void setLicValidator(licenceValidator licValidator) {
         this.licValidator = licValidator;
     }
-// pour les liste deroulantes.
-@ModelAttribute("allEnginsDeb")
-public List<enumEnginDeb> getEnginsDeb() {
+    // pour les liste deroulantes.
+   @ModelAttribute("allEnginsDeb")
+    public List<enumEnginDeb> getEnginsDeb() {
 
-    return Arrays.asList(enumEnginDeb.values());
-}
+        return Arrays.asList(enumEnginDeb.values());
+     }
 
     @ModelAttribute("allEnginsMar")
     public List<enumEngin> getEnginsMar() {
@@ -394,7 +405,8 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
             System.out.println(" perf num "+CarnetAttribue.getCarnetSelected().getQprefix().getPrefix());
             System.out.println("type doc "+CarnetAttribue.getCarnetSelected().getQprefix().getTypeDoc());
             qPrefix pref = prefService.findById(prefpk);
-            qCarnet currentCarnet = new qCarnet(pref, CarnetAttribue.getCarnetSelected().getNumeroDebutPage(), CarnetAttribue.getCarnetSelected().getNbrPages(), null, null);
+            qCarnet currentCarnet = new qCarnet(pref, CarnetAttribue.getCarnetSelected().getNumeroDebutPage(), CarnetAttribue.getCarnetSelected().getNbrPages(), null, CarnetAttribue.getUsineSelected());
+
             attrUsineValidator.validate(currentCarnet, bindingresult);
             if (!bindingresult.hasErrors()) {
                 qCarnet crn = carnetService.entrerDansLeSystem(currentCarnet);
@@ -433,8 +445,11 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         qPrefix prefSelected=prefService.findById(prefPK);
         createdCarnet.setQprefix(prefSelected);
         createdCarnet.setNbrPages(50);
+        createdCarnet.setQusine(selectedUsine);
         // chercher les licences actives pour ce navire pour les afficher et choisisser une
         attrCrn.setCarnetSelected(createdCarnet);
+        attrCrn.setMessage("ok");
+     //   carnetService.create(createdCarnet);
         model.addAttribute("CarnetAttribue",attrCrn);
 
         urlNavigation="usine/attribution";
@@ -479,12 +494,13 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
 
     }
+
+
     @RequestMapping(value="/afficherLstLicence", method = RequestMethod.GET)
     public String afficherListLicence(final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page) {
         lstLicForm lst1=new lstLicForm();
         int[] pages;
         Page<qLic>   pgLic=licenceService.findAll(page,20);
-
         pages=new int[pgLic.getTotalPages()];
         for(int i=0;i<pgLic.getTotalPages();i++) pages[i]=i;
         lst1.setLicences(pgLic);
@@ -494,8 +510,6 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         System.out.println(" Total est : "+lst1.getLicences().getTotalElements());
         model.addAttribute("lstLicForm",lst1);
         return "qlistLic";
-
-
     }
 
     @RequestMapping(value="/getTypeDocPrefixesValues",method = RequestMethod.GET)
@@ -543,9 +557,6 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
            }
            return "carnets/attribution";
         }
-
-
-
 
 
     @RequestMapping(value="/listCarnets",method = RequestMethod.GET)
@@ -689,8 +700,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
            }
 
-             if(attrCrn.getLicenceActives().size()==0) urlNavigation="carnets/attributionImpossible";
-             else  urlNavigation="carnets/attribution";
+   //          if(attrCrn.getLicenceActives().size()==0) urlNavigation="carnets/attributionImpossible";
+     //        else  urlNavigation="carnets/attribution";
+            urlNavigation="carnets/attribution";
             return urlNavigation;
         }
         @RequestMapping(value="/NouvLicenceBatExistant",method = RequestMethod.GET)
@@ -859,11 +871,10 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         frmSearchPgsForDocCrea1.setPageCount(pgDoc.getTotalPages());
         frmSearchPgsForDocCrea1.setNumPages(pages);
         frmSearchPgsForDocCrea1.setPageCourante(page);
-    //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
+        //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
        // frmSearchPgsForDocCrea1.setFailedAnnulation("");
          model.addAttribute("frmSearchPgsForDocCrea",frmSearchPgsForDocCrea1);
      //   frmSearchPgsForDocCrea1.setLstDocuments();
-
         return "Documents/listDocuments";
    }
 
@@ -895,7 +906,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
     }
 
-    @RequestMapping(value="/finListAnnexe",method = RequestMethod.GET)
+
+
+        @RequestMapping(value="/finListAnnexe",method = RequestMethod.GET)
     public String getFinListAnnexe(final ModelMap model, @RequestParam(name="debut") String debut,@RequestParam(name="typeDoc") String typeDoc) {
         // creer les categories de ressource 5 PA  de 1 a 5
         boolean displaydatefrgAnnexe=false,displaybuttonfrgAnnexe=false;
@@ -929,9 +942,11 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
      return "docEdit";
     }
 
-
-    @RequestMapping(value="createDocumentSave",method = RequestMethod.POST)
-    public String saveDocument(final frmSearchPgsForDocCrea frmSearchPgsForDocCrea, final BindingResult result,final ModelMap model) {
+    @RequestMapping(value="/createDocumentSave",method = RequestMethod.POST)
+    @Transactional
+    public String saveDocument(final  frmSearchPgsForDocCrea frmSearchPgsForDocCrea, final BindingResult result,final ModelMap model) {
+    //  qDoc currentDoc=new qDoc(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+        qDoc currentDoc=frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc();
         String urlNav=null;
         List<qLic> lics=new ArrayList<qLic>();
         System.out.println("date de depart");
@@ -944,35 +959,45 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         // }
         System.out.println(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getDepart());
         System.out.println(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getNumImm());
+
         //System.out.println(docForm.getCurrentDoc().getqDocPK().toString());
-
-        if(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc() instanceof qDebarquement)  {
+        if(currentDoc instanceof qDebarquement)  {
             lics=docService.retLicences(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getQseq(),frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getEnumtypedoc());
-
-            docService.save((qDebarquement)frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+           docService.save((qDebarquement)frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+            for(qPageCarnet PD:((qDebarquement) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getPages())
+                pagecarnetService.save(PD);
             model.addAttribute("licencesRef", lics);
             urlNav="docEditDebarquement";
         }
 
-        if(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc() instanceof qMarree)  {
+        if(currentDoc instanceof qMarree)  {
+            qMarreeAnnexe annex=((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getMarreeAnnexe();
             lics=docService.retLicences(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getQseq(),frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getEnumtypedoc());
+         docService.save(currentDoc);
+         for(qPageCarnet PC:((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getPages())
+     //       pagecarnetService.save(PC);
+           if(annex!=null) {
+               mareeAnnexService.save(((qMarree) currentDoc).getMarreeAnnexe());
+               for(qPageCarnet PM:((qMarreeAnnexe) ((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getMarreeAnnexe()).getPages())
+                   pagecarnetService.save(PM);
+           }
 
-            docService.save(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
             model.addAttribute("licencesRef", lics);
             urlNav="docEditMarree";
         }
-        if(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc() instanceof qTraitement)  {
-            saveDocValidator.validate(frmSearchPgsForDocCrea, result);
+        if(currentDoc instanceof qTraitement)  {
+         traitementService.update((qTraitement)currentDoc);
+         //     docService.save((qTraitement)((frmSearchPgsForDocCrea) o).getCreateDocFormm().getCurrentDoc());
+        //    pagecarnetService.save(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+            for(qPageTraitement pagetr: ((qTraitement) currentDoc).getPagesTraitement()) {
 
-            if(!result.hasErrors()) {
-                docService.save(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
-        }
-
-               // docService.save(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+        //     pagecarnetService.save(pagetr);
+            }
             urlNav="docEditTraitement";
         }
-        model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea);
 
+
+        model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea);
         frmSearchPgsForDocCrea.getCreateDocFormm().setCurrentPage(0);
         return  urlNav;
     }
@@ -1012,10 +1037,11 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
             model.addAttribute("frmAnnexe", frmAnnexe1);
             return "Documents/Annexe";
         }
-        else   {
+        else {
             List<qMarreeAnnexe> lstAnnexes=mareeAnnexService.findAll();
             model.addAttribute("lstAnnexes", lstAnnexes);
-            return "Documents/listAnnexe";}
+            return "Documents/listAnnexe";
+        }
 
 
     }
@@ -1147,9 +1173,12 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
 
             enumTypeDoc selectedTypeDoc=frmAnnexe.getTypeDocAnnexe();
 
-                currentDoc =  docService.creerNouvAnnexe(dateDepart,(qMarree) qCurrentMaree, spk,enumTypeDoc.Journal_Annexe);
+             currentDoc =  docService.creerNouvAnnexe(dateDepart,(qMarree) qCurrentMaree, spk,enumTypeDoc.Journal_Annexe);
+            ((qMarree) qCurrentMaree).setMarreeAnnexe(currentDoc);
+            docService.save(qCurrentMaree);
+             return "redirect:editDoc?numimm="+frmAnnexe.getNumImmAnnexe()+"&typeDoc=Journal_Peche&depart="+frmAnnexe.getDateDepartAnnexe()+"&action=modifyDoc";
 
-        }
+            }
 
            return "Documents/Annexe";
     }
@@ -1174,7 +1203,7 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
         creerValidateur.validate(frmSearchPgsForDocCrea, bindingresult);
 
         if(!bindingresult.hasErrors()) {
-            List<qTraitement> lstTraitements = new ArrayList<qTraitement>();
+//            List<qTraitement> lstTraitements = new ArrayList<qTraitement>();
 //            qSeqPK qseqpk = new qSeqPK(frmSearchPgsForDocCrea.getNumeroDebut(), frmSearchPgsForDocCrea.getNumeroFin());
   //          qSeq qseq = seqService.findById(qseqpk);
             // Date dateDepart=null,dateRetour=null;
@@ -1243,16 +1272,17 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
                     currentDoc.setBloquerDeletion(true);
                     currentDoc.setDebloquerModification(false);
                     if (currentDoc instanceof qTraitement) {
+                        qTraitement trEnCours=((qTraitement)currentDoc);
                         // docForm.setTypePeche(currentDoc.getPrefix());
-                        docForm.setSegmentPeche(((qTraitement) currentDoc).getSegPeche().toString());
-                        docForm.setPrefix(currentDoc.getPrefix());
+                        docForm.setSegmentPeche(trEnCours.getSegPeche().toString());
+                        docForm.setPrefix(trEnCours.getPrefix());
                         docForm.setTypeDoc(enumTypeDoc.Fiche_Traitement);
                         docForm.setTitre("Fiche de traitement");
-                        docForm.setSegmentPeches(((qTraitement)currentDoc).getSegs());
-                        docForm.setPagesTraitements(((qTraitement)currentDoc).getPagesTraitement());
-                        docForm.setQteExportees(((qTraitement)currentDoc).getqQteExp());
-                        docForm.setQteTraitees(((qTraitement)currentDoc).getqQteTraitees());
-                        docForm.setQteDechu(((qTraitement)currentDoc).getQteDechu());
+                        docForm.setSegmentPeches(trEnCours.getSegs());
+                        docForm.setPagesTraitements(trEnCours.getPagesTraitement());
+                        docForm.setQteExportees(trEnCours.getqQteExp());
+                        docForm.setQteTraitees(trEnCours.getqQteTraitees());
+                        docForm.setQteDechu(trEnCours.getQteDechu());
 
 
                         urlNav= "docEditTraitement";
@@ -1330,16 +1360,18 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
     }
     @RequestMapping(value="/saveModel",params={"saveEspece"},method = RequestMethod.POST)
     public String saveModell(final @ModelAttribute("editedModel") qModelJP editedModel, final ModelMap model,BindingResult bindingresult) {
-        qPrefix pr=null;
+        qPrefix pr=null; qPrefixPK prefPK=null;qPrefix prefcurrent=null;
         List<qEspeceTypee> espTypees=null;
         qModelJP jp=null;
         modelValidateur.validate(editedModel, bindingresult);
 
         if(!bindingresult.hasErrors()) {
-            jp=new qModelJP(editedModel.getQprefix(),editedModel.getEspecestypees());
-            modeljpService.save(editedModel);
+            prefPK=new qPrefixPK(editedModel.getPrefix(),editedModel.getTypeDoc());
+            prefcurrent=prefService.findById(prefPK);
+            if(prefcurrent!=null)
+            { jp=new qModelJP(prefcurrent,editedModel.getEspecestypees());
+            modeljpService.save(jp);}
             model.addAttribute("editedModel",editedModel);
-
               }
         return "Documents/editModel";
     }
@@ -1518,7 +1550,6 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
         SimpleDateFormat sdfmt1 = new SimpleDateFormat("yyyy-MM-dd");
         try {
             dateDepart = sdfmt1.parse(depart);
-
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -1561,14 +1592,18 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
 
         qDocPK dpk = new qDocPK(numimm, dateDepart);
         qMarreeAnnexe currentDoc = mareeAnnexService.findById(dpk);
+        qMarree currentDocM = (qMarree)docService.findById(dpk);
      //   qSeq seq = currentDoc.getQseq();
         //     lics=docService.retLicences(seq);
         //modelValidateur.validate(currentDoc, bindingresult);
         if (currentDoc.isBloquerDeletion() == false) {
-            redirectAttributes.addFlashAttribute("deletefeedback", "suppression impossible");
+            redirectAttributes.addFlashAttribute("deletefeedback", "la suppression est bloquée");
         } else {
-
+            currentDoc.setMarreePrincipal(null);
+            currentDocM.setMarreeAnnexe(null);
+            mareeAnnexService.save(currentDoc);
             mareeAnnexService.delete(currentDoc.getqDocPK());
+            docService.save(currentDocM);
             redirectAttributes.addFlashAttribute("deletefeedback", "supprime");
         }
      //   return "redirect:createDocument?firstEtp=0";lllllll
@@ -1873,68 +1908,68 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
         qc.add(q3);
         qc.add(q4);
         qc.add(q5);
-        qTypeLic qtyplic1 = new qTypeLic('A', 'A', "Affreté artisanal");
-        qTypeLic qtyplic2 = new qTypeLic('A', 'C', "Affreté collecte pêche artisanal");
-        qTypeLic qtyplic3 = new qTypeLic('A', 'D', "Affreté demersal(poisson+ ceph)");
-        qTypeLic qtyplic4 = new qTypeLic('A', 'E', "Affreté demersal(crust+ ceph)");
-        qTypeLic qtyplic5 = new qTypeLic('A', 'L', "Affreté Langouste");
-        qTypeLic qtyplic6 = new qTypeLic('A', 'M', "Affreté Merlu");
-        qTypeLic qtyplic7 = new qTypeLic('A', 'P', "Affreté Pelagique");
-        qTypeLic qtyplic8 = new qTypeLic('A', 'T', "Affreté thon");
-        qTypeLic qtyplic9 = new qTypeLic('A', 'B', "Affreté crabes");
-        qTypeLic qtyplic10 = new qTypeLic('A', 'Q', "Affreté coquillage");
-        qTypeLic qtyplic11 = new qTypeLic('A', 'R', "Affreté recherche");
-        qTypeLic qtyplic12 = new qTypeLic('A', 'S', "Affreté requin");
-        qTypeLic qtyplic13 = new qTypeLic('A', 'V', "Affreté crevettes");
-        qTypeLic qtyplic14 = new qTypeLic('A', '1', "Affreté crevettes+langoustes");
-        qTypeLic qtyplic15 = new qTypeLic('A', 'F', "Affreté demersal+lang verte");
+        qTypeLic qtyplic1 = new qTypeLic("A", "A", "Affreté artisanal");
+        qTypeLic qtyplic2 = new qTypeLic("A", "C", "Affreté collecte pêche artisanal");
+        qTypeLic qtyplic3 = new qTypeLic("A", "D", "Affreté demersal(poisson+ ceph)");
+        qTypeLic qtyplic4 = new qTypeLic("A", "E", "Affreté demersal(crust+ ceph)");
+        qTypeLic qtyplic5 = new qTypeLic("A", "L", "Affreté Langouste");
+        qTypeLic qtyplic6 = new qTypeLic("A", "M", "Affreté Merlu");
+        qTypeLic qtyplic7 = new qTypeLic("A", "P", "Affreté Pelagique");
+        qTypeLic qtyplic8 = new qTypeLic("A", "T", "Affreté thon");
+        qTypeLic qtyplic9 = new qTypeLic("A", "B", "Affreté crabes");
+        qTypeLic qtyplic10 = new qTypeLic("A", "Q", "Affreté coquillage");
+        qTypeLic qtyplic11 = new qTypeLic("A", "R", "Affreté recherche");
+        qTypeLic qtyplic12 = new qTypeLic("A", "S", "Affreté requin");
+        qTypeLic qtyplic13 = new qTypeLic("A", "V", "Affreté crevettes");
+        qTypeLic qtyplic14 = new qTypeLic("A", "1", "Affreté crevettes+langoustes");
+        qTypeLic qtyplic15 = new qTypeLic("A", "F", "Affreté demersal+lang verte");
 
 
-        qTypeLic qtyplic20 = new qTypeLic('L', 'A', "Licence artisanal");
-        qTypeLic qtyplic21 = new qTypeLic('L', 'C', "Licence collecte peche artisanal");
-        qTypeLic qtyplic22 = new qTypeLic('L', 'D', "Licence dem poss+ceph");
-        qTypeLic qtyplic23 = new qTypeLic('L', 'L', "Licence langouste");
-        qTypeLic qtyplic24 = new qTypeLic('L', 'M', "Licence merlu");
-        qTypeLic qtyplic25 = new qTypeLic('L', 'P', "Licence pelagique");
-        qTypeLic qtyplic26 = new qTypeLic('L', 'T', "Licence thon");
-        qTypeLic qtyplic27 = new qTypeLic('L', 'V', "Licence crust sauf langouste");
-        qTypeLic qtyplic28 = new qTypeLic('L', 'B', "Licence crabes");
-        qTypeLic qtyplic29 = new qTypeLic('L', 'H', "Licence esp dem profond");
-        qTypeLic qtyplic30 = new qTypeLic('L', 'Q', "Licence coquillage");
-        qTypeLic qtyplic31 = new qTypeLic('L', 'R', "Licence recherche");
-        qTypeLic qtyplic32 = new qTypeLic('L', 'S', "Licence requin");
-        qTypeLic qtyplic33 = new qTypeLic('L', '1', "Licence crevettes +langouste");
+        qTypeLic qtyplic20 = new qTypeLic("L", "A", "Licence artisanal");
+        qTypeLic qtyplic21 = new qTypeLic("L", "C", "Licence collecte peche artisanal");
+        qTypeLic qtyplic22 = new qTypeLic("L", "D", "Licence dem poss+ceph");
+        qTypeLic qtyplic23 = new qTypeLic("L", "L", "Licence langouste");
+        qTypeLic qtyplic24 = new qTypeLic("L", "M", "Licence merlu");
+        qTypeLic qtyplic25 = new qTypeLic("L", "P", "Licence pelagique");
+        qTypeLic qtyplic26 = new qTypeLic("L", "T", "Licence thon");
+        qTypeLic qtyplic27 = new qTypeLic("L", "V", "Licence crust sauf langouste");
+        qTypeLic qtyplic28 = new qTypeLic("L", "B", "Licence crabes");
+        qTypeLic qtyplic29 = new qTypeLic("L", "H", "Licence esp dem profond");
+        qTypeLic qtyplic30 = new qTypeLic("L", "Q", "Licence coquillage");
+        qTypeLic qtyplic31 = new qTypeLic("L", "R", "Licence recherche");
+        qTypeLic qtyplic32 = new qTypeLic("L", "S", "Licence requin");
+        qTypeLic qtyplic33 = new qTypeLic("L", "1", "Licence crevettes +langouste");
 
 
-        qTypeLic qtyplic35 = new qTypeLic('N', 'A', "National artisanal");
-        qTypeLic qtyplic36 = new qTypeLic('N', 'C', "National collecte peche artisanal");
-        qTypeLic qtyplic37 = new qTypeLic('N', 'D', "National dem poiss+ ceph");
-        qTypeLic qtyplic38 = new qTypeLic('N', 'E', "National dem cep+ crust");
-        qTypeLic qtyplic39 = new qTypeLic('N', 'L', "National langouste");
-        qTypeLic qtyplic40 = new qTypeLic('N', 'M', "National merlu");
-        qTypeLic qtyplic41 = new qTypeLic('N', 'P', "National pelagique");
-        qTypeLic qtyplic42 = new qTypeLic('N', 'T', "National thon");
-        qTypeLic qtyplic43 = new qTypeLic('N', 'B', "National crabes");
-        qTypeLic qtyplic44 = new qTypeLic('N', 'Q', "National coquillage");
-        qTypeLic qtyplic45 = new qTypeLic('N', 'R', "National recherche");
-        qTypeLic qtyplic46 = new qTypeLic('N', 'S', "National requin");
-        qTypeLic qtyplic47 = new qTypeLic('N', 'V', "National crevettes");
-        qTypeLic qtyplic48 = new qTypeLic('N', '1', "National crevettes+langouste");
+        qTypeLic qtyplic35 = new qTypeLic("N", "A", "National artisanal");
+        qTypeLic qtyplic36 = new qTypeLic("N", "C", "National collecte peche artisanal");
+        qTypeLic qtyplic37 = new qTypeLic("N", "D", "National dem poiss+ ceph");
+        qTypeLic qtyplic38 = new qTypeLic("N", "E", "National dem cep+ crust");
+        qTypeLic qtyplic39 = new qTypeLic("N", "L", "National langouste");
+        qTypeLic qtyplic40 = new qTypeLic("N", "M", "National merlu");
+        qTypeLic qtyplic41 = new qTypeLic("N", "P", "National pelagique");
+        qTypeLic qtyplic42 = new qTypeLic("N", "T", "National thon");
+        qTypeLic qtyplic43 = new qTypeLic("N", "B", "National crabes");
+        qTypeLic qtyplic44 = new qTypeLic("N", "Q", "National coquillage");
+        qTypeLic qtyplic45 = new qTypeLic("N", "R", "National recherche");
+        qTypeLic qtyplic46 = new qTypeLic("N", "S", "National requin");
+        qTypeLic qtyplic47 = new qTypeLic("N", "V", "National crevettes");
+        qTypeLic qtyplic48 = new qTypeLic("N", "1", "National crevettes+langouste");
 
-        qTypeLic qtyplic49 = new qTypeLic('L', 'G', "Licence Esp dem autre que merlu");
-        qTypeLic qtyplic50 = new qTypeLic('L', 'E', "Licence Esp dem");
-        qTypeLic qtyplic51 = new qTypeLic('A', 'V', "AU");
-        qTypeLic qtyplic52 = new qTypeLic('L', 'I', "Licence Thons+Espadons");
-        qTypeLic qtyplic53 = new qTypeLic('N', 'N', "NN");
-        qTypeLic qtyplic54 = new qTypeLic('N', 'I', "NI");
-        qTypeLic qtyplic55 = new qTypeLic('N', 'U', "NU");
-        qTypeLic qtyplic56 = new qTypeLic('L', 'T', "LT");
-        qTypeLic qtyplic57 = new qTypeLic('X', 'P', "XP");
-        qTypeLic qtyplic58 = new qTypeLic('Z', 'Z', "INDET");
-        qTypeLic qtyplic59 = new qTypeLic('L', '0', "Licence INDET");
-        qTypeLic qtyplic60 = new qTypeLic('N', '0', "National");
-        qTypeLic qtyplic61 = new qTypeLic('A', '0', "Affrete INDET");
-        qTypeLic qtyplic62 = new qTypeLic('A', 'H', "National ravitalleur pel");
+        qTypeLic qtyplic49 = new qTypeLic("L", "G", "Licence Esp dem autre que merlu");
+        qTypeLic qtyplic50 = new qTypeLic("L", "E", "Licence Esp dem");
+        qTypeLic qtyplic51 = new qTypeLic("A", "V", "AU");
+        qTypeLic qtyplic52 = new qTypeLic("L", "I", "Licence Thons+Espadons");
+        qTypeLic qtyplic53 = new qTypeLic("N", "N", "NN");
+        qTypeLic qtyplic54 = new qTypeLic("N", "I", "NI");
+        qTypeLic qtyplic55 = new qTypeLic("N", "U", "NU");
+        qTypeLic qtyplic56 = new qTypeLic("L", "T", "LT");
+        qTypeLic qtyplic57 = new qTypeLic("X", "P", "XP");
+        qTypeLic qtyplic58 = new qTypeLic("Z", "Z", "INDET");
+        qTypeLic qtyplic59 = new qTypeLic("L", "0", "Licence INDET");
+        qTypeLic qtyplic60 = new qTypeLic("N", "0", "National");
+        qTypeLic qtyplic61 = new qTypeLic("A", "0", "Affrete INDET");
+        qTypeLic qtyplic62 = new qTypeLic("A", "H", "National ravitalleur pel");
 
         typelicService.create(qtyplic1);
         typelicService.create(qtyplic2);
@@ -2047,7 +2082,14 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
 
         return "autres/models";
     }
+    @RequestMapping(value="/listEspeces",method = RequestMethod.GET)
+    public String listEspeces( final ModelMap model) {
+        List<qEspece> especes=especeService.findAll();
 
+        model.addAttribute("especes",especes);
+
+        return "autres/especes";
+    }
     @RequestMapping(value="/listZones",method = RequestMethod.GET)
     public String listZones(final ModelMap model) {
         List<qZone> zones=zoneService.findAll();
@@ -2144,6 +2186,28 @@ qConsignataire deletedConsignataire=consignataireService.findById(refConcessionn
 
             return "prefixes/modifyPrefix";
         }
+
+    @RequestMapping(value="/ActionPrefixesDelete",method = RequestMethod.GET)
+
+    public String ActionPrefixesDelete(final RedirectAttributes redirectAttributes,final @RequestParam(name="prefixPK") String prefixPK, final @RequestParam(name="typeDoc") String typeDoc,final ModelMap model) {
+
+        qPrefixPK prefPK=new qPrefixPK(prefixPK,enumTypeDoc.valueOf(typeDoc));
+
+        qPrefix deletedPrefix=prefService.findById(prefPK);
+        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+        boolean flpgs=licenceService.checkPrefix(deletedPrefix);
+        boolean fltypcon=typeconcessionService.checkPrefix(deletedPrefix);
+        if(flpgs==false && fltypcon==false)
+        {
+            prefService.delete(deletedPrefix.getPrefixPK());
+            redirectAttributes.addFlashAttribute("feedb","prefix est bien supprimé");
+        }
+        else {
+            redirectAttributes.addFlashAttribute("feedb", "echéc de suppression de prefix");
+        }
+
+        return "prefixes/modifyPrefix";
+    }
 
     @RequestMapping(value="/ActionPrefixesModifySave",method = RequestMethod.POST)
 
@@ -2409,6 +2473,26 @@ qConsignataire deletedConsignataire=consignataireService.findById(refConcessionn
         return "categories/modifCat";
     }
 
+    @RequestMapping(value="/DeleteCategorie",method = RequestMethod.GET)
+    public String DeleteCategorie(final RedirectAttributes redAttributes,final @RequestParam(name="catPK") Integer catPK,final ModelMap model) {
+        qCategRessource categRessource=categService.findById(catPK);
+
+       if(categRessource.getQlicences()==null && categRessource.getEngins()==null && categRessource.getQconcession()==null && categRessource.getTypeconcessionConcernee()==null)
+       {
+           categService.delete(categRessource.getIdtypeConcession());
+           redAttributes.addFlashAttribute("successmes","la categorie de ressource est bien supprimé");
+       }
+       else
+       {
+           redAttributes.addFlashAttribute("successmes","echec de suppression");
+       }
+
+
+        //qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+
+        return "redirect:listCategRessources";
+    }
+
     @RequestMapping(value="/ModifierCategorieSave",method = RequestMethod.POST)
     public String ModifierCategorieSave(final @ModelAttribute("modifCat") qCategRessource modifCat,final ModelMap model) {
         categService.save(modifCat);
@@ -2453,6 +2537,22 @@ qConsignataire deletedConsignataire=consignataireService.findById(refConcessionn
         return "models/modifyModel";
     }
 
+
+    @RequestMapping(value="/DeleteModel",method = RequestMethod.GET)
+    public String DeleteModel(final RedirectAttributes redAttributes,final @RequestParam(name="modelPK") String modelPK,final @RequestParam(name="typeDoc") String typeDoc,final ModelMap model) {
+        qPrefixPK prefPK = new qPrefixPK(modelPK, enumTypeDoc.valueOf(typeDoc));
+        qModelJP modeljp = modeljpService.findById(prefPK);
+        if (modeljp.getEspecestypees() == null && modeljp.getPrefix() == null) {
+            modeljpService.delete(prefPK);
+            redAttributes.addAttribute("successmes","le model est bien supprimé");
+        } else
+        {
+            redAttributes.addAttribute("successmes","echéc de suppression de modél");
+        }
+        //qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+
+        return "redirect:listModels";
+    }
     @RequestMapping(value="/ActionModelAjoutSave",method = RequestMethod.POST)
     public String ActionModelAjoutSave(final RedirectAttributes myred,final @ModelAttribute("newModel") qModelJP newModel,final ModelMap model) {
 qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
@@ -2496,22 +2596,33 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
         model.addAttribute("modifiedZone",zone);
         return "zones/modifyZone";
     }
-
+    @RequestMapping(value="/DeleteZone",method = RequestMethod.GET)
+    public String DeleteZone(final RedirectAttributes redirectAttributes,final @RequestParam(name="zonePK") Integer zonePK,final ModelMap model) {
+       qZone zone=zoneService.findById(zonePK);
+        if(licenceService.checkZones(zone)==false) {
+           zoneService.delete(zone.getIdZone());
+            redirectAttributes.addFlashAttribute("feedb","la zone est bien supprimé");
+        }
+        else {
+            redirectAttributes.addFlashAttribute("feedb","echéc de suppression de zone");
+            redirectAttributes.addFlashAttribute("","");
+        }
+        return "redirect:listZones";
+    }
     @RequestMapping(value="/ActionZoneAjoutSave",method = RequestMethod.POST)
     public String ActionZoneAjoutSave(final RedirectAttributes myred,final @ModelAttribute("newZone") qZone newZone,final ModelMap model) {
 
 
         if(newZone!=null) {
-
             qZone zn=zoneService.findById(newZone.getIdZone());
             if(zn==null)  {
-
-               zoneService.create(newZone);
+                zoneService.create(newZone);
                 myred.addFlashAttribute("successmes","ajouté avec success");
             }
             else  {
                 myred.addFlashAttribute("successmes","impossible d'ajouter");
-            }}
+            }
+        }
         else  myred.addFlashAttribute("prefnontrouve","prefix non trouvé");
         return "redirect:listZones";
     }
@@ -2540,6 +2651,23 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
         return "nationalites/modifyNationalite";
     }
 
+    @RequestMapping(value="/DeleteNationalite",method = RequestMethod.GET)
+    public String DeleteNationalite(final RedirectAttributes redAttributes,final @RequestParam(name="nationPK") Integer nationPK,final ModelMap model) {
+
+        qNation nationjp=nationService.findById(nationPK);
+        //qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+       List<qLic> licences= licenceService.checkNation(nationjp);
+        if(licences.size()==0) {
+            nationService.delete(nationjp.getIdNation());
+            redAttributes.addAttribute("successmsg","la nationalité est bien supprimé");
+        }
+        else {
+           // nationService.delete(nationjp.getIdNation());
+            redAttributes.addAttribute("successmsg","échec de suppression de nationalité");
+        }
+
+        return "redirect:listNationalites";
+    }
     @RequestMapping(value="/ActionNationaliteAjoutSave",method = RequestMethod.POST)
     public String ActionNationaliteAjoutSave(final RedirectAttributes myred,final @ModelAttribute("newNationalite") qNation newNationalite,final ModelMap model) {
         if(newNationalite!=null) {
@@ -2557,15 +2685,123 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
         return "nationalites/modifyNationalite";
     }
 
+
+    // especes
+
+    @RequestMapping(value="/AjouterEsp",method = RequestMethod.GET)
+    public String AjouterEspece(final ModelMap model) {
+        qEspece newEspece=new qEspece();
+        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+        model.addAttribute("newEspece",newEspece);
+        return "especes/newEspece";
+    }
+    @RequestMapping(value="/ModifierEspece",method = RequestMethod.GET)
+    public String ModifierEspece(final @RequestParam(name="especePK") String especePK,final ModelMap model) {
+      //  qPrefixPK prefPK=new qPrefixPK(especePK,enumTypeDoc.valueOf(typeDoc));
+        qEspece espece=especeService.findById(especePK);
+        //qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+        model.addAttribute("modifiedEspece",espece);
+        return "especes/modifyEspece";
+    }
+
+
+    @RequestMapping(value="/DeleteEspece",method = RequestMethod.GET)
+    public String DeleteModel(final RedirectAttributes redAttributes,final @RequestParam(name="especePK") String especePK,final ModelMap model) {
+     //   qPrefixPK prefPK = new qPrefixPK(modelPK, enumTypeDoc.valueOf(typeDoc));
+        qEspece esp = especeService.findById(especePK);
+        if (esp.getQespecetypee() == null ) {
+            especeService.delete(esp.getCodeEsp());
+            redAttributes.addAttribute("successmes","l'espece est bien supprimé");
+        } else
+        {
+            redAttributes.addAttribute("successmes","echéc de suppression d'espece");
+        }
+        //qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+
+        return "redirect:listEspeces";
+    }
+    @RequestMapping(value="/ActionEspeceAjoutSave",method = RequestMethod.POST)
+    public String ActionEspeceAjoutSave(final RedirectAttributes myred,final @ModelAttribute("newEspece") qEspece newEspece,final ModelMap model) {
+    //    qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
+        qEspece esp=especeService.findById(newEspece.getCodeEsp());
+        if(esp==null) {
+            especeService.create(newEspece);
+}
+        else  myred.addFlashAttribute("esptrouve","l'espece est déja crée");
+        return "redirect:listEspeces";
+    }
+    @RequestMapping(value="/ActionEspeceModifySave",method = RequestMethod.POST)
+    public String ActionEspeceModifySave(final @ModelAttribute("modifiedEspece") qEspece modifEspece,final ModelMap model) {
+        especeService.save(modifEspece);
+        model.addAttribute("modifEspece",modifEspece);
+        return "especes/modifyEspece";
+    }
+    @RequestMapping(value="/searchDocCapture",method = RequestMethod.POST)
+    public String searchDocCapture(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("sacc") searchAccueil searchAccueil) {
+        frmSearchPgsForDocCrea f=new frmSearchPgsForDocCrea();
+        String urlnext=null;
+        Date depart=null;
+        //search for docs
+        Page<qDoc> lstdocs=null;
+        System.out.println(searchAccueil.getSearchDateCapture());
+        lstdocs=docService.findAllMatchedDocs(searchAccueil.getSearchDateCapture(),searchAccueil.getSearchBat());
+        // set for docs
+        f.setLstDocuments(lstdocs);
+        //.lstDocuments
+        System.out.println("size : "+lstdocs.getContent().size());
+        if(lstdocs.getContent().size()!=0) {
+            redirectAttributes.addFlashAttribute("notfounddoc","");
+            urlnext="redirect:createDocument?firstEtp=0";
+
+                                            }
+        else {
+            urlnext="redirect:start";
+            redirectAttributes.addFlashAttribute("notfounddoc","aucun document trouvé");
+        }
+        model.addAttribute("frmSearchPgsForDocCrea",f);
+        return urlnext;
+    }
+
     @RequestMapping(value="/importerLicences",method = RequestMethod.GET)
     public String importerLicencesGET(ModelMap model)
     {
         FileBucket fileModel = new FileBucket();
         model.addAttribute("fileBucket", fileModel);
         return "imports/importer";
-
     }
 
+    @RequestMapping(value="/importerLicNV",method = RequestMethod.GET)
+    public String importerLicNVGET(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileBucket", fileModel);
+        return "imports/importerLicNV";
+    }
+
+
+    @RequestMapping(value="/importerLicNV",method = RequestMethod.POST)
+    public String handleFileUploadtrr(@Valid FileBucket fileBucket, BindingResult result, ModelMap model) throws IOException {
+
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            licenceService.importerLicenceNV(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+
+        //
+
+        return "redirect:importerLicences";
+    }
 
 
     @RequestMapping(value="/importerLicencestr",method = RequestMethod.POST)
@@ -2592,5 +2828,53 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
         return "redirect:importerLicences";
     }
 
+    @RequestMapping(value="/zoneExcel", method=RequestMethod.GET)
+    public ModelAndView getZoneData(HttpServletRequest request, HttpServletResponse response) throws SQLException{
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("sheetname", "ZonesExport");
+        List<qZone> zones=zoneService.findAll();
+        System.out.println("size de : "+zones.size());
+        model.put("zones", zones);
+        return new ModelAndView(new zoneExcelView(),model);
+    }
+
+    @RequestMapping(value="/naviresExcel", method=RequestMethod.GET)
+    public ModelAndView getNaviresData(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("sheetname", "naviresExport");
+        List<qNavire> navires=registrenavireService.findAll();
+        System.out.println("size de : "+navires.size());
+        model.put("navires", navires);
+        return new ModelAndView(new bateauExcelView(),model);
+    }
+    @RequestMapping(value="/licencesExcel", method=RequestMethod.GET)
+    public ModelAndView getLicencesData(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("sheetname", "licencesExport");
+        List<qLic> licences=licenceService.findAll();
+        System.out.println("size de : "+licences.size());
+        model.put("licences", licences);
+        return new ModelAndView(new licencesExcelView(),model);
+    }
+
+    @RequestMapping(value="/launchjob", method=RequestMethod.GET)
+    public @ResponseBody   StatusResponse job1() {
+        System.out.println("jjjjj");
+        JobParameters jobParameters =
+                new JobParametersBuilder().addString("input.file.name", "cvs/input/fxe_dadsDevice.dat").toJobParameters();
+
+
+        try {
+            Map<String,JobParameter> parameters = new HashMap<String,JobParameter>();
+            parameters.put("date", new JobParameter(new Date()));
+            jobLauncher.run(job1, new JobParameters(parameters));
+            return new StatusResponse(true);
+       } catch (JobInstanceAlreadyCompleteException ex) {
+            return new StatusResponse(false, "This job has been completed already!");
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

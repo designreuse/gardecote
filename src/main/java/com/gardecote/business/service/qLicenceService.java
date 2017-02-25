@@ -5,6 +5,9 @@
 package com.gardecote.business.service;
 
 import com.gardecote.entities.qLic;
+import com.gardecote.entities.qNation;
+import com.gardecote.entities.qPrefix;
+import com.gardecote.entities.qZone;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,12 +27,13 @@ public interface qLicenceService {
 	 */
 	qLic findById(String idchact) ;
 	void  importerLicence(MultipartFile file, String fullname);
+	String importerLicenceNV(MultipartFile file, String fullpatchname);
 	/**
 	 * Loads all entities.
 	 * @return all entities
 	 */
 	Page<qLic> findAll(int p, int size);
-
+	List<qLic> findAll();
 	/**
 	 * Saves the given entity in the database (create or update)
 	 * @param entity
@@ -37,6 +41,8 @@ public interface qLicenceService {
 	 */
 	qLic save(qLic entity);
 
+	List<qLic> checkNation(qNation nationjp);
+	boolean checkPrefix(qPrefix deletedPrefix);
 
 	/**
 	 * Updates the given entity in the database
@@ -51,7 +57,7 @@ public interface qLicenceService {
 	 * @return
 	 */
 	qLic create(qLic entity);
-	 boolean validatenav(qLic lic);
+	boolean validatenav(qLic lic);
 	boolean validatenumlic(qLic lic);
 	/**
 	 * Deletes an entity using its Primary Key
@@ -59,5 +65,6 @@ public interface qLicenceService {
 	 */
 	void delete(String idchact);
 	Page<qLic> returnSuggNomNav(String searchNomnav);
+	boolean checkZones(qZone zone);
 
 }

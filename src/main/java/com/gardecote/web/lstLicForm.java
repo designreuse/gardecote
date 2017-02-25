@@ -21,6 +21,7 @@ public class lstLicForm implements Serializable{
     }
 
     public lstLicForm() {
+
     }
 
     public int getPageCount() {

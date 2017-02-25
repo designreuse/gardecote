@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Dell on 09/10/2016.
  */
 @Entity
-@Table(name="qEnginPecheDeb30", schema="dbo", catalog="GCM1" )
+@Table(name="qEnginPecheDeb33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qEnginPecheDebar.countAll", query="SELECT COUNT(x) FROM qEnginPecheDebar x" )

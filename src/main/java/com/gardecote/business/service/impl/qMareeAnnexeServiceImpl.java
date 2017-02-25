@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.List;
 @Transactional
 public class qMareeAnnexeServiceImpl implements qMareeAnnexeService {
 
+    @PersistenceContext
+    EntityManager entityManager;
     @Autowired
     private qMarreeAnnexeRepository qmareeannexeRepository;
     @Autowired
@@ -45,16 +49,18 @@ public class qMareeAnnexeServiceImpl implements qMareeAnnexeService {
     @Override
     public qMarreeAnnexe save(qMarreeAnnexe authprov) {
 
-        //     Session session = em.unwrap(Session.class);
+        qMarreeAnnexe tt=entityManager.find(qMarreeAnnexe.class,authprov.getqDocPK());
+        //      System.out.println(tt.toString());
+        if (tt!=null){
+            System.out.println(tt.toString());
+            entityManager.merge(authprov);
+        }else{
+            entityManager.persist(authprov);
+        }
+
         qMarreeAnnexe authprovEntity = qmareeannexeRepository.findOne(authprov.getqDocPK());
         return qmareeannexeRepository.save(authprov);
-        //       if (authprovEntity == null) {
-        //         em.persist(authprov);
-        //         return authprov;
-        //     } else {
-        //   session.evict(authprovEntity);
-        //      return em.merge(authprov);
-        //     }
+
     }
 
     @Override

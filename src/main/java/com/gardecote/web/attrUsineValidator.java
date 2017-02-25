@@ -28,12 +28,13 @@ public class attrUsineValidator implements Validator {
     public void validate(Object o, Errors errors) {
         qCarnet crn = (qCarnet) o;
         qCarnet carnetDoublon=carnetService.findById(crn.getCarnetPK());
+
         boolean priznak=carnetService.checkIfNumeroDebutValable(((qCarnet) o).getNumeroDebutPage());
         if(carnetDoublon!=null)    errors.rejectValue("carnetSelected.numeroDebutPage","carnetSelected.qprefix.doublon");
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "carnetSelected.numeroDebutPage", "carnetSelected.qprefix.empty");
 
-        if(priznak==false)  errors.rejectValue("carnetSelected.numeroDebutPage","carnetSelected.numeroDebut.invalide");
+        if(priznak==false)  errors.rejectValue("numeroDebutPage","carnetSelected.numeroDebut.invalide");
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "carnetSelected.numeroDebutPage", "carnetSelected.numeroDebutPage.empty");
 

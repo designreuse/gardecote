@@ -327,9 +327,7 @@ public class mainJsp  {
 	@Secured(value={"ROLE_admin"})
 	@RequestMapping("/start1")
 	public String list(Model model,HttpServletRequest httpServletRequest) {
-
 		HttpSession httpSession=httpServletRequest.getSession();
-
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = auth.getName();
 		List<String> roles=new ArrayList<>();

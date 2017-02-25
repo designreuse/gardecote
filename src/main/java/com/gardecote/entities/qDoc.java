@@ -9,13 +9,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
 /**
  * Created by Dell on 23/10/2016.
  */
 @Entity
 @DynamicUpdate
-@Table(name="qDoc31", schema="dbo", catalog="GCM1" )
+@Table(name="qDoc33", schema="dbo", catalog="GCM3" )
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
@@ -25,8 +24,6 @@ public class qDoc implements Serializable {
     private Date depart       ;
     @Id
     private String numImm;
-
-
     @OneToOne
     private qLic licenceImputation;
     private String segPeche;
@@ -207,9 +204,7 @@ public class qDoc implements Serializable {
     }
     public qDocPK getqDocPK(){
         qDocPK qdk=new qDocPK(this.getNumImm(),this.depart);
-
-
-        return qdk;
+       return qdk;
     }
     public void setDepart(Date depart) {
 
@@ -243,6 +238,17 @@ public class qDoc implements Serializable {
         if(qusine!=null)   this.numImm=qusine.getRefAgrement();
         this.retour = retour;
     }
+    public qDoc(qDoc other){
+        this.qconcession=other.getQconcession();
+        this.qnavire=other.getQnavire();
+        this.qusine=other.getQusine();
+        this.enumtypedoc = other.getEnumtypedoc();
+        this.depart=other.getDepart();
+        this.qseq=other.getQseq();
+        if(qnavire!=null)  this.numImm=other.getQnavire().getNumimm();
+        if(qusine!=null)   this.numImm=other.getQusine().getRefAgrement();
+        this.retour = other.getRetour();
+    }
 
     public enumTypeDoc getEnumtypedoc() {
         return enumtypedoc;
@@ -259,8 +265,6 @@ public class qDoc implements Serializable {
     public void setNumImm(String numImm) {
         this.numImm = numImm;
     }
-
-
 
     public Date getRetour() {
         return retour;

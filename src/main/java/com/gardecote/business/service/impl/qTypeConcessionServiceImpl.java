@@ -4,6 +4,7 @@
  */
 package com.gardecote.business.service.impl;
 import com.gardecote.entities.qCategRessource;
+import com.gardecote.entities.qPrefix;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,13 @@ public class qTypeConcessionServiceImpl implements qTypeConcessionService {
 	@Autowired
 	private qTypeConcessionRepository qTypeConcessionJpaRepository;
 
-	
+	@Override
+	public boolean checkPrefix(qPrefix sdeletedPrefix) {
+		List<qTypeConcession> typesconcess=qTypeConcessionJpaRepository.getTypes(sdeletedPrefix.getPrefix(),sdeletedPrefix.getTypeDoc().toString());
+		if(typesconcess.size()>0) return true;
+		else return false;
+	}
+
 	@Override
 	public qTypeConcession findById(Integer idcapt) {
 		qTypeConcession qCaptures = qTypeConcessionJpaRepository.findOne(idcapt);
@@ -65,12 +72,12 @@ public class qTypeConcessionServiceImpl implements qTypeConcessionService {
 	public qTypeConcession update(qTypeConcession qcapture) {
 		qTypeConcession qcaptureEntity = qTypeConcessionJpaRepository.findOne(qcapture.getQtypeconcessionpk());
 	//	qTypeConcession qcaptureEntitySaved = qTypeConcessionJpaRepository.save(qcapture);
-		    Session session = em.unwrap(Session.class);
+		   Session session = em.unwrap(Session.class);
 		      if (qcaptureEntity == null) {
 		      em.persist(qcapture);
 		          return qcapture;
 		     } else {
-		       session.evict(qcaptureEntity);
+		     session.evict(qcaptureEntity);
 				  System.out.println("kkkkkkkkkkk");
 				  System.out.println(qcaptureEntity.getQtypeconcessionpk());
 				  System.out.println(qcaptureEntity.getPrefixNum());

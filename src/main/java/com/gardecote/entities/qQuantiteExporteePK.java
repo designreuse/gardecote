@@ -9,9 +9,9 @@ import java.util.Date;
  */
 public class qQuantiteExporteePK implements Serializable {
 
-    String refAgrement;
+    private String refAgrement;
 
-    Date dateTraitement;
+    private Date dateTraitement;
 
     private enumZonOrientation enumZonOrientationPeche;
 

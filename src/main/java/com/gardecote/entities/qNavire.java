@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 @Entity
-@Table(name="qNavire30", schema="dbo", catalog="GCM1" )
+@Table(name="qNavire33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qNavire.countAll", query="SELECT COUNT(x) FROM qNavire x" )
@@ -309,5 +309,6 @@ public class qNavire implements Serializable {
         this.radio = radio;
         this.balise = balise;
         this.updatedOn=updatedOn;
+
     }
 }

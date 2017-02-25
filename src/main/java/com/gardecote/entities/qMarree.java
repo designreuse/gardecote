@@ -22,7 +22,6 @@ import java.util.Date;
  */
 @Entity
 @DynamicUpdate
-
 @DiscriminatorValue("MARREE")
 // @Table(name="qMarree", schema="dbo", catalog="DSPCM_DB" )
 // Define named queries here
@@ -30,7 +29,6 @@ import java.util.Date;
   @NamedQuery ( name="qMarree.countAll", query="SELECT COUNT(x) FROM qMarree x" )
 } )
 
-@IdClass(qDocPK.class)
 public class qMarree extends qDoc implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -38,15 +36,13 @@ public class qMarree extends qDoc implements Serializable
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------
     private enumJP typeJP;
-
     @ManyToMany(targetEntity = qEnginPecheMar.class,cascade = CascadeType.ALL)
-    @JoinTable(name = "qAssocMarreeEngins")
+    @JoinTable(name = "qAssocMarreeEnginsBIS")
     private List<qEnginPecheMar> qEngins;
-
     @OneToMany(targetEntity=qPageMarree.class,cascade = CascadeType.ALL)
-    @JoinTable(name = "qAssocMareesPages")
+    @JoinTable(name = "qAssocMareesPagesBIS")
     private List<qPageMarree> pages;
-    @OneToOne(targetEntity = qMarreeAnnexe.class)
+    @OneToOne(targetEntity = qMarreeAnnexe.class,cascade = {CascadeType.MERGE})
     private qMarreeAnnexe marreeAnnexe;
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
@@ -55,13 +51,10 @@ public class qMarree extends qDoc implements Serializable
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
    public qMarree() {
-
     }
-
 //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
-
     public qMarreeAnnexe getMarreeAnnexe() {
         return marreeAnnexe;
     }

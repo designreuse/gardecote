@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Entity
 @DynamicUpdate
-@Table(name="qDoc30", schema="dbo", catalog="GCM1")
+
 @DiscriminatorValue("DEBARQUEMENT")
 public class qDebarquement extends qDoc implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -21,17 +21,17 @@ public class qDebarquement extends qDoc implements Serializable {
     // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
     @ManyToMany(targetEntity = qEnginPecheDebar.class,cascade = CascadeType.ALL)
-    @JoinTable(name = "qAssocDebarqEnginPeche")
+    @JoinTable(name = "qAssocDebarqEnginPecheBIS")
     private List<qEnginPecheDebar> Engins;
 
     @ManyToMany(targetEntity = qCategDeb.class,cascade = CascadeType.ALL)
-    @JoinTable(name = "qAssocDebarqCategories")
+    @JoinTable(name = "qAssocDebarqCategoriesBIS")
     private List<qCategDeb> categories;
 
     private enumTypeDebarquement typeDeb;
 
-    @OneToMany(targetEntity=qPageDebarquement.class,cascade = CascadeType.ALL)
-    @JoinTable(name = "qAssocDebarqPages")
+    @OneToMany(targetEntity=qPageDebarquement.class)
+    @JoinTable(name = "qAssocDebarqPagesBIS")
     private List<qPageDebarquement> pages;
 
     public List<qEnginPecheDebar> getEngins() {

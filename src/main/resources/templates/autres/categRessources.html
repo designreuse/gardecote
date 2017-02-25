@@ -8,7 +8,7 @@
 <div layout:fragment="content">
 
     <h3><p class="spacer"><kbd>Liste de categories de ressources </kbd></p></h3>
-
+<label ></label>
     <label th:text="${successmes!=null?successmes:''}"></label>
     <form  th:action="@{/ActionCategRessources}"   method="post" th:object="${categRessources}">
         <a th:href="@{/AjouterCategorie}">Ajouter une categorie de ressource</a>
@@ -27,6 +27,7 @@
             <tr th:each="cat:${categRessources}">
                 <td>
                     <a th:href="@{ModifierCategorie(catPK=${cat.idtypeConcession})}">Modifier</a>
+                    <a th:href="@{DeleteCategorie(catPK=${cat.idtypeConcession})}">Supprimer</a>
                 </td>
                 <td th:text="${cat.idtypeConcession}"></td>
                 <td th:text="${cat.typeSupport}"></td>

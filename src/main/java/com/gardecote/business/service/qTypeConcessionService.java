@@ -5,6 +5,8 @@
 package com.gardecote.business.service;
 import com.gardecote.entities.qCategRessource;
 import java.util.List;
+
+import com.gardecote.entities.qPrefix;
 import com.gardecote.entities.qTypeConcession;
 /**
  * Business Service Interface for entity AutorisEntity.
@@ -26,7 +28,9 @@ public interface qTypeConcessionService {
 	 * @return entity
 	 */
 	qTypeConcession save(qTypeConcession entity);
-   List<qCategRessource> check(qTypeConcession conc);
+    List<qCategRessource> check(qTypeConcession conc);
+	boolean checkPrefix(qPrefix sdeletedPrefix);
+
 	/**
 	 * Updates the given entity in the database
 	 * @param entity

@@ -8,6 +8,8 @@
 <body>
 <div layout:fragment="content">
 <h3> List de bateaux existants </h3>
+
+    <a th:href="@{/naviresExcel}">Exporter vers Excel</a>
 <form  th:action="@{/listBatASelectionner}"   method="post" th:object="${lstBat}">
 
 <input type="text" th:field="*{searchName}" />  <button type="submit" >Chercher</button>

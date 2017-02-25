@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qCategoriesRessources30", schema="dbo", catalog="GCM1" )
+@Table(name="qCategoriesRessources33", schema="dbo", catalog="GCM3" )
 // Define named queries here
 
 @NamedQueries ( {
@@ -30,7 +30,7 @@ public class qCategRessource implements Serializable {
     private List<qLic>    qlicences;
 
     @ManyToMany(targetEntity =qEnginsLicence.class,cascade = CascadeType.MERGE)
-    @JoinTable(name = "qAssocCategRessourcesEngins")
+    @JoinTable(name = "qAssocCategRessourcesEnginsBIS")
     @JsonManagedReference
     private List<qEnginsLicence> Engins;
 
@@ -60,8 +60,6 @@ public class qCategRessource implements Serializable {
         this.Engins = engins;
         this.typeconcessionConcernee=typeConcession;
    }
-
-
 
     public qCategRessource() {
     }

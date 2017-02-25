@@ -19,7 +19,7 @@ public interface qDocService {
      * @return entity
      */
     qDoc findById(qDocPK idact) ;
-
+    boolean checkPrefix(qPrefix deletedPrefix);
     /**
      * Loads all entities.
      * @return all entities
@@ -62,8 +62,7 @@ public interface qDocService {
     // si les docs==null on cree un nouveau document
     // si les docs n sont pas null, retourner la liste de ces documents avec leurs sequences et demander de l administrateur de supprimer un document si necessaire
     qDoc verifierAncienDoc(qSeqPK sequencepk);
-
-
+    Page<qDoc> findAllMatchedDocs(Date searchDateCapture,String searchBat);
 
     qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
     qMarree creerMarree(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);

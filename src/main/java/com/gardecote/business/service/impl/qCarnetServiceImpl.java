@@ -71,8 +71,10 @@ public class qCarnetServiceImpl implements qCarnetService {
 	@Override
 	public qCarnet update(qCarnet authprov) {
 		qCarnet authprovEntity = qCarnetRepository.findOne(authprov.getCarnetPK());
-
-		qCarnet authprovEntitySaved = qCarnetRepository.save(authprovEntity);
+		qCarnet authprovEntitySaved=null;
+        if(authprovEntity!=null)
+		     authprovEntitySaved = qCarnetRepository.save(authprovEntity);
+		else authprovEntitySaved =null;
 		return authprovEntitySaved ;
 	}
 
