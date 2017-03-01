@@ -16,7 +16,7 @@ import java.util.List;
  * Created by Dell on 25/10/2016.
  */
 @Entity
-@Table(name="qOpTraitement33", schema="dbo", catalog="GCM3" )
+@Table(name="qOpTraitement33", schema="dbo", catalog="GCM4" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qOpTraitement.countAll", query="SELECT COUNT(x) FROM qOpTraitement x" )
@@ -37,7 +37,7 @@ public class qOpTraitement implements Serializable {
     public qOpTraitement() {
     }
 
-    @OneToOne(targetEntity = qPageTraitement.class)
+    @ManyToOne(targetEntity = qPageTraitement.class)
     private qPageTraitement pageTraitement;
 
     public qOpTraitement(Integer idLigne,String numPage,qPageTraitement tr,qEspece esp, Long qte) {

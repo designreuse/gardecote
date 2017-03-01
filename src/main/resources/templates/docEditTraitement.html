@@ -7,8 +7,8 @@
 <div layout:fragment="content">
 
     <form th:action="@{createDocumentSave}" method="post" th:object="${frmSearchPgsForDocCrea.createDocFormm}" >
-        <input type="text"  class="form-control input-sm"  th:field="*{currentDoc.numImm}" th:value="*{currentDoc.numImm}"   />
-        <input type="text"  class="form-control input-sm"  th:field="*{currentDoc.depart}" th:value="*{currentDoc.depart}"   />
+        <input type="hidden"  class="form-control input-sm"  th:field="*{currentDoc.numImm}" th:value="*{currentDoc.numImm}"   />
+        <input type="hidden"  class="form-control input-sm"  th:field="*{currentDoc.depart}" th:value="*{currentDoc.depart}"   />
 
         <div>
             <h3 th:text="${frmSearchPgsForDocCrea.createDocFormm.titre}"></h3>
@@ -30,9 +30,9 @@
 
                                     </tr>
                                     <tr th:each="page, statg : *{currentDoc.segs}">
-                                        <td> <input th:field="*{currentDoc.segs[__${statg.index}__].dateTraitement}" th:value="*{currentDoc.segs[__${statg.index}__].dateTraitement}"/></td>
-                                        <td> <input th:field="*{currentDoc.segs[__${statg.index}__].refAgrement}" th:value="*{currentDoc.segs[__${statg.index}__].refAgrement}" /></td>
-                                        <td> <input th:field="*{currentDoc.segs[__${statg.index}__].segPeche}" th:value="*{currentDoc.segs[__${statg.index}__].segPeche}" /></td>
+                                        <input type="hidden" th:field="*{currentDoc.segs[__${statg.index}__].dateTraitement}" th:value="*{currentDoc.segs[__${statg.index}__].dateTraitement}"/>
+                                        <input type="hidden" th:field="*{currentDoc.segs[__${statg.index}__].refAgrement}" th:value="*{currentDoc.segs[__${statg.index}__].refAgrement}" />
+                                        <input type="hidden" th:field="*{currentDoc.segs[__${statg.index}__].segPeche}" th:value="*{currentDoc.segs[__${statg.index}__].segPeche}" />
 
                                         <td> <label th:text="*{currentDoc.segs[__${statg.index}__].segPeche}"></label></td>
                                         <td>
@@ -47,7 +47,7 @@
                                             <div class="form-group form-group-sm">
                                                 <div>
 
-                                                    <input type="checkbox" th:field="*{currentDoc.segs[__${statg.index}__].ceph}" th:value="*{currentDoc.segs[__${statg.index}__].ceph}"   />
+                                                    <input type="checkbox" th:field="*{currentDoc.segs[__${statg.index}__].ceph}"  th:value="*{currentDoc.segs[__${statg.index}__].ceph}"   />
                                                 </div>
                                             </div>
                                         </td>
@@ -146,9 +146,9 @@
                                 </tr>
                                 <tr >
                                     <td  th:each="categ, stat:*{currentDoc.qQteExp}">
-                                        <input type="text" th:field="*{currentDoc.qQteExp[__${stat.index}__].refAgrement}" th:value="*{currentDoc.qQteExp[__${stat.index}__].refAgrement}" />
-                                        <input type="text" th:field="*{currentDoc.qQteExp[__${stat.index}__].dateTraitement}" th:value="*{currentDoc.qQteExp[__${stat.index}__].dateTraitement}"/>
-                                        <input type="text" th:field="*{currentDoc.qQteExp[__${stat.index}__].enumZonOrientationPeche}" th:value="*{currentDoc.qQteExp[__${stat.index}__].enumZonOrientationPeche}" />
+                                        <input type="hidden" th:field="*{currentDoc.qQteExp[__${stat.index}__].refAgrement}" th:value="*{currentDoc.qQteExp[__${stat.index}__].refAgrement}" />
+                                        <input type="hidden" th:field="*{currentDoc.qQteExp[__${stat.index}__].dateTraitement}" th:value="*{currentDoc.qQteExp[__${stat.index}__].dateTraitement}"/>
+                                        <input type="hidden" th:field="*{currentDoc.qQteExp[__${stat.index}__].enumZonOrientationPeche}" th:value="*{currentDoc.qQteExp[__${stat.index}__].enumZonOrientationPeche}" />
 
                                         <input type="text" th:field="*{currentDoc.qQteExp[__${stat.index}__].qte}" th:value="*{currentDoc.qQteExp[__${stat.index}__].qte}" />
 
@@ -174,12 +174,11 @@
                         <div class="panel-body">
 
                             <table class="table">
-                                <tr >
-                                    <td>numimm</td> <td><input type="text" th:field="*{currentDoc.qQteTraitees.numImm}" th:value="*{currentDoc.qQteTraitees.numImm}"/></td>
-                                </tr>
-                                <tr >
-                                    <td>depart</td> <td><input type="text" th:field="*{currentDoc.qQteTraitees.depart}" th:value="*{currentDoc.qQteTraitees.depart}"/></td>
-                                </tr>
+
+                              <input type="hidden" th:field="*{currentDoc.qQteTraitees.numImm}" th:value="*{currentDoc.qQteTraitees.numImm}"/>
+
+                             <input type="hidden" th:field="*{currentDoc.qQteTraitees.depart}" th:value="*{currentDoc.qQteTraitees.depart}"/>
+
                                 <tr >
                                     <td>Congelé</td> <td><input type="text" th:field="*{currentDoc.qQteTraitees.congelee}" th:value="*{currentDoc.qQteTraitees.congelee}"/></td>
                                 </tr>
@@ -218,7 +217,7 @@
                         </div></div></div></div>
 
             <button type="submit" class="btn btn-primary" >Enregistrer</button>
-            <input type="text" th:field="*{currentDoc.enumtypedoc}" th:value="*{currentDoc.enumtypedoc}" />
+            <input type="hidden" th:field="*{currentDoc.enumtypedoc}" th:value="*{currentDoc.enumtypedoc}" />
 
             <ul class="nav nav-tabs">
                 <li  th:each="page, stat : *{currentDoc.pagesTraitement}" th:class="${__${stat.index}__==__${frmSearchPgsForDocCrea.createDocFormm.currentPage}__}? active : ''"><a data-toggle="tab" th:href="'#page'+${stat.index}" th:text="'page '+*{currentDoc.pagesTraitement[__${stat.index}__].numeroPage}"></a> </li>
@@ -227,11 +226,10 @@
 
             <div class="tab-content">
                 <div th:each="page, statp : *{currentDoc.pagesTraitement}" th:attr="id='page'+${statp.index}" class="tab-pane fade in active" th:class="${__${statp.index}__==__${frmSearchPgsForDocCrea.createDocFormm.currentPage}__}? 'tab-pane fade in active' : 'tab-pane fade'" >
-                    <input type="text" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].numeroPage}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].numeroPage}" />
+                    <input type="hidden" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].numeroPage}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].numeroPage}" />
                     <table class="table table-condensed table-striped  table-hover">
                         <tr>
-                            <th>Numero de Ligne</th>
-                            <th>Numero de Page</th>
+
                             <th>Code Esp</th>
                             <th>
                                 Nom Esp
@@ -241,12 +239,11 @@
                             </th>
                         </tr>
                         <tr th:each="jourLigne, statj : *{currentDoc.pagesTraitement[__${statp.index}__].opTraitements}" class="danger">
-                            <td>
-                                <input type="text" class="form-control input-sm" th:tabindex="((${statj.index}*4)+2)" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement:''}" />
-                            </td>
-                            <td>
-                                <input type="text" class="form-control input-sm" th:tabindex="((${statj.index}*4)+2)" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].numeroPage}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].numeroPage!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].numeroPage:''}" />
-                            </td>
+
+                                <input type="hidden" class="form-control input-sm" th:tabindex="((${statj.index}*4)+2)" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement:''}" />
+
+                                <input type="hidden" class="form-control input-sm" th:tabindex="((${statj.index}*4)+2)" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].numeroPage}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].numeroPage!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].numeroPage:''}" />
+
                             <td>
                                 <input type="text" class="form-control input-sm" th:tabindex="((${statj.index}*4)+3)" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.codeEsp}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.codeEsp:''}" />
                             </td>

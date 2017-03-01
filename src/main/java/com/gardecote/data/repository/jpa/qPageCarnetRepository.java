@@ -22,4 +22,12 @@ public interface qPageCarnetRepository extends PagingAndSortingRepository<qPageC
     @Query("select p  from qPageCarnet p where p.qcarnet=:carnet AND p.numeroOrdrePage>=:debut order by p.numeroOrdrePage")
     ArrayList<qPageCarnet> returnFinList(@Param("carnet") qCarnet carnet, @Param("debut") Long debut);
 
+    @Query("select p  from qPageCarnet p where (p.numeroPage  like %:numeroP%) order by p.numeroOrdrePage")
+    Page<qPageCarnet>  returnSuggPageP(Pageable pageable, @Param("numeroP") String numeroP);
+    @Query("select p  from qPageCarnet p where (p.numeroPage  =:numeroP)")
+    Page<qPageCarnet>  returnSearchedPage(Pageable pageable, @Param("numeroP") String numeroP);
+
+
+
+
 }

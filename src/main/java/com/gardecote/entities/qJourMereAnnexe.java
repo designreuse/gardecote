@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qJourMereAnnexe33", schema="dbo", catalog="GCM3" )
+@Table(name="qJourMereAnnexe33", schema="dbo", catalog="GCM4" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJourAnnexe.countAll", query="SELECT COUNT(x) FROM qJourMereAnnexe x" )
@@ -122,6 +122,14 @@ public class qJourMereAnnexe implements Serializable
 
     public void setPresentation(String presentation) {
         this.presentation = presentation;
+    }
+
+    public String getNumPage() {
+        return numPage;
+    }
+
+    public void setNumPage(String numPage) {
+        this.numPage = numPage;
     }
 
     public String getNumImm() {

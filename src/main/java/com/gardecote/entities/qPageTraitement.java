@@ -23,7 +23,7 @@ public class qPageTraitement extends qPageCarnet implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @OneToMany(targetEntity = qOpTraitement.class,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pageTraitement",targetEntity = qOpTraitement.class,cascade = CascadeType.ALL)
     private List<qOpTraitement> opTraitements;
     //----------------------------------------------------------------------
 

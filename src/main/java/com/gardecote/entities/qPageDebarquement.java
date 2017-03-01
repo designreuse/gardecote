@@ -43,7 +43,7 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
     //----------------------------------------------------------------------
 	// "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
 
-   @OneToOne(cascade = CascadeType.ALL)
+   @OneToOne(targetEntity = qDebarquement.class,cascade = CascadeType.ALL)
     private qDebarquement qdebarquement;
 
     //----------------------------------------------------------------------

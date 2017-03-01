@@ -3,6 +3,7 @@ package com.gardecote.business.service;
 import com.gardecote.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -20,12 +21,17 @@ public interface qDocService {
      */
     qDoc findById(qDocPK idact) ;
     boolean checkPrefix(qPrefix deletedPrefix);
+   Page<qDoc> findAllMatcheds(String numeroPage);
+
     /**
      * Loads all entities.
      * @return all entities
      */
     List<qLic> retLicences(qSeq seqActive1,enumTypeDoc typeDoc);
     Page<qDoc> findAll(int p, int size);
+    String importerDocuments(MultipartFile file, String fullpatchname);
+    String importerMarrees(MultipartFile file, String fullpatchname);
+    String importerTraitements(MultipartFile file, String fullpatchname);
   //  List<qDoc> findAll(Pageable pageable);
 
     /**
@@ -65,9 +71,16 @@ public interface qDocService {
     Page<qDoc> findAllMatchedDocs(Date searchDateCapture,String searchBat);
 
     qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
+    qDebarquement creerDebarquementByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsDeb,List<Boolean> categDebs,Map<String,Map<Integer,List<Double>>> quantities);
     qMarree creerMarree(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
+    qMarree creerMarreesByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP typeJP,Map<String,Map<Integer,List<Double>>> quantities);
+        //   qSeq seqActive=qseqRepository.findOne(seqActive1.getSeqPK());
+
     qTraitement creerTraitement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
-    qDoc creerNouvDoc(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
+    qTraitement creerTraitementByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP typeJP,Map<String,Map<Integer,List<Double>>> quantities);
+        //   qSeq seqActive=qseqRepository.findOne(seqActive1.getSeqPK());
+
+        qDoc creerNouvDoc(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
     qMarreeAnnexe  creerNouvAnnexe(Date dateDepart,qMarree qCurrentMaree,qSeqPK spk,enumTypeDoc typeDoc);
     qMarreeAnnexe creerAnnexe(Date dateDepart,qMarree qCurrentMaree,qSeqPK spk,enumTypeDoc typeDoc);
     boolean checkNombreJoursMoinsNombreLignes(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);

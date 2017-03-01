@@ -1,8 +1,5 @@
 package com.gardecote.web;
-import com.gardecote.entities.qCarnet;
-import com.gardecote.entities.qLic;
-import com.gardecote.entities.qNavire;
-import com.gardecote.entities.qUsine;
+import com.gardecote.entities.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,6 +13,7 @@ public class attributionCarnetForm  {
     private qLic licenceSelected;
     private List<qLic> licenceActives;
     private String message;
+    private List<enumTypeDoc> lstTypeDoc;
 
     public qNavire getNavireSelected() {
         return navireSelected;
@@ -23,6 +21,14 @@ public class attributionCarnetForm  {
 
     public void setNavireSelected(qNavire navireSelected) {
         this.navireSelected = navireSelected;
+    }
+
+    public List<enumTypeDoc> getLstTypeDoc() {
+        return lstTypeDoc;
+    }
+
+    public void setLstTypeDoc(List<enumTypeDoc> lstTypeDoc) {
+        this.lstTypeDoc = lstTypeDoc;
     }
 
     public qCarnet getCarnetSelected() {

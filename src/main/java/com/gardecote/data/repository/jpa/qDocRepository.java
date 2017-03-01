@@ -28,8 +28,9 @@ public interface qDocRepository extends PagingAndSortingRepository<qDoc,qDocPK> 
     @Query("select pcrn from qPageCarnet pcrn where pcrn.typeDoc=:prefix and pcrn.qcarnet.qprefix.typeDoc=:typeDoc")
     public List<qPageCarnet> checkPrefix(@Param("prefix") String prefix,@Param("typeDoc") String typeDoc);
 
-    @Query("select doc from qDoc doc where doc.depart=:searchDateCapture and doc.numImm=:searchBat")
+    @Query("select doc from qDoc doc where ((doc.depart=:searchDateCapture) or (:searchDateCapture is null) ) and ((doc.numImm=:searchBat) or (:searchBat is null) )")
     public Page<qDoc> findAllMatchedDocs(Pageable pageable,@Param("searchDateCapture") Date searchDateCapture,@Param("searchBat") String searchBat);
+
 
 
 }

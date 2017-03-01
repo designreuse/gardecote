@@ -10,7 +10,7 @@ import java.util.Date;
  * Created by Dell on 08/11/2016.
  */
 @Entity
-@Table(name="qSegUsines33", schema="dbo", catalog="GCM3")
+@Table(name="qSegUsines33", schema="dbo", catalog="GCM4")
 @IdClass(qSegUsinesPK.class)
 public class qSegUsines implements Serializable {
     @Id
@@ -20,7 +20,6 @@ public class qSegUsines implements Serializable {
     private Date dateTraitement;
     @Id
     private enumSegPeche segPeche;
-
 
     private boolean choix;
 

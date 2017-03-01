@@ -27,7 +27,7 @@ public class qTraitement extends  qDoc implements Serializable {
     private qQuantitesTraites qQteTraitees;
     private Long qteDechu;
     //@OneToMany
-    @OneToMany(targetEntity=qPageTraitement.class,cascade = CascadeType.ALL)
+    @OneToMany(targetEntity=qPageTraitement.class)
     @JoinTable(name = "qAssocTraitPagesBIS")
     private List<qPageTraitement> pagesTraitement;
 

@@ -149,7 +149,7 @@
 </div>
       </div>
 
-        <div class="panel-group" th:if="${frmSearchPgsForDocCrea.createDocFormm.typeDoc=='D'}">
+        <div class="panel-group" >
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
@@ -204,34 +204,35 @@
 
                 <table class="table-bordered">
                     <tr>
-                        <th ></th>
-                        <th ></th>
-                        <th ></th>
-                        <th ></th>
+
                         <th >Date du jour</th>
                         <th th:each="p, statesp : *{currentDoc.pages[__${statp.index}__].listJours[0].debarqDuJour}">
                             <span  th:text="*{currentDoc.pages[__${statp.index}__].listJours[0].debarqDuJour[__${statesp.index}__].especeTypee.qespece.nomFr}" />
                         </th>
                     </tr>
                     <tr th:each="jourLigne, statj : *{currentDoc.pages[__${statp.index}__].listJours}" class="danger">
-                        <td > <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].indexLigne}"/>
-                        </td>
-                        <td ><input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numPage}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].numPage}"/>
-                        </td>
-                       <td><input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numImm}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].numImm}"/>
-                        </td>
-                        <td>
-                <input type="date" class="form-control input-sm " th:disabled="true" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{#dates.format(currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour, 'yyyy-MM-dd')}" />
-                        </td>
+                       <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}"/>
+
+                        <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numPage}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numPage}"/>
+
+                        <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}"/>
+                       <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numImm}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numImm}"/>
+
+<td>
+    <input type="text" class="form-control input-sm " th:disabled="true" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{#dates.format(currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour, 'yyyy-MM-dd')}" />
+
+</td>
+
+
                         <td th:each="jourCap, statc : *{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour}">
 
-                        <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].indexLigne}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour.indexLigne}"/>
+                        <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].indexLigne}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].indexLigne}"/>
 
-                        <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].numPage}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].numPage}"/>
-                        <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour.numImm}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].numImm}"/>
-                            <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].dateJour}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].dateJour}"/>
-                            <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].idespece}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].idespece}"/>
-                            <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].esptype}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].esptype}"/>
+                        <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].numPage}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].numPage}"/>
+                        <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].nummimm}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].nummimm}"/>
+                        <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].dateJour}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].dateJour}"/>
+                        <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].idespece}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].idespece}"/>
+                        <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].esptype}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].esptype}"/>
 
                         <input type="text" class="form-control input-sm " th:tabindex="((*{currentDoc.pages[__${statp.index}__].nbrLigne}*${statc.index})+${statj.index}+1)" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].quantite}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].quantite}"/>
                         </td>

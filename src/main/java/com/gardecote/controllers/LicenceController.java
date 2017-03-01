@@ -213,11 +213,23 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     public List<enumJP> populateSegPeche() {
         return Arrays.asList(enumJP.values());
     }
-
+    @ModelAttribute("allTypesDocc")
+    public List<enumTypeDoc> populateAllTypesDocc() {
+        List<enumTypeDoc> lst=new ArrayList<enumTypeDoc>();
+        lst.add(enumTypeDoc.Fiche_Debarquement);
+        lst.add(enumTypeDoc.Journal_Peche);
+        lst.add(enumTypeDoc.Fiche_Traitement);
+        lst.add(enumTypeDoc.Journal_Annexe);
+        return lst;
+    }
 
     @ModelAttribute("allTypesDoc")
     public List<enumTypeDoc> populateAllTypesDoc() {
-        return Arrays.asList(enumTypeDoc.values());
+        List<enumTypeDoc> lst=new ArrayList<enumTypeDoc>();
+        lst.add(enumTypeDoc.Fiche_Debarquement);
+                lst.add(enumTypeDoc.Journal_Peche);
+        lst.add(enumTypeDoc.Fiche_Traitement);
+        return lst;
     }
     @ModelAttribute("supports")
     public List<enumSupport> populateSupport() {
@@ -538,6 +550,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
        @RequestMapping(value="/attributionCarnet",method = RequestMethod.POST)
         public String attribuerCarnets(final @ModelAttribute(value="CarnetAttribue") attributionCarnetForm CarnetAttribue , final ModelMap model, final BindingResult bindingresult) {
            String urlNav=null;
+
            if(CarnetAttribue!=null && CarnetAttribue.getCarnetSelected()!=null && CarnetAttribue.getCarnetSelected().getPrefixNumerotation()!=null && CarnetAttribue.getCarnetSelected().getTypeDoc()!=null) {
                System.out.println(CarnetAttribue);
                qPrefixPK prefpk = new qPrefixPK(CarnetAttribue.getCarnetSelected().getPrefixNumerotation(), CarnetAttribue.getCarnetSelected().getTypeDoc());
@@ -693,8 +706,12 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
             attrCrn.setLicenceActives(licencesActives);
 
     // chercher les licences actives pour ce navire pour les afficher et choisisser une
-
+            List<enumTypeDoc> ltsTypeDoc=new ArrayList<enumTypeDoc>();
+            if(selectedNavire.getTypb().equals(enumTypeBat.PIROG))  ltsTypeDoc.add(enumTypeDoc.Fiche_Debarquement);
+            else   ltsTypeDoc.add(enumTypeDoc.Journal_Peche);
+            attrCrn.setLstTypeDoc(ltsTypeDoc);
             model.addAttribute("CarnetAttribue",attrCrn);
+            model.addAttribute("TypesDo",ltsTypeDoc);
 
             if(action.equals("attribuerCarnet")) {
 
@@ -871,9 +888,16 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         frmSearchPgsForDocCrea1.setPageCount(pgDoc.getTotalPages());
         frmSearchPgsForDocCrea1.setNumPages(pages);
         frmSearchPgsForDocCrea1.setPageCourante(page);
+        frmSearchPgsForDocCrea1.setDisplaydatefrg(true);
+        frmSearchPgsForDocCrea1.setDisplayFinListfrg(true);
+        frmSearchPgsForDocCrea1.setDisplayFinListfrg(true);
+        frmSearchPgsForDocCrea1.setDisplaydateRetourfrg(true);
+        frmSearchPgsForDocCrea1.setDisplayButton(true);
+
         //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
        // frmSearchPgsForDocCrea1.setFailedAnnulation("");
          model.addAttribute("frmSearchPgsForDocCrea",frmSearchPgsForDocCrea1);
+         model.addAttribute("page","");
      //   frmSearchPgsForDocCrea1.setLstDocuments();
         return "Documents/listDocuments";
    }
@@ -881,22 +905,42 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     @RequestMapping(value="/finList",method = RequestMethod.GET)
     public String getFinList(final ModelMap model, @RequestParam(name="debut") String debut,@RequestParam(name="typeDoc") String typeDoc) {
         // creer les categories de ressource 5 PA  de 1 a 5
-        boolean displaydatefrg=false,displaybuttonfrg=false;
+        boolean displaydatefrg=false,displaybuttonfrg=false,displayButton=false;
         frmSearchPgsForDocCrea frmSearchPgsForDocCrea=new frmSearchPgsForDocCrea();
         System.out.println("numero de page  : "+debut+"type de  doc "+typeDoc);
         List<String> numsfin=new ArrayList<>();
         List<qPageCarnet> pq=pagecarnetService.getFinList(debut,enumTypeDoc.valueOf(typeDoc));
         for(qPageCarnet q:pq) numsfin.add(q.getNumeroPage().toString());
         //  return numsfin;
-        if(numsfin.size()>0)  {displaydatefrg=false;displaybuttonfrg=false;}
-        else  {displaydatefrg=true;displaybuttonfrg=true;}
+        if(numsfin.size()>0)  {
 
-        frmSearchPgsForDocCrea.setDateDebut(null);
+            if(typeDoc.equals("Fiche_Traitement")) {
+                System.out.println("jjjjjjjjj");
+                frmSearchPgsForDocCrea.setDisplaydateRetourfrg(true);
+                frmSearchPgsForDocCrea.setDateRetour(new Date());
+            }
+            else {
+
+                frmSearchPgsForDocCrea.setDisplaydateRetourfrg(false);
+                frmSearchPgsForDocCrea.setDisplayButton(false);
+                displaydatefrg=false;displaybuttonfrg=false;
+                displayButton=false;
+            }
+
+
+        }
+        else  {frmSearchPgsForDocCrea.setDisplaydateRetourfrg(true);
+            frmSearchPgsForDocCrea.setDisplayButton(true);}
+
+
+        frmSearchPgsForDocCrea.setDateDebut(new Date());
         frmSearchPgsForDocCrea.setNumeroFin(debut);
         frmSearchPgsForDocCrea.setNumeroFin(null);
         frmSearchPgsForDocCrea.setNumsfin(numsfin);
         frmSearchPgsForDocCrea.setDisplayButton(displaybuttonfrg);
         frmSearchPgsForDocCrea.setDisplaydatefrg(displaydatefrg);
+
+
         frmSearchPgsForDocCrea.setDisplayFinListfrg(displaybuttonfrg);
         frmSearchPgsForDocCrea.setDisplayDocForm(false);
         System.out.println("fins de list  : "+numsfin.size());
@@ -965,17 +1009,17 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
             lics=docService.retLicences(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getQseq(),frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getEnumtypedoc());
            docService.save((qDebarquement)frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
             for(qPageCarnet PD:((qDebarquement) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getPages())
-                pagecarnetService.save(PD);
+            pagecarnetService.save(PD);
             model.addAttribute("licencesRef", lics);
             urlNav="docEditDebarquement";
         }
 
         if(currentDoc instanceof qMarree)  {
-            qMarreeAnnexe annex=((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getMarreeAnnexe();
-            lics=docService.retLicences(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getQseq(),frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getEnumtypedoc());
+          qMarreeAnnexe annex=((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getMarreeAnnexe();
+         lics=docService.retLicences(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getQseq(),frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getEnumtypedoc());
          docService.save(currentDoc);
          for(qPageCarnet PC:((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getPages())
-     //       pagecarnetService.save(PC);
+         pagecarnetService.save(PC);
            if(annex!=null) {
                mareeAnnexService.save(((qMarree) currentDoc).getMarreeAnnexe());
                for(qPageCarnet PM:((qMarreeAnnexe) ((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getMarreeAnnexe()).getPages())
@@ -986,11 +1030,11 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
             urlNav="docEditMarree";
         }
         if(currentDoc instanceof qTraitement)  {
-         traitementService.update((qTraitement)currentDoc);
-         //     docService.save((qTraitement)((frmSearchPgsForDocCrea) o).getCreateDocFormm().getCurrentDoc());
-        //    pagecarnetService.save(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+            saveDocValidator.validate(currentDoc, result);
+        // traitementService.update((qTraitement)currentDoc);
+         // docService.save((qTraitement)((frmSearchPgsForDocCrea) o).getCreateDocFormm().getCurrentDoc());
+        //  pagecarnetService.save(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
             for(qPageTraitement pagetr: ((qTraitement) currentDoc).getPagesTraitement()) {
-
         //     pagecarnetService.save(pagetr);
             }
             urlNav="docEditTraitement";
@@ -1004,11 +1048,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
     @RequestMapping(value="/createAnnexe",method = RequestMethod.POST)
     public String createAnnexe(final frmAnnexe frmAnnexe,final ModelMap model) {
-System.out.println(frmAnnexe.getDateDepartAnnexe());
+          System.out.println(frmAnnexe.getDateDepartAnnexe());
      //   model.addAttribute("frmAnnexe", frmAnnexe1);
         return "Documents/Annexe";
-
-
     }
     @RequestMapping(value="/ajouterAnnexe",method = RequestMethod.GET)
     public String ajouterAnnexe(@RequestParam(name="numimm") String numimm, @RequestParam(name="depart") String depart,@RequestParam(name="typeDoc") String typeDoc,final ModelMap model) {
@@ -1263,6 +1305,7 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
                 enginsdebarvides.add(engDeb1); enginsdebarvides.add(engDeb2); enginsdebarvides.add(engDeb3); enginsdebarvides.add(engDeb4); enginsdebarvides.add(engDeb5);
                 enginsdebarvides.add(engDeb6); enginsdebarvides.add(engDeb7); enginsdebarvides.add(engDeb8);
                 ((qDebarquement) currentDoc).setEngins(enginsdebarvides);
+
                 urlNav= "docEditDebarquement";
             }
                 if (currentDoc instanceof  qTraitement ) {
@@ -1297,6 +1340,7 @@ System.out.println(frmAnnexe.getDateDepartAnnexe());
             System.out.println(currentDoc.getNumImm());
             frmSearchPgsForDocCrea.setCreateDocFormm(docForm);
             model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea);
+            model.addAttribute("page", "");
             model.addAttribute("licencesRef", lics);
             }
 
@@ -2736,32 +2780,92 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
         model.addAttribute("modifEspece",modifEspece);
         return "especes/modifyEspece";
     }
-    @RequestMapping(value="/searchDocCapture",method = RequestMethod.POST)
-    public String searchDocCapture(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("sacc") searchAccueil searchAccueil) {
-        frmSearchPgsForDocCrea f=new frmSearchPgsForDocCrea();
-        String urlnext=null;
-        Date depart=null;
-        //search for docs
-        Page<qDoc> lstdocs=null;
-        System.out.println(searchAccueil.getSearchDateCapture());
-        lstdocs=docService.findAllMatchedDocs(searchAccueil.getSearchDateCapture(),searchAccueil.getSearchBat());
-        // set for docs
-        f.setLstDocuments(lstdocs);
-        //.lstDocuments
-        System.out.println("size : "+lstdocs.getContent().size());
-        if(lstdocs.getContent().size()!=0) {
-            redirectAttributes.addFlashAttribute("notfounddoc","");
-            urlnext="redirect:createDocument?firstEtp=0";
 
-                                            }
-        else {
-            urlnext="redirect:start";
-            redirectAttributes.addFlashAttribute("notfounddoc","aucun document trouvé");
+
+    @RequestMapping(value="/findDocsByPage",method = RequestMethod.POST)
+    public String findDocsByPage(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("page") String page) {
+        String urlnext=null;
+        List<qDoc> lstDoc=new ArrayList<qDoc>();
+        frmSearchPgsForDocCrea frmSearchPgsForDocCrea1=new frmSearchPgsForDocCrea();
+        int[] pages;
+
+           Page<qDoc>  pgDoc=docService.findAllMatcheds(page);
+        if(pgDoc.getContent().size()!=0) {
+            pages = new int[pgDoc.getTotalPages()];
+            for (int i = 0; i < pgDoc.getTotalPages(); i++) pages[i] = i;
+            frmSearchPgsForDocCrea1.setLstDocuments(pgDoc);
+            frmSearchPgsForDocCrea1.setPageCount(pgDoc.getTotalPages());
+            frmSearchPgsForDocCrea1.setNumPages(pages);
+            frmSearchPgsForDocCrea1.setPageCourante(0);
+            //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
+            // frmSearchPgsForDocCrea1.setFailedAnnulation("");
+
+
+
         }
-        model.addAttribute("frmSearchPgsForDocCrea",f);
-        return urlnext;
+        else {
+            pages = new int[0];
+            frmSearchPgsForDocCrea1.setLstDocuments(null);
+            frmSearchPgsForDocCrea1.setPageCount(0);
+            frmSearchPgsForDocCrea1.setNumPages(pages);
+            frmSearchPgsForDocCrea1.setPageCourante(0);
+        }
+        model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea1);
+          return "Documents/listDocuments";
     }
 
+        @RequestMapping(value="/searchDocCapture",method = RequestMethod.POST)
+    public String searchDocCapture(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("sacc") searchAccueil searchAccueil) {
+       //
+        String urlnext=null;
+        List<qDoc> lstDoc=new ArrayList<qDoc>();
+        frmSearchPgsForDocCrea frmSearchPgsForDocCrea1=new frmSearchPgsForDocCrea();
+        int[] pages;
+        //  public String  listCarnets(final lstCarnetsAchoisirForm carnetForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="searchCarnet",defaultValue = "") String searchCarnet) {
+        Page<qDoc>  pgDoc=docService.findAllMatchedDocs(searchAccueil.getSearchDateCapture(),searchAccueil.getSearchBat());
+        if(pgDoc.getContent().size()!=0) {
+            pages = new int[pgDoc.getTotalPages()];
+            for (int i = 0; i < pgDoc.getTotalPages(); i++) pages[i] = i;
+            frmSearchPgsForDocCrea1.setLstDocuments(pgDoc);
+            frmSearchPgsForDocCrea1.setPageCount(pgDoc.getTotalPages());
+            frmSearchPgsForDocCrea1.setNumPages(pages);
+            frmSearchPgsForDocCrea1.setPageCourante(0);
+            //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
+            // frmSearchPgsForDocCrea1.setFailedAnnulation("");
+            model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea1);
+
+            //   frmSearchPgsForDocCrea1.setLstDocuments();
+            urlnext="Documents/listDocuments";
+
+        }
+        else {
+            urlnext="redirect:start";
+            redirectAttributes.addFlashAttribute("notfounddoc","Aucun document trouvé");
+        }
+   return urlnext;
+    }
+
+    @RequestMapping(value="/importerDocuments",method = RequestMethod.GET)
+    public String importerDocuments(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileDocuments", fileModel);
+        return "imports/importerDocument";
+    }
+    @RequestMapping(value="/importerMarrees",method = RequestMethod.GET)
+    public String importerMarrees(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileMarree", fileModel);
+        return "imports/importerMarrees";
+    }
+    @RequestMapping(value="/importerTraitements",method = RequestMethod.GET)
+    public String importerTraitement(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileTraitenent", fileModel);
+        return "imports/importerTraitements";
+    }
     @RequestMapping(value="/importerLicences",method = RequestMethod.GET)
     public String importerLicencesGET(ModelMap model)
     {
@@ -2778,7 +2882,79 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
         return "imports/importerLicNV";
     }
 
+    @RequestMapping(value="/importerDocuments",method = RequestMethod.POST)
+    public String importerDocumentsPOST(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
 
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            docService.importerDocuments(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+
+        //
+
+
+        return "redirect:importerDocuments";
+
+    }
+
+
+    @RequestMapping(value="/importerMarrees",method = RequestMethod.POST)
+    public String importerMarrees(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            docService.importerMarrees(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+
+
+        return "redirect:importerMarrees";
+
+    }
+    @RequestMapping(value="/importerTraitements",method = RequestMethod.POST)
+    public String importerTraitements(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            docService.importerTraitements(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+
+
+        return "redirect:importerTraitements";
+
+    }
     @RequestMapping(value="/importerLicNV",method = RequestMethod.POST)
     public String handleFileUploadtrr(@Valid FileBucket fileBucket, BindingResult result, ModelMap model) throws IOException {
 

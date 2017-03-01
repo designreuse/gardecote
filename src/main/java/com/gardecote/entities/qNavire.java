@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 @Entity
-@Table(name="qNavire33", schema="dbo", catalog="GCM3" )
+@Table(name="qNavire33", schema="dbo", catalog="GCM4" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qNavire.countAll", query="SELECT COUNT(x) FROM qNavire x" )

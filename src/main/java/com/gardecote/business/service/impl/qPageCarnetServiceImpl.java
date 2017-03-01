@@ -14,9 +14,7 @@ import javax.persistence.PersistenceContext;
 
 import com.gardecote.data.repository.jpa.qPageCarnetRepository;
 
-import com.gardecote.entities.enumTypeDoc;
-import com.gardecote.entities.qCarnet;
-import com.gardecote.entities.qPageCarnetPK;
+import com.gardecote.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gardecote.business.service.qPageCarnetService;
-import com.gardecote.entities.qPageCarnet;
 import com.gardecote.data.repository.jpa.qCarnetRepository;
 /**
  * Implementation of CodesEspService
@@ -105,6 +102,13 @@ EntityManager entityManager;
 	public Page<qPageCarnet> getSuggPage(String searchpage,enumTypeDoc typeDoc) {
 		return qPageCarnetRepository.returnSuggPage(new PageRequest(0, 10),searchpage,typeDoc);
 	}
+
+	@Override
+	public Page<qPageCarnet> getSuggPageP(String numeroP) {
+		return qPageCarnetRepository.returnSuggPageP(new PageRequest(0, 10),numeroP);
+
+	}
+
 	@Override
 	public Page<qPageCarnet> getSuggPageAnnexe(String searchpage,enumTypeDoc typeDoc) {
 		return qPageCarnetRepository.returnSuggPageAnnexe(new PageRequest(0, 10),searchpage,typeDoc);

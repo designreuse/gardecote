@@ -40,14 +40,16 @@ public class creerDocValidator implements Validator {
         qSeq se = seqService.findById(spk);
         if (se == null)
             se = new qSeq(frmValidated.getNumeroDebut(), frmValidated.getNumeroFin(), null);
-else     ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numeroDebut", "frmSearchPgsForDocCrea.invalidseq");
+        else
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numeroDebut", "frmSearchPgsForDocCrea.invalidseq");
         qDoc documentDoublon=null;
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numeroDebut", "frmSearchPgsForDocCrea.numeroDebut.empty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numeroFin", "frmSearchPgsForDocCrea.numeroFin.empty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dateDebut", "frmSearchPgsForDocCrea.dateDebut.empty");
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dateRetour", "frmSearchPgsForDocCrea.dateFin.empty");
 
-        if(frmValidated.getDateDebut()!=null && frmValidated.getDateRetour()!=null && frmValidated.getNumeroDebut()!=null && frmValidated.getNumeroFin()!=null )
+        if(frmValidated.getDateDebut()!=null && (frmValidated.getDateRetour()!=null) && frmValidated.getNumeroDebut()!=null && frmValidated.getNumeroFin()!=null )
         {
             dateDepart = frmValidated.getDateDebut();
             dateRetour =frmValidated.getDateRetour();

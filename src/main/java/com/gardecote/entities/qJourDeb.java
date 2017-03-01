@@ -15,10 +15,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-
-//import javax.validation.constraints.* ;
-//import org.hibernate.validator.constraints.* ;
-
 /**
  * Persistent class for entity stored in table "quotaJours"
  *
@@ -27,7 +23,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qJourDeb33", schema="dbo", catalog="GCM3" )
+@Table(name="qJourDeb33", schema="dbo", catalog="GCM4" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJourDeb.countAll", query="SELECT COUNT(x) FROM qJourDeb x" )
@@ -42,14 +38,9 @@ public class qJourDeb implements Serializable
     //----------------------------------------------------------------------
     @Id
     @Column(name="numimmJour", nullable=false)
-    private String       numImm       ;
-
-    //----------------------------------------------------------------------
-    // ENTITY DATA FIELDS
-    //----------------------------------------------------------------------
+    private String       numImm ;
     @Id
     @Column(name="dateJour", nullable=false, length=10)
-
     @DateTimeFormat (pattern="yyyy-MM-dd")
     private Date  dateJour ;
     @Id
@@ -57,16 +48,10 @@ public class qJourDeb implements Serializable
     @Id
     private String      numPage   ;
 
-   //----------------------------------------------------------------------
-    // ENTITY LINKS ( RELATIONSHIP )
-    //----------------------------------------------------------------------
-
-
     @OneToOne
     private qNavire navire;
 
     @OneToMany(mappedBy = "jourDeb",targetEntity=qCapture.class,cascade = CascadeType.ALL)
-
     private List<qCapture> debarqDuJour;
 
     @ManyToOne
@@ -135,6 +120,22 @@ public class qJourDeb implements Serializable
 
     public void setDebarqDuJour(List<qCapture> debarqDuJour) {
         this.debarqDuJour = debarqDuJour;
+    }
+
+    public Integer getIndexLigne() {
+        return indexLigne;
+    }
+
+    public void setIndexLigne(Integer indexLigne) {
+        this.indexLigne = indexLigne;
+    }
+
+    public String getNumPage() {
+        return numPage;
+    }
+
+    public void setNumPage(String numPage) {
+        this.numPage = numPage;
     }
 
     public qPageDebarquement getPagesDeb() {

@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qlic33", schema="dbo", catalog="GCM3")
+@Table(name="qlic33", schema="dbo", catalog="GCM4")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPELICENCE", discriminatorType=DiscriminatorType.STRING, length=20)
 // Define named queries here

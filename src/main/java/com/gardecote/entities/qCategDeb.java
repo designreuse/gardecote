@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Dell on 17/11/2016.
  */
 @Entity
-@Table(name="qCategDeb33", schema="dbo", catalog="GCM3" )
+@Table(name="qCategDeb33", schema="dbo", catalog="GCM4" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qCategDeb.countAll", query="SELECT COUNT(x) FROM qCategDeb x" )
@@ -21,12 +21,10 @@ public class qCategDeb implements Serializable {
     private Date   dateDepart;
     @Id
     private Integer idCat;
-
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     private qCategRessource cat;
 
-
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "categories", targetEntity =qDebarquement.class,cascade = CascadeType.MERGE)
     @JsonBackReference
     private List<qDebarquement> qdeb;
 

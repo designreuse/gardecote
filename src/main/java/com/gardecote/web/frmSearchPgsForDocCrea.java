@@ -22,6 +22,7 @@ public class frmSearchPgsForDocCrea implements Serializable{
     private Date dateRetour;
     private boolean displayButton;
     private boolean displaydatefrg;
+    private boolean displaydateRetourfrg;
     private boolean displayFinListfrg;
     List<String> numsfin=new ArrayList<>();
     private boolean displayDocForm;
@@ -32,6 +33,14 @@ public class frmSearchPgsForDocCrea implements Serializable{
     private Integer pageCount;
     private int[] numPages;
     private Integer pageCourante;
+
+    public boolean isDisplaydateRetourfrg() {
+        return displaydateRetourfrg;
+    }
+
+    public void setDisplaydateRetourfrg(boolean displaydateRetourfrg) {
+        this.displaydateRetourfrg = displaydateRetourfrg;
+    }
 
     public List<String> getNumsfin() {
         return numsfin;
@@ -152,5 +161,6 @@ public class frmSearchPgsForDocCrea implements Serializable{
     public void setDisplayFinListfrg(boolean displayFinListfrg) {
         this.displayFinListfrg = displayFinListfrg;
     }
+
 
 }

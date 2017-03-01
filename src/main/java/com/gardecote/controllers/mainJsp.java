@@ -116,6 +116,16 @@ public class mainJsp  {
 		                     }
 		return numpages;
 	}
+
+	@RequestMapping(value="/autocomPagesG",method = RequestMethod.GET)
+	public List<String> getAutocompletePagesP(@RequestParam("numeroP") String numeroD) {
+
+		System.out.println("numero de page : "+numeroD);
+		List<String> numpages=new ArrayList<>();
+		Page<qPageCarnet> pq=pagecarnetService.getSuggPageP(numeroD);
+		for(qPageCarnet q:pq) {numpages.add(q.getNumeroPage().toString());System.out.println(q.getNumeroPage().toString());}
+		return numpages;
+	}
 	@RequestMapping(value="/autocomPages",method = RequestMethod.GET)
 	public List<String> getAutocompletePages(@RequestParam("numeroD") String numeroD,@RequestParam("typeDoc") String typeDoc) {
 

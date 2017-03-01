@@ -1,0 +1,37 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Importation des documents</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <form  th:action="@{/importerTraitement}"   class="form-horizontal" enctype="multipart/form-data" th:object="${fileTraitement}" method="post">
+
+<div class="row" >
+    <div>
+        <h2>Importer des traitements</h2>
+        <label th:path="${fileName!=null?fileName:''}"></label>
+        <table class="table">
+
+            <tr>
+                <td><input type="file" class="custom-file-input" th:field="*{file}"    />
+                    <span th:errors="*{file}"></span>
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+    <input type="submit" value="Upload" class="btn btn-primary btn-sm"/>
+
+</div>
+
+</form>
+
+</div>
+</body>
+</html>

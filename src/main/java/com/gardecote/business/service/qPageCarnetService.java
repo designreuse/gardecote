@@ -4,6 +4,7 @@
  */
 package com.gardecote.business.service;
 import com.gardecote.entities.enumTypeDoc;
+import com.gardecote.entities.qDoc;
 import com.gardecote.entities.qPageCarnet;
 import com.gardecote.entities.qPageCarnetPK;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,7 @@ public interface qPageCarnetService {
 	 * @param code
 	 * @return entity
 	 */
-
+	Page<qPageCarnet> getSuggPageP(String numeroP);
 	Page<qPageCarnet> getSuggPage(String searcpage,enumTypeDoc typeDoc);
 	Page<qPageCarnet> getSuggPageAnnexe(String searcpage,enumTypeDoc typeDoc);
 	ArrayList<qPageCarnet> getFinList(String debut,enumTypeDoc typeDoc);

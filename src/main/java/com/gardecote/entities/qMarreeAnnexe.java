@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qMarreeAnnexe33", schema="dbo", catalog="GCM3")
+@Table(name="qMarreeAnnexe33", schema="dbo", catalog="GCM4")
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qMarreeAnnexe.countAll", query="SELECT COUNT(x) FROM qMarreeAnnexe x" )

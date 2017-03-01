@@ -1,9 +1,6 @@
 package com.gardecote.web;
 
-import com.gardecote.business.service.qDocService;
-import com.gardecote.business.service.qEspeceService;
-import com.gardecote.business.service.qPageCarnetService;
-import com.gardecote.business.service.qSeqService;
+import com.gardecote.business.service.*;
 import com.gardecote.entities.*;
 import org.jgroups.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +16,7 @@ import org.springframework.validation.Validator;
 
 public class saveDocValidator  implements Validator {
     @Autowired
-    private qDocService docService;
+    private qTraitementService traitementService;
     @Autowired
     private qEspeceService espService;
 
@@ -30,7 +27,7 @@ public class saveDocValidator  implements Validator {
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return frmSearchPgsForDocCrea.class.isAssignableFrom(aClass);
+        return qTraitement.class.isAssignableFrom(aClass);
     }
 
     @Override
@@ -39,10 +36,9 @@ public class saveDocValidator  implements Validator {
    // frmSearchPgsForDocCrea docSaved = (frmSearchPgsForDocCrea) o;
      //   qDoc currentSavedDoc=((frmSearchPgsForDocCrea) o).getCreateDocFormm().getCurrentDoc();
 
-        if (((frmSearchPgsForDocCrea) o).getCreateDocFormm().getCurrentDoc() instanceof qTraitement) {
-               docService.save(((frmSearchPgsForDocCrea) o).getCreateDocFormm().getCurrentDoc());
+               traitementService.save((qTraitement) o);
          //   docService.save((qTraitement)((frmSearchPgsForDocCrea) o).getCreateDocFormm().getCurrentDoc());
-            for(qPageTraitement pagetr: ((qTraitement) ((frmSearchPgsForDocCrea) o).getCreateDocFormm().getCurrentDoc()).getPagesTraitement()) {
+            for(qPageTraitement pagetr: ((qTraitement) (o)).getPagesTraitement()) {
                 for(qOpTraitement optr:pagetr.getOpTraitements()) {
                     if(optr.getEsp()!=null) {
                         if(!optr.getEsp().getNomFr().isEmpty()) {
@@ -61,9 +57,9 @@ public class saveDocValidator  implements Validator {
                         optr.setEsp(null);
                     }
                 }
-                //  pcService.save(pagetr);
+                 pcService.save(pagetr);
             }
 
-        }
+
     }
 }

@@ -198,43 +198,40 @@
         <div class="tab-content">
             <div th:each="page, statp : *{currentDoc.pages}" th:attr="id='page'+${statp.index}" class="tab-pane fade in active" th:class="${__${statp.index}__==__${frmSearchPgsForDocCrea.createDocFormm.currentPage}__}? 'tab-pane fade in active' : 'tab-pane fade'" >
 
-                <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].numeroPage}" th:value="*{currentDoc.pages[__${statp.index}__].numeroPage}"/>
-                <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].typeDoc}" th:value="*{currentDoc.pages[__${statp.index}__].typeDoc}" />
+                <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].numeroPage}" th:value="*{currentDoc.pages[__${statp.index}__].numeroPage}"/>
+                <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].typeDoc}" th:value="*{currentDoc.pages[__${statp.index}__].typeDoc}" />
 
                 <table class="table-bordered">
                     <tr>
 
-                        <th ></th>
-                        <th ></th>
-                        <th ></th>
-                        <th ></th>
+
                         <th >Date du jour</th>
                         <th th:each="p, statesp : *{currentDoc.pages[__${statp.index}__].listJours[0].capturesDuMarree}">
                             <span  th:text="*{currentDoc.pages[__${statp.index}__].listJours[0].capturesDuMarree[__${statesp.index}__].especeTypee.qespece.nomFr}" />
                         </th>
                     </tr>
                     <tr th:each="jourLigne, statj : *{currentDoc.pages[__${statp.index}__].listJours}" class="danger">
-                        <td > <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}"/>
-                        </td>
-                        <td ><input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numPage}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numPage}"/>
-                        </td>
-                        <td><input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}"/>
-                        </td>
-                        <td><input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numImm}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numImm}"/>
-                        </td>
+                       <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}"/>
+
+                       <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numPage}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numPage}"/>
+
+                        <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}"/>
+
+                        <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numImm}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].numImm}"/>
+
 
 
                         <td>
                        <input type="date" class="form-control input-sm " th:disabled="true" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{#dates.format(currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour, 'yyyy-MM-dd')}" />
                        </td>
                         <td th:each="jourCap, statc : *{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree}">
-                            <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour.indexLigne}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour.indexLigne}"/>
+                            <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].indexLigne}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].indexLigne}"/>
 
-                            <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour.numPage}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].numPage}"/>
-                            <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour.numImm}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].numImm}"/>
-                            <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour.dateJour}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].dateJour}"/>
-                            <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour.idespece}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].idespece}"/>
-                            <input type="text" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour.esptype}" th:value="*{currentDoc.pages[__${statj.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].esptype}"/>
+                            <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].numPage}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].numPage}"/>
+                            <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].nummimm}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].nummimm}"/>
+                            <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].dateJour}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].dateJour}"/>
+                            <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].idespece}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].idespece}"/>
+                            <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].esptype}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].esptype}"/>
 
                         <input type="text" class="form-control input-sm " th:tabindex="((*{currentDoc.pages[__${statp.index}__].nbrLigne}*${statc.index})+${statj.index}+1)" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].quantite}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].quantite}"/>
                         </td>
@@ -258,8 +255,8 @@
                       <div class="panel-body" >
 <div th:if="*{currentDoc.marreeAnnexe!=null}">
 
-    <input type="text" th:field="*{currentDoc.marreeAnnexe.numImm}" th:value="*{currentDoc.marreeAnnexe.numImm}" />
-    <input type="text" th:field="*{currentDoc.marreeAnnexe.depart}" th:value="*{currentDoc.marreeAnnexe.depart}" />
+    <input type="hidden" th:field="*{currentDoc.marreeAnnexe.numImm}" th:value="*{currentDoc.marreeAnnexe.numImm}" />
+    <input type="hidden" th:field="*{currentDoc.marreeAnnexe.depart}" th:value="*{currentDoc.marreeAnnexe.depart}" />
 
     <ul class="nav nav-tabs">
                               <li  th:each="page, stat : *{currentDoc.marreeAnnexe.pages}" th:class="${__${stat.index}__==__${frmSearchPgsForDocCrea.createDocFormm.currentPageAnnexe}__}? active : ''"><a data-toggle="tab" th:href="'#pageAnnexe'+${stat.index}" th:text="'Annexe '+*{currentDoc.marreeAnnexe.pages[__${stat.index}__].numeroPage}"></a> </li>
@@ -268,14 +265,13 @@
 
                           <div class="tab-content">
                               <div th:each="page, statp : *{currentDoc.marreeAnnexe.pages}" th:attr="id='pageAnnexe'+${statp.index}" class="tab-pane fade in active" th:class="${__${statp.index}__==__${frmSearchPgsForDocCrea.createDocFormm.currentPageAnnexe}__}? 'tab-pane fade in active' : 'tab-pane fade'" >
-                                  <input type="text" th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].numeroPage}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].numeroPage}" />
-                                  <input type="text" th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].typeDoc}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].typeDoc}" />
+                                  <input type="hidden" th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].numeroPage}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].numeroPage}" />
+                                  <input type="hidden" th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].typeDoc}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].typeDoc}" />
 
 
                                   <table class="table-bordered">
                                       <tr>
-                                          <th>Index</th>
-                                          <th>Matricul</th>
+
                                           <th>Date du jour</th>
                                           <th>Designation</th>
                                           <th>Poids en Kg</th>
@@ -283,18 +279,17 @@
 
                                       </tr>
                                       <tr th:each="jourLigne, statj : *{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours}" class="danger">
-                                          <td>
-                                              <input type="text" class="form-control input-sm "  th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}" />
-                                          </td>
-                                          <td>
-                                              <input type="text" class="form-control input-sm "  th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].numImm}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].numImm}" />
-                                          </td>
-                                          <td>
-                                              <input type="text" class="form-control input-sm "  th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" />
-                                          </td>
-                                          <td>
-                                              <input type="text" class="form-control input-sm "  th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].numPage}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].numPage}" />
-                                          </td>
+
+                                              <input type="hidden" class="form-control input-sm "  th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}" />
+
+
+                                              <input type="hidden" class="form-control input-sm "  th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].numImm}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].numImm}" />
+
+
+                                              <input type="hidden" class="form-control input-sm "  th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].numPage}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].numPage}" />
+
+                                         <td>  <input type="text" class="form-control input-sm "  th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" />
+                                         </td>
                                           <td>
                                               <input type="text" class="form-control input-sm " th:tabindex="((*{currentDoc.marreeAnnexe.pages[__${statp.index}__].nbrLigne}*${statp.index})+${statj.index}+1)" th:field="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].designation}" th:value="*{currentDoc.marreeAnnexe.pages[__${statp.index}__].listJours[__${statj.index}__].designation}" />
 
@@ -323,7 +318,7 @@
 
 
 
-                              pas de journal de peche annexe.
+                             Pas de journal de peche annexe.
                           </div>
                       </div>
 

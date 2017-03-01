@@ -95,7 +95,7 @@ public class mappingController {
     @RequestMapping(value="/start")
     public String ggg(final ModelMap model){
         searchAccueil sacc=new searchAccueil();
-
+        model.addAttribute("page","");
         model.addAttribute("sacc",sacc);
         return "index";
     }

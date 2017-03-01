@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Dell on 16/11/2016.
  */
 @Entity
-@Table(name="qEnginsLicence33", schema="dbo", catalog="GCM3" )
+@Table(name="qEnginsLicence33", schema="dbo", catalog="GCM4" )
 
 @IdClass(qEnginsLicencePK.class)
 public class qEnginsLicence implements Serializable {

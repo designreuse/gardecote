@@ -55,9 +55,9 @@ public class qJourDebServiceImpl implements qJourDebService {
 
     @Override
     public qJourDeb update(qJourDeb authprov) {
-        qJourDeb authprovEntity = qJourDebRepository.findOne(authprov.getJourPK());
 
-        qJourDeb authprovEntitySaved = qJourDebRepository.save(authprovEntity);
+
+        qJourDeb authprovEntitySaved = qJourDebRepository.save(authprov);
         return authprovEntitySaved ;
     }
 

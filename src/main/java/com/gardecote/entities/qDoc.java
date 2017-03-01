@@ -1,5 +1,4 @@
 package com.gardecote.entities;
-
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Required;
@@ -12,9 +11,10 @@ import java.util.List;
 /**
  * Created by Dell on 23/10/2016.
  */
+
 @Entity
 @DynamicUpdate
-@Table(name="qDoc33", schema="dbo", catalog="GCM3" )
+@Table(name="qDoc33", schema="dbo", catalog="GCM4")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
@@ -28,7 +28,6 @@ public class qDoc implements Serializable {
     private qLic licenceImputation;
     private String segPeche;
     private enumJP typePeche;
-
     private Integer quota;
     private Integer dureeConcession;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

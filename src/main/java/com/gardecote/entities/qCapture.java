@@ -23,10 +23,10 @@ import java.io.Serializable;
  */
 import java.util.Date;
 @Entity
-@Table(name="qCapture33", schema="dbo", catalog="GCM3" )
+@Table(name="qCapture33", schema="dbo", catalog="GCM4" )
 // Define named queries here
 @NamedQueries ( {
-  @NamedQuery ( name="qCaptue.countAll", query="SELECT COUNT(x) FROM qCapture x" )
+  @NamedQuery ( name="qCapture.countAll", query="SELECT COUNT(x) FROM qCapture x" )
 } )
 @IdClass(qCapturePK.class)
 public class qCapture implements Serializable
@@ -167,5 +167,21 @@ public class qCapture implements Serializable
         this.quantite = quantite;
         this.jourMere = jourMere;
         this.jourDeb = jourDeb;
+    }
+
+    public Integer getIndexLigne() {
+        return indexLigne;
+    }
+
+    public void setIndexLigne(Integer indexLigne) {
+        this.indexLigne = indexLigne;
+    }
+
+    public String getNumPage() {
+        return numPage;
+    }
+
+    public void setNumPage(String numPage) {
+        this.numPage = numPage;
     }
 }

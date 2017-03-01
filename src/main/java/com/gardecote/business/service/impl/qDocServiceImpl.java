@@ -6,17 +6,29 @@ import com.gardecote.entities.*;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.hibernate.Session;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -26,6 +38,8 @@ import java.util.List;
 @Service
 @Transactional
 public class qDocServiceImpl implements qDocService {
+    @Autowired
+    private qPrefixRepository prefRepo;
 
     @Autowired
     private qMarreeAnnexeRepository qmarreeannexeRepository;
@@ -50,7 +64,11 @@ public class qDocServiceImpl implements qDocService {
     @Autowired
     private qJourMereAnnexeRepository qjourmereannexeRepository;
     @Autowired
+    private qJourDebRepository qjourdebRepository;
+    @Autowired
     private qRegistreNavireRepository navRepository;
+    @Autowired
+    private qOpTraitementRepository qopTraitementRepository;
 
     @Override
     public qDoc findById(qDocPK idcarnet) {
@@ -104,60 +122,126 @@ public class qDocServiceImpl implements qDocService {
 
     @Override
     public void delete(qDocPK  idauthpr) {
-       qDoc ff= qdocRepository.findOne(idauthpr);
+       qDoc ff=qdocRepository.findOne(idauthpr);
+
         List<qJourMere> jms=new ArrayList<qJourMere>();
         List<qJourMereAnnexe> jmsAX=new ArrayList<qJourMereAnnexe>();
+        List<qJourDeb> jds=new ArrayList<qJourDeb>();
+        List<qOpTraitement> jts=new ArrayList<qOpTraitement>();
         if(ff instanceof  qMarree) {
-            for(Iterator<qPageMarree> iter=((qMarree) ff).getPages().iterator();iter.hasNext();) {
-                qPageMarree currentp=iter.next();
-                for (Iterator<qJourMere> iter1 = currentp.getListJours().iterator(); iter1.hasNext(); )
-                {
-                    qJourMere currj=iter1.next();
-                    currj.setPageMarree(null);
-                    jms.add(currj);
-                }
-                currentp.setListJours(null);
-                currentp.setQmarree(null);
-                qpagecarnetRepository.save(currentp);
-                 }
-            ((qMarree) ff).setPages(null);
-     //       qdocRepository.save(ff);
-            for(qJourMere jk:jms) {
-                //qjourmereRepository.save(jk);
-                qjourmereRepository.delete(jk);
-            }
-            qMarreeAnnexe marrAnnexe=((qMarree) ff).getMarreeAnnexe();
-            if(marrAnnexe!=null) {
-                ((qMarree) ff).setMarreeAnnexe(null);
-                marrAnnexe.setMarreePrincipal(null);
-                qdocRepository.save(ff);
-
-                qmarreeannexeRepository.save(marrAnnexe);
-                for(Iterator<qPageAnnexe> iter2= marrAnnexe.getPages().iterator();iter2.hasNext();) {
-                    qPageAnnexe currPX = iter2.next();
-                    for (Iterator<qJourMereAnnexe> iter1 = currPX.getListJours().iterator(); iter1.hasNext(); )
-                    {
-                        qJourMereAnnexe currjAX=iter1.next();
-                        currjAX.setPageMarree(null);
-                        jmsAX.add(currjAX);
+            if(((qMarree) ff).getPages().size()!=0) {
+                for (Iterator<qPageMarree> iter = ((qMarree) ff).getPages().iterator(); iter.hasNext(); ) {
+                    qPageMarree currentp = iter.next();
+                    for (Iterator<qJourMere> iter1 = currentp.getListJours().iterator(); iter1.hasNext(); ) {
+                        qJourMere currj = iter1.next();
+                        currj.setPageMarree(null);
+                        jms.add(currj);
                     }
-                    currPX.setListJours(null);
-                    currPX.setQmarreeAnexe(null);
-                    qpagecarnetRepository.save(currPX);
+                    currentp.setListJours(null);
+                    currentp.setQmarree(null);
+                    qpagecarnetRepository.save(currentp);
                 }
-                marrAnnexe.setPages(null);
-                qmarreeannexeRepository.save(marrAnnexe);
-                for(qJourMereAnnexe jk:jmsAX) {
-               //     qjourmereannexeRepository.save(jk);
-                    qjourmereannexeRepository.delete(jk);
+                ((qMarree) ff).setPages(null);
+                qdocRepository.save(ff);
+                for (qJourMere jk : jms) {
+                    //qjourmereRepository.save(jk);
+                    qjourmereRepository.delete(jk);
                 }
-             //   qmarreeannexeRepository.save(marrAnnexe);
-                qmarreeannexeRepository.delete(marrAnnexe.getqDocPK());
+                qMarreeAnnexe marrAnnexe = ((qMarree) ff).getMarreeAnnexe();
+                if (marrAnnexe != null) {
+                    ((qMarree) ff).setMarreeAnnexe(null);
+                    marrAnnexe.setMarreePrincipal(null);
+//                qdocRepository.save(ff);
+
+                    qmarreeannexeRepository.save(marrAnnexe);
+                    for (Iterator<qPageAnnexe> iter2 = marrAnnexe.getPages().iterator(); iter2.hasNext(); ) {
+                        qPageAnnexe currPX = iter2.next();
+                        for (Iterator<qJourMereAnnexe> iter1 = currPX.getListJours().iterator(); iter1.hasNext(); ) {
+                            qJourMereAnnexe currjAX = iter1.next();
+                            currjAX.setPageMarree(null);
+                            jmsAX.add(currjAX);
+                        }
+                        currPX.setListJours(null);
+                        currPX.setQmarreeAnexe(null);
+                        qpagecarnetRepository.save(currPX);
+                    }
+                    marrAnnexe.setPages(null);
+                    qmarreeannexeRepository.save(marrAnnexe);
+                    for (qJourMereAnnexe jk : jmsAX) {
+                        qjourmereannexeRepository.save(jk);
+                        qjourmereannexeRepository.delete(jk);
+                    }
+                    //      qMarreeAnnexe ffx=qmarreeannexeRepository.findOne(marrAnnexe.getqDocPK());
+                    //  qmarreeannexeRepository.save(marrAnnexe);
+                    qmarreeannexeRepository.delete(marrAnnexe);
+
                 }
-          //  qmarreeannexeRepository.delete(ff.getqDocPK());
-           //qdocRepository.save(ff);
-   //         qdocRepository.delete(ff.getqDocPK());
+                // qmarreeannexeRepository.delete(ff.getqDocPK());
+                //   qDoc fff=qdocRepository.findOne(ff.getqDocPK());
+                //   qdocRepository.save(fff);
+//           qdocRepository.save(ff);
             }
+            else qdocRepository.delete(ff);
+            }
+
+        if(ff instanceof  qDebarquement) {
+            if(((qDebarquement) ff).getPages().size()!=0) {
+                for (Iterator<qPageDebarquement> iter = ((qDebarquement) ff).getPages().iterator(); iter.hasNext(); ) {
+                    qPageDebarquement currentp = iter.next();
+                    for (Iterator<qJourDeb> iter1 = currentp.getListJours().iterator(); iter1.hasNext(); ) {
+                        qJourDeb currj = iter1.next();
+                        currj.setPagesDeb(null);
+                        jds.add(currj);
+                    }
+                    currentp.setListJours(null);
+                    currentp.setQdebarquement(null);
+                    qpagecarnetRepository.save(currentp);
+                }
+                ((qDebarquement) ff).setPages(null);
+                //       qdocRepository.save(ff);
+                for (qJourDeb jk : jds) {
+                    //qjourmereRepository.save(jk);
+                    qjourdebRepository.delete(jk);
+                }
+
+
+                // qmarreeannexeRepository.delete(ff.getqDocPK());
+                // qDoc fff=qdocRepository.findOne(ff.getqDocPK());
+                //   qdocRepository.save(fff);
+//          qdocRepository.delete(ff);
+            }
+            else  qdocRepository.delete(ff);
+        }
+
+        if(ff instanceof  qTraitement) {
+            if (((qTraitement) ff).getPagesTraitement().size() != 0) {
+                for (Iterator<qPageTraitement> iter = ((qTraitement) ff).getPagesTraitement().iterator(); iter.hasNext(); ) {
+                    qPageTraitement currentp = iter.next();
+                    for (Iterator<qOpTraitement> iter1 = currentp.getOpTraitements().iterator(); iter1.hasNext(); ) {
+                        qOpTraitement currj = iter1.next();
+                        currj.setPageTraitement(null);
+                        jts.add(currj);
+                    }
+                    currentp.setOpTraitements(null);
+                    currentp.setQtraitement(null);
+                    qpagecarnetRepository.save(currentp);
+                }
+                ((qTraitement) ff).setPagesTraitement(null);
+                //       qdocRepository.save(ff);
+                for (qOpTraitement jk : jts) {
+                    //qjourmereRepository.save(jk);
+                    qopTraitementRepository.delete(jk);
+                }
+
+
+                // qmarreeannexeRepository.delete(ff.getqDocPK());
+                qDoc fff = qdocRepository.findOne(ff.getqDocPK());
+                //   qdocRepository.save(fff);
+                qdocRepository.delete(ff.getqDocPK());
+
+            }
+            else qdocRepository.delete(ff.getqDocPK());
+        }
         }
    public qDocRepository getAuthprovJpaRepository() {
         return qdocRepository;
@@ -193,6 +277,1033 @@ public class qDocServiceImpl implements qDocService {
        if(pgs.size()>0)  return true;
            else          return false;
     }
+
+
+
+    @Override
+    public qDebarquement creerDebarquementByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsDebs,List<Boolean> categDebs,Map<String,Map<Integer,List<Double>>> quantities) {
+        // qSeq seqActive=qseqRepository.findOne(seqActive1.getSeqPK());
+        qSeq seqActive=seqActive1;
+        String numeroDebut = seqActive.getDebut(),numeroFin = seqActive.getFin(), debutPrefix = null,finPrefix = null;
+        qDebarquement      documentCree=null;
+        qPageCarnet        debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(numeroDebut,typeDoc));
+        qPageCarnet        finp=qpagecarnetRepository.findOne(new qPageCarnetPK(numeroFin,typeDoc));
+        qCarnet carnetDebut = debutp.getQcarnet();
+        qCarnet carnetFin = finp.getQcarnet();
+        debutPrefix=carnetDebut.getPrefixNumerotation().toString();
+
+        qNavire qnav = carnetDebut.getQnavire();
+        qConcession qconcess =carnetDebut.getQconcession();//qnav.getQlicencebatlastdernier().getQconcession(); // concession du dernier lic
+        //carnetDebut.getQconcession();
+        Long finNumberL=finp.getNumeroOrdrePage(),debutNumberL=debutp.getNumeroOrdrePage();
+        List<qEnginPecheDebar> choixEnginsDeb=new ArrayList<qEnginPecheDebar>();
+        qEnginPecheDebar engdeb1=new qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Filet_maillant,0,enginsDebs.get(0));
+        qEnginPecheDebar engdeb2=new  qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Filet_Enc_ST,0,enginsDebs.get(1));
+        qEnginPecheDebar engdeb3=new  qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Palangre,0,enginsDebs.get(2));
+        qEnginPecheDebar engdeb4=new  qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Filet_tremail,0,enginsDebs.get(3));
+
+        qEnginPecheDebar engdeb6=new qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Casier,0,enginsDebs.get(4));
+        qEnginPecheDebar engdeb7=new qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Ligne,0,enginsDebs.get(5));
+        qEnginPecheDebar engdeb8=new qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Pots,0,enginsDebs.get(6));
+        qEnginPecheDebar engdeb9=new qEnginPecheDebar(qnav.getNumimm(),dateDepart,enumEngin.Indefini,enumEnginDeb.Turlutte,0,enginsDebs.get(7));
+        choixEnginsDeb.add(engdeb1);
+        choixEnginsDeb.add(engdeb2);
+        choixEnginsDeb.add(engdeb3);
+        choixEnginsDeb.add(engdeb4);
+
+        choixEnginsDeb.add(engdeb6);
+        choixEnginsDeb.add(engdeb7);
+        choixEnginsDeb.add(engdeb8);
+        choixEnginsDeb.add(engdeb9);
+
+        List<qCategDeb> categsArt=new ArrayList<qCategDeb>();
+        qCategRessource cr1=qcqtRepository.findOne(1);
+        qCategRessource cr2=qcqtRepository.findOne(2);
+        qCategRessource cr3=qcqtRepository.findOne(3);
+        qCategRessource cr4=qcqtRepository.findOne(4);
+        qCategRessource cr5=qcqtRepository.findOne(5);
+
+        qCategDeb c1=new qCategDeb(qnav.getNumimm(),dateDepart,cr1,categDebs.get(0));
+        qCategDeb c2=new qCategDeb(qnav.getNumimm(),dateDepart,cr2,categDebs.get(1));
+        qCategDeb c3=new qCategDeb(qnav.getNumimm(),dateDepart,cr3,categDebs.get(2));
+        qCategDeb c4=new qCategDeb(qnav.getNumimm(),dateDepart,cr4,categDebs.get(3));
+        qCategDeb c5=new qCategDeb(qnav.getNumimm(),dateDepart,cr5,categDebs.get(4));
+     //   c1.setFlag(categDebs.get(0));c1.setFlag(categDebs.get(1));c1.setFlag(categDebs.get(2));c1.setFlag(categDebs.get(3));
+      //  c1.setFlag(categDebs.get(4));
+        categsArt.add(c1);categsArt.add(c2);categsArt.add(c3);categsArt.add(c4);categsArt.add(c5);
+        List<qCategDeb> categsCot=new ArrayList<qCategDeb>();
+        qCategRessource cr11=qcqtRepository.findOne(6);
+        qCategRessource cr21=qcqtRepository.findOne(7);
+        qCategRessource cr31=qcqtRepository.findOne(8);
+        qCategRessource cr41=qcqtRepository.findOne(9);
+        qCategRessource cr51=qcqtRepository.findOne(10);
+        qCategRessource cr61=qcqtRepository.findOne(11);
+        qCategRessource cr71=qcqtRepository.findOne(12);
+
+        qCategDeb c11=new qCategDeb(qnav.getNumimm(),dateDepart,cr11,categDebs.get(0));
+        qCategDeb c21=new qCategDeb(qnav.getNumimm(),dateDepart,cr21,categDebs.get(1));
+        qCategDeb c31=new qCategDeb(qnav.getNumimm(),dateDepart,cr31,categDebs.get(2));
+        qCategDeb c41=new qCategDeb(qnav.getNumimm(),dateDepart,cr41,categDebs.get(3));
+
+        categsCot.add(c11);categsCot.add(c21);categsCot.add(c31);categsCot.add(c41);
+
+        qPrefixPK pref=new qPrefixPK(debutPrefix,typeDoc);
+        qModelJP currentModel=qmodelRepository.findOne(pref);
+
+        if (carnetDebut.getPrefixNumerotation().equals("PC")) {
+            // la peche cotiere
+            documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
+                    choixEnginsDeb,  enumTypeDebarquement.Cotier, qconcess,categsCot, null);
+            documentCree.setSegPeche(debutPrefix);
+            documentCree.setNomNavire(qnav.getNomnav());
+        }
+
+        if (carnetDebut.getPrefixNumerotation().equals("PA")) {
+            // la peche artisanal
+
+            documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
+                    choixEnginsDeb, enumTypeDebarquement.Artisanal,qconcess, categsArt,null);
+
+
+            documentCree.setSegPeche(debutPrefix);
+            documentCree.setNomNavire(qnav.getNomnav());
+
+        }
+
+        //  List<qPageDebarquement> lstPgsDeb =null;
+        List<qPageDebarquement> lstPgsDeb = new ArrayList<qPageDebarquement>();
+        // preparer les pages
+        List<qPageCarnet> pagesConcernees = qcarnetRepository.retPages(carnetDebut, debutNumberL, finNumberL);
+        for (qPageCarnet qpc : pagesConcernees) {
+            lstPgsDeb.add((qPageDebarquement) qpc);
+        }
+        Iterator<qPageDebarquement> qdebpages = lstPgsDeb.iterator();
+        Date dateJourCourant = documentCree.getDepart();
+        List<qJourDeb> joursDeb =null;
+        Map<Integer,List<Double>> currentPageAQuanties=null;
+        List<Double>   currentLineQuantities=null;
+        Integer i=0;
+        while (qdebpages.hasNext()) {
+            qPageDebarquement currp = qdebpages.next();
+            currentPageAQuanties=quantities.get(currp.getNumeroPage());
+            currp.setEtatPage(enumEtatPage.DRAFT);
+            currp.setQdebarquement((qDebarquement) documentCree);
+            joursDeb = new ArrayList<qJourDeb>();
+            // pqrcourir les ligne de page
+            for (int k = 0; k < currp.getNbrLigne(); k++) {
+                if (dateJourCourant.before(documentCree.getRetour()) || dateJourCourant.equals(documentCree.getRetour())) {
+                    currentLineQuantities= currentPageAQuanties.get(k);
+                    qJourDeb jourDeb = new qJourDeb(k,currp.getNumeroPage(),dateJourCourant, qnav, null, currp);
+                    List<qCapture> capturesLine = new ArrayList<qCapture>();
+                    // traitement des captures
+                    i=0;
+                    for (qEspeceTypee esptypee : currentModel.getEspecestypees()) {
+                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee, currentLineQuantities.get(i).intValue(), null, jourDeb);
+                        qcapture.setQdoc(documentCree);
+                        qcapture.setJourDeb(jourDeb);
+                        qcapture.setDatedepart(documentCree.getDepart());
+                        qcapture.setNummimm(documentCree.getNumImm());
+                        qcapture.setDateJour(dateJourCourant);
+                        qcapture.setIdespece(esptypee.getQespeceId());
+                        qcapture.setEsptype(esptypee.getEnumesptype());
+                        capturesLine.add(qcapture);
+                        //  capturesTotal.add(qcapture);
+                        i++;
+                    }
+                    jourDeb.setDebarqDuJour(capturesLine);
+                    jourDeb.setPagesDeb(currp);
+                    joursDeb.add(jourDeb);
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(dateJourCourant);
+                    cal.add(Calendar.DATE, 1);
+                    dateJourCourant = cal.getTime();
+                    //   capturesLine.clear();
+                }
+            }
+            currp.setListJours(joursDeb);
+            //  joursDeb.clear();
+        }
+        documentCree.setQseq(seqActive);
+        documentCree.setPages(lstPgsDeb);
+        //  qdocRepository.save(documentCree);
+        // ((qDebarquement)qdoc).setCaptures(capturesTotal);
+        return documentCree;
+    }
+
+    @Override
+    public qTraitement creerTraitementByImport(Date dateDepart, Date dateRetour, qSeq seqActive1, enumTypeDoc typeDoc, List<Boolean> enginsMarree, enumJP typeJP, Map<String, Map<Integer, List<Double>>> quantities) {
+        return null;
+    }
+
+    @Override
+    public qMarree creerMarreesByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP selectedTypeJP,Map<String,Map<Integer,List<Double>>> quantities) {
+        //   qSeq seqActive=qseqRepository.findOne(seqActive1.getSeqPK());
+        qSeq seqActive=seqActive1;
+        String numeroDebut = seqActive.getDebut(),numeroFin = seqActive.getFin(), debutPrefix = null,finPrefix = null;
+        qMarree documentCree=null;
+        qPageCarnet        debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(numeroDebut,typeDoc));
+        qPageCarnet        finp=qpagecarnetRepository.findOne(new qPageCarnetPK(numeroFin,typeDoc));
+        Long finNumberL=finp.getNumeroOrdrePage(),debutNumberL=debutp.getNumeroOrdrePage();
+        qCarnet carnetDebut = debutp.getQcarnet();
+        qCarnet carnetFin = finp.getQcarnet();
+        debutPrefix=carnetDebut.getPrefixNumerotation().toString();
+
+        qNavire qnav = carnetDebut.getQnavire();
+        qConcession qconcess;
+        //qnav.getQlicencebatlastdernier().getQconcession(); // concession du dernier lic
+        //carnetDebut.getQconcession();
+        List<qEnginPecheMar> choixEnginsMar=new ArrayList<qEnginPecheMar>();
+        qEnginPecheMar engmar1=new qEnginPecheMar(qnav.getNumimm(),dateDepart,enumEngin.Chalut,enumEnginDeb.Indefini,0,enginsMarree.get(0));
+        qEnginPecheMar engmar2=new qEnginPecheMar(qnav.getNumimm(),dateDepart,enumEngin.Casier,enumEnginDeb.Indefini,0,enginsMarree.get(1));
+        qEnginPecheMar engmar3=new  qEnginPecheMar(qnav.getNumimm(),dateDepart,enumEngin.Nasses,enumEnginDeb.Indefini,0,enginsMarree.get(2));
+        qEnginPecheMar engmar4=new  qEnginPecheMar(qnav.getNumimm(),dateDepart,enumEngin.Pots,enumEnginDeb.Indefini,0,enginsMarree.get(3));
+
+        qEnginPecheMar engmar6=new qEnginPecheMar(qnav.getNumimm(),dateDepart,enumEngin.Filet_tremail,enumEnginDeb.Indefini,0,enginsMarree.get(4));
+        qEnginPecheMar engmar7=new qEnginPecheMar(qnav.getNumimm(),dateDepart,enumEngin.Turlutte,enumEnginDeb.Indefini,0,enginsMarree.get(5));
+
+        choixEnginsMar.add(engmar1);
+        choixEnginsMar.add(engmar2);
+        choixEnginsMar.add(engmar3);
+        choixEnginsMar.add(engmar4);
+
+        choixEnginsMar.add(engmar6);
+        choixEnginsMar.add(engmar7);
+
+
+        List<qCategRessource>  ours=new ArrayList<qCategRessource>();
+        Integer flagcotiere = 0, flaghautiriere = 0;
+        if(carnetDebut.getQconcession()!=null) {qconcess=carnetDebut.getQconcession();
+            ours.addAll(carnetDebut.getQconcession().getCategoriesRessources());}
+        else qconcess=null;
+
+        documentCree = new qMarree(enumTypeDoc.Journal_Peche, dateDepart, dateRetour, seqActive, qnav,null,
+                qconcess,selectedTypeJP ,  choixEnginsMar, null);
+        documentCree.setSegPeche(debutPrefix);
+        documentCree.setNomNavire(qnav.getNomnav());
+        documentCree.setTypeJP(selectedTypeJP );
+        qPrefixPK pref=new qPrefixPK(debutPrefix,typeDoc);
+        // cat du dernier licence
+        qModelJP currentModel=qmodelRepository.findOne(pref);
+        System.out.println(debutPrefix);
+        // pour la journal de peche
+        System.out.println("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
+        System.out.println(currentModel.getEspecestypees());
+        System.out.println(currentModel.getEspecestypees().size());
+        for (qEspeceTypee esptypee : currentModel.getEspecestypees()){
+            System.out.println(esptypee.getQespece().getCodeEsp());
+            System.out.println(esptypee.getQespece().getNomFr());
+        }
+        System.out.println("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
+        List<qPageMarree> lstPgsMar = new ArrayList<qPageMarree>();
+        // preparer les pages
+        List<qPageCarnet> pagesConcernees = qcarnetRepository.retPages(carnetDebut, debutNumberL, finNumberL);
+        for (qPageCarnet qpc : pagesConcernees) {
+            lstPgsMar.add((qPageMarree) qpc);
+        }
+        Iterator<qPageMarree> qmarpages = lstPgsMar.iterator();
+        Date dateJourCourant = documentCree.getDepart();
+        List<qJourMere> joursMar = null;
+        Map<Integer,List<Double>> currentPageAQuanties=null;
+        List<Double>   currentLineQuantities=null;
+        Integer i=0;
+        while (qmarpages.hasNext()) {
+            qPageMarree currp = qmarpages.next();
+            currp.setEtatPage(enumEtatPage.DRAFT);
+            currp.setQmarree((qMarree) documentCree);
+            currentPageAQuanties=quantities.get(currp.getNumeroPage());
+            // parcourir les ligne de page
+            joursMar = new ArrayList<qJourMere>();
+            for (int k = 0; k < currp.getNbrLigne(); k++) {
+                if (dateJourCourant.before(documentCree.getRetour()) || dateJourCourant.equals(documentCree.getRetour())) {
+                    qJourMere jourMar = new qJourMere(k,currp.getNumeroPage(),dateJourCourant, qnav, null, 0, 0, 0, currp);
+                    // traitement des captures
+                    currentLineQuantities=currentPageAQuanties.get(k);
+                    List<qCapture> capturesLine = new ArrayList<qCapture>();
+                         i=0;
+                    for (qEspeceTypee esptypee : currentModel.getEspecestypees()) {
+
+                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee,  currentLineQuantities.get(i).intValue(), jourMar, null);
+                        qcapture.setQdoc(documentCree);
+                        qcapture.setJourMere(jourMar);
+                        qcapture.setDatedepart(documentCree.getDepart());
+                        qcapture.setNummimm(documentCree.getNumImm());
+                        qcapture.setDateJour(dateJourCourant);
+                        qcapture.setIdespece(esptypee.getQespeceId());
+                        qcapture.setEsptype(esptypee.getEnumesptype());
+                        capturesLine.add(qcapture);
+                         i++;
+                        //  capturesTotal.add(qcapture);
+
+                    }
+                    jourMar.setTotalCapturs(0);
+                    jourMar.setTotalCong(0);
+                    jourMar.setNbrCaisse(0);
+                    jourMar.setCapturesDuMarree(capturesLine);
+                    jourMar.setPageMarree(currp);
+                    joursMar.add(jourMar);
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(dateJourCourant);
+                    cal.add(Calendar.DATE, 1);
+                    dateJourCourant = cal.getTime();
+                    //    capturesLine.clear();
+                }
+            }
+            currp.setListJours(joursMar);
+            //   joursMar.clear();
+        }
+        documentCree.setQseq(seqActive);
+        documentCree.setPages(lstPgsMar);
+
+        //  ((qDebarquement)qdoc).setCaptures(capturesTotal);
+        return documentCree;
+    }
+
+    @Override
+    public String importerDocuments(MultipartFile file, String fullpatchname) {
+
+      String  TypeDoc,Depart,EngFilet_maillant,Filet_Enc_ST,Palangre,Filet_tremail,Casier,	Ligne,	Pots,Turlutte,categDebCeph,	CategDebDem,CategCrustDeb,CategPelDeb,CategAutresMollusques,qseqdebut,qseqfin,DateRetour,	DateJour,	NPage ,Esp1	,Esp2,	Esp3,	Esp4,	Esp5,	Esp6,	Esp7,	Esp8,	Esp9,	Esp10,	Esp11,	Esp12,	Esp13,	Esp14,	Esp15,treatedDocType="";
+        Integer indexLigneDebArtisanal=1;
+List<Boolean> choixEnginsPA=new ArrayList<Boolean>(),choixCategoriesPA=new ArrayList<Boolean>();
+        Map<String,Map<Integer,List<Double>>>  quantities=new HashMap<String,Map<Integer,List<Double>>>();
+        Map<Integer,List<Double>> currentPageCaps=null;//new HashMap<Integer,List<Double>>();
+        List<Double> currentLineCaptures=new ArrayList<Double>();
+        Date DDepart=null,DRetour=null; qPageCarnet currentp=null;qPageCarnet currentpnew=null;qPageCarnetPK pk=null;qPageCarnetPK pknew=null;
+        qPrefixPK prefpk=null;
+        qModelJP currentModel=null;
+        qSeq seqActive=null;
+        qPrefixPK prefpknew=null;
+        qModelJP currentModelnew=null;
+        qSeq seqActivenew=null;
+Integer k=0;
+        try {
+          file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+            FileReader reader = new FileReader(fullpatchname);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if(!first) {
+                    System.out.println(k);
+
+                    String splitarray[] = line.split("\t");
+
+                            TypeDoc=splitarray[0];
+                            Depart=splitarray[1];
+                             DateRetour=	splitarray[2];
+                            EngFilet_maillant=splitarray[3];
+                            Filet_Enc_ST=splitarray[4];
+                            Palangre=splitarray[5];
+                            Filet_tremail=splitarray[6];
+                            Casier=	splitarray[7];
+                            Ligne=	splitarray[8];
+                            Pots=splitarray[9];
+                            Turlutte=splitarray[10];
+                            categDebCeph=splitarray[11];
+                            CategDebDem=splitarray[12];
+                            CategCrustDeb=splitarray[13];
+                            CategPelDeb=splitarray[14];
+                            CategAutresMollusques=splitarray[15];
+                            qseqdebut=splitarray[16];
+                            qseqfin=splitarray[17];
+                            DateJour=	splitarray[18];
+                            NPage=splitarray[19];
+                            Esp1=splitarray[20];
+                            Esp2=splitarray[21];
+                            Esp3=splitarray[22];
+                            Esp4=	splitarray[23];
+                            Esp5=	splitarray[24];
+                            Esp6=splitarray[25];
+                            Esp7=	splitarray[26];
+                            Esp8=	splitarray[27];
+                            Esp9=	splitarray[28];
+                            Esp10=	splitarray[29];
+                            Esp11=  splitarray[30];
+                            Esp12=	splitarray[31];
+                            Esp13=	splitarray[32];
+                            Esp14=	splitarray[33];
+                            Esp15=  splitarray[34];
+
+                    SimpleDateFormat sdfmt1 = new SimpleDateFormat("dd/MM/yyyy");
+                    //	if((!splitarray[13].equals("VIDE")) || (!splitarray[14].equals("VIDE"))) {
+
+
+                    // traitement des debarquement Artisanale
+
+                    if(splitarray[0].equals("DEBARQUEMENTA"))
+                    {
+                        currentPageCaps=new HashMap<Integer,List<Double>>();
+                        try {
+                            DDepart=sdfmt1.parse(Depart);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            DRetour=sdfmt1.parse(DateRetour);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        indexLigneDebArtisanal=0;
+
+                        pk=new qPageCarnetPK(NPage,enumTypeDoc.Fiche_Debarquement);
+                        currentp=qpagecarnetRepository.findOne(pk);
+                        prefpk=new qPrefixPK("PA",enumTypeDoc.Fiche_Debarquement);
+
+                       currentModel=qmodelRepository.findOne(prefpk);
+                       seqActive=new qSeq(qseqdebut,qseqfin,null);
+                        // former les choix pour les engins de PA
+                        choixEnginsPA.add(Boolean.parseBoolean(EngFilet_maillant));
+                        choixEnginsPA.add(Boolean.parseBoolean(Filet_Enc_ST));
+                        choixEnginsPA.add(Boolean.parseBoolean(Palangre));
+                        choixEnginsPA.add(Boolean.parseBoolean(Palangre));
+                        choixEnginsPA.add(Boolean.parseBoolean(Casier));
+                        choixEnginsPA.add(Boolean.parseBoolean(Ligne));
+                        choixEnginsPA.add(Boolean.parseBoolean(Pots));
+                        choixEnginsPA.add(Boolean.parseBoolean(Turlutte));
+                        // former les chois pour les  categories de PA
+
+                        choixCategoriesPA.add(Boolean.parseBoolean(categDebCeph));
+                        choixCategoriesPA.add(Boolean.parseBoolean(CategDebDem));
+                        choixCategoriesPA.add(Boolean.parseBoolean(CategCrustDeb));
+                        choixCategoriesPA.add(Boolean.parseBoolean(CategPelDeb));
+                        choixCategoriesPA.add(Boolean.parseBoolean(CategAutresMollusques));
+
+                        // former la mape pour les captures par page et pare line ou jour*
+                        List<String> qs=new ArrayList<String>();
+                        qs.add(Esp1);
+                        qs.add(Esp2);
+                        qs.add(Esp3);
+                        qs.add(Esp4);
+                        qs.add(Esp5);
+                        qs.add(Esp6);
+                        qs.add(Esp7);
+                        qs.add(Esp8);
+                        qs.add(Esp9);
+                        qs.add(Esp10);
+                        qs.add(Esp11);
+                        qs.add(Esp12);
+
+                        qs.add(Esp13);
+                        qs.add(Esp14);
+                        qs.add(Esp15);
+
+                       for(int i=0;i<currentModel.getEspecestypees().size();i++)
+                        currentLineCaptures.add(Double.parseDouble(qs.get(i)));
+
+                        currentPageCaps.put(indexLigneDebArtisanal,currentLineCaptures);
+                         // create new debarquement
+                    }
+                 else {
+                        if (splitarray[0].equals("V") ) {
+                            currentLineCaptures.clear();
+
+                            pknew = new qPageCarnetPK(NPage, enumTypeDoc.Fiche_Debarquement);
+                            currentpnew = qpagecarnetRepository.findOne(pknew);
+                            if (currentp.equals(currentpnew)) {
+                                indexLigneDebArtisanal++;
+                                //    prefpknew=new qPrefixPK("PA",enumTypeDoc.Fiche_Debarquement);
+
+                                //     currentModel=qmodelRepository.findOne(prefpk);
+                          //      seqActivenew = new qSeq(qseqdebut, qseqfin, null);
+                                List<String> qs = new ArrayList<String>();
+                                qs.add(Esp1);
+                                qs.add(Esp2);
+                                qs.add(Esp3);
+                                qs.add(Esp4);
+                                qs.add(Esp5);
+                                qs.add(Esp6);
+                                qs.add(Esp7);
+                                qs.add(Esp8);
+                                qs.add(Esp9);
+                                qs.add(Esp10);
+                                qs.add(Esp11);
+                                qs.add(Esp12);
+
+                                qs.add(Esp13);
+                                qs.add(Esp14);
+                                qs.add(Esp15);
+
+                                for (int i = 0; i < currentModel.getEspecestypees().size(); i++)
+                                    currentLineCaptures.add(Double.parseDouble(qs.get(i)));
+
+                                currentPageCaps.put(indexLigneDebArtisanal, currentLineCaptures);
+                            }
+                            else  {
+                                indexLigneDebArtisanal = 0;
+                                quantities.put(currentp.getNumeroPage(), currentPageCaps);
+                                currentPageCaps=new HashMap<Integer,List<Double>>();
+                                currentLineCaptures.clear();
+                                //    prefpknew=new qPrefixPK("PA",enumTypeDoc.Fiche_Debarquement);
+
+                                //     currentModel=qmodelRepository.findOne(prefpk);
+                           //     seqActivenew = new qSeq(qseqdebut, qseqfin, null);
+                                List<String> qs = new ArrayList<String>();
+                                qs.add(Esp1);
+                                qs.add(Esp2);
+                                qs.add(Esp3);
+                                qs.add(Esp4);
+                                qs.add(Esp5);
+                                qs.add(Esp6);
+                                qs.add(Esp7);
+                                qs.add(Esp8);
+                                qs.add(Esp9);
+                                qs.add(Esp10);
+                                qs.add(Esp11);
+                                qs.add(Esp12);
+
+                                qs.add(Esp13);
+                                qs.add(Esp14);
+                                qs.add(Esp15);
+
+                                for (int i = 0; i < currentModel.getEspecestypees().size(); i++)
+                                    currentLineCaptures.add(Double.parseDouble(qs.get(i)));
+
+                                currentPageCaps.put(indexLigneDebArtisanal, currentLineCaptures);
+                                currentp = currentpnew;
+                            }
+
+
+                        }
+                        else {
+                            if(splitarray[0].equals("Fin")) {
+                                quantities.put(currentp.getNumeroPage(), currentPageCaps);
+                                currentp = null;
+
+                                qDebarquement newDoc=creerDebarquementByImport(DDepart,DRetour,seqActive,enumTypeDoc.Fiche_Debarquement,
+                                        choixEnginsPA,choixCategoriesPA,quantities);
+//                                qdocRepository.save(newDoc);
+
+                            }
+                            else System.out.println("Erreur. mot cle non reconnue");
+                        }
+                    }
+
+                 }
+
+                k++;
+            }
+
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return null;
+    }
+
+
+
+
+    @Override
+    public String importerMarrees(MultipartFile file, String fullpatchname) {
+
+
+        String  TypeDoc,TypeJP,Depart,Chalut,Prefix,	Casier,	Nasse,	Pots,	Filet_tremail,	Turlutte,qseqdebut,qseqfin,DateRetour,	DateJour,	NPage ,Esp1	,Esp2,	Esp3,	Esp4,	Esp5,	Esp6,	Esp7,	Esp8,	Esp9,	Esp10,	Esp11,	Esp12,	Esp13,	Esp14,	Esp15,treatedDocType="";
+        Integer indexLigneMarree=1;
+        List<Boolean> choixEnginsMaree=new ArrayList<Boolean>();
+        Map<String,Map<Integer,List<Double>>>  quantities=new HashMap<String,Map<Integer,List<Double>>>();
+        Map<Integer,List<Double>> currentPageCaps=null;//new HashMap<Integer,List<Double>>();
+        List<Double> currentLineCaptures=new ArrayList<Double>();
+        Date DDepart=null,DRetour=null; qPageCarnet currentp=null;qPageCarnet currentpnew=null;qPageCarnetPK pk=null;qPageCarnetPK pknew=null;
+        qPrefixPK prefpk=null;
+        qModelJP currentModel=null;
+        qSeq seqActive=null;
+        qPrefixPK prefpknew=null;
+        qModelJP currentModelnew=null;
+        qSeq seqActivenew=null;
+        enumJP selectedTypeJP=null;
+        Integer k=0;
+        try {
+            file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+            FileReader reader = new FileReader(fullpatchname);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if(!first) {
+                    System.out.println(k);
+
+                    String splitarray[] = line.split("\t");
+
+                    TypeDoc=splitarray[0];
+                    TypeJP=splitarray[1];
+                    Depart=splitarray[2];
+                    DateRetour=	splitarray[3];
+                    Chalut=splitarray[4];
+                      Casier=splitarray[5];
+                      Nasse=splitarray[6];
+                      Pots=splitarray[7];
+                      Filet_tremail=splitarray[8];
+                      Turlutte=splitarray[9];
+                    qseqdebut=splitarray[10];
+                    qseqfin=splitarray[11];
+                    DateJour=	splitarray[12];
+                    NPage=splitarray[13];
+                    Prefix=  splitarray[14];
+                    Esp1=splitarray[15];
+                    Esp2=splitarray[16];
+                    Esp3=splitarray[17];
+                    Esp4=	splitarray[18];
+                    Esp5=	splitarray[19];
+                    Esp6   =splitarray[20];
+                    Esp7=	splitarray[21];
+                    Esp8=	splitarray[22];
+                    Esp9=	splitarray[23];
+                    Esp10=	splitarray[24];
+                    Esp11=  splitarray[25];
+                    Esp12=	splitarray[26];
+                    Esp13=	splitarray[27];
+                    Esp14=	splitarray[28];
+                    Esp15=  splitarray[29];
+
+                    SimpleDateFormat sdfmt1 = new SimpleDateFormat("dd/MM/yyyy");
+                    //	if((!splitarray[13].equals("VIDE")) || (!splitarray[14].equals("VIDE"))) {
+
+
+                    // traitement des debarquement Artisanale
+
+                    if(splitarray[0].equals("MARREE"))
+                    {
+                        if(TypeJP.equals("HAUTIRIERE"))  selectedTypeJP=enumJP.Hautirere;
+                        else selectedTypeJP=enumJP.Cotier ;
+
+                        currentPageCaps=new HashMap<Integer,List<Double>>();
+                        try {
+                            DDepart=sdfmt1.parse(Depart);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            DRetour=sdfmt1.parse(DateRetour);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        indexLigneMarree=0;
+
+                        pk=new qPageCarnetPK(NPage,enumTypeDoc.Journal_Peche);
+                        currentp=qpagecarnetRepository.findOne(pk);
+                        prefpk=new qPrefixPK(Prefix,enumTypeDoc.Journal_Peche);
+
+                        currentModel=qmodelRepository.findOne(prefpk);
+                        seqActive=new qSeq(qseqdebut,qseqfin,null);
+                        // former les choix pour les engins de PA
+                        Chalut=splitarray[4];
+                        Casier=splitarray[5];
+                        Nasse=splitarray[6];
+                        Pots=splitarray[7];
+                        Filet_tremail=splitarray[8];
+                        Turlutte=splitarray[9];
+                        choixEnginsMaree.add(Boolean.parseBoolean(Chalut));
+                        choixEnginsMaree.add(Boolean.parseBoolean(Casier));
+                        choixEnginsMaree.add(Boolean.parseBoolean(Nasse));
+                        choixEnginsMaree.add(Boolean.parseBoolean(Pots));
+                        choixEnginsMaree.add(Boolean.parseBoolean(Filet_tremail));
+                        choixEnginsMaree.add(Boolean.parseBoolean(Turlutte));
+
+                        // former la mape pour les captures par page et pare line ou jour*
+                        List<String> qs=new ArrayList<String>();
+                        qs.add(Esp1);
+                        qs.add(Esp2);
+                        qs.add(Esp3);
+                        qs.add(Esp4);
+                        qs.add(Esp5);
+                        qs.add(Esp6);
+                        qs.add(Esp7);
+                        qs.add(Esp8);
+                        qs.add(Esp9);
+                        qs.add(Esp10);
+                        qs.add(Esp11);
+                        qs.add(Esp12);
+
+                        qs.add(Esp13);
+                        qs.add(Esp14);
+                        qs.add(Esp15);
+
+                        for(int i=0;i<currentModel.getEspecestypees().size();i++)
+                            currentLineCaptures.add(Double.parseDouble(qs.get(i)));
+
+                        currentPageCaps.put(indexLigneMarree,currentLineCaptures);
+                        // create new debarquement
+                    }
+                    else {
+                        if (splitarray[0].equals("V") ) {
+                            currentLineCaptures.clear();
+
+                            pknew = new qPageCarnetPK(NPage, enumTypeDoc.Journal_Peche);
+                            currentpnew = qpagecarnetRepository.findOne(pknew);
+                            if (currentp.equals(currentpnew)) {
+                                indexLigneMarree++;
+                                //    prefpknew=new qPrefixPK("PA",enumTypeDoc.Fiche_Debarquement);
+
+                                //     currentModel=qmodelRepository.findOne(prefpk);
+                                //      seqActivenew = new qSeq(qseqdebut, qseqfin, null);
+                                List<String> qs = new ArrayList<String>();
+                                qs.add(Esp1);
+                                qs.add(Esp2);
+                                qs.add(Esp3);
+                                qs.add(Esp4);
+                                qs.add(Esp5);
+                                qs.add(Esp6);
+                                qs.add(Esp7);
+                                qs.add(Esp8);
+                                qs.add(Esp9);
+                                qs.add(Esp10);
+                                qs.add(Esp11);
+                                qs.add(Esp12);
+
+                                qs.add(Esp13);
+                                qs.add(Esp14);
+                                qs.add(Esp15);
+
+                                for (int i = 0; i < currentModel.getEspecestypees().size(); i++)
+                                    currentLineCaptures.add(Double.parseDouble(qs.get(i)));
+
+                                currentPageCaps.put(indexLigneMarree, currentLineCaptures);
+                            }
+                            else  {
+                                indexLigneMarree = 0;
+                                quantities.put(currentp.getNumeroPage(), currentPageCaps);
+                                currentPageCaps=new HashMap<Integer,List<Double>>();
+                                currentLineCaptures.clear();
+                                //    prefpknew=new qPrefixPK("PA",enumTypeDoc.Fiche_Debarquement);
+
+                                //     currentModel=qmodelRepository.findOne(prefpk);
+                                //     seqActivenew = new qSeq(qseqdebut, qseqfin, null);
+                                List<String> qs = new ArrayList<String>();
+                                qs.add(Esp1);
+                                qs.add(Esp2);
+                                qs.add(Esp3);
+                                qs.add(Esp4);
+                                qs.add(Esp5);
+                                qs.add(Esp6);
+                                qs.add(Esp7);
+                                qs.add(Esp8);
+                                qs.add(Esp9);
+                                qs.add(Esp10);
+                                qs.add(Esp11);
+                                qs.add(Esp12);
+
+                                qs.add(Esp13);
+                                qs.add(Esp14);
+                                qs.add(Esp15);
+
+                                for (int i = 0; i < currentModel.getEspecestypees().size(); i++)
+                                    currentLineCaptures.add(Double.parseDouble(qs.get(i)));
+
+                                currentPageCaps.put(indexLigneMarree, currentLineCaptures);
+                                currentp = currentpnew;
+                            }
+
+
+                        }
+                        else {
+                            if(splitarray[0].equals("Fin")) {
+                                quantities.put(currentp.getNumeroPage(), currentPageCaps);
+                                currentp = null;
+
+                                qMarree newDoc=creerMarreesByImport(DDepart,DRetour,seqActive,enumTypeDoc.Journal_Peche,
+                                        choixEnginsMaree,selectedTypeJP,quantities);
+//                                qdocRepository.save(newDoc);
+
+                            }
+                            else System.out.println("Erreur. mot cle non reconnue");
+                        }
+                    }
+
+                }
+
+                k++;
+            }
+
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return null;
+    }
+
+
+    @Override
+    public String importerTraitements(MultipartFile file, String fullpatchname) {
+
+        String  TypeDoc,Depart,EngFilet_maillant,Filet_Enc_ST,Palangre,Filet_tremail,Casier,	Ligne,	Pots,Turlutte,categDebCeph,	CategDebDem,CategCrustDeb,CategPelDeb,CategAutresMollusques,qseqdebut,qseqfin,DateRetour,	DateJour,	NPage ,Esp1	,Esp2,	Esp3,	Esp4,	Esp5,	Esp6,	Esp7,	Esp8,	Esp9,	Esp10,	Esp11,	Esp12,	Esp13,	Esp14,	Esp15,treatedDocType="";
+        Integer indexLigneDebArtisanal=1;
+        List<Boolean> choixEnginsPA=new ArrayList<Boolean>(),choixCategoriesPA=new ArrayList<Boolean>();
+        Map<String,Map<Integer,List<Double>>>  quantities=new HashMap<String,Map<Integer,List<Double>>>();
+        Map<Integer,List<Double>> currentPageCaps=null;//new HashMap<Integer,List<Double>>();
+        List<Double> currentLineCaptures=new ArrayList<Double>();
+        Date DDepart=null,DRetour=null; qPageCarnet currentp=null;qPageCarnet currentpnew=null;qPageCarnetPK pk=null;qPageCarnetPK pknew=null;
+        qPrefixPK prefpk=null;
+        qModelJP currentModel=null;
+        qSeq seqActive=null;
+        qPrefixPK prefpknew=null;
+        qModelJP currentModelnew=null;
+        qSeq seqActivenew=null;
+        Integer k=0;
+        try {
+            file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+            FileReader reader = new FileReader(fullpatchname);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if(!first) {
+                    System.out.println(k);
+
+                    String splitarray[] = line.split("\t");
+
+                    TypeDoc=splitarray[0];
+                    Depart=splitarray[1];
+                    DateRetour=	splitarray[2];
+                    EngFilet_maillant=splitarray[3];
+                    Filet_Enc_ST=splitarray[4];
+                    Palangre=splitarray[5];
+                    Filet_tremail=splitarray[6];
+                    Casier=	splitarray[7];
+                    Ligne=	splitarray[8];
+                    Pots=splitarray[9];
+                    Turlutte=splitarray[10];
+                    categDebCeph=splitarray[11];
+                    CategDebDem=splitarray[12];
+                    CategCrustDeb=splitarray[13];
+                    CategPelDeb=splitarray[14];
+                    CategAutresMollusques=splitarray[15];
+                    qseqdebut=splitarray[16];
+                    qseqfin=splitarray[17];
+                    DateJour=	splitarray[18];
+                    NPage=splitarray[19];
+                    Esp1=splitarray[20];
+                    Esp2=splitarray[21];
+                    Esp3=splitarray[22];
+                    Esp4=	splitarray[23];
+                    Esp5=	splitarray[24];
+                    Esp6=splitarray[25];
+                    Esp7=	splitarray[26];
+                    Esp8=	splitarray[27];
+                    Esp9=	splitarray[28];
+                    Esp10=	splitarray[29];
+                    Esp11=  splitarray[30];
+                    Esp12=	splitarray[31];
+                    Esp13=	splitarray[32];
+                    Esp14=	splitarray[33];
+                    Esp15=  splitarray[34];
+
+                    SimpleDateFormat sdfmt1 = new SimpleDateFormat("dd/MM/yyyy");
+                    //	if((!splitarray[13].equals("VIDE")) || (!splitarray[14].equals("VIDE"))) {
+
+
+                    // traitement des debarquement Artisanale
+
+                    if(splitarray[0].equals("DEBARQUEMENTA"))
+                    {
+                        currentPageCaps=new HashMap<Integer,List<Double>>();
+                        try {
+                            DDepart=sdfmt1.parse(Depart);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            DRetour=sdfmt1.parse(DateRetour);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        indexLigneDebArtisanal=0;
+
+                        pk=new qPageCarnetPK(NPage,enumTypeDoc.Fiche_Debarquement);
+                        currentp=qpagecarnetRepository.findOne(pk);
+                        prefpk=new qPrefixPK("PA",enumTypeDoc.Fiche_Debarquement);
+
+                        currentModel=qmodelRepository.findOne(prefpk);
+                        seqActive=new qSeq(qseqdebut,qseqfin,null);
+                        // former les choix pour les engins de PA
+                        choixEnginsPA.add(Boolean.parseBoolean(EngFilet_maillant));
+                        choixEnginsPA.add(Boolean.parseBoolean(Filet_Enc_ST));
+                        choixEnginsPA.add(Boolean.parseBoolean(Palangre));
+                        choixEnginsPA.add(Boolean.parseBoolean(Palangre));
+                        choixEnginsPA.add(Boolean.parseBoolean(Casier));
+                        choixEnginsPA.add(Boolean.parseBoolean(Ligne));
+                        choixEnginsPA.add(Boolean.parseBoolean(Pots));
+                        choixEnginsPA.add(Boolean.parseBoolean(Turlutte));
+                        // former les chois pour les  categories de PA
+
+                        choixCategoriesPA.add(Boolean.parseBoolean(categDebCeph));
+                        choixCategoriesPA.add(Boolean.parseBoolean(CategDebDem));
+                        choixCategoriesPA.add(Boolean.parseBoolean(CategCrustDeb));
+                        choixCategoriesPA.add(Boolean.parseBoolean(CategPelDeb));
+                        choixCategoriesPA.add(Boolean.parseBoolean(CategAutresMollusques));
+
+                        // former la mape pour les captures par page et pare line ou jour*
+                        List<String> qs=new ArrayList<String>();
+                        qs.add(Esp1);
+                        qs.add(Esp2);
+                        qs.add(Esp3);
+                        qs.add(Esp4);
+                        qs.add(Esp5);
+                        qs.add(Esp6);
+                        qs.add(Esp7);
+                        qs.add(Esp8);
+                        qs.add(Esp9);
+                        qs.add(Esp10);
+                        qs.add(Esp11);
+                        qs.add(Esp12);
+
+                        qs.add(Esp13);
+                        qs.add(Esp14);
+                        qs.add(Esp15);
+
+                        for(int i=0;i<currentModel.getEspecestypees().size();i++)
+                            currentLineCaptures.add(Double.parseDouble(qs.get(i)));
+
+                        currentPageCaps.put(indexLigneDebArtisanal,currentLineCaptures);
+                        // create new debarquement
+                    }
+                    else {
+                        if (splitarray[0].equals("V") ) {
+                            currentLineCaptures.clear();
+
+                            pknew = new qPageCarnetPK(NPage, enumTypeDoc.Fiche_Debarquement);
+                            currentpnew = qpagecarnetRepository.findOne(pknew);
+                            if (currentp.equals(currentpnew)) {
+                                indexLigneDebArtisanal++;
+                                //    prefpknew=new qPrefixPK("PA",enumTypeDoc.Fiche_Debarquement);
+
+                                //     currentModel=qmodelRepository.findOne(prefpk);
+                                //      seqActivenew = new qSeq(qseqdebut, qseqfin, null);
+                                List<String> qs = new ArrayList<String>();
+                                qs.add(Esp1);
+                                qs.add(Esp2);
+                                qs.add(Esp3);
+                                qs.add(Esp4);
+                                qs.add(Esp5);
+                                qs.add(Esp6);
+                                qs.add(Esp7);
+                                qs.add(Esp8);
+                                qs.add(Esp9);
+                                qs.add(Esp10);
+                                qs.add(Esp11);
+                                qs.add(Esp12);
+
+                                qs.add(Esp13);
+                                qs.add(Esp14);
+                                qs.add(Esp15);
+
+                                for (int i = 0; i < currentModel.getEspecestypees().size(); i++)
+                                    currentLineCaptures.add(Double.parseDouble(qs.get(i)));
+
+                                currentPageCaps.put(indexLigneDebArtisanal, currentLineCaptures);
+                            }
+                            else  {
+                                indexLigneDebArtisanal = 0;
+                                quantities.put(currentp.getNumeroPage(), currentPageCaps);
+                                currentPageCaps=new HashMap<Integer,List<Double>>();
+                                currentLineCaptures.clear();
+                                //    prefpknew=new qPrefixPK("PA",enumTypeDoc.Fiche_Debarquement);
+
+                                //     currentModel=qmodelRepository.findOne(prefpk);
+                                //     seqActivenew = new qSeq(qseqdebut, qseqfin, null);
+                                List<String> qs = new ArrayList<String>();
+                                qs.add(Esp1);
+                                qs.add(Esp2);
+                                qs.add(Esp3);
+                                qs.add(Esp4);
+                                qs.add(Esp5);
+                                qs.add(Esp6);
+                                qs.add(Esp7);
+                                qs.add(Esp8);
+                                qs.add(Esp9);
+                                qs.add(Esp10);
+                                qs.add(Esp11);
+                                qs.add(Esp12);
+
+                                qs.add(Esp13);
+                                qs.add(Esp14);
+                                qs.add(Esp15);
+
+                                for (int i = 0; i < currentModel.getEspecestypees().size(); i++)
+                                    currentLineCaptures.add(Double.parseDouble(qs.get(i)));
+
+                                currentPageCaps.put(indexLigneDebArtisanal, currentLineCaptures);
+                                currentp = currentpnew;
+                            }
+
+
+                        }
+                        else {
+                            if(splitarray[0].equals("Fin")) {
+                                quantities.put(currentp.getNumeroPage(), currentPageCaps);
+                                currentp = null;
+
+                                qDebarquement newDoc=creerDebarquementByImport(DDepart,DRetour,seqActive,enumTypeDoc.Fiche_Debarquement,
+                                        choixEnginsPA,choixCategoriesPA,quantities);
+//                                qdocRepository.save(newDoc);
+
+                            }
+                            else System.out.println("Erreur. mot cle non reconnue");
+                        }
+                    }
+
+                }
+
+                k++;
+            }
+
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return null;
+    }
+
+
 
     @Override
   public qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc) {
@@ -260,14 +1371,15 @@ public class qDocServiceImpl implements qDocService {
     qCategDeb c41=new qCategDeb(qnav.getNumimm(),dateDepart,cr41,false);
 
     categsCot.add(c11);categsCot.add(c21);categsCot.add(c31);categsCot.add(c41);
- qPrefixPK pref=new qPrefixPK(debutPrefix,typeDoc);
+    qPrefixPK pref=new qPrefixPK(debutPrefix,typeDoc);
     qModelJP currentModel=qmodelRepository.findOne(pref);
-
 
         if (carnetDebut.getPrefixNumerotation().equals("PC")) {
             // la peche cotiere
             documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
                     choixEnginsDeb,  enumTypeDebarquement.Cotier, qconcess,categsCot, null);
+            documentCree.setSegPeche(debutPrefix);
+            documentCree.setNomNavire(qnav.getNomnav());
         }
 
         if (carnetDebut.getPrefixNumerotation().equals("PA")) {
@@ -275,9 +1387,12 @@ public class qDocServiceImpl implements qDocService {
 
             documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
                     choixEnginsDeb, enumTypeDebarquement.Artisanal,qconcess, categsArt,null);
-
+            documentCree.setSegPeche(debutPrefix);
+            documentCree.setNomNavire(qnav.getNomnav());
 
         }
+
+      //  List<qPageDebarquement> lstPgsDeb =null;
         List<qPageDebarquement> lstPgsDeb = new ArrayList<qPageDebarquement>();
         // preparer les pages
         List<qPageCarnet> pagesConcernees = qcarnetRepository.retPages(carnetDebut, debutNumberL, finNumberL);
@@ -286,12 +1401,12 @@ public class qDocServiceImpl implements qDocService {
         }
         Iterator<qPageDebarquement> qdebpages = lstPgsDeb.iterator();
         Date dateJourCourant = documentCree.getDepart();
-
+        List<qJourDeb> joursDeb =null;
         while (qdebpages.hasNext()) {
             qPageDebarquement currp = qdebpages.next();
             currp.setEtatPage(enumEtatPage.DRAFT);
             currp.setQdebarquement((qDebarquement) documentCree);
-            List<qJourDeb> joursDeb = new ArrayList<qJourDeb>();
+            joursDeb = new ArrayList<qJourDeb>();
             // pqrcourir les ligne de page
             for (int k = 0; k < currp.getNbrLigne(); k++) {
                 if (dateJourCourant.before(documentCree.getRetour()) || dateJourCourant.equals(documentCree.getRetour())) {
@@ -314,7 +1429,6 @@ public class qDocServiceImpl implements qDocService {
 
                     }
                     jourDeb.setDebarqDuJour(capturesLine);
-
                     jourDeb.setPagesDeb(currp);
                     joursDeb.add(jourDeb);
                     Calendar cal = Calendar.getInstance();
@@ -329,7 +1443,8 @@ public class qDocServiceImpl implements qDocService {
         }
         documentCree.setQseq(seqActive);
         documentCree.setPages(lstPgsDeb);
-        //   ((qDebarquement)qdoc).setCaptures(capturesTotal);
+      //  qdocRepository.save(documentCree);
+     // ((qDebarquement)qdoc).setCaptures(capturesTotal);
     return documentCree;
     }
 
@@ -505,7 +1620,8 @@ public class qDocServiceImpl implements qDocService {
         }
         documentCree.setQseq(seqActive);
         documentCree.setPages(lstPgsMar);
-        //   ((qDebarquement)qdoc).setCaptures(capturesTotal);
+
+       //  ((qDebarquement)qdoc).setCaptures(capturesTotal);
          return documentCree;
     }
     @Override
@@ -564,13 +1680,13 @@ public class qDocServiceImpl implements qDocService {
         List<qPageTraitement> lstPgsTaitM = new ArrayList<qPageTraitement>();
         Iterator<qPageTraitement> qmarpages = lstPgsTait.iterator();
         Date dateJourCourant = documentCree.getDepart();
-        List<qOpTraitement> opSTraitement = new ArrayList<qOpTraitement>();
+        List<qOpTraitement> opSTraitement = null;
         while (qmarpages.hasNext()) {
             qPageTraitement currp = qmarpages.next();
             currp.setQtraitement(documentCree);
 
             currp.setEtatPage(enumEtatPage.DRAFT);
-
+            opSTraitement = new ArrayList<qOpTraitement>();
             // parcourir les ligne de page
             for (int k = 0; k < currp.getNbrLigne(); k++) {
 
@@ -637,7 +1753,7 @@ public class qDocServiceImpl implements qDocService {
                     retObj = documentCree;
                 }
                 if (carnetDebut.getTypeDoc().equals(enumTypeDoc.Fiche_Traitement)) {
-                    documentCree = creerTraitement(dateDepart, dateRetour, seqActive1,typeDoc);
+                    documentCree = creerTraitement(dateDepart, null, seqActive1,typeDoc);
                     retObj = documentCree;
                 }
             }
@@ -699,7 +1815,7 @@ public class qDocServiceImpl implements qDocService {
         // calculer nombre des jours)
         Integer nbrDays=Days.daysBetween(new LocalDate(dateDepart), new LocalDate(dateRetour)).getDays();
         // verifier
-        if(nbrLignes-nbrDays-1>0 && nbrLignes-nbrDays-1<=nbrLignCarnet-1) return true;
+        if(nbrLignes-nbrDays>=0 && nbrLignes-nbrDays<nbrLignCarnet) return true;
         else return false;
     }
     @Override
@@ -735,7 +1851,7 @@ public class qDocServiceImpl implements qDocService {
 
     @Override
     public List<qDoc> checkIfDupJoursExist(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc) {
-        qPageCarnet        debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(seqActive1.getDebut(),typeDoc));
+        qPageCarnet    debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(seqActive1.getDebut(),typeDoc));
         qCarnet carnetDebut = debutp.getQcarnet();
         qNavire qnav = carnetDebut.getQnavire();
         List<qJourDeb>   joursdeb=new ArrayList<qJourDeb>();
@@ -832,6 +1948,30 @@ public class qDocServiceImpl implements qDocService {
        return lstDoc;
     }
 
+    @Override
+    public Page<qDoc> findAllMatcheds(String numeroPage) {
+          List<qDoc> searchedDocs=new ArrayList<qDoc>();
+          qDoc currentDoc=null;
+         Page<qPageCarnet> currentSearchedPages=qpagecarnetRepository.returnSearchedPage(new PageRequest(0, 20),numeroPage);
+
+        for(qPageCarnet tt:currentSearchedPages){
+           if(tt instanceof qPageMarree) {
+            if(((qPageMarree) tt).getQmarree()!=null)   searchedDocs.add(((qPageMarree) tt).getQmarree());
+           }
+            if(tt instanceof qPageDebarquement) {
+                if(((qPageDebarquement) tt).getQdebarquement()!=null)    searchedDocs.add(((qPageDebarquement) tt).getQdebarquement());
+            }
+            if(tt instanceof qPageTraitement) {
+                if(((qPageTraitement) tt).getOpTraitements()!=null)     searchedDocs.add(((qPageTraitement) tt).getQtraitement());
+            }
+      //  currentDoc=qdocRepository.findSearchedDoc(tt.getNumeroOrdrePage(),tt.getTypeDoc());
+        //    searchedDocs.add(currentDoc);
+        }
+    //   Page<qDoc> pgdocs= qdocRepository.findAllMatcheds(new PageRequest(0, 10),numeroPage);
+        Page<qDoc> docs = new PageImpl<qDoc>(searchedDocs);
+
+        return docs;
+    }
     @Override
     public Page<qDoc> findAllMatchedDocs(Date searchDateCapture, String searchBat) {
         String currentnumimm=null;

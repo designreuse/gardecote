@@ -9,8 +9,8 @@
 <div   layout:fragment="content">
     <span class="label label-danger" th:text="${deletefeedback}"></span>
     <span class="label label-danger" th:text="${deblocagefeedback}"></span>
- <form th:action="@{createDocument}" method="post"  th:object="${frmSearchPgsForDocCrea}" class="form-inline" >
-     <div class="jumbotron text-left">
+    <form th:action="@{createDocument}" method="post"  th:object="${frmSearchPgsForDocCrea}" class="form-inline" >
+    <div class="jumbotron text-left">
 
   <select class="form-control"   th:field="${frmSearchPgsForDocCrea.typeDoc}"   >
              <option th:each="i : ${allTypesDoc}"
@@ -19,7 +19,7 @@
 
              </option>
   </select>
-         <label  >Numéro de debut:</label>
+         <label>Numéro de debut:</label>
          <input type="text"  th:field="${frmSearchPgsForDocCrea.numeroDebut}" onchange="clearFields()"/>
          <span class="label label-danger" th:errors="${frmSearchPgsForDocCrea.numeroDebut}"></span>
          <button type="button" id="but" name="but" ><span class="glyphicon glyphicon-search"></span></button>
@@ -39,14 +39,15 @@
             </select>
         <span class="label label-danger" th:errors="${frmSearchPgsForDocCrea.numeroFin}"></span>
 
-        <label th:fragment="finListFrag" >Date de premier jour du marree :</label>
+        <label th:fragment="finListFrag" >Date de premier jour :</label>
         <input  th:disabled="${frmSearchPgsForDocCrea.displaydatefrg}" type="date" class="form-control " th:field="${frmSearchPgsForDocCrea.dateDebut}"   th:fragment="finListFrag"/>
         <span class="label label-danger" th:errors="${frmSearchPgsForDocCrea.dateDebut}"></span>
-        <label th:fragment="finListFrag" >Date de dernier jour du marree :</label>
+        <label th:fragment="finListFrag" >Date de retour :</label>
 
 
-        <input  th:disabled="${frmSearchPgsForDocCrea.displaydatefrg}" type="date" class="form-control " th:field="${frmSearchPgsForDocCrea.dateRetour}"   th:fragment="finListFrag"/>
+        <input  th:disabled="${frmSearchPgsForDocCrea.displaydateRetourfrg}" type="date" class="form-control " th:field="${frmSearchPgsForDocCrea.dateRetour}"   th:fragment="finListFrag"/>
         <span class="label label-danger" th:errors="${frmSearchPgsForDocCrea.dateRetour}"></span>
+        <label th:text="${frmSearchPgsForDocCrea.displaydateRetourfrg}" th:fragment="finListFrag"></label>
 
        <button type="submit"  id="creer" name="creer" th:disabled="${frmSearchPgsForDocCrea.displayButton}" class="btn btn-lg btn-primary"  th:fragment="finListFrag" onsubmit="return confirm('Are you sure?');"> creer document &raquo; </button>
 

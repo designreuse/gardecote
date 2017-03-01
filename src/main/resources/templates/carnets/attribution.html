@@ -34,7 +34,7 @@
 
           <select th:field="${CarnetAttribue.carnetSelected.typeDoc}" onchange="loadPrefixes()">
               <option value="00" >selectionner un type</option>
-              <option th:each="var : ${allTypesDoc}"
+              <option th:each="var : ${CarnetAttribue.lstTypeDoc}"
                     th:value="${var}"
                     th:text= "${var}">hhh</option>
         </select>

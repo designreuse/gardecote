@@ -39,7 +39,7 @@ public class qMarree extends qDoc implements Serializable
     @ManyToMany(targetEntity = qEnginPecheMar.class,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocMarreeEnginsBIS")
     private List<qEnginPecheMar> qEngins;
-    @OneToMany(targetEntity=qPageMarree.class,cascade = CascadeType.ALL)
+    @OneToMany(targetEntity=qPageMarree.class)
     @JoinTable(name = "qAssocMareesPagesBIS")
     private List<qPageMarree> pages;
     @OneToOne(targetEntity = qMarreeAnnexe.class,cascade = {CascadeType.MERGE})
