@@ -5,10 +5,12 @@
 </head>
 <body>
 <div layout:fragment="content">
-
+    <div class="panel panel-default">
+        <div class="panel-heading panel-heading-custom">Saisie de Fiche de Debarquement</div>
+        <div class="panel-body">
   <form th:action="@{createDocumentSave}" method="post" th:object="${frmSearchPgsForDocCrea.createDocFormm}">
 
-      <div  >
+      <div>
           <h3 th:text="${frmSearchPgsForDocCrea.createDocFormm.titre}"></h3>
           <div class="panel-group">
               <div class="panel panel-default">
@@ -244,8 +246,9 @@
 
         </div>
    </div>
-</form>
 
+</form>
+        </div></div>
 </div>
 
 

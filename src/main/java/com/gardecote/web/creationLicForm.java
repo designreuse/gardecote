@@ -19,7 +19,7 @@ public class creationLicForm implements Serializable{
     private String regime;
     private  String refCon;
     private List<qNavire> lstBat=new ArrayList<qNavire>();
-
+    private qCategRessource selectedCategorieRessource;
 
    // @Valid
     private qLic licence;
@@ -39,6 +39,14 @@ public class creationLicForm implements Serializable{
 
     public void setRefCon(String refCon) {
         this.refCon = refCon;
+    }
+
+    public qCategRessource getSelectedCategorieRessource() {
+        return selectedCategorieRessource;
+    }
+
+    public void setSelectedCategorieRessource(qCategRessource selectedCategorieRessource) {
+        this.selectedCategorieRessource = selectedCategorieRessource;
     }
 
     public qCategRessource getSelectedDropDownCat() {

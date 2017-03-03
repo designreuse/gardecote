@@ -27,4 +27,8 @@ public interface qLicenceRepository extends PagingAndSortingRepository<qLic, Str
     @Query("select l from qLic  l where l.zone = :zone order by l.createdAt DESC")
     List<qLic>  checkZone(@Param("zone") qZone zone);
 
+    @Query("select l from qLic  l  order by l.createdAt DESC")
+    List<qLic>  lstLicences();
+
+
 }

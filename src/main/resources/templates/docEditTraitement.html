@@ -5,7 +5,9 @@
 </head>
 <body>
 <div layout:fragment="content">
-
+    <div class="panel panel-default">
+        <div class="panel-heading panel-heading-custom">Saisie de Fiche de Traitement</div>
+        <div class="panel-body">
     <form th:action="@{createDocumentSave}" method="post" th:object="${frmSearchPgsForDocCrea.createDocFormm}" >
         <input type="hidden"  class="form-control input-sm"  th:field="*{currentDoc.numImm}" th:value="*{currentDoc.numImm}"   />
         <input type="hidden"  class="form-control input-sm"  th:field="*{currentDoc.depart}" th:value="*{currentDoc.depart}"   />
@@ -271,7 +273,7 @@
     </form>
 
 </div>
-
+</div></div>
 
 </body>
 </html>

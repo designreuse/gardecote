@@ -18,8 +18,6 @@ public class CreateDocForm implements Serializable{
     private List<qDoc> lstDoc=new ArrayList<qDoc>();
 
 
-
-
     private qDoc docDoublon=null;
     private List<qDoc> lstDocJoursDup=null;
     private List<qDoc> lstDocPagesDupliquees=null;

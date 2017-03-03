@@ -82,7 +82,7 @@ public class qLicenceItemProcessor implements ItemProcessor<qLicenceModel, qLic>
                     qLicModelInput.getEff(),Float.valueOf(Double.valueOf(qLicModelInput.getGt()).toString()),Integer.valueOf(qLicModelInput.getImo()),
                     Float.valueOf(qLicModelInput.getKw().toString()),qLicModelInput.getLarg().toString(),qLicModelInput.getLongueur().toString(),qLicModelInput.getNbrhomm().toString(),
                     qLicModelInput.getNomar(),qLicModelInput.getNomnav(),qLicModelInput.getNumlic(),qLicModelInput.getPort(),
-                    qLicModelInput.getPuimot(),qLicModelInput.getRadio(),Float.valueOf(qLicModelInput.getTjb().toString()),currentconcession);
+                    qLicModelInput.getPuimot(),qLicModelInput.getRadio(),Float.valueOf(qLicModelInput.getTjb().toString()),currentconcession,null);
         }
         if ("LICENCELIBRE".equals(qLicModelInput.getTypelicence()))
         {
@@ -117,7 +117,7 @@ public class qLicenceItemProcessor implements ItemProcessor<qLicenceModel, qLic>
                     qLicModelInput.getEff(),Float.valueOf(Double.valueOf(qLicModelInput.getGt()).toString()),Integer.valueOf(qLicModelInput.getImo()),
                     Float.valueOf(qLicModelInput.getKw().toString()),qLicModelInput.getLarg().toString(),qLicModelInput.getLongueur().toString(),qLicModelInput.getNbrhomm().toString(),
                     qLicModelInput.getNomar(),qLicModelInput.getNomnav(),qLicModelInput.getNumlic(),qLicModelInput.getPort(),
-                    qLicModelInput.getPuimot(),qLicModelInput.getRadio(),Float.valueOf(qLicModelInput.getTjb().toString()),currentEncadrement);
+                    qLicModelInput.getPuimot(),qLicModelInput.getRadio(),Float.valueOf(qLicModelInput.getTjb().toString()),currentEncadrement,null);
         }
 
         return currentLic;

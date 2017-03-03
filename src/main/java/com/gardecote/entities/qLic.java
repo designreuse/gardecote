@@ -26,7 +26,6 @@ import java.util.List;
  * @author Telosys Tools Generator
  *
  */
-
 @Entity
 @Table(name="qlic33", schema="dbo", catalog="GCM4")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -61,6 +60,8 @@ public class qLic implements Serializable
     //   @NotNull
     private List<qCategRessource>   qcatressources;
 
+    @OneToMany(targetEntity=qEnginAuthorisee.class,cascade = CascadeType.ALL)
+    private List<qEnginAuthorisee> enginsAuthorisees;
     @ManyToOne
     @JsonBackReference
     //@NotNull
@@ -71,6 +72,7 @@ public class qLic implements Serializable
     //@NotEmpty
     private String     balise;
     @Column(name="nomnav", length=255)
+
     // @NotEmpty
     private String     nomnav;
     @Column(name="nomar", length=255)
@@ -181,6 +183,31 @@ public class qLic implements Serializable
 
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<qEnginAuthorisee> getEnginsAuthorisees() {
+        return enginsAuthorisees;
+    }
+
+    public void setEnginsAuthorisees(List<qEnginAuthorisee> enginsAuthorisees) {
+        this.enginsAuthorisees = enginsAuthorisees;
+    }
+
     public qLic()
     {
         super();
@@ -202,7 +229,8 @@ public class qLic implements Serializable
         this.nation = nation;
     }
 
-    public qLic(qTypeLic qtypnav, qZone zone, qNation qNation, List<qCategRessource> qcatressources, qNavire qnavire, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, String balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomnav, String numlic, String port, String puimot, String radio, float tjb) {
+    public qLic(qTypeLic qtypnav, qZone zone, qNation qNation, List<qCategRessource> qcatressources, qNavire qnavire, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, String balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomnav, String numlic, String port, String puimot, String radio, float tjb,List<qEnginAuthorisee> engins) {
+        this.enginsAuthorisees=engins;
         this.qtypnav = qtypnav;
         this.zone = zone;
         this.nation = qNation;

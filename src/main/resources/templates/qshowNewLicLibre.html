@@ -1,4 +1,6 @@
-<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/sitelayout">
 
 <head>
     <meta charset="UTF-8" />
@@ -8,279 +10,330 @@
 <div layout:fragment="content">
     <panel>
     <b class="danger">
-        Creation d'une nouvelle licence pour :<b></b> <span th:text="${LicForm.licence.qnavire.nomnav}"></span>
+        <h1> <span class="label label-default"> Creation d'une nouvelle licence pour la navire :</span><span class="label label-primary" th:text="${LicForm.licence.qnavire.nomnav}"/></h1>
+
     </b>
     </panel>
 
     <form  th:action="@{NouvLicenceBatExistant}"  th:object="${LicForm.licence}" class="form-horizontal" method="post">
+        <input type="text" th:field="${LicForm.licence.qnavire.numimm}" />
+        <div class="panel panel-default panel-heading-custom">
+            <div class="panel-heading panel-heading-custom"><b>Identification</b></div>
+            <div class="panel-body">
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Type Accord International</label>
-            <select th:field="${LicForm.licence.typencad}">
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Numero Licence</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="text" th:field="*{numlic}" />
+                        <span class="label label-danger" th:errors="*{numlic}"></span>
+                    </div>
 
-                <option th:each="var : ${allTypesEncad}"
-                        th:value="${var}"
-                        th:text= "${var}">hhh</option>
-            </select>
-            <span class="label label-danger" th:errors="${LicForm.licence.typencad}"></span>
+                </div>
 
+                <div class="form-group">
+                    <label class="col-md-2 control-label">date Début de validité</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="date" th:field="*{{dateDebutAuth}}" th:value="*{dateDebutAuth != null}?*{#dates.format(dateDebutAuth, 'yyyy-MM-dd')}:''">13/11/2016</input>
+                        <span class="label label-danger" th:errors="*{dateDebutAuth}"></span>
+                    </div>
 
-        </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Date de fin de validité</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="date" th:field="*{{dateFinAuth}}" th:value="*{dateFinAuth != null}?*{#dates.format(dateFinAuth, 'yyyy-MM-dd')}:''">13/11/2016</input>
+                        <span class="label label-danger" th:errors="*{dateFinAuth}"></span>
+                    </div>
 
+                </div>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Numero Licence</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="*{numlic}" />
-                <span class="label label-danger" th:errors="*{numlic}"></span>
             </div>
-
         </div>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">dateDebutAuth</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="date" th:field="*{{dateDebutAuth}}" th:value="*{dateDebutAuth != null}?*{#dates.format(dateDebutAuth, 'yyyy-MM-dd')}:''">13/11/2016</input>
-                <span class="label label-danger" th:errors="*{dateDebutAuth}"></span>
-            </div>
+        <div class="panel panel-default panel-heading-custom">
+            <div class="panel-heading panel-heading-custom">Desciptif de l'activité de la pêche</div>
+            <div class="panel-body">
 
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Zone de pêche authorisée</label>
+                    <div class="col-md-4">
+                        <select th:field="${LicForm.licence.zone.IdZone}">
+
+                            <option th:each="var : ${allZones}"
+                                    th:value="${var.IdZone}"
+                                    th:text= "${var.nom} ">hhh</option>
+                        </select> <span class="label label-danger" th:errors="${LicForm.licence.zone.IdZone}"></span>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Type de navire</label>
+                    <div class="col-md-4">
+                        <select th:field="${LicForm.licence.typb}">
+
+                            <option th:each="var : ${allTypesBat}"
+                                    th:value="${var}"
+                                    th:text= "${var} ">hhh</option>
+                        </select><span class="label label-danger" th:errors="${LicForm.licence.typb}"></span>
+                    </div>
+
+                </div>
+<div class="row">
+    <div class="col-md-3">
+    <button  type="submit" name="addRow" value="addRow"  class="btn btn-success" >Ajouter un type de peche </button>
+
+    <select th:field="${LicForm.selectedCategorieRessource}" >
+
+    <option th:each="var : ${allCategoriesConcessions1}"
+            th:value="${var.typeconcessionConcernee.qtypeconcessionpk}"
+            th:text= "${var.typeconcessionConcernee} ">hhh</option>
+</select>
         </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">dateFinAuth</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="date" th:field="*{{dateFinAuth}}" th:value="*{dateFinAuth != null}?*{#dates.format(dateFinAuth, 'yyyy-MM-dd')}:''">13/11/2016</input>
-                <span class="label label-danger" th:errors="*{dateFinAuth}"></span>
-            </div>
+    <div class="col-md-3">
+        <div  >
+            <table class="table"><tr><td   th:each="cat,catStat : ${LicForm.licence.qcatressources}" valign="top">
 
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Categories de ressources</label>
-            <div class="col-sm-4">
-
-                <table>
-                    <thead>
-                    <tr>
-                        <th >category de ressource</th>
-
-                        <th>
-                            <button  type="submit" name="addRow" value="addRow"  class="btn btn-success" >Ajouter une categ </button>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="cat,catStat : ${LicForm.licence.qcatressources}">
-                        <td>
-                            <select th:field="${LicForm.licence.qcatressources[__${catStat.index}__]}">
-
-                                <option th:each="var : ${allCategoriesConcessions1}"
-                                        th:value="${var.typeconcessionConcernee.qtypeconcessionpk}"
-                                        th:text= "${var.typeconcessionConcernee} ">hhh</option>
-                            </select>
-                            <span class="label label-danger" th:errors="${LicForm.licence.qcatressources}"></span>
+                    <table class="table">
+                        <tr>
+                         <th>Support de ressource</th> <th>Type de quota</th><th></th>
+                        </tr>
+                        <tr th:each="eng,engStat : ${LicForm.licence.qcatressources[__${catStat.index}__].Engins}">
+                            <td ><input typr="hidde" th:field="${LicForm.licence.qcatressources[__${catStat.index}__].idtypeConcession}" />
+                                <label  th:text="${LicForm.licence.qcatressources[__${catStat.index}__].typeconcessionConcernee}" />
+                            </td>
+                            <td> <label  th:text="${LicForm.licence.qcatressources[__${catStat.index}__].typeSupport}" /></td>
+                            <td> <button  type="submit" th:value="${catStat.index}" name="removeRow" class="btn btn-success">Remove une categorie</button>
+                            </td>
+                        </tr>
+                    </table></td><td>
+                    <table class="table">
+                        <tr><th>Engin</th><th>Maillage</th></tr>
+                        <tr th:each="eng,engStat : ${LicForm.licence.enginsAuthorisees}">
+                            <td>
+                             <input th:field="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].enginAuthorise}"/>
+                            </td><td>
+                            <input th:field="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].maillage}"/>
                         </td>
 
-                        <td>
-                            <button  type="submit" th:value="${catStat.index}" name="removeRow" >Remove une categorie</button>
-                        </td>
-                    </tr>
-                    </tbody>
+                        </tr>
 
-      </table>
+                    </table>
+
+            </td></tr></table>
+        </div>
+
+    </div>
 </div>
+
+
+                        </div></div>
+
+        <div class="row">
+            <div class="col-md-6 col-lg-6">
+                <div class="panel panel-default panel-heading-custom">
+            <div class="panel-heading panel-heading-custom"><b>Rubrique 1</b></div>
+            <div class="panel-body">
+
+
+
+                <div class="form-group">
+                    <label class="col-md-3 col-lg-3 control-label">Code IMO</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="number" th:field="${LicForm.licence.imo}" />
+                        <span class="label label-danger" th:errors="${LicForm.licence.imo}"></span>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 col-lg-3 control-label">Nom de navire</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="text" th:field="${LicForm.licence.nomnav}" />
+                        <span class="label label-danger" th:errors="${LicForm.licence.nomnav}"></span>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 col-lg-3 control-label">Nom Armateur</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="text" th:field="${LicForm.licence.nomar}" />
+                        <span class="label label-danger" th:errors="${LicForm.licence.nomar}"></span>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 col-lg-3  control-label">Nom Consignateur</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="text" th:field="${LicForm.licence.nomar}" />
+                        <span class="label label-danger" th:errors="${LicForm.licence.nomar}"></span>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 col-lg-3  control-label">Port d'immatriculation</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="text" th:field="${LicForm.licence.port}" />
+                        <span class="label label-danger" th:errors="${LicForm.licence.port}"></span>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-md-3 col-lg-3  control-label">Nationalité de navire</label>
+                    <div class="col-md-4">
+                        <select th:field="${LicForm.licence.nation.idNation}">
+
+                            <option th:each="var : ${allNationsLibre}"
+                                    th:value="${var.idNation}"
+                                    th:text= "${var.designation} ">hhh</option>
+                        </select><span class="label label-danger" th:errors="${LicForm.licence.nation.idNation}"></span>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 col-lg-3  control-label">Indicatif Radio</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="text" th:field="${LicForm.licence.radio}" />
+                        <span class="label label-danger" th:errors="${LicForm.licence.radio}"></span>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 col-lg-3 control-label">Date et lieu de construction</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="number" th:field="${LicForm.licence.anneeconstr}" />
+                        <span class="label label-danger" th:errors="${LicForm.licence.anneeconstr}"></span>
+
+                </div>
+                </div>
+
+            </div></div></div>
+               <div class="col-md-6 col-lg-6" >
+                   <div class="panel panel-default panel-heading-custom">
+                    <div class="panel-heading panel-heading-custom"><b>Rubrique 2</b></div>
+                    <div class="panel-body">
+
+                    <div class="form-group">
+                        <label class="col-md-3 col-lg-3 control-label">Puissance de moteur</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" th:field="${LicForm.licence.puimot}" />
+                            <span class="label label-danger" th:errors="${LicForm.licence.puimot}"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 col-lg-3  control-label">Longueur</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="number" th:field="${LicForm.licence.longg}" th:value="${LicForm.licence.longg}" />
+                            <span class="label label-danger" th:errors="${LicForm.licence.longg}"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 col-lg-3 control-label">Largeur</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="number" th:field="${LicForm.licence.larg}" />
+                            <span class="label label-danger" th:errors="${LicForm.licence.larg}"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 col-lg-3  control-label">Balise</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" th:field="${LicForm.licence.balise}"  /><span class="label label-danger" th:errors="${LicForm.licence.balise}"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 col-lg-3 control-label">gt</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="number" th:field="${LicForm.licence.gt}" />
+                            <span class="label label-danger" th:errors="${LicForm.licence.gt}"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 col-lg-3  control-label">kw</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="number" th:field="${LicForm.licence.kw}" />
+                            <span class="label label-danger" th:errors="${LicForm.licence.kw}"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 col-lg-3 control-label">tjb</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="number" th:field="${LicForm.licence.tjb}" />
+                            <span class="label label-danger" th:errors="${LicForm.licence.tjb}"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 col-lg-3 control-label">calpoids</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" th:field="${LicForm.licence.calpoids}" />
+                            <span class="label label-danger" th:errors="${LicForm.licence.calpoids}"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 col-lg-3 control-label">Nombre equipage</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="number" th:field="${LicForm.licence.count}" />
+                            <span class="label label-danger" th:errors="${LicForm.licence.count}"></span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-md-3 col-lg-3  control-label">Nombre mauritaniens</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="number" th:field="${LicForm.licence.nbrhomm}" />
+                            <span class="label label-danger" th:errors="${LicForm.licence.nbrhomm}"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 col-lg-3  control-label">Nombre etrangers</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="number" th:field="${LicForm.licence.eff}" />
+                            <span class="label label-danger" th:errors="${LicForm.licence.eff}"></span>
+                        </div>
+
+                    </div>    </div></div> </div></div>
+
+
+
+        <div class="panel panel-default panel-heading-custom">
+            <div class="panel-heading panel-heading-custom"><b>Réference de mode étranger</b></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Accord International</label>
+                    <select th:field="${LicForm.licence.typencad}">
+
+                        <option th:each="var : ${allTypesEncadLibre}"
+                                th:value="${var}"
+                                th:text= "${var}">hhh</option>
+                    </select>
+                    <span class="label label-danger" th:errors="${LicForm.licence.typencad}"></span>
+
+
+                </div>
             </div>
-
-
+        </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">Zone</label>
-            <div class="col-sm-4">
-                <select th:field="${LicForm.licence.zone.IdZone}">
-
-                    <option th:each="var : ${allZones}"
-                            th:value="${var.IdZone}"
-                            th:text= "${var.nom} ">hhh</option>
-                </select> <span class="label label-danger" th:errors="${LicForm.licence.zone.IdZone}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Nation</label>
-            <div class="col-sm-4">
-                <select th:field="${LicForm.licence.nation.idNation}">
-
-                    <option th:each="var : ${allNations}"
-                            th:value="${var.idNation}"
-                            th:text= "${var.designation} ">hhh</option>
-                </select><span class="label label-danger" th:errors="${LicForm.licence.nation.idNation}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">type bateau</label>
-            <div class="col-sm-4">
-                <select th:field="${LicForm.licence.typb}">
-
-                    <option th:each="var : ${allTypesBat}"
-                            th:value="${var}"
-                            th:text= "${var} ">hhh</option>
-                </select><span class="label label-danger" th:errors="${LicForm.licence.typb}"></span>
-            </div>
-
-        </div>
-
-
-
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Balise</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.balise}"  /><span class="label label-danger" th:errors="${LicForm.licence.balise}"></span>
-            </div>
-
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Nom de navire</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.nomnav}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.nomnav}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Nom armateur</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.nomar}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.nomar}"></span>
-            </div>
-
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Longueur</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="number" th:field="${LicForm.licence.longg}" th:value="${LicForm.licence.qnavire.longg}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.longg}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Largeur</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="number" th:field="${LicForm.licence.larg}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.larg}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Nombre equipage</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="number" th:field="${LicForm.licence.count}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.count}"></span>
-            </div>
-
-        </div>
-
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Nombre mauritaniens</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="number" th:field="${LicForm.licence.nbrhomm}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.nbrhomm}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Nombre etrangers</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="number" th:field="${LicForm.licence.eff}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.eff}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">anneeconstr</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="number" th:field="${LicForm.licence.anneeconstr}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.anneeconstr}"></span>
-            </div>
-
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">calpoids</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.calpoids}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.calpoids}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">gt</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="number" th:field="${LicForm.licence.gt}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.gt}"></span>
-            </div>
-
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">kw</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="number" th:field="${LicForm.licence.kw}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.kw}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">tjb</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="number" th:field="${LicForm.licence.tjb}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.tjb}"></span>
-            </div>
-
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">imo</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="number" th:field="${LicForm.licence.imo}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.imo}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">port</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.port}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.port}"></span>
-            </div>
-
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">puimot</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.puimot}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.puimot}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">radio</label>
-            <div class="col-sm-4">
-                <input class="form-control" type="text" th:field="${LicForm.licence.radio}" />
-                <span class="label label-danger" th:errors="${LicForm.licence.radio}"></span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label"></label>
-            <div class="col-sm-4">
-            <button  type="submit"  name="addLicenceLibre" class="btn btn-success" >Enregistrer</button>
+            <label class="col-md-2 control-label"></label>
+            <div class="col-md-4">
+                <button  type="submit"  name="addLicenceLibre" class="btn btn-success" >Enregistrer la licence</button>
             </div>
         </div>
-
     </form>
 </div>
 </body>

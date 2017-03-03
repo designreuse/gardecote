@@ -50,8 +50,8 @@ public class licenceValidator implements Validator {
 
 
  //    System.out.println("numlic"+lic.getNumlic());
-//       System.out.println("ooooo;;;"+lic.getQnavire().getAnneeconstr());
-        if(lic.getQnavire()==null)
+//     System.out.println("ooooo;;;"+lic.getQnavire().getAnneeconstr());
+       if(lic.getQnavire()==null)
        lic.setNomar(lic.getQnavire().getNomar());
        lic.getQnavire().setCount(lic.getCount());
        lic.setLongg(lic.getQnavire().getLongg());

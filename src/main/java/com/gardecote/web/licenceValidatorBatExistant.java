@@ -39,10 +39,11 @@ public class licenceValidatorBatExistant implements Validator {
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.numlic", "lic.numlic.empty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.dateDebutAuth", "lic.dateDebutAuth.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.nomnav", "lic.dateDebutAuth.empty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.dateFinAuth", "lic.dateFinAuth.empty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.anneeconstr", "lic.anneeconstr.empty");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.qnavire.balise", "lic.balise.empty");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.qnavire.calpoids", "lic.calpoids.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.balise", "lic.balise.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.calpoids", "lic.calpoids.empty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.eff", "lic.eff.empty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.gt", "lic.gt.empty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.imo", "lic.imo.empty");
@@ -60,8 +61,8 @@ public class licenceValidatorBatExistant implements Validator {
       //  if( lic.getQtypnav()==null) errors.rejectValue("licence.qtypnav","lic.qtypnav.mistm");
         if( lic.getZone()==null) errors.rejectValue("licence.zone","lic.qtypnav.mistm");
         if( lic.getNation()==null) errors.rejectValue("licence.nation","lic.qtypnav.mistm");
-        if( lic.getQcatressources()==null) errors.rejectValue("licence.qcatressources","lic.qcatressources.mistm");
-        if( lic.getQnavire()==null) errors.rejectValue("licence.qnavire","lic.qnavire.mistm");
+        if( lic.getQcatressources()==null) errors.rejectValue("licence.zone.IdZone","lic.qcatressources.mistm");
+        if( lic.getQnavire()==null) errors.rejectValue("licence.nomnav","lic.qnavire.mistm");
         if( lic.getTypb()==null) errors.rejectValue("licence.typb","lic.typb.mistm");
 
               if(lic instanceof qLicenceNational) {

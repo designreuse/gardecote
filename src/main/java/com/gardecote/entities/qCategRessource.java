@@ -29,7 +29,7 @@ public class qCategRessource implements Serializable {
   //  @JoinColumn(insertable = false,updatable = false)
     private List<qLic>    qlicences;
 
-    @ManyToMany(targetEntity =qEnginsLicence.class,cascade = CascadeType.MERGE)
+    @ManyToMany(targetEntity =qEnginsLicence.class,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocCategRessourcesEnginsBIS")
     @JsonManagedReference
     private List<qEnginsLicence> Engins;

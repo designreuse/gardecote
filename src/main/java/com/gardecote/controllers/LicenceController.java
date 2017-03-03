@@ -18,10 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.FileCopyUtils;
@@ -81,6 +84,8 @@ public class LicenceController {
     private saveDocValidator saveDocValidator;
     @Autowired
     private licenceValidator licValidator;
+    @Autowired
+    private licenceValidatorBatExistant licValidatorBE;
     @Autowired
     private attrUsineValidator attrUsineValidator;
     @Autowired
@@ -202,6 +207,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         return Arrays.asList(enumTypeConcessionCotiere.values());
 
     }
+
     @ModelAttribute("allEspeces")
     public List<qEspece> populateEspeces() {
        return especeService.findAll();
@@ -236,9 +242,28 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         return Arrays.asList(enumSupport.values());
     }
 
-    @ModelAttribute("allTypesEncad")
+    @ModelAttribute("allTypesEncadLibre")
     public List<qTypeEnc> populateTypeEnc() {
+        List<qTypeEnc> lstLibre=new ArrayList<qTypeEnc>();
+        lstLibre.add(qTypeEnc.UE);
+        lstLibre.add(qTypeEnc.AFRIC);
+        lstLibre.add(qTypeEnc.ASIATIQUE);
+        lstLibre.add(qTypeEnc.Autres);
+        return lstLibre;
+    }
+
+    @ModelAttribute("allTypesEncad")
+    public List<qTypeEnc> populateTypeEncLibre() {
         return Arrays.asList(qTypeEnc.values());
+    }
+
+    @ModelAttribute("allTypesEncadNational")
+    public List<qTypeEnc> populateTypeEncNational() {
+        List<qTypeEnc> lstNational=new ArrayList<qTypeEnc>();
+        lstNational.add(qTypeEnc.MRT);
+      //  lstNational.add(qTypeEnc.Autres);
+
+        return lstNational;
     }
 
     @ModelAttribute("allConcessions")
@@ -271,10 +296,34 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     }
     @ModelAttribute("allZones")
     public List<qZone> populateZones() {
-        return this.zoneService.findAll();
+        List<qZone> zones=new ArrayList<qZone>(),zonesToRendre=new ArrayList<qZone>();;
+        zones=this.zoneService.findAll();
+        for(qZone zz:zones) {
+            if (zz.getIdZone()>32) {
+                zonesToRendre.add(zz);
+            }
+        }
+
+        return zonesToRendre;
     }
     @ModelAttribute("allNations")
     public List<qNation> populateNations() {
+        return this.nationService.findAll();
+    }
+    @ModelAttribute("allNationsLibre")
+    public List<qNation> populateNationsLibre() {
+        List<qNation> nationalites=new ArrayList<qNation>();
+        List<qNation> nationalitess=new ArrayList<qNation>();
+        nationalites=this.nationService.findAll();
+        for(qNation rr:nationalites) {
+            if(rr.getIdNation()!=22)
+                nationalitess.add(rr);
+        }
+
+        return nationalitess;
+    }
+    @ModelAttribute("allNationsNational")
+    public List<qNation> populateNationsNational() {
         return this.nationService.findAll();
     }
     @ModelAttribute("allCategoriesConcessions1")
@@ -349,11 +398,11 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         return validateURL;
     }
     @RequestMapping(value="/NouvLicenceBatExistant", params={"addLicenceLibre"},method = RequestMethod.POST)
-    public String validatelibre(final  @Valid @ModelAttribute("LicForm")  creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
+    public String validatelibre(final   @ModelAttribute("LicForm")  creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
 
         String validateURL=null;
         qLic licAct=LicForm.getLicence();
-        licValidator.validate(licAct, bindingresult);
+        licValidatorBE.validate(licAct, bindingresult);
         if(bindingresult.hasErrors()) {
             for(ObjectError obj:bindingresult.getFieldErrors()) {
                 System.out.println(obj);
@@ -467,17 +516,46 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         urlNavigation="usine/attribution";
         return urlNavigation;
     }
+    @RequestMapping(value="/NouvLicenceBatExistant",params={"removeRow"},method = RequestMethod.POST)
+    public String removeRow(final @ModelAttribute("LicForm") creationLicForm LicForm,final HttpServletRequest req, final ModelMap model) {
+        String url=null;
+        final Integer rowId = Integer.valueOf(req.getParameter("removeRow"));
+
+        if(LicForm.getLicence()!=null) LicForm.getLicence().getQcatressources().remove(rowId.intValue());
+        model.addAttribute("LicForm",LicForm);
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
+        else {
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibre";
+            else   System.out.println("jjjj");
+        }
+        return url;
+
+    }
         @RequestMapping(value="/NouvLicenceBatExistant", params={"addRow"},method = RequestMethod.POST)
     public String addRowLBNB(final @ModelAttribute("LicForm") creationLicForm LicForm, final ModelMap model,final BindingResult bindingresult) {
 
         String url=null;
 
         List<qCategRessource> ens=new ArrayList<qCategRessource>();
+        qCategRessource currentToBeAdd=new qCategRessource();
+List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
 
-        if (LicForm.getLicence().getQcatressources() == null) {
-            ens.add(new qCategRessource());
-            LicForm.getLicence().setQcatressources(ens);
-        } else LicForm.getLicence().getQcatressources().add(new qCategRessource());
+                if (LicForm.getLicence().getQcatressources() == null) {
+                    ens.add(LicForm.getSelectedCategorieRessource());
+                    LicForm.getLicence().setQcatressources(ens);
+                    for(qEnginsLicence engl:LicForm.getSelectedCategorieRessource().getEngins()){
+                        engs.add(new qEnginAuthorisee(LicForm.getSelectedCategorieRessource(),engl,LicForm.getLicence(),0));
+                    }
+                    LicForm.getLicence().setEnginsAuthorisees(engs);
+                    //   System.out.println(currentToBeAdd.getEngins().size());
+                } else {
+                    if(!LicForm.getLicence().getQcatressources().contains(LicForm.getSelectedCategorieRessource()))
+                       LicForm.getLicence().getQcatressources().add(LicForm.getSelectedCategorieRessource());
+                    for(qEnginsLicence engl:LicForm.getSelectedCategorieRessource().getEngins()){
+                        engs.add(new qEnginAuthorisee(LicForm.getSelectedCategorieRessource(),engl,LicForm.getLicence(),0));
+                    }
+                    LicForm.getLicence().getEnginsAuthorisees().addAll(engs);
+                }
 
         model.addAttribute("LicForm",LicForm);
         if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
@@ -512,7 +590,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     public String afficherListLicence(final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page) {
         lstLicForm lst1=new lstLicForm();
         int[] pages;
-        Page<qLic>   pgLic=licenceService.findAll(page,20);
+
+    Page<qLic>   pgLic=licenceService.findAll(page,20);
+
         pages=new int[pgLic.getTotalPages()];
         for(int i=0;i<pgLic.getTotalPages();i++) pages[i]=i;
         lst1.setLicences(pgLic);
@@ -735,9 +815,21 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
        if(action.equals("createlicenceNational")) {
            currentLicence=new qLicenceNational();
            currentLicence.setQnavire(currentNav);
-
-           currentLicence.setBalise(currentNav.getBalise());currentLicence.setAnneeconstr(currentNav.getAnneeconstr());currentLicence.setCalpoids(currentNav.getCalpoids());currentLicence.setCount(currentNav.getCount());currentLicence.setEff(currentNav.getEff());currentLicence.setGt(currentNav.getGt());currentLicence.setImo(currentNav.getImo());
-           currentLicence.setKw(currentNav.getKw());currentLicence.setNbrhomm(currentNav.getNbrhomm());currentLicence.setLarg(currentNav.getLarg());currentLicence.setLongg(currentNav.getLongg());currentLicence.setNomnav(currentNav.getNomnav());currentLicence.setRadio(currentNav.getRadio());currentLicence.setPuimot(currentNav.getPuimot());
+           currentLicence.setBalise(currentNav.getBalise());
+           currentLicence.setAnneeconstr(currentNav.getAnneeconstr());
+           currentLicence.setCalpoids(currentNav.getCalpoids());
+           currentLicence.setCount(currentNav.getCount());
+           currentLicence.setEff(currentNav.getEff());
+           currentLicence.setGt(currentNav.getGt());
+           currentLicence.setImo(currentNav.getImo());
+           currentLicence.setKw(currentNav.getKw());
+           currentLicence.setNbrhomm(currentNav.getNbrhomm());
+           currentLicence.setPort(currentNav.getPort());
+           currentLicence.setLarg(currentNav.getLarg());
+           currentLicence.setLongg(currentNav.getLongg());
+           currentLicence.setNomnav(currentNav.getNomnav());
+           currentLicence.setRadio(currentNav.getRadio());
+           currentLicence.setPuimot(currentNav.getPuimot());
            currentLicence.setNomar(currentNav.getNomar());
            licform.setLicence(currentLicence);
            model.addAttribute("LicForm",licform);
@@ -746,8 +838,21 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
        if(action.equals("createlicenceLibre")) {
            currentLicence=new qLicenceLibre();
            currentLicence.setQnavire(currentNav);
-           currentLicence.setBalise(currentNav.getBalise());currentLicence.setAnneeconstr(currentNav.getAnneeconstr());currentLicence.setCalpoids(currentNav.getCalpoids());currentLicence.setCount(currentNav.getCount());currentLicence.setEff(currentNav.getEff());currentLicence.setGt(currentNav.getGt());currentLicence.setImo(currentNav.getImo());
-           currentLicence.setKw(currentNav.getKw());currentLicence.setNbrhomm(currentNav.getNbrhomm());currentLicence.setLarg(currentNav.getLarg());currentLicence.setLongg(currentNav.getLongg());currentLicence.setNomnav(currentNav.getNomnav());currentLicence.setRadio(currentNav.getRadio());currentLicence.setPuimot(currentNav.getPuimot());
+           currentLicence.setBalise(currentNav.getBalise());
+           currentLicence.setAnneeconstr(currentNav.getAnneeconstr());
+           currentLicence.setCalpoids(currentNav.getCalpoids());
+           currentLicence.setCount(currentNav.getCount());
+           currentLicence.setEff(currentNav.getEff());
+           currentLicence.setGt(currentNav.getGt());
+           currentLicence.setImo(currentNav.getImo());
+           currentLicence.setKw(currentNav.getKw());
+           currentLicence.setPort(currentNav.getPort());
+           currentLicence.setNbrhomm(currentNav.getNbrhomm());
+           currentLicence.setLarg(currentNav.getLarg());
+           currentLicence.setLongg(currentNav.getLongg());
+           currentLicence.setNomnav(currentNav.getNomnav());
+           currentLicence.setRadio(currentNav.getRadio());
+           currentLicence.setPuimot(currentNav.getPuimot());
            currentLicence.setNomar(currentNav.getNomar());
            licform.setLicence(currentLicence);
            model.addAttribute("LicForm",licform);
@@ -1402,6 +1507,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         return "Documents/editModel";
 
     }
+
     @RequestMapping(value="/saveModel",params={"saveEspece"},method = RequestMethod.POST)
     public String saveModell(final @ModelAttribute("editedModel") qModelJP editedModel, final ModelMap model,BindingResult bindingresult) {
         qPrefix pr=null; qPrefixPK prefPK=null;qPrefix prefcurrent=null;
@@ -1699,16 +1805,16 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         qTypeConcession paPel = new qTypeConcessionArtisanal(4, prefixPA, "Artisanal pelagique");
         qTypeConcession paAlAut = new qTypeConcessionArtisanal(5, prefixPA, "Artisanal Algues et autres Mollusques");
 
-        qEnginsLicence qEng1 = new qEnginsLicence(enumEnginDeb.Casier, enumEngin.Indefini, 70);
-        qEnginsLicence qEng2 = new qEnginsLicence(enumEnginDeb.Palangre, enumEngin.Indefini, 30);
+        qEnginsLicence qEng1 = new qEnginsLicence(enumEnginDeb.Casier, enumEngin.Indefini, 70,false);
+        qEnginsLicence qEng2 = new qEnginsLicence(enumEnginDeb.Palangre, enumEngin.Indefini, 30,false);
 
         List<qEnginsLicence> qEnginsDeb = new ArrayList<qEnginsLicence>();
         qEnginsDeb.add(qEng1);
         qEnginsDeb.add(qEng2);
 
         List<qEnginsLicence> qEnginsdiff = new ArrayList<qEnginsLicence>();
-        qEnginsLicence f = enginsLicenceService.findById(new qEnginsLicencePK(enumEnginDeb.Casier, enumEngin.Indefini, 70));
-        qEnginsLicence d = enginsLicenceService.findById(new qEnginsLicencePK(enumEnginDeb.Palangre, enumEngin.Indefini, 30));
+        qEnginsLicence f = enginsLicenceService.findById(new qEnginsLicencePK(enumEnginDeb.Casier, enumEngin.Indefini));
+        qEnginsLicence d = enginsLicenceService.findById(new qEnginsLicencePK(enumEnginDeb.Palangre, enumEngin.Indefini));
         qEnginsdiff.add(f);
         qEnginsdiff.add(d);
 
@@ -2539,6 +2645,7 @@ qConsignataire deletedConsignataire=consignataireService.findById(refConcessionn
 
     @RequestMapping(value="/ModifierCategorieSave",method = RequestMethod.POST)
     public String ModifierCategorieSave(final @ModelAttribute("modifCat") qCategRessource modifCat,final ModelMap model) {
+       System.out.println("kkkkk");
         categService.save(modifCat);
         model.addAttribute("modifCat",modifCat);
         return "categories/modifCat";

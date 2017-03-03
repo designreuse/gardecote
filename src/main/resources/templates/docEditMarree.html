@@ -5,7 +5,9 @@
 </head>
 <body>
 <div layout:fragment="content">
-
+    <div class="panel panel-default">
+        <div class="panel-heading">Saisie de Document de Marrées</div>
+        <div class="panel-body">
   <form th:action="@{createDocumentSave}" method="post" th:object="${frmSearchPgsForDocCrea.createDocFormm}" >
       <div>
           <h3 th:text="${frmSearchPgsForDocCrea.createDocFormm.titre}"></h3>
@@ -331,7 +333,7 @@
 
 
 </form>
-
+</div></div>
 </div>
 
 

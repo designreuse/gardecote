@@ -18,11 +18,6 @@ public class qEnginsLicence implements Serializable {
     private enumEnginDeb EnginDeb;
     @Id
     private enumEngin EnginMar;
-    @Id
-    private Integer maillage;
-
-
-
 
     @ManyToMany(mappedBy = "Engins",cascade = CascadeType.PERSIST)
 
@@ -32,13 +27,22 @@ public class qEnginsLicence implements Serializable {
     public qEnginsLicence() {
     }
 
-    public qEnginsLicence(enumEnginDeb enginDeb, enumEngin enginMar, Integer maillage) {
+
+    public List<qCategRessource> getCategressource() {
+        return categressource;
+    }
+
+    public void setCategressource(List<qCategRessource> categressource) {
+        this.categressource = categressource;
+    }
+
+    public qEnginsLicence(enumEnginDeb enginDeb, enumEngin enginMar, Integer maillage,boolean flag) {
         EnginDeb = enginDeb;
         EnginMar = enginMar;
-        this.maillage = maillage;
+
     }
     public qEnginsLicencePK  getLicencePK(){
-        qEnginsLicencePK enginsLicencePK=new qEnginsLicencePK(this.EnginDeb,this.getEnginMar(),this.maillage);
+        qEnginsLicencePK enginsLicencePK=new qEnginsLicencePK(this.EnginDeb,this.getEnginMar());
         return  enginsLicencePK;
     }
     public enumEnginDeb getEnginDeb() {
@@ -57,11 +61,5 @@ public class qEnginsLicence implements Serializable {
         EnginMar = enginMar;
     }
 
-    public Integer getMaillage() {
-        return maillage;
-    }
 
-    public void setMaillage(Integer maillage) {
-        this.maillage = maillage;
-    }
 }

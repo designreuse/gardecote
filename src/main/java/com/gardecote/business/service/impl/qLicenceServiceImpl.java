@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,15 +75,15 @@ public class qLicenceServiceImpl implements qLicenceService {
 		for(qLic qCapture1 : entities) {
 			beans.add(qCapture1);
 		}
-		return beans;
+		return codauthJpaRepository.lstLicences();
 
 	}
 
 	//@Override
 	public Page<qLic> findAll(int p,int size) {
-
+		PageRequest request= new PageRequest(p,size, Sort.Direction.DESC,"dateDebutAuth");
 	//	Iterable<qLic> entities = codauthJpaRepository.findAll(new PageRequest(p, size));
-		Page<qLic> entities = codauthJpaRepository.findAll(new PageRequest(p, size));
+		Page<qLic> entities = codauthJpaRepository.findAll(request);
 	//	List<qLic> beans = new ArrayList<qLic>();
 //		for(qLic codauthEntity : entities) {
 	//		beans.add(codauthEntity);
@@ -348,7 +349,7 @@ return "OK";
 							insertedNavire=newNavire;
 						}
 
-						currentLic=new qLicenceNational(typlic, zone, nation, null, insertedNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,"0",CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,null);
+						currentLic=new qLicenceNational(typlic, zone, nation, null, insertedNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,"0",CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,null,null);
 					}
 					else {
 						System.out.println("type navire :"+typeNavire);
@@ -370,7 +371,7 @@ return "OK";
 							insertedNavire=newNavire;
 						}
 
-						currentLic=new qLicenceLibre(typlic, zone, nation, null, insertedNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,"0",CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,encadrement);
+						currentLic=new qLicenceLibre(typlic, zone, nation, null, insertedNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,"0",CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,encadrement,null);
 
 				}
 					codauthJpaRepository.save(currentLic);

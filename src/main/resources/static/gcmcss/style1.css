@@ -14,3 +14,10 @@
 .dang {
     background-color:#ffe4e1
 }
+.panel-default > .panel-heading-custom {
+    background: mistyrose; }
+
+ .jumbotron-custom {
+    background-color: #D3D7FF;
+     margin-bottom:0;
+ }

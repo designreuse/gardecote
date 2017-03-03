@@ -7,11 +7,16 @@
 <body>
 
 <div   layout:fragment="content">
+    <div class="panel panel-default">
+        <div class="panel-heading panel-heading-custom">Gestion des documents</div>
+        <div class="panel-body">
     <span class="label label-danger" th:text="${deletefeedback}"></span>
     <span class="label label-danger" th:text="${deblocagefeedback}"></span>
     <form th:action="@{createDocument}" method="post"  th:object="${frmSearchPgsForDocCrea}" class="form-inline" >
-    <div class="jumbotron text-left">
 
+    <div class=" jumbotron jumbotron-custom  text-left ">
+        <div class="row">
+            <div class="col-md-10">
   <select class="form-control"   th:field="${frmSearchPgsForDocCrea.typeDoc}"   >
              <option th:each="i : ${allTypesDoc}"
                      th:value="${i}"
@@ -52,7 +57,19 @@
        <button type="submit"  id="creer" name="creer" th:disabled="${frmSearchPgsForDocCrea.displayButton}" class="btn btn-lg btn-primary"  th:fragment="finListFrag" onsubmit="return confirm('Are you sure?');"> creer document &raquo; </button>
 
     </div>
-</div>
+        </div>
+            <div class="col-md-2">
+                <table class="table table-condensed">
+                  <tr ><td class="success">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Marrée</td></tr>
+                    <tr ><td class="warning" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Débarquement</td></tr>
+                    <tr ><td class="danger">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Traitement</td></tr>
+                </table>
+
+            </div>
+        </div>
+            </div>
+
+
 
 </form>
 
@@ -73,7 +90,7 @@
        </tr>
         </thead>
         <tbody>
-        <tr th:each="b:${frmSearchPgsForDocCrea.lstDocuments}">
+        <tr th:each="b:${frmSearchPgsForDocCrea.lstDocuments}" th:class="${#strings.equals(b.enumtypedoc,'Journal_Peche')}?success:(${#strings.equals(b.enumtypedoc,'Fiche_Debarquement')}?warning:(${#strings.equals(b.enumtypedoc,'Fiche_Traitement')}?danger:''))">
           <td>  <div class="dropdown">  <button th:field="${frmSearchPgsForDocCrea.numSelected}" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
                 <span class="caret"></span></button>
                 <ul class="dropdown-menu">
@@ -113,18 +130,25 @@
         </tbody>
     </table>
 
-    <div class="container">
 
-        <ul class="nav nav-pills">
-            <li th:each="p:${frmSearchPgsForDocCrea.numPages}"  th:class="${p==frmSearchPgsForDocCrea.pageCourante}?active:''">
-                <a th:text="${p}" th:href="@{createDocument(page=${p})}"></a>
-            </li>
-        </ul>
+
+
+
+
+        <div class="container">
+
+            <ul class="nav nav-pills">
+                <li th:each="p:${frmSearchPgsForDocCrea.numPages}"  th:class="${p==frmSearchPgsForDocCrea.pageCourante}?active:''">
+                    <a th:text="${p}" th:href="@{createDocument(page=${p})}"></a>
+                </li>
+            </ul>
+        </div>
+
+</div>
+        <div class="panel-footer">
+            Garde Côte 2016
+        </div>
     </div>
-
-
-
-
 
 </div>
 </body>

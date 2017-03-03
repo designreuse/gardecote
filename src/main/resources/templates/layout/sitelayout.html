@@ -6,8 +6,9 @@
                 <title>Garde Cote Maritime</title>
                 <!-- BOOTSTRAP STYLES-->
                 <link href="gcmcss/bootstrap.css" rel="stylesheet" />
-                <link   rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" />
-                <!-- FONTAWESOME STYLES-->
+                <link href="gcmcss/jquery-ui.css" rel="stylesheet" />
+                <!--     <link   rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" /> -->
+                  <!-- FONTAWESOME STYLES-->
                 <link href="gcmcss/font-awesome.css" rel="stylesheet" />
                 <link href="gcmcss/angucomplete-alt.css" rel="stylesheet" />
                 <!-- CUSTOM STYLES-->
@@ -16,7 +17,7 @@
             <body >
             <div class="container-fluid spacer"  >
                 <header class="row col-sm-12">
-                   <nav role="navigation" class="navbar navbar-default">
+                   <nav role="navigation" class="navbar navbar-default ">
                         <!-- Brand and toggle get grouped for better mobile display -->
                         <div class="navbar-header">
                             <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
@@ -99,13 +100,13 @@
 
                 </header>
                 <div id="login" name="login"></div>
+
                 <div class="row col-sm-12 panel panel-primary" layout:fragment="content"  >
                </div>
-                <footer class="row col-sm-12">
-                    <div class="panel panel-body">
-                        <p>Tous droits réservés par moi...</p>
-                    </div>
-                </footer>
+
+
+
+
             </div>
 
 
@@ -193,7 +194,15 @@
                         clearDebutFin();
                     })
 
+                    $("[id$=licence\\.qcatressources]").on('change', function() {
+                        var url = /*[[@{/updateEngins}]]*/ "/updateEngins";
 
+                            url = url + '?idCategorie=' + this.val();
+
+alert("hhhhh")
+                        $("#"+this.val()).load(url);
+
+                    })
 
                     $("#page").autocomplete({
                         minLength: 1,

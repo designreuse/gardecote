@@ -22,9 +22,9 @@ public class categoriesRessourcesItemProcessor implements ItemProcessor<qCategRe
         qCategRessourceModelOutput outp=new qCategRessourceModelOutput();
                      String engString=null;Integer i=0;
                 for(qEnginsLicence cat:categService.getEngL(qCategRessourceModel.getTypeconcessionConcernee_qtypeconcessionpk())) {
-                    if(i==0) engString=engString+cat.getEnginDeb().toString()+","+cat.getEnginMar()+","+cat.getMaillage();
+                    if(i==0) engString=engString+cat.getEnginDeb().toString()+","+cat.getEnginMar();
                     else {
-                        engString=engString+";"+ cat.getEnginDeb().toString()+","+cat.getEnginMar()+","+cat.getMaillage();
+                        engString=engString+";"+ cat.getEnginDeb().toString()+","+cat.getEnginMar();
                     }
                             i++;
                 }

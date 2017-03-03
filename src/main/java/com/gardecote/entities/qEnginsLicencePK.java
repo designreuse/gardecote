@@ -9,22 +9,16 @@ import java.io.Serializable;
  */
 
 public class qEnginsLicencePK implements Serializable {
-    @Id
     private enumEnginDeb EnginDeb;
-
-    @Id
     private enumEngin EnginMar;
-
-    @Id
-    private Integer maillage;
 
     public qEnginsLicencePK() {
     }
 
-    public qEnginsLicencePK(enumEnginDeb enginDeb, enumEngin enginMar, Integer maillage) {
+    public qEnginsLicencePK(enumEnginDeb enginDeb, enumEngin enginMar) {
         EnginDeb = enginDeb;
         EnginMar = enginMar;
-        this.maillage = maillage;
+
     }
 
     public enumEnginDeb getEnginDeb() {
@@ -43,14 +37,6 @@ public class qEnginsLicencePK implements Serializable {
         EnginMar = enginMar;
     }
 
-    public Integer getMaillage() {
-        return maillage;
-    }
-
-    public void setMaillage(Integer maillage) {
-        this.maillage = maillage;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,8 +45,7 @@ public class qEnginsLicencePK implements Serializable {
         qEnginsLicencePK that = (qEnginsLicencePK) o;
 
         if (getEnginDeb() != that.getEnginDeb()) return false;
-        if (getEnginMar() != that.getEnginMar()) return false;
-        return getMaillage().equals(that.getMaillage());
+        return getEnginMar() == that.getEnginMar();
 
     }
 
@@ -68,7 +53,6 @@ public class qEnginsLicencePK implements Serializable {
     public int hashCode() {
         int result = getEnginDeb().hashCode();
         result = 31 * result + getEnginMar().hashCode();
-        result = 31 * result + getMaillage().hashCode();
         return result;
     }
 }
