@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qJourMereAnnexe33", schema="dbo", catalog="GCM4" )
+@Table(name="qJourMereAnnexe", schema="dbo", catalog="GCM5" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJourAnnexe.countAll", query="SELECT COUNT(x) FROM qJourMereAnnexe x" )
@@ -48,7 +48,7 @@ public class qJourMereAnnexe implements Serializable
     @Id
     private String      numPage   ;
     @OneToOne
-    private qNavire navire;
+    private qNavireLegale navire;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
@@ -71,7 +71,7 @@ public class qJourMereAnnexe implements Serializable
 		super();
     }
 
-    public qJourMereAnnexe(Integer index,String numPage,String designation,Date datejourMere, qNavire navire,qEspece espece,Integer poids,String presentation,  qPageAnnexe pageMarree) {
+    public qJourMereAnnexe(Integer index,String numPage,String designation,Date datejourMere, qNavireLegale navire,qEspece espece,Integer poids,String presentation,  qPageAnnexe pageMarree) {
         this.dateJour = pageMarree.getQmarreeAnexe().getDepart();
         this.numPage=numPage;
         this.especeDebarque=espece;
@@ -143,11 +143,11 @@ public class qJourMereAnnexe implements Serializable
         this.numImm = numImm;
     }
 
-    public qNavire getNavire() {
+    public qNavireLegale getNavire() {
         return navire;
     }
 
-    public void setNavire(qNavire navire) {
+    public void setNavire(qNavireLegale navire) {
         this.navire = navire;
     }
 

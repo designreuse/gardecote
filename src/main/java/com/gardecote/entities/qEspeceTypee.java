@@ -8,7 +8,7 @@ import java.util.List;
  * Created by Dell on 25/10/2016.
  */
 @Entity
-@Table(name="qEspeceTypee33", schema="dbo", catalog="GCM4" )
+@Table(name="qEspeceTypee", schema="dbo", catalog="GCM5" )
 @IdClass(qEspeceTypeePK.class)
 public class qEspeceTypee implements Serializable, Comparable<qEspeceTypee> {
     @Id

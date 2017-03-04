@@ -23,7 +23,7 @@ import org.springframework.format.annotation.NumberFormat;
  *
  */
 @Entity
-@Table(name="qCarnet33", schema="dbo", catalog="GCM4" )
+@Table(name="qCarnet", schema="dbo", catalog="GCM5" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qCarnet.countAll", query="SELECT COUNT(x) FROM qCarnet x" )
@@ -51,9 +51,9 @@ public class qCarnet implements Serializable
     private Integer    nbrPages      ;
     @Column(name="NbrLignes", nullable=false)
     private Integer    nbrLigneParPage      ;
-    @OneToOne(targetEntity = qNavire.class)
+    @OneToOne(targetEntity = qNavireLegale.class)
     @JoinColumn(name="qnavire")
-    private qNavire      qnavire  ;
+    private qNavireLegale      qnavire  ;
     @OneToOne(targetEntity = qPrefix.class)
     //@JoinColumn(name="qprefix")
     private qPrefix      qprefix  ;
@@ -108,7 +108,7 @@ public class qCarnet implements Serializable
         this.qconcession = qconcession;
     }
 
-    public qCarnet(qPrefix prefix, Long numeroDebutPage, Integer nbrPages,qNavire navire,qUsine usine) {
+    public qCarnet(qPrefix prefix, Long numeroDebutPage, Integer nbrPages,qNavireLegale navire,qUsine usine) {
         this.qprefix=prefix;
         this.typeDoc=prefix.getTypeDoc();
         this.numeroDebutPage = numeroDebutPage;
@@ -124,7 +124,7 @@ public class qCarnet implements Serializable
         // ajouter des pages du carnet encours
     }
 
-    public void distribuer(qNavire qnavire,qUsine qusine){
+    public void distribuer(qNavireLegale qnavire,qUsine qusine){
 
         this.qnavire =qnavire;
         this.qusine = qusine;
@@ -170,11 +170,11 @@ public class qCarnet implements Serializable
         this.nbrPages = nbrPages;
     }
 
-    public qNavire getQnavire() {
+    public qNavireLegale getQnavire() {
         return qnavire;
     }
 
-    public void setQnavire(qNavire qnavire) {
+    public void setQnavire(qNavireLegale qnavire) {
         this.qnavire = qnavire;
     }
 

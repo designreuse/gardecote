@@ -75,7 +75,7 @@ public class licenceValidatorBatExistant implements Validator {
                }
 
            if(lic instanceof qLicenceLibre) {
-               if(((qLicenceLibre) lic).getTypencad()==null)
+               if(((qLicenceLibre) lic).getAccord()==null)
                    errors.rejectValue("licence.typencad","lic.typencad.mistm");
              }
 //       lic  qlc=licService.findById(lic.getNumlic());

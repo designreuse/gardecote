@@ -11,7 +11,6 @@
     <panel>
     <b class="danger">
         <h1> <span class="label label-default"> Creation d'une nouvelle licence pour la navire :</span><span class="label label-primary" th:text="${LicForm.licence.qnavire.nomnav}"/></h1>
-
     </b>
     </panel>
 
@@ -96,26 +95,31 @@
 
                     <table class="table">
                         <tr>
-                         <th>Support de ressource</th> <th>Type de quota</th><th></th>
+                         <th>Support </th> <th>Type</th><th></th>
                         </tr>
-                        <tr th:each="eng,engStat : ${LicForm.licence.qcatressources[__${catStat.index}__].Engins}">
-                            <td ><input typr="hidde" th:field="${LicForm.licence.qcatressources[__${catStat.index}__].idtypeConcession}" />
+                        <tr >
+                            <td ><input type="hidden" th:field="${LicForm.licence.qcatressources[__${catStat.index}__].idtypeConcession}" />
                                 <label  th:text="${LicForm.licence.qcatressources[__${catStat.index}__].typeconcessionConcernee}" />
                             </td>
                             <td> <label  th:text="${LicForm.licence.qcatressources[__${catStat.index}__].typeSupport}" /></td>
                             <td> <button  type="submit" th:value="${catStat.index}" name="removeRow" class="btn btn-success">Remove une categorie</button>
                             </td>
                         </tr>
-                    </table></td><td>
+                    </table></td><td valign="top">
                     <table class="table">
                         <tr><th>Engin</th><th>Maillage</th></tr>
                         <tr th:each="eng,engStat : ${LicForm.licence.enginsAuthorisees}">
                             <td>
-                             <input th:field="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].enginAuthorise}"/>
-                            </td><td>
-                            <input th:field="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].maillage}"/>
-                        </td>
+                                <label  th:text="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginDeb}" />
+                             <input type="hidden" th:field="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginDeb}" />
+                                <label  th:text="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginMar}" />
+                                <input type="hidden" th:field="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginMar}" />
 
+                            </td><td>
+                            <input type="text"  th:field="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].maillageAuthorise}"/>
+                        </td>
+                       <td><button  type="submit" th:value="${engStat.index}" name="removeRow2" class="btn btn-success">Supprimer</button>
+</td>
                         </tr>
 
                     </table>
@@ -125,8 +129,6 @@
 
     </div>
 </div>
-
-
                         </div></div>
 
         <div class="row">

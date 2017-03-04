@@ -2,7 +2,8 @@ package com.gardecote.web;
 
 import com.gardecote.entities.qCarnet;
 import com.gardecote.entities.qLic;
-import com.gardecote.entities.qNavire;
+
+import com.gardecote.entities.qNavireLegale;
 import com.gardecote.entities.qUsine;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 public class attributionUsineForm {
 
     private qUsine usineSelected;
-    private qNavire navireSelected;
+    private qNavireLegale navireSelected;
     private qCarnet carnetSelected;
 
     private String message;
@@ -27,11 +28,11 @@ public class attributionUsineForm {
         this.usineSelected = usineSelected;
     }
 
-    public qNavire getNavireSelected() {
+    public  qNavireLegale  getNavireSelected() {
         return navireSelected;
     }
 
-    public void setNavireSelected(qNavire navireSelected) {
+    public void setNavireSelected( qNavireLegale  navireSelected) {
         this.navireSelected = navireSelected;
     }
 

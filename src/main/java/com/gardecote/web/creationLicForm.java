@@ -18,7 +18,7 @@ public class creationLicForm implements Serializable{
     private String action;
     private String regime;
     private  String refCon;
-    private List<qNavire> lstBat=new ArrayList<qNavire>();
+    private List<qNavireLegale> lstBat=new ArrayList<qNavireLegale>();
     private qCategRessource selectedCategorieRessource;
 
    // @Valid
@@ -83,11 +83,11 @@ public class creationLicForm implements Serializable{
         this.regime = regime;
     }
 
-    public List<qNavire> getLstBat() {
+    public List<qNavireLegale> getLstBat() {
         return lstBat;
     }
 
-    public void setLstBat(List<qNavire> lstBat) {
+    public void setLstBat(List<qNavireLegale> lstBat) {
         this.lstBat = lstBat;
     }
 
@@ -115,7 +115,7 @@ public class creationLicForm implements Serializable{
         this.typeOperation = typeOperation;
     }
 
-    public creationLicForm(String typeOperation, String action, List<qNavire> lstBat) {
+    public creationLicForm(String typeOperation, String action, List<qNavireLegale> lstBat) {
         this.typeOperation = typeOperation;
         this.action = action;
         this.lstBat = lstBat;

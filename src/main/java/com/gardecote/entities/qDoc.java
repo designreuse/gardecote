@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @DynamicUpdate
-@Table(name="qDoc33", schema="dbo", catalog="GCM4")
+@Table(name="qDocuments", schema="dbo", catalog="GCM5")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
@@ -48,8 +48,8 @@ public class qDoc implements Serializable {
     @OneToOne( cascade = CascadeType.ALL,targetEntity = qSeq.class)
     private qSeq qseq;
 
-    @OneToOne( targetEntity = qNavire.class)
-    private qNavire qnavire;
+    @OneToOne( targetEntity = qNavireLegale.class)
+    private qNavireLegale qnavire;
 
     @OneToOne( targetEntity = qUsine.class)
     private qUsine qusine;
@@ -182,11 +182,11 @@ public class qDoc implements Serializable {
 
     }
 
-    public qNavire getQnavire() {
+    public qNavireLegale getQnavire() {
         return qnavire;
     }
 
-    public void setQnavire(qNavire qnavire) {
+    public void setQnavire(qNavireLegale qnavire) {
         this.qnavire = qnavire;
     }
 
@@ -226,7 +226,7 @@ public class qDoc implements Serializable {
         this.qusine = qusine;
     }
 
-    public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavire   qnavire, qUsine   qusine, qConcession qconcess){
+    public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale   qnavire, qUsine   qusine, qConcession qconcess){
         this.qconcession=qconcess;
         this.qnavire=qnavire;
         this.qusine=qusine;

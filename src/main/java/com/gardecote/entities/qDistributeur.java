@@ -20,7 +20,7 @@ public class qDistributeur implements Serializable {
     }
 
 
-   public qCarnet distribuer(qCarnet qcarnet,qConcession qconcession,qNavire qnavire, qUsine qusine){
+   public qCarnet distribuer(qCarnet qcarnet,qConcession qconcession,qNavireLegale qnavire, qUsine qusine){
         qcarnet.setQnavire(qnavire);
         qcarnet.setQusine(qusine);
        qcarnet.setQconcession(qconcession);

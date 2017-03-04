@@ -23,7 +23,7 @@ import java.io.Serializable;
  */
 import java.util.Date;
 @Entity
-@Table(name="qCapture33", schema="dbo", catalog="GCM4" )
+@Table(name="qCapture", schema="dbo", catalog="GCM5" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qCapture.countAll", query="SELECT COUNT(x) FROM qCapture x" )

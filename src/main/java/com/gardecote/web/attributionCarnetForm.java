@@ -7,7 +7,7 @@ import java.util.List;
  * Created by Dell on 01/12/2016.
  */
 public class attributionCarnetForm  {
-    private qNavire navireSelected;
+    private qNavireLegale navireSelected;
     private qUsine usineSelected;
     private qCarnet carnetSelected;
     private qLic licenceSelected;
@@ -15,11 +15,11 @@ public class attributionCarnetForm  {
     private String message;
     private List<enumTypeDoc> lstTypeDoc;
 
-    public qNavire getNavireSelected() {
+    public qNavireLegale getNavireSelected() {
         return navireSelected;
     }
 
-    public void setNavireSelected(qNavire navireSelected) {
+    public void setNavireSelected(qNavireLegale navireSelected) {
         this.navireSelected = navireSelected;
     }
 

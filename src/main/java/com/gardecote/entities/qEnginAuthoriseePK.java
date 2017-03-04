@@ -21,6 +21,9 @@ public class qEnginAuthoriseePK implements Serializable{
         EnginDeb = enginDeb;
     }
 
+    public qEnginAuthoriseePK() {
+    }
+
     public String getNumlic() {
         return numlic;
     }

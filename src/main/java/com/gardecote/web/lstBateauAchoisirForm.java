@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class lstBateauAchoisirForm implements Serializable {
 
-    private Page<qNavire> lstBat=null;
+    private Page<qNavireLegale> lstBat=null;
 
     @Valid
     private qLic licence;
@@ -62,11 +62,11 @@ public class lstBateauAchoisirForm implements Serializable {
         this.pageCourante = pageCourante;
     }
 
-    public Page<qNavire> getLstBat() {
+    public Page<qNavireLegale> getLstBat() {
         return lstBat;
     }
 
-    public void setLstBat(Page<qNavire> lstBat) {
+    public void setLstBat(Page<qNavireLegale> lstBat) {
         this.lstBat = lstBat;
     }
 

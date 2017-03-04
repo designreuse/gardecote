@@ -67,7 +67,7 @@ public class qMarree extends qDoc implements Serializable
         return serialVersionUID;
     }
 
-    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavire qnavire,qUsine qusine,qConcession qconcess, enumJP typeJP, List<qEnginPecheMar> qEngins, List<qPageMarree> pages) {
+    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale qnavire,qUsine qusine,qConcession qconcess, enumJP typeJP, List<qEnginPecheMar> qEngins, List<qPageMarree> pages) {
         super(enumtypedoc, depart, retour,qseq, qnavire,qusine,qconcess);
 
         this.typeJP = typeJP;

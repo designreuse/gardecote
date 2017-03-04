@@ -142,7 +142,7 @@ public class qCarnetServiceImpl implements qCarnetService {
 	}
 
 	@Override
-	public qCarnet attribuerCarnetAuNavire(qCarnet carnet, qNavire navire, qLic licence, qUsine usine) {
+	public qCarnet attribuerCarnetAuNavire(qCarnet carnet, qNavireLegale navire, qLic licence, qUsine usine) {
 		qConcession conHors= qconcessionRepository.findOne("Hors");
 
 		carnet.setQnavire(navire);

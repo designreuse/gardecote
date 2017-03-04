@@ -23,7 +23,7 @@ public interface qDocRepository extends PagingAndSortingRepository<qDoc,qDocPK> 
     public List<qJourMere> checkUsedJoursMere(@Param("numimm") String numimm,@Param("datedep") Date datedep, @Param("dateret") Date dateret);
 
     @Query("select lic from qLic lic where lic.qnavire=:qnav")
-    public List<qLic> retLicences(@Param("qnav") qNavire qnav);
+    public List<qLic> retLicences(@Param("qnav") qNavireLegale qnav);
 
     @Query("select pcrn from qPageCarnet pcrn where pcrn.typeDoc=:prefix and pcrn.qcarnet.qprefix.typeDoc=:typeDoc")
     public List<qPageCarnet> checkPrefix(@Param("prefix") String prefix,@Param("typeDoc") String typeDoc);

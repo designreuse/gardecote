@@ -7,11 +7,12 @@ import java.io.Serializable;
  * Created by Dell on 03/03/2017.
  */
 @Entity
-@Table(name="qEnginAuthorisee", schema="dbo", catalog="GCM4" )
+@Table(name="qEnginAuthorisee", schema="dbo", catalog="GCM5" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qEnginAuthorisee.countAll", query="SELECT COUNT(x) FROM qEnginAuthorisee x" )
 } )
+@IdClass(qEnginAuthoriseePK.class)
 public class qEnginAuthorisee implements Serializable {
     @Id
     private String numlic;
@@ -21,7 +22,7 @@ public class qEnginAuthorisee implements Serializable {
     private enumEnginDeb EnginDeb;
     @OneToOne
     private qCategRessource categorieLicence;
-    @OneToOne
+    @OneToOne(targetEntity = qEnginsLicence.class)
     private qEnginsLicence enginAuthorise;
     @OneToOne
     private qLic licence;
@@ -31,13 +32,18 @@ public class qEnginAuthorisee implements Serializable {
     public qEnginsLicence getEnginAuthorise() {
         return enginAuthorise;
     }
-
+    public qEnginAuthoriseePK getEnginAuthoriseePK(){
+    return new qEnginAuthoriseePK(numlic, EnginMar,EnginDeb);
+         }
     public void setEnginAuthorise(qEnginsLicence enginAuthorise) {
         this.enginAuthorise = enginAuthorise;
     }
 
     public Integer getMaillageAuthorise() {
         return maillageAuthorise;
+    }
+
+    public qEnginAuthorisee() {
     }
 
     public qEnginAuthorisee(qCategRessource categorieLicence, qEnginsLicence enginAuthorise, qLic licence, Integer maillageAuthorise) {

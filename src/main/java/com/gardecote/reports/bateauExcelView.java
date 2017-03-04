@@ -1,6 +1,7 @@
 package com.gardecote.reports;
 
-import com.gardecote.entities.qNavire;
+
+import com.gardecote.entities.qNavireLegale;
 import com.gardecote.entities.qZone;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
@@ -22,7 +23,7 @@ public class bateauExcelView extends AbstractXlsxView {
     protected void buildExcelDocument(Map<String, Object> map, Workbook workbook, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 //VARIABLES REQUIRED IN MODEL
         String sheetName = (String)map.get("sheetname");
-        List<qNavire> navires = (List<qNavire>)map.get("navires");
+        List<qNavireLegale> navires = (List<qNavireLegale>)map.get("navires");
         //BUILD DOC
         Sheet sheet = workbook.createSheet(sheetName);
         sheet.setDefaultColumnWidth((short) 12);
@@ -36,7 +37,7 @@ public class bateauExcelView extends AbstractXlsxView {
         //POPULATE HEADER COLUMNS
         Row headerRow = sheet.createRow(currentRow);
 
-        Field[] fields = qNavire.class.getDeclaredFields();
+        Field[] fields = qNavireLegale.class.getDeclaredFields();
         currentColumn = 0;
 
         List<String> headers = new ArrayList<String>();
@@ -74,7 +75,7 @@ public class bateauExcelView extends AbstractXlsxView {
         //POPULATE VALUE ROWS/COLUMNS
         currentRow++;//exclude header
 
-        for(qNavire result: navires) {
+        for(qNavireLegale result: navires) {
             System.out.println(currentRow);
 
             Row row = sheet.createRow(currentRow);

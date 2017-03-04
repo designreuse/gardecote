@@ -27,7 +27,7 @@ import java.util.List;
  *
  */
 @Entity
-@Table(name="qlic33", schema="dbo", catalog="GCM4")
+@Table(name="qlicence", schema="dbo", catalog="GCM5")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPELICENCE", discriminatorType=DiscriminatorType.STRING, length=20)
 // Define named queries here
@@ -52,7 +52,9 @@ public class qLic implements Serializable
     public Date updatedAt;
 
     @Column(name="numimm", nullable=true)
-        private String     numimm;
+     private String     numimm;
+
+    private enumModePeche   modePeche ;
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocLicencesCategRessourcesBIS")
@@ -62,11 +64,13 @@ public class qLic implements Serializable
 
     @OneToMany(targetEntity=qEnginAuthorisee.class,cascade = CascadeType.ALL)
     private List<qEnginAuthorisee> enginsAuthorisees;
+    @OneToMany(targetEntity=qNavireHistoriqueChangements.class,cascade = CascadeType.ALL)
+    private List<qNavireHistoriqueChangements> historiqueChangements;
     @ManyToOne
     @JsonBackReference
     //@NotNull
     //@Valid
-    private qNavire qnavire;
+    private qNavireLegale qnavire;
     // remplissage de champs de navire a partir de batau selectionnee avec disabled ou enabled avec des nouveau saisi
     @Column(name="balise", length=255)
     //@NotEmpty
@@ -229,7 +233,7 @@ public class qLic implements Serializable
         this.nation = nation;
     }
 
-    public qLic(qTypeLic qtypnav, qZone zone, qNation qNation, List<qCategRessource> qcatressources, qNavire qnavire, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, String balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomnav, String numlic, String port, String puimot, String radio, float tjb,List<qEnginAuthorisee> engins) {
+    public qLic(qTypeLic qtypnav, qZone zone, qNation qNation, List<qCategRessource> qcatressources, qNavireLegale qnavire, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, String balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomnav, String numlic, String port, String puimot, String radio, float tjb,List<qEnginAuthorisee> engins,enumModePeche   modePeche) {
         this.enginsAuthorisees=engins;
         this.qtypnav = qtypnav;
         this.zone = zone;
@@ -248,6 +252,7 @@ public class qLic implements Serializable
         this.eff = eff;
         this.gt = gt;
         this.imo = imo;
+        this.modePeche=modePeche;
         this.kw = kw;
         this.larg = larg;
         this.longg = longg;
@@ -259,6 +264,7 @@ public class qLic implements Serializable
         this.puimot = puimot;
         this.radio = radio;
         this.tjb = tjb;
+        this.modePeche=modePeche;
     }
 
     public qTypeLic getQtypnav() {
@@ -295,11 +301,11 @@ public class qLic implements Serializable
         this.qcatressources=qcatressources;
     }
 
-    public qNavire getQnavire() {
+    public qNavireLegale getQnavire() {
         return qnavire;
     }
 
-    public void setQnavire(qNavire qnavire) {
+    public void setQnavire(qNavireLegale qnavire) {
         this.qnavire = qnavire;
     }
 

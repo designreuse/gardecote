@@ -99,8 +99,8 @@ public class mainJsp  {
     @RequestMapping(value = "/autocomnomnav",method = RequestMethod.GET)
 	public @ResponseBody List<String> getCountryList(@RequestParam("term") String term) {
 		List<String> numpages=new ArrayList<>();
-		Page<qNavire> pq=registrenavireService.getSuggNavire(term);
-		for(qNavire q:pq) {numpages.add(q.getNomnav().toString());
+		Page<qBateau> pq=registrenavireService.getSuggNavire(term);
+		for(qBateau q:pq) {numpages.add(q.getNomnav().toString());
 			System.out.println(q.getNomnav().toString());}
 	    	return numpages;
 	}

@@ -67,7 +67,7 @@ public class qDebarquement extends qDoc implements Serializable {
         this.pages = pages;
     }
 
-    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,qSeq qseq,qNavire qnavire,qUsine qusine,  List<qEnginPecheDebar> qEngins, enumTypeDebarquement typeDeb,qConcession qconcess,List<qCategDeb> categories, List<qPageDebarquement> pages) {
+    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,qSeq qseq,qNavireLegale qnavire,qUsine qusine,  List<qEnginPecheDebar> qEngins, enumTypeDebarquement typeDeb,qConcession qconcess,List<qCategDeb> categories, List<qPageDebarquement> pages) {
         super(enumtypedoc, depart, retour,qseq, qnavire,qusine,qconcess);
         this.categories=categories;
         this.Engins=qEngins;

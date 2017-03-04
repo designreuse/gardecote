@@ -55,7 +55,7 @@ public interface qCarnetService {
 
 	qCarnet entrerDansLeSystem(qCarnet carnet);
 
-	qCarnet attribuerCarnetAuNavire(qCarnet carnet,qNavire nav,qLic licence,qUsine usine);
+	qCarnet attribuerCarnetAuNavire(qCarnet carnet,qNavireLegale nav,qLic licence,qUsine usine);
 
     boolean checkIfNumeroDebutValable(Long numDebut);
 }

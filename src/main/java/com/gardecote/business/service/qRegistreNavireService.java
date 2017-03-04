@@ -16,36 +16,38 @@ public interface qRegistreNavireService {
      * @param idact
      * @return entity
      */
-    public qNavire findById(String idact) ;
-    public Page<qNavire> getSuggNavire(String searchpage);
+    public qBateau findById(String idact) ;
+    public qNavireLegale findLegalById(String idact) ;
 
+    public Page<qBateau> getSuggNavire(String searchpage);
+    public List<qNavireLegale> findAllLegal();
     /**
      * Loads all entities.
      * @return all entities
      */
-   public Page<qNavire> findAll(int p, int size,String term);
-   public  List<qNavire> findAll();
+   public Page<qBateau> findAll(int p, int size,String term);
+   public  List<qBateau> findAll();
 
     /**
      * Saves the given entity in the database (create or update)
      * @param entity
      * @return entity
      */
-    qNavire save(qNavire entity);
-
+    qBateau save(qBateau entity);
+    public Page<qNavireLegale> findAllLegal(int p, int size,String terme);
     /**
      * Updates the given entity in the database
      * @param entity
      * @return
      */
-    qNavire update(qNavire entity);
+    qBateau update(qBateau entity);
 
     /**
      * Creates the given entity in the database
      * @param entity
      * @return
      */
-    qNavire create(qNavire entity);
+    qBateau create(qBateau entity);
 
     /**
      * Deletes an entity using its Primary Key
@@ -53,6 +55,6 @@ public interface qRegistreNavireService {
      */
     void delete(String idCapture);
 
-    List<qLic> retActLicences(qNavire navire);
+    List<qLic> retActLicences(qBateau navire);
 
 }

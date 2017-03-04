@@ -121,7 +121,8 @@ public class LicenceController {
     private qEnginPecheMarService enginsPechMarService;
     @Autowired
     private qEnginPecheDebarService enginsPecheDebarService;
-
+    @Autowired
+    private qAccordPecheService accordPecheService;
 
     @Autowired
     private qEspeceService especesService;
@@ -243,24 +244,34 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     }
 
     @ModelAttribute("allTypesEncadLibre")
-    public List<qTypeEnc> populateTypeEnc() {
-        List<qTypeEnc> lstLibre=new ArrayList<qTypeEnc>();
-        lstLibre.add(qTypeEnc.UE);
-        lstLibre.add(qTypeEnc.AFRIC);
-        lstLibre.add(qTypeEnc.ASIATIQUE);
-        lstLibre.add(qTypeEnc.Autres);
+    public List<qAccordPeche> populateTypeEnc() {
+        List<qAccordPeche> lstLibre=new ArrayList<qAccordPeche>();
+        for(qAccordPeche tt:accordPecheService.findAll())
+        { if(tt.getModePeche().equals(enumModePeche.ETRANGER))
+            lstLibre.add(tt);
+        }
+
         return lstLibre;
     }
 
     @ModelAttribute("allTypesEncad")
-    public List<qTypeEnc> populateTypeEncLibre() {
-        return Arrays.asList(qTypeEnc.values());
+    public List<qAccordPeche> populateTypeEncLibre() {
+        List<qAccordPeche> lstAll=new ArrayList<qAccordPeche>();
+        for(qAccordPeche tt:accordPecheService.findAll())
+        {
+            lstAll.add(tt);
+        }
+        return lstAll;
     }
 
     @ModelAttribute("allTypesEncadNational")
-    public List<qTypeEnc> populateTypeEncNational() {
-        List<qTypeEnc> lstNational=new ArrayList<qTypeEnc>();
-        lstNational.add(qTypeEnc.MRT);
+    public List<qAccordPeche> populateTypeEncNational() {
+        List<qAccordPeche> lstNational=new ArrayList<qAccordPeche>();
+        for(qAccordPeche tt:accordPecheService.findAll())
+        { if(tt.getModePeche().equals(enumModePeche.NATIONAL))
+            lstNational.add(tt);
+        }
+
       //  lstNational.add(qTypeEnc.Autres);
 
         return lstNational;
@@ -353,7 +364,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     public String listBatASelectionner1(final lstBateauAchoisirForm batForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="terme",defaultValue = "") String terme){
         lstBateauAchoisirForm lstBat=new lstBateauAchoisirForm();
         int[] pages;
-        Page<qNavire>   pgBat=registrenavireService.findAll(page,20,terme);
+        Page<qNavireLegale>   pgBat=registrenavireService.findAllLegal(page,20,terme);
         pages=new int[pgBat.getTotalPages()];
         for(int i=0;i<pgBat.getTotalPages();i++) pages[i]=i;
         lstBat.setLstBat(pgBat);
@@ -399,7 +410,6 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     }
     @RequestMapping(value="/NouvLicenceBatExistant", params={"addLicenceLibre"},method = RequestMethod.POST)
     public String validatelibre(final   @ModelAttribute("LicForm")  creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
-
         String validateURL=null;
         qLic licAct=LicForm.getLicence();
         licValidatorBE.validate(licAct, bindingresult);
@@ -516,12 +526,30 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         urlNavigation="usine/attribution";
         return urlNavigation;
     }
+
+    @RequestMapping(value="/NouvLicenceBatExistant",params={"removeRow2"},method = RequestMethod.POST)
+    public String removeRow2(final @ModelAttribute("LicForm") creationLicForm LicForm,final HttpServletRequest req, final ModelMap model) {
+        String url=null;
+        final Integer rowId = Integer.valueOf(req.getParameter("removeRow2"));
+
+        if(LicForm.getLicence()!=null) {LicForm.getLicence().getEnginsAuthorisees().remove(rowId.intValue());
+        }
+        model.addAttribute("LicForm",LicForm);
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
+        else {
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibre";
+            else   System.out.println("jjjj");
+        }
+        return url;
+
+    }
     @RequestMapping(value="/NouvLicenceBatExistant",params={"removeRow"},method = RequestMethod.POST)
     public String removeRow(final @ModelAttribute("LicForm") creationLicForm LicForm,final HttpServletRequest req, final ModelMap model) {
         String url=null;
         final Integer rowId = Integer.valueOf(req.getParameter("removeRow"));
 
-        if(LicForm.getLicence()!=null) LicForm.getLicence().getQcatressources().remove(rowId.intValue());
+        if(LicForm.getLicence()!=null) {LicForm.getLicence().getQcatressources().remove(rowId.intValue());
+          }
         model.addAttribute("LicForm",LicForm);
         if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
         else {
@@ -635,7 +663,7 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
                System.out.println(CarnetAttribue);
                qPrefixPK prefpk = new qPrefixPK(CarnetAttribue.getCarnetSelected().getPrefixNumerotation(), CarnetAttribue.getCarnetSelected().getTypeDoc());
                qPrefix pref = prefService.findById(prefpk);
-               qNavire navireselected=registrenavireService.findById(CarnetAttribue.getNavireSelected().getNumimm());
+               qNavireLegale navireselected=registrenavireService.findLegalById(CarnetAttribue.getNavireSelected().getNumimm());
                qCarnet currentCarnet = new qCarnet(pref, CarnetAttribue.getCarnetSelected().getNumeroDebutPage(), CarnetAttribue.getCarnetSelected().getNbrPages(), navireselected, null);
 
                attrValidator.validate(currentCarnet, bindingresult);
@@ -778,7 +806,7 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
             createdCarnet.setNbrPages(50);
             //(prefi,78L,50,null,null);
 
-            qNavire selectedNavire=registrenavireService.findById(numimm);
+            qNavireLegale selectedNavire=registrenavireService.findLegalById(numimm);
             List<qLic> licencesActives=registrenavireService.retActLicences(selectedNavire);
 
             attrCrn.setCarnetSelected(createdCarnet);
@@ -787,7 +815,7 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
 
     // chercher les licences actives pour ce navire pour les afficher et choisisser une
             List<enumTypeDoc> ltsTypeDoc=new ArrayList<enumTypeDoc>();
-            if(selectedNavire.getTypb().equals(enumTypeBat.PIROG))  ltsTypeDoc.add(enumTypeDoc.Fiche_Debarquement);
+            if(((qBateau)selectedNavire).getTypb().equals(enumTypeBat.PIROG))  ltsTypeDoc.add(enumTypeDoc.Fiche_Debarquement);
             else   ltsTypeDoc.add(enumTypeDoc.Journal_Peche);
             attrCrn.setLstTypeDoc(ltsTypeDoc);
             model.addAttribute("CarnetAttribue",attrCrn);
@@ -810,10 +838,12 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
 
         qLic currentLicence=null;
         creationLicForm licform=new creationLicForm();
-        qNavire currentNav=registrenavireService.findById(numimm);
+        qNavireLegale currentNav=registrenavireService.findLegalById(numimm);
          String forwardURL=null;
        if(action.equals("createlicenceNational")) {
            currentLicence=new qLicenceNational();
+           currentLicence.setQcatressources(currentNav.getQcatressources());
+           currentLicence.setEnginsAuthorisees(currentNav.getEnginsAuthorisees());
            currentLicence.setQnavire(currentNav);
            currentLicence.setBalise(currentNav.getBalise());
            currentLicence.setAnneeconstr(currentNav.getAnneeconstr());
@@ -837,6 +867,8 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
        }
        if(action.equals("createlicenceLibre")) {
            currentLicence=new qLicenceLibre();
+           currentLicence.setQcatressources(currentNav.getQcatressources());
+           currentLicence.setEnginsAuthorisees(currentNav.getEnginsAuthorisees());
            currentLicence.setQnavire(currentNav);
            currentLicence.setBalise(currentNav.getBalise());
            currentLicence.setAnneeconstr(currentNav.getAnneeconstr());
@@ -865,7 +897,7 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
     public String NouvelLicenceBatNouv(final @ModelAttribute("LicForm") creationLicForm LicForm, final ModelMap model) {
         qLic lic=null;
         String url=null;
-        qNavire navire=new qNavire();
+        qNavireLegale navire=new qNavireLegale();
          System.out.println("kkkkkkkkkkkkkkkkkk");
        if(LicForm.getTypeOperation().equals("National")) {lic=new qLicenceNational();lic.setQnavire(navire); url="qShowNewLicNationalNewBat";}
        if(LicForm.getTypeOperation().equals("Etranger")) {lic=new qLicenceLibre();lic.setQnavire(navire);url="qShowNewLicLibreNewBat";}
@@ -939,7 +971,7 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
             validateURL="qshowNewLicNationalNewBat";
         }
         else        {
-            qNavire bat=registrenavireService.create(LicForm.getLicence().getQnavire());
+            qNavireLegale bat=(qNavireLegale) registrenavireService.create(LicForm.getLicence().getQnavire());
             LicForm.getLicence().setQnavire(bat);
             LicForm.getLicence().setBalise(bat.getBalise());LicForm.getLicence().setAnneeconstr(bat.getAnneeconstr());LicForm.getLicence().setCalpoids(bat.getCalpoids());LicForm.getLicence().setCount(bat.getCount());LicForm.getLicence().setEff(bat.getEff());LicForm.getLicence().setGt(bat.getGt());LicForm.getLicence().setImo(bat.getImo());
             LicForm.getLicence().setKw(bat.getKw());LicForm.getLicence().setNbrhomm(bat.getNbrhomm());LicForm.getLicence().setLarg(bat.getLarg());LicForm.getLicence().setLongg(bat.getLongg());LicForm.getLicence().setNomnav(bat.getNomnav());LicForm.getLicence().setRadio(bat.getRadio());LicForm.getLicence().setPuimot(bat.getPuimot());
@@ -967,7 +999,7 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
             validateURL="qshowNewLicLibreNewBat";
         }
         else        {
-            qNavire bat=registrenavireService.create(LicForm.getLicence().getQnavire());
+            qNavireLegale bat=(qNavireLegale) registrenavireService.create(LicForm.getLicence().getQnavire());
             LicForm.getLicence().setQnavire(bat);
             LicForm.getLicence().setBalise(bat.getBalise());LicForm.getLicence().setAnneeconstr(bat.getAnneeconstr());LicForm.getLicence().setCalpoids(bat.getCalpoids());LicForm.getLicence().setCount(bat.getCount());LicForm.getLicence().setEff(bat.getEff());LicForm.getLicence().setGt(bat.getGt());LicForm.getLicence().setImo(bat.getImo());
             LicForm.getLicence().setKw(bat.getKw());LicForm.getLicence().setNbrhomm(bat.getNbrhomm());LicForm.getLicence().setLarg(bat.getLarg());LicForm.getLicence().setLongg(bat.getLongg());LicForm.getLicence().setNomnav(bat.getNomnav());LicForm.getLicence().setRadio(bat.getRadio());LicForm.getLicence().setPuimot(bat.getPuimot());
@@ -3125,7 +3157,7 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
     public ModelAndView getNaviresData(HttpServletRequest request, HttpServletResponse response) throws SQLException {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("sheetname", "naviresExport");
-        List<qNavire> navires=registrenavireService.findAll();
+        List<qNavireLegale> navires=registrenavireService.findAllLegal();
         System.out.println("size de : "+navires.size());
         model.put("navires", navires);
         return new ModelAndView(new bateauExcelView(),model);

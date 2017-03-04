@@ -1,45 +1,39 @@
 package com.gardecote.entities;
+
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-@Entity
-@Table(name="qNavire33", schema="dbo", catalog="GCM4" )
-// Define named queries here
-@NamedQueries ( {
-        @NamedQuery ( name="qNavire.countAll", query="SELECT COUNT(x) FROM qNavire x" )
-} )
-public class qNavire implements Serializable {
 
+/**
+ * Created by Dell on 04/03/2017.
+ */
+@Entity
+@Table(name="qBateau", schema="dbo", catalog="GCM5" )
+// Define named queries here
+@NamedQueries( {
+        @NamedQuery( name="qBateau.countAll", query="SELECT COUNT(x) FROM qBateau x" )
+} )
+
+public class qBateau {
     @Id
     @Column(name="numimm", nullable=false)
     @NotEmpty
     private String     numimm;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name="createdOn", nullable=false)
-
     private Date updatedOn;
 
-    @OneToMany(mappedBy = "qnavire")
-    private List<qLic> licences;
-
-    @OneToMany(mappedBy = "qnavire")
-    private List<qDoc> documents;
     @Column(name="typb", length=100)
-    private enumTypeBat    typb         ;
+     private enumTypeBat    typb;
 
     @Column(name="nomnav", length=255)
     @NotEmpty
     private String     nomnav;
 
-    @Column(name="nomar", length=255)
-  //  @NotEmpty
-    private String     nomar;
+
 
     @Column(name="longueur", length=255)
     // @NotEmpty
@@ -52,31 +46,6 @@ public class qNavire implements Serializable {
     @OneToOne
     @NotNull
     private qNation    nation     ;
-
-    public String getBalise() {
-        return balise;
-    }
-
-    public void setBalise(String balise) {
-        this.balise = balise;
-    }
-
-    @Column(name="larg", length=255)
-    //  @NotEmpty
-    private String     larg         ;
-
-
-    @Column(name="count", length=255)
-    //@NotEmpty
-    private String     count        ;
-
-    @Column(name="nbrhomm", length=255)
-    //@NotEmpty
-    private String     nbrhomm      ;
-
-    @Column(name="eff", length=255)
-    //@NotEmpty
-    private String     eff ;
 
     @Column(name="ancons", length=255)
     // @NotNull
@@ -116,6 +85,76 @@ public class qNavire implements Serializable {
     //  @NotEmpty
     private String   balise           ;
 
+    @Column(name="count", length=255)
+    //@NotEmpty
+    private String     count        ;
+
+    @Column(name="nbrhomm", length=255)
+    //@NotEmpty
+    private String     nbrhomm      ;
+
+    @Column(name="eff", length=255)
+    //@NotEmpty
+    private String     eff ;
+
+
+    public String getBalise() {
+        return balise;
+    }
+
+    public void setBalise(String balise) {
+        this.balise = balise;
+    }
+
+    @Column(name="larg", length=255)
+    //  @NotEmpty
+    private String     larg         ;
+
+
+    public String getNumimm() {
+        return numimm;
+    }
+
+    public qBateau() {
+    }
+
+    public void setNumimm(String numimm) {
+        this.numimm = numimm;
+    }
+
+    public qBateau(String numimm) {
+        this.numimm = numimm;
+    }
+
+    public qBateau(String numimm, String nomnav,String longg, String puimot, qNation nation, String larg, String count, String nbrhomm, String eff, Integer anneeconstr, String calpoids, float gt, float kw, float tjb, Integer imo, String port, String radio,String balise,Date updatedOn) {
+        this.numimm = numimm;
+        this.nomnav = nomnav;
+
+        this.longg = longg;
+        this.puimot = puimot;
+        this.nation = nation;
+        this.larg = larg;
+
+        this.anneeconstr = anneeconstr;
+        this.calpoids = calpoids;
+        this.gt = gt;
+        this.kw = kw;
+        this.tjb = tjb;
+        this.imo = imo;
+        this.port = port;
+        this.radio = radio;
+        this.balise = balise;
+        this.updatedOn=updatedOn;
+
+    }
+
+    public Date getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
+    }
 
     public enumTypeBat getTypb() {
         return typb;
@@ -125,36 +164,12 @@ public class qNavire implements Serializable {
         this.typb = typb;
     }
 
-    public String getNumimm() {
-        return numimm;
-    }
-
-    public void setNumimm(String numimm) {
-        this.numimm = numimm;
-    }
-
     public String getNomnav() {
         return nomnav;
     }
 
     public void setNomnav(String nomnav) {
         this.nomnav = nomnav;
-    }
-
-    public List<qLic> getLicences() {
-        return licences;
-    }
-
-    public void setLicences(List<qLic> licences) {
-        this.licences = licences;
-    }
-
-    public String getNomar() {
-        return nomar;
-    }
-
-    public void setNomar(String nomar) {
-        this.nomar = nomar;
     }
 
     public String getLongg() {
@@ -181,38 +196,6 @@ public class qNavire implements Serializable {
         this.nation = nation;
     }
 
-    public String getLarg() {
-        return larg;
-    }
-
-    public void setLarg(String larg) {
-        this.larg = larg;
-    }
-
-    public String getCount() {
-        return count;
-    }
-
-    public void setCount(String count) {
-        this.count = count;
-    }
-
-    public String getNbrhomm() {
-        return nbrhomm;
-    }
-
-    public void setNbrhomm(String nbrhomm) {
-        this.nbrhomm = nbrhomm;
-    }
-
-    public String getEff() {
-        return eff;
-    }
-
-    public void setEff(String eff) {
-        this.eff = eff;
-    }
-
     public Integer getAnneeconstr() {
         return anneeconstr;
     }
@@ -235,14 +218,6 @@ public class qNavire implements Serializable {
 
     public void setGt(float gt) {
         this.gt = gt;
-    }
-
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
     }
 
     public float getKw() {
@@ -285,30 +260,35 @@ public class qNavire implements Serializable {
         this.radio = radio;
     }
 
-    public qNavire() {
+    public String getCount() {
+        return count;
     }
 
-    public qNavire(String numimm, String nomnav, String nomar, String longg, String puimot, qNation nation, String larg, String count, String nbrhomm, String eff, Integer anneeconstr, String calpoids, float gt, float kw, float tjb, Integer imo, String port, String radio,String balise,Date updatedOn) {
-        this.numimm = numimm;
-        this.nomnav = nomnav;
-        this.nomar = nomar;
-        this.longg = longg;
-        this.puimot = puimot;
-        this.nation = nation;
-        this.larg = larg;
+    public void setCount(String count) {
         this.count = count;
-        this.nbrhomm = nbrhomm;
-        this.eff = eff;
-        this.anneeconstr = anneeconstr;
-        this.calpoids = calpoids;
-        this.gt = gt;
-        this.kw = kw;
-        this.tjb = tjb;
-        this.imo = imo;
-        this.port = port;
-        this.radio = radio;
-        this.balise = balise;
-        this.updatedOn=updatedOn;
+    }
 
+    public String getNbrhomm() {
+        return nbrhomm;
+    }
+
+    public void setNbrhomm(String nbrhomm) {
+        this.nbrhomm = nbrhomm;
+    }
+
+    public String getEff() {
+        return eff;
+    }
+
+    public void setEff(String eff) {
+        this.eff = eff;
+    }
+
+    public String getLarg() {
+        return larg;
+    }
+
+    public void setLarg(String larg) {
+        this.larg = larg;
     }
 }

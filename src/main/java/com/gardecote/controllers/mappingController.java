@@ -72,6 +72,8 @@ public class mappingController {
     @Autowired
     private qDocService docService;
     @Autowired
+    private qAccordPecheService accordPecheService;
+    @Autowired
     private qEspeceTypeeService especetypeeService;
     @Autowired
     private qEspeceService especeService;
@@ -122,8 +124,9 @@ public class mappingController {
     }
 
     @ModelAttribute("allTypesEncad")
-    public List<qTypeEnc> populateTypeEnc() {
-        return Arrays.asList(qTypeEnc.values());
+    public List<qAccordPeche> populateTypeEnc() {
+
+        return accordPecheService.findAll();
     }
 
     @ModelAttribute("allConcessions")
@@ -301,11 +304,11 @@ else        {
 
         qLicenceLibre newLic1=null;
 
-        qNavire currentNav=null;
+        qNavireLegale currentNav=null;
 
 
 
-                currentNav=new qNavire();
+                currentNav=new qNavireLegale();
                 newLic1=new qLicenceLibre();
                 newLic1.setQnavire(currentNav);
 
@@ -381,11 +384,11 @@ else        {
 
         qLicenceNational newLic=null;
 
-        qNavire currentNav=null;
+        qNavireLegale currentNav=null;
 
 
 
-        currentNav=new qNavire();
+        currentNav=new qNavireLegale();
         newLic=new qLicenceNational();
         newLic.setQnavire(currentNav);
 
@@ -401,11 +404,11 @@ else        {
         String urlVal=null,urlret=null;
         qLicenceNational newLic=null;
         qLicenceLibre newLic1=null;
-        List<qNavire> lstBat;
-        qNavire currentNav=null;
+        List<qNavireLegale> lstBat;
+        qNavireLegale currentNav=null;
 
         if(LicForm.getRegime().equals("National") && LicForm.getNumSelected()!=null) {
-            currentNav=registrenavireService.findById(LicForm.getNumSelected().toString());
+            currentNav=registrenavireService.findLegalById(LicForm.getNumSelected().toString());
             newLic=new qLicenceNational();
             newLic.setQnavire(currentNav);
             newLic.setBalise(currentNav.getBalise());newLic.setAnneeconstr(currentNav.getAnneeconstr());newLic.setCalpoids(currentNav.getCalpoids());newLic.setCount(currentNav.getCount());newLic.setEff(currentNav.getEff());newLic.setGt(currentNav.getGt());newLic.setImo(currentNav.getImo());
@@ -417,7 +420,7 @@ else        {
             urlret="showNewLicNational";}
         else {
             if(LicForm.getRegime().equals("Etranger") && LicForm.getNumSelected()!=null) {
-                currentNav=registrenavireService.findById(LicForm.getNumSelected().toString());
+                currentNav=registrenavireService.findLegalById(LicForm.getNumSelected().toString());
                 newLic1=new qLicenceLibre();
                 newLic1.setQnavire(currentNav);
                 newLic1.setBalise(currentNav.getBalise());newLic.setAnneeconstr(currentNav.getAnneeconstr());newLic.setCalpoids(currentNav.getCalpoids());newLic.setCount(currentNav.getCount());newLic.setEff(currentNav.getEff());newLic.setGt(currentNav.getGt());newLic.setImo(currentNav.getImo());
@@ -438,7 +441,7 @@ else        {
     @RequestMapping(value="/creationLicence1",method = RequestMethod.POST)
     public String creationLicence1(final creationLicForm LicForm ,final ModelMap model){
         String urlVal=null;
-        List<qNavire> lstBat;
+        List<qNavireLegale> lstBat;
         if(LicForm.getTypeOperation().equals("Nouveau"))
         {
             urlVal="creationLicenceExist";
@@ -446,7 +449,7 @@ else        {
         if(LicForm.getTypeOperation().equals("Existant"))
         {
             System.out.println("Test");
-            lstBat=registrenavireService.findAll();
+            lstBat=registrenavireService.findAllLegal();
             System.out.println(lstBat.size());
             LicForm.setLstBat(lstBat);
             model.addAttribute("LicForm",LicForm);

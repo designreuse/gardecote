@@ -9,7 +9,8 @@ import javax.persistence.EntityManager;
 import com.gardecote.business.service.qLicenceService;
 import com.gardecote.business.service.qRegistreNavireService;
 import com.gardecote.entities.qLic;
-import com.gardecote.entities.qNavire;
+
+import com.gardecote.entities.qNavireLegale;
 import com.gardecote.models.qLicenceModel;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class Writer implements ItemWriter<qLic>{
            //first insert the data in the database
           // qLic lic = suggestedLic.getPodcast();
         for(qLic yy:items) {
-            qNavire nav=regNavireService.findById(yy.getNumimm());
+            qNavireLegale nav=regNavireService.findLegalById(yy.getNumimm());
             if(nav==null) {
               //qNavire navire=new qNavire(yy.getNumimm(),yy.getNomnav(),yy.getNomar(),yy.getLongg(),yy.getPuimot(),yy.getNation(),yy.getLarg(),yy.getCount(),yy.getNbrhomm(),
               // yy.getEff(),yy.getAnneeconstr(),yy.getCalpoids(),yy.getGt(),yy.getKw(),yy.getTjb(),yy.getImo(),yy.getPort(),yy.getRadio(),yy.getBalise(),yy.getDateDebutAuth());

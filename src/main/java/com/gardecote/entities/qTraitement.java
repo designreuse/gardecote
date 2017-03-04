@@ -32,7 +32,7 @@ public class qTraitement extends  qDoc implements Serializable {
     private List<qPageTraitement> pagesTraitement;
 
 
-    public qTraitement(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavire qnavire, qUsine qusine, qConcession qconcess, String refAgrement, Date dateTraitement, List<qSegUsines> segs, List<qQuantiteExportee> qQteExp,qQuantitesTraites qQteTraitees, Long qteDechu, List<qPageTraitement> pagesTraitement) {
+    public qTraitement(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale qnavire, qUsine qusine, qConcession qconcess, String refAgrement, Date dateTraitement, List<qSegUsines> segs, List<qQuantiteExportee> qQteExp,qQuantitesTraites qQteTraitees, Long qteDechu, List<qPageTraitement> pagesTraitement) {
         super(enumtypedoc, depart, retour, qseq, qnavire, qusine, qconcess);
         this.segs = segs;
         this.qQteExp = qQteExp;

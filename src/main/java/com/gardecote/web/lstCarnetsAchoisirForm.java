@@ -3,7 +3,7 @@ package com.gardecote.web;
 import com.gardecote.entities.qCarnet;
 import com.gardecote.entities.qCategRessource;
 import com.gardecote.entities.qLic;
-import com.gardecote.entities.qNavire;
+
 import org.springframework.data.domain.Page;
 
 import javax.validation.Valid;

@@ -2,8 +2,9 @@ package com.gardecote.web;
 
 import com.gardecote.business.service.qRegistreNavireService;
 import com.gardecote.business.service.qUsineService;
+import com.gardecote.entities.qBateau;
 import com.gardecote.entities.qLic;
-import com.gardecote.entities.qNavire;
+
 import com.gardecote.entities.qTypeConcession;
 import com.gardecote.entities.qUsine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class usineValidator implements Validator {
         qUsine usinedoublon=usineService.findById(((qUsine) ((creationUsineForm) o).getCurrentusine()).getRefAgrement());
         if(usinedoublon!=null)   errors.rejectValue("refAgrement", "usine.refAgrement.doublon");
 
-        qNavire navireDetected=navireService.findById(((qUsine) ((creationUsineForm) o).getCurrentusine()).getRefAgrement());
+        qBateau navireDetected=navireService.findById(((qUsine) ((creationUsineForm) o).getCurrentusine()).getRefAgrement());
         if(navireDetected!=null)
         errors.rejectValue("refAgrement", "usine.refAgrement.doublonNumimm");
 

@@ -292,7 +292,7 @@ public class qDocServiceImpl implements qDocService {
         qCarnet carnetFin = finp.getQcarnet();
         debutPrefix=carnetDebut.getPrefixNumerotation().toString();
 
-        qNavire qnav = carnetDebut.getQnavire();
+        qNavireLegale qnav = carnetDebut.getQnavire();
         qConcession qconcess =carnetDebut.getQconcession();//qnav.getQlicencebatlastdernier().getQconcession(); // concession du dernier lic
         //carnetDebut.getQconcession();
         Long finNumberL=finp.getNumeroOrdrePage(),debutNumberL=debutp.getNumeroOrdrePage();
@@ -448,7 +448,7 @@ public class qDocServiceImpl implements qDocService {
         qCarnet carnetFin = finp.getQcarnet();
         debutPrefix=carnetDebut.getPrefixNumerotation().toString();
 
-        qNavire qnav = carnetDebut.getQnavire();
+        qNavireLegale qnav = carnetDebut.getQnavire();
         qConcession qconcess;
         //qnav.getQlicencebatlastdernier().getQconcession(); // concession du dernier lic
         //carnetDebut.getQconcession();
@@ -1317,7 +1317,7 @@ Integer k=0;
     qCarnet carnetFin = finp.getQcarnet();
     debutPrefix=carnetDebut.getPrefixNumerotation().toString();
 
-    qNavire qnav = carnetDebut.getQnavire();
+    qNavireLegale qnav = carnetDebut.getQnavire();
     qConcession qconcess =carnetDebut.getQconcession();//qnav.getQlicencebatlastdernier().getQconcession(); // concession du dernier lic
     //carnetDebut.getQconcession();
     Long finNumberL=finp.getNumeroOrdrePage(),debutNumberL=debutp.getNumeroOrdrePage();
@@ -1463,7 +1463,7 @@ Integer k=0;
 
         debutPrefix=carnetDebut.getPrefixNumerotation().toString();
 
-        qNavire qnav = carnetDebut.getQnavire();
+        qNavireLegale qnav = carnetDebut.getQnavire();
         documentCree = new qMarreeAnnexe(qCurrentMaree.getDepart(),qCurrentMaree.getNumImm(),qCurrentMaree, null, null,null,null,null);
 
         List<qPageCarnet> pagesConcernees = qcarnetRepository.retPages(carnetDebut, debutNumberL, finNumberL);
@@ -1522,7 +1522,7 @@ Integer k=0;
         qCarnet carnetFin = finp.getQcarnet();
         debutPrefix=carnetDebut.getPrefixNumerotation().toString();
 
-        qNavire qnav = carnetDebut.getQnavire();
+        qNavireLegale qnav = carnetDebut.getQnavire();
         qConcession qconcess;
         //qnav.getQlicencebatlastdernier().getQconcession(); // concession du dernier lic
         //carnetDebut.getQconcession();
@@ -1765,14 +1765,14 @@ Integer k=0;
     public List<qLic> retLicences(qSeq seqActive1,enumTypeDoc typeDoc) {
         qPageCarnet        debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(seqActive1.getDebut(),typeDoc));
         qCarnet carnetDebut = debutp.getQcarnet();
-        qNavire qnav = carnetDebut.getQnavire();
+        qNavireLegale qnav = carnetDebut.getQnavire();
         List<qLic> lics=qdocRepository.retLicences(qnav);
         return lics;
     }
 
     @Override
     public qDoc checkIfDupDocExist(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc) {
-        qNavire qnav=null;
+        qNavireLegale qnav=null;
         qUsine  qusine=null;
         qDocPK docpk=null;
         qPageCarnet        debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(seqActive1.getDebut(),typeDoc));
@@ -1823,7 +1823,7 @@ Integer k=0;
         qPageCarnet        debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(seqActive1.getDebut(),typeDoc));
         qPageCarnet        finp=qpagecarnetRepository.findOne(new qPageCarnetPK(seqActive1.getFin(),typeDoc));
         qCarnet carnetDebut = debutp.getQcarnet();
-        qNavire qnav = carnetDebut.getQnavire();
+        qNavireLegale qnav = carnetDebut.getQnavire();
         List<qJourDeb>   joursdeb=new ArrayList<qJourDeb>();
         List<qJourMere>  joursmere=new ArrayList<qJourMere>();
         List<qDoc> lstDoc=new ArrayList<qDoc>();
@@ -1853,7 +1853,7 @@ Integer k=0;
     public List<qDoc> checkIfDupJoursExist(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc) {
         qPageCarnet    debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(seqActive1.getDebut(),typeDoc));
         qCarnet carnetDebut = debutp.getQcarnet();
-        qNavire qnav = carnetDebut.getQnavire();
+        qNavireLegale qnav = carnetDebut.getQnavire();
         List<qJourDeb>   joursdeb=new ArrayList<qJourDeb>();
         List<qJourMere>  joursmere=new ArrayList<qJourMere>();
         List<qDoc> lstDoc=new ArrayList<qDoc>();
@@ -1907,8 +1907,8 @@ Integer k=0;
     public qMarreeAnnexe checkIfDupAnnexeExist(Date dateDepart, qSeqPK spk, enumTypeDoc typeDoc) {
         qPageCarnet        debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(spk.getFin(),typeDoc));
         qCarnet carnetDebut = debutp.getQcarnet();
-        qNavire qnav = carnetDebut.getQnavire();
-        qDocPK docpk=new qDocPK(qnav.getNumimm(),dateDepart);
+        qNavireLegale qnav = carnetDebut.getQnavire();
+        qDocPK docpk=new qDocPK(((qBateau)qnav).getNumimm(),dateDepart);
         qMarreeAnnexe docdoublon=qmarreeannexeRepository.findOne(docpk);
         if(docdoublon==null) return null;
         else return docdoublon;
@@ -1919,8 +1919,8 @@ Integer k=0;
     public boolean checkIfNavAnnexIsSameAsNavPrincipal(Date dateDepart, qSeqPK spk, qMarree currentMaree,enumTypeDoc typeDoc) {
         qPageCarnet        debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(spk.getFin(),typeDoc));
         qCarnet carnetDebut = debutp.getQcarnet();
-        qNavire qnavAnnex = carnetDebut.getQnavire();
-        qNavire qnavMarree = currentMaree.getQnavire();
+        qNavireLegale qnavAnnex = carnetDebut.getQnavire();
+        qNavireLegale qnavMarree = currentMaree.getQnavire();
         if(qnavAnnex.equals(qnavMarree)) return true;
         else return false;
     }
@@ -1931,7 +1931,7 @@ Integer k=0;
         qPageCarnet        debutp=qpagecarnetRepository.findOne(new qPageCarnetPK(spk.getFin(),typeDoc));
         qPageCarnet        finp=qpagecarnetRepository.findOne(new qPageCarnetPK(spk.getFin(),typeDoc));
         qCarnet carnetDebut = debutp.getQcarnet();
-        qNavire qnav = carnetDebut.getQnavire();
+        qNavireLegale qnav = carnetDebut.getQnavire();
 
         List<qMarreeAnnexe> lstDoc=new ArrayList<qMarreeAnnexe>();
 
@@ -1975,7 +1975,7 @@ Integer k=0;
     @Override
     public Page<qDoc> findAllMatchedDocs(Date searchDateCapture, String searchBat) {
         String currentnumimm=null;
-         qNavire seletetedNavire=navRepository.findByName(searchBat);
+         qNavireLegale seletetedNavire=navRepository.findLegalByName(searchBat);
         if(seletetedNavire==null) currentnumimm=null;
         else currentnumimm=seletetedNavire.getNumimm();
         Page<qDoc> pgdocs= qdocRepository.findAllMatchedDocs(new PageRequest(0, 10),searchDateCapture, currentnumimm);
