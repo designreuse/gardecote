@@ -13,28 +13,28 @@
 <form  th:action="@{/listBatASelectionner}"   method="post" th:object="${lstBat}">
 
 <input type="text" th:field="*{searchName}" />  <button type="submit" >Chercher</button>
-<table class="table">
+<table class="table table-striped table-bordered table-hover" >
 <thead>
        <tr>
            <th>...</th>
            <th>...</th>
-           <th>...</th>
-           <th>numimm</th>
-           <th>nomnav</th>
-           <th>nomar</th>
-           <th>longg</th>
-           <th>puimot</th>
-           <th>nation.</th>
-           <th>balise</th>
-           <th>larg</th>
-           <th>count</th>
-           <th>nbrhomm</th>
-           <th>eff</th>
-           <th>calpoids</th>
-           <th>gt</th>
-           <th>kw</th>
-           <th>tjb</th>
-           <th>imo</th>
+           <th>Immatriculation</th>
+           <th>Type de bâteau</th>
+           <th>Navire</th>
+           <th>Armateur</th>
+           <th>longueur</th>
+            <th>Puissance</th>
+           <th>Nationalité</th>
+           <th>Balise</th>
+           <th>Largeur</th>
+           <th>Total Equip</th>
+           <th>Mauritaniens</th>
+           <th>Total Etrangers</th>
+           <th>Cal</th>
+           <th>Gt</th>
+           <th>Kw</th>
+           <th>TGB</th>
+           <th>IMO</th>
       </tr>
 </thead>
     <tbody>
@@ -44,9 +44,11 @@
         <td>  <div class="dropdown">  <button th:field="${lstBat.numSelected}" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
                 <span class="caret"></span></button>
             <ul class="dropdown-menu">
-                <li><a th:href="@{NouvLicenceBatExistant(numimm=${b.numimm},action='createlicenceNational')}">Creer une Licence en Regime National</a></li>
-                <li><a th:href="@{NouvLicenceBatExistant(numimm=${b.numimm},action='createlicenceLibre')}">Creer une Licence en Regime Etranger</a></li>
-                <li><a th:href="@{AttribuerCarnet(numimm=${b.numimm},action='attribuerCarnet')}">Attribuer un nouveau carnet</a></li>
+                <li th:if="${#strings.equals(b.class.name,'com.gardecote.entities.qNavireLegale') }"><a th:href="@{consulterHistoriques(numimm=${b.numimm})}">Historique des changements(<span th:text="${#lists.size(b.historiqueChangements)}" />)</a></li>
+                <li th:if="${#strings.equals(b.class.name,'com.gardecote.entities.qNavireLegale') and #strings.equals(b.modePeche,'NATIONAL')}"><a th:href="@{NouvLicenceBatExistant(numimm=${b.numimm},action='createlicenceNational')}">Creer une Licence en Regime National</a></li>
+                <li th:if="${#strings.equals(b.class.name,'com.gardecote.entities.qNavireLegale') and #strings.equals(b.modePeche,'ETRANGER')}"><a th:href="@{NouvLicenceBatExistant(numimm=${b.numimm},action='createlicenceLibre')}">Creer une Licence en Regime Etranger</a></li>
+                <li th:if="${#strings.equals(b.class.name,'com.gardecote.entities.qNavireLegale') }"><a th:href="@{AttribuerCarnet(numimm=${b.numimm},action='attribuerCarnet')}">Attribuer un nouveau carnet</a></li>
+                <li th:if="${#strings.equals(b.class.name,'com.gardecote.entities.qNavireLegale') }"><a th:href="@{AttribuerCarnet(numimm=${b.numimm},action='historiqueNavire')}">Consulter les changements d'état </a></li>
 
             </ul></div></td>
         <td th:text="${b.numimm}"></td>

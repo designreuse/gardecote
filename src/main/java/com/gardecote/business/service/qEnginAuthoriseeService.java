@@ -1,10 +1,10 @@
 package com.gardecote.business.service;
 
 
-import com.gardecote.entities.qEnginAuthorisee;
-import com.gardecote.entities.qEnginAuthoriseePK;
+import com.gardecote.entities.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Dell on 04/03/2017.
@@ -18,8 +18,9 @@ public interface qEnginAuthoriseeService {
          * @param numimm
          * @return entity
          */
-        qEnginAuthorisee findById(qEnginAuthoriseePK numimm) ;
-
+        qEnginAuthorisee findById(qEnginAuthoriseePK numimm);
+        List<qEnginAuthorisee> getEnginsAuthorisees(qNavireLegale nav);
+        List<qCategRessource> getCategoriesRattachees(qNavireLegale nav);
         /**
          * Loads all entities.
          * @return all entities

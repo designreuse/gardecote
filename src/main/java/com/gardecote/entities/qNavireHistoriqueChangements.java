@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Created by Dell on 04/03/2017.
  */
 @Entity
-@Table(name="qNavireHistoriqueChangements", schema="dbo", catalog="GCM5" )
+@Table(name="qNavireHistoriqueChangements", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qNavireHistoriqueChangements.countAll", query="SELECT COUNT(x) FROM qNavireHistoriqueChangements x" )
@@ -24,6 +24,7 @@ public class qNavireHistoriqueChangements implements Serializable {
     private qNavireLegale navireConcernee;
     @OneToOne
     private qLic licenceDeBase;
+    private String descriptif;
 
     public qNavireHistoriqueChangements() {
     }
@@ -46,6 +47,14 @@ public class qNavireHistoriqueChangements implements Serializable {
 
     public enumHistoriqueNavire getTypeHystaurique() {
         return typeHystaurique;
+    }
+
+    public String getDescriptif() {
+        return descriptif;
+    }
+
+    public void setDescriptif(String descriptif) {
+        this.descriptif = descriptif;
     }
 
     public void setTypeHystaurique(enumHistoriqueNavire typeHystaurique) {

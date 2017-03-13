@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @DynamicUpdate
-@Table(name="qDocuments", schema="dbo", catalog="GCM5")
+@Table(name="qDocuments", schema="dbo", catalog="GCM8")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
@@ -48,7 +48,7 @@ public class qDoc implements Serializable {
     @OneToOne( cascade = CascadeType.ALL,targetEntity = qSeq.class)
     private qSeq qseq;
 
-    @OneToOne( targetEntity = qNavireLegale.class)
+    @OneToOne(targetEntity = qNavireLegale.class)
     private qNavireLegale qnavire;
 
     @OneToOne( targetEntity = qUsine.class)

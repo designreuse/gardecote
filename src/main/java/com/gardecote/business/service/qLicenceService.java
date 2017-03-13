@@ -4,10 +4,7 @@
  */
 package com.gardecote.business.service;
 
-import com.gardecote.entities.qLic;
-import com.gardecote.entities.qNation;
-import com.gardecote.entities.qPrefix;
-import com.gardecote.entities.qZone;
+import com.gardecote.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +23,7 @@ public interface qLicenceService {
 	 * @return entity
 	 */
 	qLic findById(String idchact) ;
+
 	void  importerLicence(MultipartFile file, String fullname);
 	String importerLicenceNV(MultipartFile file, String fullpatchname);
 	/**

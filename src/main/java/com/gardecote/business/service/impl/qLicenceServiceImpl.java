@@ -14,6 +14,7 @@ import java.util.*;
 
 import com.gardecote.business.service.*;
 import com.gardecote.data.repository.jpa.qEnginsAuthoriseeRepository;
+import com.gardecote.data.repository.jpa.qHystoriquesRepository;
 import com.gardecote.data.repository.jpa.qRegistreNavireRepository;
 import com.gardecote.dto.StatusResponse;
 import com.gardecote.entities.*;
@@ -59,6 +60,9 @@ public class qLicenceServiceImpl implements qLicenceService {
 	private qZoneService zoneService;
 	@Autowired
 	private qCategRessourceService catService;
+	@Autowired
+	private
+	qHystoriquesRepository qhistoriqueService;
 	@Autowired
 	private qNationService nationRepository;
 	@Autowired
@@ -108,9 +112,9 @@ public class qLicenceServiceImpl implements qLicenceService {
 	public qLic create(qLic codauth) {
 
         qLic codauthEntitySaved = codauthJpaRepository.save(codauth);
-        qNavireLegale selectedNavire=codauthEntitySaved.getQnavire();
-		selectedNavire.setEnginsAuthorisees(codauthEntitySaved.getEnginsAuthorisees());
-		selectedNavire.setQcatressources(codauthEntitySaved.getQcatressources());
+      qNavireLegale selectedNavire=codauthEntitySaved.getQnavire();
+		//	selectedNavire.setEnginsAuthorisees(codauthEntitySaved.getEnginsAuthorisees());
+	selectedNavire.setQcatressources(codauthEntitySaved.getQcatressources());
 
 		navireRepository.update(selectedNavire);
 		return codauthEntitySaved ;
@@ -210,15 +214,18 @@ return "OK";
 		double valeurTk;
 		qLic lic;
 		List<qCategRessource> newCat=null;
-
+		qNavireHistoriqueChangements changNationalite=null;
+		qNavireHistoriqueChangements changNom=null;
 		Long Id_Lic;
 		Date createdOn=null,DEBAUT=null,FINAUTO=null;
 		Integer Id_TypeLic,ID_NATION,Id_Zone,Consignataire,TYPENCAD;
-		String NUMIMM,NUMENR,NUMLIC,TYPAUTO,	TYPLIC,	MINTYPLIC,	NOMNAV,	NOMEX,	NOMAR,TYPNAV,MINTYPNAV,TJB,CALPOIDS,PUIMOT,KW,LONGG,LARG,PORT,RADIO,NATION1,ANCONS,ZONE,MAIL,ENGIN,ENGIN1,MAIL1,ENGIN2,MAIL2,ENGIN3,MAIL3,EFF,NBRHOMM,COUNT,typb,imo,balise,code_type_supp_droit,id_concessionnaire,id_type_concession,id_segment_peche,ref_contrat_concession,GT;
+		String XX,NUMIMM,NUMENR,NUMLIC,TYPAUTO,	TYPLIC,	MINTYPLIC,	NOMNAV,	NOMEX,	NOMAR,TYPNAV,MINTYPNAV,TJB,CALPOIDS,PUIMOT,KW,LONGG,LARG,PORT,RADIO,NATION1,ANCONS,ZONE,MAIL,ENGIN,ENGIN1,MAIL1,ENGIN2,MAIL2,ENGIN3,MAIL3,EFF,NBRHOMM,COUNT,typb,imo,balise,code_type_supp_droit,id_concessionnaire,id_type_concession,id_segment_peche,ref_contrat_concession,GT;
 		qLic currentLic=null;
 		qNavireLegale currentNavire=null,insertedNavire=null;
 		Long k=0L;
-
+		Long h=0L;
+List<qCategRessource> currentRessources=null;
+		List<qEnginAuthorisee> enginsAuthorisees=null;
 		try {
 
 			file.transferTo(new File(fullpatchname));
@@ -239,32 +246,34 @@ return "OK";
 				if(!first) {
 					k++;
 					System.out.println(k);
-					newCat=new ArrayList<qCategRessource>();
+					currentRessources = new ArrayList<qCategRessource>();
+					enginsAuthorisees = new ArrayList<qEnginAuthorisee>();
+					newCat = new ArrayList<qCategRessource>();
 					String splitarray[] = line.split("\t");
 					System.out.println(splitarray[0]);
-					Id_Lic=Long.valueOf(splitarray[0]);
-					Id_TypeLic=Integer.valueOf(splitarray[1]);
-					ID_NATION=Integer.valueOf(splitarray[2]);
-					Id_Zone=Integer.valueOf(splitarray[3]);
-					NUMIMM=String.valueOf(splitarray[4]);
-					NUMENR=String.valueOf(splitarray[5]);
-					NUMLIC=String.valueOf(splitarray[6]);
-					TYPAUTO=String.valueOf(splitarray[7]);
-					TYPLIC=String.valueOf(splitarray[8]);
-					MINTYPLIC=String.valueOf(splitarray[9]);
-					NOMNAV=String.valueOf(splitarray[10]);
-					NOMEX=String.valueOf(splitarray[11]);
-					NOMAR=String.valueOf(splitarray[12]);
+					Id_Lic = Long.valueOf(splitarray[0]);
+					Id_TypeLic = Integer.valueOf(splitarray[1]);
+					ID_NATION = Integer.valueOf(splitarray[2]);
+					Id_Zone = Integer.valueOf(splitarray[3]);
+					NUMIMM = String.valueOf(splitarray[4]);
+					NUMENR = String.valueOf(splitarray[5]);
+					NUMLIC = String.valueOf(splitarray[6]);
+					TYPAUTO = String.valueOf(splitarray[7]);
+					TYPLIC = String.valueOf(splitarray[8]);
+					MINTYPLIC = String.valueOf(splitarray[9]);
+					NOMNAV = String.valueOf(splitarray[10]);
+					NOMEX = String.valueOf(splitarray[11]);
+					NOMAR = String.valueOf(splitarray[12]);
 					SimpleDateFormat sdfmt1 = new SimpleDateFormat("dd/MM/yyyy");
-				//	if((!splitarray[13].equals("VIDE")) || (!splitarray[14].equals("VIDE"))) {
+					//	if((!splitarray[13].equals("VIDE")) || (!splitarray[14].equals("VIDE"))) {
 					try {
-      					DEBAUT=sdfmt1.parse(splitarray[13]);
+						DEBAUT = sdfmt1.parse(splitarray[13]);
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
 
 					try {
-						FINAUTO=sdfmt1.parse(splitarray[14]);
+						FINAUTO = sdfmt1.parse(splitarray[14]);
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
@@ -272,124 +281,239 @@ return "OK";
 
 					//DEBAUT=Date.valueOf(splitarray[1]);
 					//FINAUTO=Date.valueOf(splitarray[1]);
-					TYPNAV=String.valueOf(splitarray[15]);
-					MINTYPNAV=String.valueOf(splitarray[16]);
-					TJB=String.valueOf(splitarray[17]);
-					CALPOIDS=String.valueOf(splitarray[18]);
-					PUIMOT=String.valueOf(splitarray[19]);
-					KW=String.valueOf(splitarray[20]);
-					LONGG=String.valueOf(splitarray[21]);
-					LARG=String.valueOf(splitarray[22]);
-					PORT=String.valueOf(splitarray[23]);
-					RADIO=String.valueOf(splitarray[24]);
-					NATION1=String.valueOf(splitarray[25]);
-					ANCONS=String.valueOf(splitarray[26]);
-					ZONE=String.valueOf(splitarray[27]);
-					MAIL=String.valueOf(splitarray[28]);
-					ENGIN=String.valueOf(splitarray[29]);
-					ENGIN1=String.valueOf(splitarray[30]);
-					MAIL1=String.valueOf(splitarray[31]);
-					ENGIN2=String.valueOf(splitarray[32]);
-					MAIL2=String.valueOf(splitarray[33]);
-					ENGIN3=String.valueOf(splitarray[34]);
-					MAIL3=String.valueOf(splitarray[35]);
-					EFF=String.valueOf(splitarray[36]);
-					NBRHOMM=String.valueOf(splitarray[37]);
-					COUNT=String.valueOf(splitarray[38]);
-					typb=String.valueOf(splitarray[39]);
-					Consignataire=Integer.valueOf(splitarray[40]);
-					TYPENCAD=Integer.valueOf(splitarray[41]);
-					GT="0";
+					TYPNAV = String.valueOf(splitarray[15]);
+					MINTYPNAV = String.valueOf(splitarray[16]);
+					TJB = String.valueOf(splitarray[17]);
+					CALPOIDS = String.valueOf(splitarray[18]);
+					PUIMOT = String.valueOf(splitarray[19]);
+					KW = String.valueOf(splitarray[20]);
+					LONGG = String.valueOf(splitarray[21]);
+					LARG = String.valueOf(splitarray[22]);
+					PORT = String.valueOf(splitarray[23]);
+					RADIO = String.valueOf(splitarray[24]);
+					NATION1 = String.valueOf(splitarray[25]);
+					ANCONS = String.valueOf(splitarray[26]);
+					ZONE = String.valueOf(splitarray[27]);
+					MAIL = String.valueOf(splitarray[28]);
+					ENGIN = String.valueOf(splitarray[29]);
+					ENGIN1 = String.valueOf(splitarray[30]);
+					MAIL1 = String.valueOf(splitarray[31]);
+					ENGIN2 = String.valueOf(splitarray[32]);
+					MAIL2 = String.valueOf(splitarray[33]);
+					ENGIN3 = String.valueOf(splitarray[34]);
+					MAIL3 = String.valueOf(splitarray[35]);
+					EFF = String.valueOf(splitarray[36]);
+					NBRHOMM = String.valueOf(splitarray[37]);
+					COUNT = String.valueOf(splitarray[38]);
+					typb = String.valueOf(splitarray[39]);
+					Consignataire = Integer.valueOf(splitarray[40]);
+					TYPENCAD = Integer.valueOf(splitarray[41]);
+					XX = splitarray[42];
+					GT = "0";
 					//
-					qTypeLic typlic=typlicService.findById(Id_TypeLic);
-					qNation nation=nationRepository.findById(ID_NATION);
-					qZone zone=zoneService.findById(Id_Zone);
+					qTypeLic typlic = typlicService.findById(Id_TypeLic);
+					qNation nation = nationRepository.findById(ID_NATION);
+					qZone zone = zoneService.findById(Id_Zone);
 					//qCategRessource catRess=catService.findById();
-					currentNavire=navService.findLegalById(NUMIMM);
-					currentNavire=null;
-					qNavireLegale newNavire=null;
+					currentNavire = navService.findLegalById(NUMIMM);
+					//	currentNavire=null;
+					qNavireLegale newNavire = null;
 
-					String  typeNavire=null;
-					qAccordPeche encadrement=null ;
+					String typeNavire = null;
+					qAccordPeche encadrement = null;
 
-					if(MINTYPNAV.equals("A")) typeNavire=enumTypeBat.PIROG.toString();
-					if(MINTYPNAV.equals("C")) typeNavire=enumTypeBat.Congelateur_glacier.toString();
-					if(MINTYPNAV.equals("C1")) typeNavire=enumTypeBat.Congelateur_RTMS.toString();
-					if(MINTYPNAV.equals("C2")) typeNavire=enumTypeBat.Congelateur_RTMA.toString();
-					if(MINTYPNAV.equals("C3")) typeNavire=enumTypeBat.Congelateur_BMRT.toString();
-					if(MINTYPNAV.equals("C4")) typeNavire=enumTypeBat.Congelateur_RTMA.toString();
-					if(MINTYPNAV.equals("CG")) typeNavire=enumTypeBat.Congelateur_glacier.toString();
-					if(MINTYPNAV.equals("COT")) typeNavire=enumTypeBat.Congelateur_RTMA.toString();
-					if(MINTYPNAV.equals("G")) typeNavire=enumTypeBat.COTIERE.toString();
-					if(MINTYPNAV.equals("GR")) typeNavire=enumTypeBat.GLACIER_Refrigeration.toString();
-					if(MINTYPNAV.equals("REF")) typeNavire=enumTypeBat.REFRIGERATION.toString();
-					if(MINTYPNAV.equals("SG")) typeNavire=enumTypeBat.SURGELATION.toString();
-					if(MINTYPNAV.equals("V")) typeNavire=enumTypeBat.Vivier.toString();
-					if(MINTYPNAV.equals("VC")) typeNavire=enumTypeBat.Vivier_Congelateur.toString();
-					if(MINTYPNAV.equals("VG")) typeNavire=enumTypeBat.Vivier_Glacier.toString();
-					if(MINTYPNAV.equals("REF")) typeNavire=enumTypeBat.REF.toString();
-					if(MINTYPNAV.equals("C.F.")) typeNavire=enumTypeBat.Congelateur_Refrigerateur.toString();
-					if(MINTYPNAV.equals("INDEF")) typeNavire=enumTypeBat.INDEF.toString();
-					if(MINTYPNAV.equals("0")) typeNavire=enumTypeBat.INDEF.toString();
+					if (MINTYPNAV.equals("A")) typeNavire = enumTypeBat.PIROG.toString();
+					if (MINTYPNAV.equals("C")) typeNavire = enumTypeBat.Congelateur_glacier.toString();
+					if (MINTYPNAV.equals("C1")) typeNavire = enumTypeBat.Congelateur_RTMS.toString();
+					if (MINTYPNAV.equals("C2")) typeNavire = enumTypeBat.Congelateur_RTMA.toString();
+					if (MINTYPNAV.equals("C3")) typeNavire = enumTypeBat.Congelateur_BMRT.toString();
+					if (MINTYPNAV.equals("C4")) typeNavire = enumTypeBat.Congelateur_STM.toString();
+					if (MINTYPNAV.equals("CG")) typeNavire = enumTypeBat.Congelateur_glacier.toString();
+					if (MINTYPNAV.equals("COT")) typeNavire = enumTypeBat.COTIERE.toString();
+					if (MINTYPNAV.equals("G")) typeNavire = enumTypeBat.GLACIER_Refrigeration.toString();
+					if (MINTYPNAV.equals("GR")) typeNavire = enumTypeBat.GLACIER_Refrigeration.toString();
+					if (MINTYPNAV.equals("REF")) typeNavire = enumTypeBat.REFRIGERATION.toString();
+					if (MINTYPNAV.equals("SG")) typeNavire = enumTypeBat.SURGELATION.toString();
+					if (MINTYPNAV.equals("V")) typeNavire = enumTypeBat.Vivier.toString();
+					if (MINTYPNAV.equals("VC")) typeNavire = enumTypeBat.Vivier_Congelateur.toString();
+					if (MINTYPNAV.equals("VG")) typeNavire = enumTypeBat.Vivier_Glacier.toString();
+					if (MINTYPNAV.equals("REF")) typeNavire = enumTypeBat.REF.toString();
+					if (MINTYPNAV.equals("C.F.")) typeNavire = enumTypeBat.Congelateur_Refrigerateur.toString();
+					if (MINTYPNAV.equals("INDEF")) typeNavire = enumTypeBat.INDEF.toString();
+					if (MINTYPNAV.equals("0")) typeNavire = enumTypeBat.INDEF.toString();
 
 
-					if(MINTYPNAV.equals("INDEF")) typeNavire=enumTypeBat.INDEF.toString();
+					if (MINTYPNAV.equals("INDEF")) typeNavire = enumTypeBat.INDEF.toString();
 
-					if(TYPENCAD==1)   encadrement=accpecheService.findById(1);
-					if(TYPENCAD==2)   encadrement=accpecheService.findById(2);
-					if(TYPENCAD==3)   encadrement=accpecheService.findById(3);
-					if(TYPENCAD==4)   encadrement=accpecheService.findById(4);
-					if(TYPENCAD==5)   encadrement=accpecheService.findById(5);
-					if(TYPENCAD==0)   encadrement=accpecheService.findById(0);
-					if(TYPENCAD==-1)  encadrement=accpecheService.findById(-1);
-
-					if(TYPENCAD==1)
-					{
-						if(currentNavire!=null) {
-							insertedNavire=currentNavire;
-							createdOn=currentNavire.getUpdatedOn();
+					if (TYPENCAD == 1) encadrement = accpecheService.findById(1);
+					if (TYPENCAD == 2) encadrement = accpecheService.findById(2);
+					if (TYPENCAD == 3) encadrement = accpecheService.findById(3);
+					if (TYPENCAD == 4) encadrement = accpecheService.findById(4);
+					if (TYPENCAD == 5) encadrement = accpecheService.findById(5);
+					if (TYPENCAD == 0) encadrement = accpecheService.findById(0);
+					if (TYPENCAD == -1) encadrement = accpecheService.findById(-1);
+if(Integer.parseInt(XX)>182){
+					if (TYPENCAD == 1) {
+						if (currentNavire != null) {
+							insertedNavire = currentNavire;
+							createdOn = currentNavire.getUpdatedOn();
 							System.out.println(createdOn);
 							System.out.println(DEBAUT);
-							if(createdOn.before(DEBAUT))
-							{   currentNavire.setNomnav(NOMNAV);
+							// on compare le numimm de currentNavire avec le numimm de navire encours.
+							if (createdOn.before(DEBAUT)) {
+
+								currentNavire.setNomnav(NOMNAV);
 								currentNavire.setUpdatedOn(DEBAUT);
-								navService.update(currentNavire);}
-						}
-						else
-						{
-							newNavire=new qNavireLegale(NUMIMM,NOMNAV, LONGG, PUIMOT, nation, LARG, COUNT, NBRHOMM, EFF, 0, CALPOIDS, 0,0,0, 0, PORT, RADIO,"0",DEBAUT,NUMLIC,enumModePeche.NATIONAL,DEBAUT,FINAUTO,null,null,NOMAR);
+								currentNavire.setDateDebutAuth(DEBAUT);
+								currentNavire.setDateFinAuth(FINAUTO);
+								currentNavire.setEnginsAuthorisees(null);
+								currentNavire.setModePeche(enumModePeche.NATIONAL);
+								currentNavire.setNomar(NOMAR);
+								currentNavire.setNumlic(NUMLIC);
+								currentNavire.setQcatressources(null);
+								currentNavire.setAnneeconstr(Integer.parseInt(ANCONS));
+								currentNavire.setBalise(RADIO);
+								currentNavire.setCalpoids(CALPOIDS);
+								currentNavire.setCount(COUNT);
+								currentNavire.setEff(EFF);
+								currentNavire.setGt(Float.parseFloat(GT));
+								currentNavire.setImo(0);
+								currentNavire.setKw(Float.parseFloat(KW));
+								currentNavire.setLarg(LARG);
+								currentNavire.setLongg(LONGG);
+								currentNavire.setNation(nation);
+								currentNavire.setNbrhomm(NBRHOMM);
+								currentNavire.setPort(PORT);
+								currentNavire.setPuimot(PUIMOT);
+								currentNavire.setRadio(RADIO);
+								currentNavire.setTjb(Float.parseFloat(TJB));
+								currentNavire.setTypb(enumTypeBat.valueOf(typeNavire));
+								//mettre a jour les categ et les engins et tous les informations de ubateau
+								navService.update(currentNavire);
+								//detecter les changements et les enregistrer mais il faut mettre des condiftion  sur le nom pour savoir si il est change ou non
+
+							}
+						} else {
+							newNavire = new qNavireLegale(NUMIMM, NOMNAV, LONGG, PUIMOT, nation, LARG, COUNT, NBRHOMM, EFF, 0, CALPOIDS, 0, 0, 0, 0, PORT, RADIO, "0", DEBAUT, NUMLIC, enumModePeche.NATIONAL, DEBAUT, FINAUTO, null, null, NOMAR);
 							navService.create(newNavire);
-							insertedNavire=newNavire;
+							insertedNavire = newNavire;
 						}
 
-						currentLic=new qLicenceNational(typlic, zone, nation, null, insertedNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,"0",CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,null,null,enumModePeche.NATIONAL);
+						currentLic = new qLicenceNational(typlic, zone, nation, null, insertedNavire, enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0, "0", CALPOIDS, COUNT, EFF, 0, 0, 0, LARG, LONGG, NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT, PUIMOT, RADIO, 0, null, null, enumModePeche.NATIONAL);
+						if (currentNavire != null && !currentNavire.getNomnav().equals(NOMNAV)) {
+							changNom = new qNavireHistoriqueChangements(enumHistoriqueNavire.changement_Nom,currentNavire,currentLic);
+							h++;
+						//	qhistoriqueService.save(chang);
+						}
+
+						if (currentNavire != null && !currentNavire.getNation().equals(NATION1)) {
+							changNationalite = new qNavireHistoriqueChangements();
+							changNationalite.setLicenceDeBase(currentLic);
+							changNationalite.setNavireConcernee(currentNavire);
+							changNationalite.setNumimm(NUMIMM);
+							changNationalite.setNumLic(NUMLIC);
+							changNationalite.setTypeHystaurique(enumHistoriqueNavire.changementNationalite);
+							h++;
+						//	qhistoriqueService.save(chang);
+						}
+					} else {
+						System.out.println("type navire :" + typeNavire);
+						System.out.println("type navire :" + MINTYPNAV);
+						System.out.println("num lic :" + NUMLIC);
+						if (currentNavire != null) {
+							insertedNavire = currentNavire;
+							createdOn = currentNavire.getUpdatedOn();
+							if (createdOn.before(DEBAUT)) {
+								currentNavire.setNomnav(NOMNAV);
+								currentNavire.setUpdatedOn(DEBAUT);
+								currentNavire.setDateDebutAuth(DEBAUT);
+								currentNavire.setDateFinAuth(FINAUTO);
+								currentNavire.setEnginsAuthorisees(null);
+								currentNavire.setModePeche(enumModePeche.ETRANGER);
+								currentNavire.setNomar(NOMAR);
+								currentNavire.setNumlic(NUMLIC);
+								currentNavire.setQcatressources(null);
+								currentNavire.setAnneeconstr(Integer.parseInt(ANCONS));
+								currentNavire.setBalise(RADIO);
+								currentNavire.setCalpoids(CALPOIDS);
+								currentNavire.setCount(COUNT);
+								currentNavire.setEff(EFF);
+								currentNavire.setGt(Float.parseFloat(GT));
+								currentNavire.setImo(0);
+								currentNavire.setKw(Float.parseFloat(KW));
+								currentNavire.setLarg(LARG);
+								currentNavire.setLongg(LONGG);
+								currentNavire.setNation(nation);
+								currentNavire.setNbrhomm(NBRHOMM);
+								currentNavire.setPort(PORT);
+								currentNavire.setPuimot(PUIMOT);
+								currentNavire.setRadio(RADIO);
+								currentNavire.setTjb(Float.parseFloat(TJB));
+								currentNavire.setTypb(enumTypeBat.valueOf(typeNavire));
+								navService.save(currentNavire);
+							}
+						} else {
+
+							newNavire = new qNavireLegale(NUMIMM, NOMNAV, LONGG, PUIMOT, nation, LARG, COUNT, NBRHOMM, EFF, 0, CALPOIDS, 0, 0, 0, 0, PORT, RADIO, "0", DEBAUT, NUMLIC, enumModePeche.ETRANGER,
+									DEBAUT, FINAUTO, null, null, NOMAR);
+							navService.create(newNavire);
+							insertedNavire = newNavire;
+						}
+
+						currentLic = new qLicenceLibre(typlic, zone, nation, null, insertedNavire, enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0, "0", CALPOIDS, COUNT, EFF, 0, 0, 0, LARG, LONGG, NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT, PUIMOT, RADIO, 0, encadrement, null, enumModePeche.ETRANGER);
+						if (currentNavire != null && !currentNavire.getNomnav().equals(NOMNAV)) {
+							changNom = new qNavireHistoriqueChangements();
+							changNom.setLicenceDeBase(currentLic);
+							changNom.setNavireConcernee(currentNavire);
+							changNom.setNumimm(NUMIMM);
+							changNom.setNumLic(NUMLIC);
+							changNom.setTypeHystaurique(enumHistoriqueNavire.changement_Nom);
+							h++;
+						}
+						if (currentNavire != null && !currentNavire.getNation().equals(nation)) {
+							changNationalite = new qNavireHistoriqueChangements();
+							changNationalite.setLicenceDeBase(currentLic);
+							changNationalite.setNavireConcernee(currentNavire);
+							changNationalite.setNumimm(NUMIMM);
+							changNationalite.setNumLic(NUMLIC);
+							changNationalite.setTypeHystaurique(enumHistoriqueNavire.changementNationalite);
+							//qhistoriqueService.save(changNationalite);
+							h++;
+						}
 					}
-					else {
-						System.out.println("type navire :"+typeNavire);
-						System.out.println("type navire :"+MINTYPNAV);
-						System.out.println("num lic :"+NUMLIC);
-						if(currentNavire!=null) {
-							insertedNavire=currentNavire;
-							createdOn=currentNavire.getUpdatedOn();
-							if(createdOn.before(DEBAUT))
-							{currentNavire.setNomnav(NOMNAV);
-								currentNavire.setUpdatedOn(DEBAUT);
-								navService.save(currentNavire);}
-						}
-						else
-						{
-
-							newNavire=new qNavireLegale(NUMIMM,NOMNAV, LONGG, PUIMOT, nation, LARG, COUNT, NBRHOMM, EFF, 0, CALPOIDS, 0,0,0, 0, PORT, RADIO,"0",DEBAUT,NUMLIC,enumModePeche.ETRANGER,
-									DEBAUT,FINAUTO,null,null,NOMAR);
-							navService.create(newNavire);
-							insertedNavire=newNavire;
-						}
-
-						currentLic=new qLicenceLibre(typlic, zone, nation, null, insertedNavire,enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0,"0",CALPOIDS, COUNT, EFF, 0, 0,0, LARG, LONGG,NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT,PUIMOT, RADIO, 0,encadrement,null,enumModePeche.ETRANGER);
+					codauthJpaRepository.save(currentLic);
+	if(changNom!=null) qhistoriqueService.save(changNom);
+	if(changNationalite!=null) qhistoriqueService.save(changNationalite);
+	System.out.println("Chanemest est : " + h);
+					System.out.println("l'index est : " + k);
 
 				}
-					codauthJpaRepository.save(currentLic);
-					System.out.println("l'index est : "+k);
+					else {
+	               qNavireIllicite  navireIllicite=new qNavireIllicite();
+	navireIllicite.setNumimm(NUMIMM);
+	navireIllicite.setNomnav(NOMNAV);
+	navireIllicite.setUpdatedOn(DEBAUT);
+	navireIllicite.setAnneeconstr(Integer.parseInt(ANCONS));
+	navireIllicite.setBalise(RADIO);
+	navireIllicite.setCalpoids(CALPOIDS);
+	navireIllicite.setCount(COUNT);
+	navireIllicite.setEff(EFF);
+	navireIllicite.setGt(Float.parseFloat(GT));
+	navireIllicite.setImo(0);
+	navireIllicite.setKw(Float.parseFloat(KW));
+	navireIllicite.setLarg(LARG);
+	navireIllicite.setLongg(LONGG);
+	navireIllicite.setNation(nation);
+	navireIllicite.setNbrhomm(NBRHOMM);
+	navireIllicite.setPort(PORT);
+	navireIllicite.setPuimot(PUIMOT);
+	navireIllicite.setRadio(RADIO);
+	navireIllicite.setTjb(Float.parseFloat(TJB));
+	navireIllicite.setTypb(enumTypeBat.valueOf(typeNavire));
+	navService.save(navireIllicite);
+
+
+}
 				}
 				k++;
 

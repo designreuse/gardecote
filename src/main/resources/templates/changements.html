@@ -1,0 +1,41 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h3> Historiques de changements de navire </h3>
+    <table class="table table-striped table-bordered table-hover" >
+        <thead>
+        <tr>
+            <th>Type de changement</th>
+            <th>Licence de réference</th>
+            <th>Navire concernee</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ch:${changements}">
+            <td>
+             <label th:text="${ch.typeHystaurique}"></label>
+            </td>
+            <td>
+                <label th:text="${ch.descriptif}"></label>
+            </td>
+            <td>
+                <label th:text="${ch.licenceDeBase.nation.designation}"></label>
+            </td>
+            <td>
+                <label th:text="${ch.numLic}"></label>
+            </td>
+            <td>
+                <label th:text="${ch.navireConcernee.nomnav}"></label>
+            </td>
+
+        </tr>
+        </tbody>
+        </table>
+</div>
+</body>
+</html>

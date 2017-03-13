@@ -54,8 +54,8 @@ public class qZoneServiceImpl implements qZoneService {
 
 	@Override
 	public qZone update(qZone codesNotifAm) {
-		qZone codesNotifAmEntity = codesNotifAmJpaRepository.findOne(codesNotifAm.getIdZone());
-		qZone codesNotifAmEntitySaved = codesNotifAmJpaRepository.save(codesNotifAmEntity);
+	//	qZone codesNotifAmEntity = codesNotifAmJpaRepository.findOne(codesNotifAm.getIdZone());
+		qZone codesNotifAmEntitySaved = codesNotifAmJpaRepository.save(codesNotifAm);
 		return codesNotifAmEntitySaved;
 	}
 

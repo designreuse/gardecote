@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Title</title>
+    <title>Nouvelle licence pour une navire existante</title>
 </head>
 <body>
 <div layout:fragment="content">
@@ -15,7 +15,7 @@
     </panel>
 
     <form  th:action="@{NouvLicenceBatExistant}"  th:object="${LicForm.licence}" class="form-horizontal" method="post">
-        <input type="text" th:field="${LicForm.licence.qnavire.numimm}" />
+        <input type="text"   class="form-control" th:field="${LicForm.licence.qnavire.numimm}" />
         <div class="panel panel-default panel-heading-custom">
             <div class="panel-heading panel-heading-custom"><b>Identification</b></div>
             <div class="panel-body">
@@ -60,7 +60,7 @@
 
                             <option th:each="var : ${allZones}"
                                     th:value="${var.IdZone}"
-                                    th:text= "${var.nom} ">hhh</option>
+                                    th:text= "${var.nom} ">ZPA</option>
                         </select> <span class="label label-danger" th:errors="${LicForm.licence.zone.IdZone}"></span>
                     </div>
 
@@ -73,62 +73,70 @@
 
                             <option th:each="var : ${allTypesBat}"
                                     th:value="${var}"
-                                    th:text= "${var} ">hhh</option>
+                                    th:text= "${var} ">Glacier</option>
                         </select><span class="label label-danger" th:errors="${LicForm.licence.typb}"></span>
                     </div>
 
                 </div>
-<div class="row">
-    <div class="col-md-3">
-    <button  type="submit" name="addRow" value="addRow"  class="btn btn-success" >Ajouter un type de peche </button>
 
-    <select th:field="${LicForm.selectedCategorieRessource}" >
 
-    <option th:each="var : ${allCategoriesConcessions1}"
-            th:value="${var.typeconcessionConcernee.qtypeconcessionpk}"
-            th:text= "${var.typeconcessionConcernee} ">hhh</option>
-</select>
-        </div>
-    <div class="col-md-3">
-        <div  >
-            <table class="table"><tr><td   th:each="cat,catStat : ${LicForm.licence.qcatressources}" valign="top">
+                <div class="row">
+                    <div class="col-md-3">
+                        <button  type="submit" name="addRow" value="addRow"  class="btn btn-success" >Ajouter un type de peche </button>
 
-                    <table class="table">
-                        <tr>
-                         <th>Support </th> <th>Type</th><th></th>
-                        </tr>
-                        <tr >
-                            <td ><input type="hidden" th:field="${LicForm.licence.qcatressources[__${catStat.index}__].idtypeConcession}" />
-                                <label  th:text="${LicForm.licence.qcatressources[__${catStat.index}__].typeconcessionConcernee}" />
+                        <select th:field="${LicForm.selectedCategorieRessource}" >
+
+                            <option th:each="var : ${allCategoriesConcessions1}"
+                                    th:value="${var.idtypeConcession}"
+                                    th:text= "${var.typeconcessionConcernee} ">Atisanl</option>
+                        </select>
+                        <label th:text="${LicForm.selectedCategorieRessource != null? LicForm.selectedCategorieRessource.idtypeConcession:''}"></label>
+                    </div>
+                    <div class="col-md-3">
+                        <div  >
+                            <table class="table table-striped table-bordered table-hover"><tr th:each="cat,catStat : ${LicForm.categoriesRattaches}" ><td   class="small" valign="top">
+
+                                <table class="table">
+                                    <tr>
+                                        <th><kbd>Support</kbd></th> <th><kbd>Type</kbd></th><th></th>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="hidden" th:field="${LicForm.categoriesRattaches[__${catStat.index}__].idtypeConcession}" />
+                                            <label  th:text="${LicForm.categoriesRattaches[__${catStat.index}__].typeconcessionConcernee}" />
+                                        </td>
+                                        <td> <label  th:text="${LicForm.categoriesRattaches[__${catStat.index}__].typeSupport}" /></td>
+                                        <td> <button  type="submit" th:value="${catStat.index}" name="removeRow3" class="btn btn-success">Supprimer une categorie</button>
+                                        </td>
+                                    </tr>
+                                </table>
                             </td>
-                            <td> <label  th:text="${LicForm.licence.qcatressources[__${catStat.index}__].typeSupport}" /></td>
-                            <td> <button  type="submit" th:value="${catStat.index}" name="removeRow" class="btn btn-success">Remove une categorie</button>
-                            </td>
-                        </tr>
-                    </table></td><td valign="top">
-                    <table class="table">
-                        <tr><th>Engin</th><th>Maillage</th></tr>
-                        <tr th:each="eng,engStat : ${LicForm.licence.enginsAuthorisees}">
-                            <td>
-                                <label  th:text="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginDeb}" />
-                             <input type="hidden" th:field="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginDeb}" />
-                                <label  th:text="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginMar}" />
-                                <input type="hidden" th:field="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginMar}" />
+                                <td class="small" valign="top">
+                                    <table class="table">
+                                        <tr ><th><kbd>Engin</kbd></th><th><kbd>Maillage</kbd></th></tr>
+                                        <tr th:each="eng,engStat : ${LicForm.enginsAuthorisees}"
+                                            th:if="${LicForm.enginsAuthorisees[__${engStat.index}__].categorieLicence.idtypeConcession} == ${LicForm.categoriesRattaches[__${catStat.index}__].idtypeConcession}">
+                                            <td>
+                                                <label   th:text="${!#strings.equals(LicForm.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginDeb,'Indefini')?LicForm.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginDeb:''}" />
+                                                <input type="hidden" th:field="${LicForm.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginDeb}" />
+                                                <label   th:text="${!#strings.equals(LicForm.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginMar,'Indefini')?LicForm.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginMar:''}" />
 
-                            </td><td>
-                            <input type="text"  th:field="${LicForm.licence.enginsAuthorisees[__${engStat.index}__].maillageAuthorise}"/>
-                        </td>
-                       <td><button  type="submit" th:value="${engStat.index}" name="removeRow2" class="btn btn-success">Supprimer</button>
-</td>
-                        </tr>
+                                                <input type="hidden" th:field="${LicForm.enginsAuthorisees[__${engStat.index}__].enginAuthorise.EnginMar}" />
 
-                    </table>
+                                            </td><td>
+                                            <input type="text" class="form-control"  th:field="${LicForm.enginsAuthorisees[__${engStat.index}__].maillageAuthorise}"/>
+                                        </td>
+                                            <td><button  type="submit" th:value="${engStat.index}" name="removeRow2" class="btn btn-success">Supprimer</button>
+                                            </td>
+                                        </tr>
 
-            </td></tr></table>
-        </div>
+                                    </table>
 
-    </div>
-</div>
+                                </td></tr></table>
+                        </div>
+
+                    </div>
+                </div>
+
                         </div></div>
 
         <div class="row">
@@ -164,14 +172,7 @@
                     </div>
 
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 col-lg-3  control-label">Nom Consignateur</label>
-                    <div class="col-md-4">
-                        <input class="form-control" type="text" th:field="${LicForm.licence.nomar}" />
-                        <span class="label label-danger" th:errors="${LicForm.licence.nomar}"></span>
-                    </div>
 
-                </div>
                 <div class="form-group">
                     <label class="col-md-3 col-lg-3  control-label">Port d'immatriculation</label>
                     <div class="col-md-4">
@@ -189,7 +190,7 @@
 
                             <option th:each="var : ${allNationsLibre}"
                                     th:value="${var.idNation}"
-                                    th:text= "${var.designation} ">hhh</option>
+                                    th:text= "${var.designation} ">FRANCE</option>
                         </select><span class="label label-danger" th:errors="${LicForm.licence.nation.idNation}"></span>
                     </div>
 
@@ -283,14 +284,7 @@
                         </div>
 
                     </div>
-                    <div class="form-group">
-                        <label class="col-md-3 col-lg-3 control-label">Nombre equipage</label>
-                        <div class="col-md-4">
-                            <input class="form-control" type="number" th:field="${LicForm.licence.count}" />
-                            <span class="label label-danger" th:errors="${LicForm.licence.count}"></span>
-                        </div>
 
-                    </div>
 
 
                     <div class="form-group">
@@ -307,25 +301,28 @@
                             <input class="form-control" type="number" th:field="${LicForm.licence.eff}" />
                             <span class="label label-danger" th:errors="${LicForm.licence.eff}"></span>
                         </div>
+                        <div class="form-group">
+                            <label class="col-md-3 col-lg-3 control-label">Total equipage</label>
+                            <div class="col-md-4">
+                                <input class="form-control" type="number" th:field="${LicForm.licence.count}" />
+                                <span class="label label-danger" th:errors="${LicForm.licence.count}"></span>
+                            </div>
 
+                        </div>
                     </div>    </div></div> </div></div>
-
-
 
         <div class="panel panel-default panel-heading-custom">
             <div class="panel-heading panel-heading-custom"><b>Réference de mode étranger</b></div>
             <div class="panel-body">
                 <div class="form-group">
                     <label class="col-md-2 control-label">Accord International</label>
-                    <select th:field="${LicForm.licence.typencad}">
+                    <select th:field="${LicForm.licence.accord}">
 
                         <option th:each="var : ${allTypesEncadLibre}"
-                                th:value="${var}"
-                                th:text= "${var}">hhh</option>
+                                th:value="${var.identificateurAccord}"
+                                th:text= "${var.abbrevAccord}">hhh</option>
                     </select>
-                    <span class="label label-danger" th:errors="${LicForm.licence.typencad}"></span>
-
-
+                    <span class="label label-danger" th:errors="${LicForm.licence.accord}"></span>
                 </div>
             </div>
         </div>

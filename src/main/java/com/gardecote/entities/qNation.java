@@ -7,18 +7,20 @@ import java.io.Serializable;
  * Created by Dell on 23/10/2016.
  */
 @Entity
-@Table(name="qNation", schema="dbo", catalog="GCM5" )
+@Table(name="qNation", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qNation.countAll", query="SELECT COUNT(x) FROM qNation x" )
 } )
 public class qNation implements Serializable {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+ //   @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name="idNation", nullable=false)
     private Integer idNation;
     @Column(name="designation", nullable=false)
     private String designation;
+    @OneToOne
+    private qAccordPeche accordPeche;
 
     public qNation(String designation) {
         this.designation = designation;
@@ -41,5 +43,13 @@ public class qNation implements Serializable {
 
     public void setDesignation(String designation) {
         this.designation = designation;
+    }
+
+    public qAccordPeche getAccordPeche() {
+        return accordPeche;
+    }
+
+    public void setAccordPeche(qAccordPeche accordPeche) {
+        this.accordPeche = accordPeche;
     }
 }

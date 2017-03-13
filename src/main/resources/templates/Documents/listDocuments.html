@@ -17,7 +17,7 @@
     <div class=" jumbotron jumbotron-custom  text-left ">
         <div class="row">
             <div class="col-md-10">
-  <select class="form-control"   th:field="${frmSearchPgsForDocCrea.typeDoc}"   >
+       <select class="form-control"   th:field="${frmSearchPgsForDocCrea.typeDoc}">
              <option th:each="i : ${allTypesDoc}"
                      th:value="${i}"
                      th:text="${i}">
@@ -82,11 +82,11 @@
             <th>Depart</th>
             <th>Retour</th>
             <th>Navire</th>
-            <th>Page Debut</th>
-            <th>Page fin</th>
-            <th>enumtypedoc</th>
-            <th>Ref contrat</th>
-            <th>Concessionnaire</th>
+            <th>Page de Debut</th>
+            <th>Page de Fin</th>
+            <th>Type de document</th>
+            <th>Ref de contrat de concession</th>
+            <th>Nom du Concessionnaire</th>
        </tr>
         </thead>
         <tbody>

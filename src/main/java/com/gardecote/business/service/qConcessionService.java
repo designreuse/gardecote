@@ -53,9 +53,9 @@ public interface qConcessionService {
 
 	/**
 	 * Deletes an entity using its Primary Key
-	 * @param refConcession
+	 * @param current
 	 */
-	void delete(String refConcession);
+	void delete(qConcession current);
 
 
 }

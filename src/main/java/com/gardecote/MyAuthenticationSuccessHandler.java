@@ -4,6 +4,8 @@ package com.gardecote;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 
 
-
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.license4j.License;
@@ -35,6 +39,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 		throws IOException, ServletException {
 	// initialization logic after login
         String licenseString=null;
+		  List<String> currentAuth=new ArrayList<String>();
   		try {
   			licenseString = FileUtils.readFile("C:/AA/L4J/1472791619681.l4j");
   		} catch (IOException e) {
@@ -67,9 +72,16 @@ if (auth != null) {
 	}
 //	SavedRequest savedReq = (SavedRequest) session.getAttribute(WebAttributes.SAVED_REQUEST);
   if(licenseSS.getValidationStatus()==ValidationStatus.LICENSE_EXPIRED) {
-	 
+	  for(GrantedAuthority vv:auth.getAuthorities()) {
+
+		  currentAuth.add(vv.getAuthority().toString());
+	  }
+
 	  response.setStatus(HttpServletResponse.SC_OK);
-	
+
+	  if(currentAuth.contains("ROLE_saisiejp"))
+		  response.sendRedirect(request.getContextPath() + "/createDocument?firstEtp=0");
+	  else
 	    response.sendRedirect(request.getContextPath() + "/start");
 	}
 	else {

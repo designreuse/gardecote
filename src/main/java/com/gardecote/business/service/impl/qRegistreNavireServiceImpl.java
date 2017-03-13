@@ -37,6 +37,13 @@ public class qRegistreNavireServiceImpl implements qRegistreNavireService {
         qNavireLegale authprovEntity =qregistreNavireLegalRepository.findOne(idact);
         return authprovEntity;
     };
+
+    @Override
+    public List<qLic> findLicences(qNavireLegale vleg) {
+        List<qLic> nvs=qregistreNavireLegalRepository.findLicences(vleg);
+        return nvs;
+    }
+
     @Override
     public List<qBateau> findAll() {
         Iterable<qBateau> entities = qRegistreNavireRepository.findAll();

@@ -1,5 +1,4 @@
 package com.gardecote.entities;
-
 /**
  * Created by Dell on 18/10/2016.
  */

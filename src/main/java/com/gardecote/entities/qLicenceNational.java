@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
@@ -50,7 +51,7 @@ public class qLicenceNational extends qLic implements Serializable
     public qLicenceNational() {
     }
 
-    public qLicenceNational(qTypeLic qtypnav, qZone zone, qNation qNation, List<qCategRessource> qcatressources, qNavireLegale qnavire, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, String balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomnav, String numlic, String port, String puimot, String radio, float tjb, qConcession qconcession,List<qEnginAuthorisee> engins,enumModePeche   modePeche) {
+    public qLicenceNational(qTypeLic qtypnav, qZone zone, qNation qNation, List<qCategRessource> qcatressources, qNavireLegale qnavire, enumTypeBat typb, Date dateDebutAuth, Date dateFinAuth, Integer anneeconstr, String balise, String calpoids, String count, String eff, float gt, Integer imo, float kw, String larg, String longg, String nbrhomm, String nomar, String nomnav, String numlic, String port, String puimot, String radio, float tjb, qConcession qconcession, List<qEnginAuthorisee> engins, enumModePeche   modePeche) {
         super(qtypnav, zone, qNation, qcatressources, qnavire, typb, dateDebutAuth, dateFinAuth, anneeconstr, balise, calpoids, count, eff, gt, imo, kw, larg, longg, nbrhomm, nomar, nomnav, numlic, port, puimot, radio, tjb,engins,modePeche);
         this.qconcession = qconcession;
     }

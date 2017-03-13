@@ -12,22 +12,19 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qConcessionnaie", schema="dbo", catalog="GCM5" )
+@Table(name="qConcessionnaie", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qConsignataire.countAll", query="SELECT COUNT(x) FROM qConsignataire x" )
 } )
 public class qConsignataire implements Serializable {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="idconsignataire", nullable=false)
-    private Integer  idconsignataire;
 
+    @Id
     @Column(name="nomconsignataire", nullable=false)
     private String  nomconsignataire;
     //mappedBy ="concessionaire" ,  ,targetEntity =qConcession.class,cascade = CascadeType.ALL
 
-    @OneToMany(mappedBy ="qconsignataire",targetEntity =qConcession.class,cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy ="qconsignataire",fetch = FetchType.EAGER,targetEntity =qConcession.class,orphanRemoval = true)
   //@JoinColumn(name="qpagedeb",insertable = false,updatable = false)
   //@JoinTable(name="LiaisonConcessionConcessionaire",joinColumns=@JoinColumn(name="consignataire_fk"),inverseJoinColumns = @JoinColumn(name="concession_fk"))
   //@JoinColumn(name = "idconcession")

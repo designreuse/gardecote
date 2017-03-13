@@ -107,7 +107,7 @@ public class licencesExcelView extends AbstractXlsxView {
                 strings.add("Etrangere");
                 headers.add("");
                 headers.add("");
-                headers.add(((qLicenceLibre) result).getAccord().getAbbrevAccor().toString());
+                headers.add(((qLicenceLibre) result).getAccord().getAbbrevAccord().toString());
             }
 
             strings.add(result.getNumimm().toString());

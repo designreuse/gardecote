@@ -1,5 +1,4 @@
 package com.gardecote.entities;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Comparator;
@@ -8,24 +7,20 @@ import java.util.List;
  * Created by Dell on 25/10/2016.
  */
 @Entity
-@Table(name="qEspeceTypee", schema="dbo", catalog="GCM5" )
+@Table(name="qEspeceTypee", schema="dbo", catalog="GCM8" )
 @IdClass(qEspeceTypeePK.class)
 public class qEspeceTypee implements Serializable, Comparable<qEspeceTypee> {
     @Id
     private String qespeceId;
     @Id
     private enumEspType enumesptype;
-
-
    // @Id
  //   private String idmodel;
 
     @OneToOne(cascade = CascadeType.ALL)
-
     private qEspece qespece;
 
     @ManyToMany(mappedBy ="especestypees",cascade = CascadeType.REFRESH)
-
     private List<qModelJP> modeljp;
 
     public qEspeceTypeePK getQEspeceTypeePK(){

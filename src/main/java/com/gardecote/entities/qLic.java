@@ -6,6 +6,10 @@
 
 package com.gardecote.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,6 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
 /**
@@ -27,7 +32,7 @@ import java.util.List;
  *
  */
 @Entity
-@Table(name="qlicence", schema="dbo", catalog="GCM5")
+@Table(name="qlicence", schema="dbo", catalog="GCM8")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPELICENCE", discriminatorType=DiscriminatorType.STRING, length=20)
 // Define named queries here
@@ -54,22 +59,23 @@ public class qLic implements Serializable
     @Column(name="numimm", nullable=true)
      private String     numimm;
 
-    private enumModePeche   modePeche ;
+     private enumModePeche   modePeche ;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = qCategRessource.class,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocLicencesCategRessourcesBIS")
     @JsonBackReference
     //   @NotNull
     private List<qCategRessource>   qcatressources;
 
     @OneToMany(targetEntity=qEnginAuthorisee.class,cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<qEnginAuthorisee> enginsAuthorisees;
+
     @OneToMany(targetEntity=qNavireHistoriqueChangements.class,cascade = CascadeType.ALL)
     private List<qNavireHistoriqueChangements> historiqueChangements;
-    @ManyToOne
+    @ManyToOne(targetEntity = qNavireLegale.class,cascade = CascadeType.ALL)
     @JsonBackReference
-    //@NotNull
-    //@Valid
+
     private qNavireLegale qnavire;
     // remplissage de champs de navire a partir de batau selectionnee avec disabled ou enabled avec des nouveau saisi
     @Column(name="balise", length=255)
@@ -215,6 +221,14 @@ public class qLic implements Serializable
     public qLic()
     {
         super();
+    }
+
+    public enumModePeche getModePeche() {
+        return modePeche;
+    }
+
+    public void setModePeche(enumModePeche modePeche) {
+        this.modePeche = modePeche;
     }
 
     public String getNomnav() {

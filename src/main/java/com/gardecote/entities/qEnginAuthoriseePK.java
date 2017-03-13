@@ -47,4 +47,25 @@ public class qEnginAuthoriseePK implements Serializable{
     public void setEnginDeb(enumEnginDeb enginDeb) {
         EnginDeb = enginDeb;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof qEnginAuthoriseePK)) return false;
+
+        qEnginAuthoriseePK that = (qEnginAuthoriseePK) o;
+
+        if (!getNumlic().equals(that.getNumlic())) return false;
+        if (getEnginMar() != that.getEnginMar()) return false;
+        return getEnginDeb() == that.getEnginDeb();
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getNumlic().hashCode();
+        result = 31 * result + getEnginMar().hashCode();
+        result = 31 * result + getEnginDeb().hashCode();
+        return result;
+    }
 }

@@ -67,8 +67,9 @@ public class qConcessionServiceImpl implements qConcessionService {
 	}
 
 	@Override
-	public void delete(String numimm) {
-		qConcessionRepository.delete(numimm);
+	public void delete(qConcession current) {
+
+		qConcessionRepository.delete(current.getRefConcession());
 	}
 
 	public qConcessionRepository getBateaucompletJpaRepository() {

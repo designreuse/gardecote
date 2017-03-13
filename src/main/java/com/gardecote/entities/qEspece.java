@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qEspece", schema="dbo", catalog="GCM5" )
+@Table(name="qEspece", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qEspece.countAll", query="SELECT COUNT(x) FROM qEspece x" )
@@ -49,7 +49,8 @@ public class qEspece implements Serializable
     @Column(name="Nom_Fr", nullable=false, length=50)
     private String     nomFr        ;
 
-
+    @Column(name="Num_Ordre", nullable=false, length=50)
+    private Integer     numOrdre        ;
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
@@ -67,7 +68,15 @@ public class qEspece implements Serializable
         this.codeEsp = codeEsp;
         this.nomAr = nomAr;
         this.nomFr = nomFr;
+        this.numOrdre=numOrdre;
+    }
 
+    public Integer getNumOrdre() {
+        return numOrdre;
+    }
+
+    public void setNumOrdre(Integer numOrdre) {
+        this.numOrdre = numOrdre;
     }
 
     public List<qEspeceTypee> getQespecetypee() {

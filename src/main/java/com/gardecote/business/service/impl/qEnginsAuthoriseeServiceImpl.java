@@ -3,9 +3,7 @@ package com.gardecote.business.service.impl;
 import com.gardecote.business.service.qEnginAuthoriseeService;
 
 import com.gardecote.data.repository.jpa.qEnginsAuthoriseeRepository;
-import com.gardecote.entities.qDoc;
-import com.gardecote.entities.qEnginAuthorisee;
-import com.gardecote.entities.qEnginAuthoriseePK;
+import com.gardecote.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Dell on 04/03/2017.
@@ -38,6 +37,7 @@ public class qEnginsAuthoriseeServiceImpl implements qEnginAuthoriseeService {
         return null;
     }
 
+
     @Override
     public qEnginAuthorisee save(qEnginAuthorisee entity) {
         qEnginAuthorisee tt=em.find(qEnginAuthorisee.class,entity.getEnginAuthoriseePK());
@@ -50,6 +50,16 @@ public class qEnginsAuthoriseeServiceImpl implements qEnginAuthoriseeService {
         }
 
         return qenginsAuthoriseeRepository.save(entity);
+    }
+
+    @Override
+    public List<qCategRessource> getCategoriesRattachees(qNavireLegale nav) {
+        return qenginsAuthoriseeRepository.getCategoriesRattachees(nav);
+    }
+
+    @Override
+    public List<qEnginAuthorisee> getEnginsAuthorisees(qNavireLegale navire) {
+        return qenginsAuthoriseeRepository.getEnginsAuthorisees(navire);
     }
 
     @Override

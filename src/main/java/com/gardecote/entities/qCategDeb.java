@@ -9,11 +9,12 @@ import java.util.List;
  * Created by Dell on 17/11/2016.
  */
 @Entity
-@Table(name="qCategDeb33", schema="dbo", catalog="GCM5" )
+@Table(name="qCategDeb", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qCategDeb.countAll", query="SELECT COUNT(x) FROM qCategDeb x" )
 } )
+@IdClass(qCategDebPK.class)
 public class qCategDeb implements Serializable {
     @Id
     private String numimm;

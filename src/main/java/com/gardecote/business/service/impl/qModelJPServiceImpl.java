@@ -29,8 +29,6 @@ public class qModelJPServiceImpl implements qModelJPService {
 	@Autowired
 	private qModelJPRepository codesAmendeJpaRepository;
 
-	
-	
 	@Override
 	public qModelJP findById(qPrefixPK id) {
 		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(id);

@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qJourDeb", schema="dbo", catalog="GCM5" )
+@Table(name="qJourDeb", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qJourDeb.countAll", query="SELECT COUNT(x) FROM qJourDeb x" )
@@ -49,6 +49,7 @@ public class qJourDeb implements Serializable
     private String      numPage   ;
 
     @OneToOne
+
     private qNavireLegale navire;
 
     @OneToMany(mappedBy = "jourDeb",targetEntity=qCapture.class,cascade = CascadeType.ALL)

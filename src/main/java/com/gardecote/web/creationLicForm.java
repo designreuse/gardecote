@@ -8,11 +8,12 @@ import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Dell on 20/11/2016.
  */
-public class creationLicForm implements Serializable{
+public class creationLicForm implements Serializable {
 
     private String typeOperation;
     private String action;
@@ -20,6 +21,8 @@ public class creationLicForm implements Serializable{
     private  String refCon;
     private List<qNavireLegale> lstBat=new ArrayList<qNavireLegale>();
     private qCategRessource selectedCategorieRessource;
+    private List<qCategRessource> categoriesRattaches;
+    private List<qEnginAuthorisee> enginsAuthorisees;
 
    // @Valid
     private qLic licence;
@@ -31,6 +34,22 @@ public class creationLicForm implements Serializable{
     private qCategRessource selectedDropDownCat;
     public String getNumSelected() {
         return numSelected;
+    }
+
+    public List<qCategRessource> getCategoriesRattaches() {
+        return categoriesRattaches;
+    }
+
+    public void setCategoriesRattaches(List<qCategRessource> categoriesRattaches) {
+        this.categoriesRattaches = categoriesRattaches;
+    }
+
+    public List<qEnginAuthorisee> getEnginsAuthorisees() {
+        return enginsAuthorisees;
+    }
+
+    public void setEnginsAuthorisees(List<qEnginAuthorisee> enginsAuthorisees) {
+        this.enginsAuthorisees = enginsAuthorisees;
     }
 
     public String getRefCon() {

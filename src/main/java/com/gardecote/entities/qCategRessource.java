@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qCategoriesRessourcesPeche", schema="dbo", catalog="GCM5" )
+@Table(name="qCategoriesRessourcesPeche", schema="dbo", catalog="GCM8" )
 // Define named queries here
 
 @NamedQueries ( {
@@ -38,6 +38,9 @@ public class qCategRessource implements Serializable {
     @JsonManagedReference
     private List<qEnginsLicence> Engins;
 
+    @OneToOne
+    private qTypeLic ancienCategoriePeche;
+
     @ManyToMany(mappedBy = "categoriesRessources" ,  targetEntity =qConcession.class,cascade = CascadeType.MERGE)
    // @JoinColumn(name = "ref_concessionfk", referencedColumnName = "ref_concession",insertable = false,updatable = false)
 
@@ -47,7 +50,8 @@ public class qCategRessource implements Serializable {
 
     @OneToOne
     @JsonManagedReference
-   private  qTypeConcession typeconcessionConcernee;
+    private  qTypeConcession typeconcessionConcernee;
+
 
     public List<qLic> getQlicences() {
         return qlicences;
@@ -57,13 +61,22 @@ public class qCategRessource implements Serializable {
         this.qlicences = qlicences;
     }
 
-    public qCategRessource(qTypeConcession typeConcession, enumSupport typeSupport, List<qLic>  licences, List<qEnginsLicence> engins) {
+    public qCategRessource(qTypeConcession typeConcession, enumSupport typeSupport, List<qLic>  licences, List<qEnginsLicence> engins,qTypeLic ancienCategoriePeche) {
         this.idtypeConcession = typeConcession.getQtypeconcessionpk();
         this.qlicences=licences;
         this.typeSupport = typeSupport;
         this.Engins = engins;
         this.typeconcessionConcernee=typeConcession;
+        this.ancienCategoriePeche=ancienCategoriePeche;
    }
+
+    public qTypeLic getAncienCategoriePeche() {
+        return ancienCategoriePeche;
+    }
+
+    public void setAncienCategoriePeche(qTypeLic ancienCategoriePeche) {
+        this.ancienCategoriePeche = ancienCategoriePeche;
+    }
 
     public qCategRessource() {
     }
@@ -108,5 +121,21 @@ public class qCategRessource implements Serializable {
 
     public void setTypeconcessionConcernee(qTypeConcession typeconcessionConcernee) {
         this.typeconcessionConcernee = typeconcessionConcernee;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof qCategRessource)) return false;
+
+        qCategRessource that = (qCategRessource) o;
+
+        return getIdtypeConcession().equals(that.getIdtypeConcession());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getIdtypeConcession().hashCode();
     }
 }

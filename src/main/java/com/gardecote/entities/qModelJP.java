@@ -20,7 +20,7 @@ import java.util.Set;
  *
  */
 @Entity
-@Table(name="qModelCaptures", schema="dbo", catalog="GCM5" )
+@Table(name="qModelCaptures", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qModelJP.countAll", query="SELECT COUNT(x) FROM qModelJP x" )

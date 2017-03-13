@@ -1,5 +1,7 @@
 package com.gardecote.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -8,8 +10,10 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 @Entity
-@Table(name="qNavireLegale", schema="dbo", catalog="GCM5" )
+@Table(name="qNavireLegale", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qNavireLegale.countAll", query="SELECT COUNT(x) FROM qNavireLegale x" )
@@ -20,6 +24,9 @@ public class qNavireLegale extends qBateau implements Serializable {
     private String     numlic       ;
 
     private enumModePeche   modePeche ;
+
+    @OneToOne
+    private qAccordPeche  accordPeche ;
 
     @Column(name="nomar", length=255)
     //  @NotEmpty
@@ -37,21 +44,39 @@ public class qNavireLegale extends qBateau implements Serializable {
 
     // pour la compatibilté avec les anciens données
 
-    @OneToMany(mappedBy = "qnavire")
+    @OneToMany(targetEntity = qLic.class,mappedBy = "qnavire")
     private List<qLic> licences;
 
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne
+    private qConcession concession;
+
+    public qConcession getConcession() {
+        return concession;
+    }
+
+    public void setConcession(qConcession concession) {
+        this.concession = concession;
+    }
+
+    @ManyToMany(targetEntity=qCategRessource.class,fetch = FetchType.LAZY,cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     @JoinTable(name = "qAssocNaviresCategRessources")
     @JsonBackReference
-    //   @NotNull
     private List<qCategRessource>   qcatressources;
 
     @OneToMany(targetEntity=qEnginAuthorisee.class,cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<qEnginAuthorisee> enginsAuthorisees;
 
-    @OneToMany(targetEntity=qNavireHistoriqueChangements.class,cascade = CascadeType.ALL)
-    private List<qNavireHistoriqueChangements> historiqueChangements;
+    public qAccordPeche getAccordPeche() {
+        return accordPeche;
+    }
 
+    public void setAccordPeche(qAccordPeche accordPeche) {
+        this.accordPeche = accordPeche;
+    }
+
+    @OneToMany(fetch =FetchType.LAZY,targetEntity=qNavireHistoriqueChangements.class,cascade = CascadeType.ALL)
+    private List<qNavireHistoriqueChangements> historiqueChangements;
 
     @OneToMany(mappedBy = "qnavire")
     private List<qDoc> documents;
@@ -95,7 +120,6 @@ public class qNavireLegale extends qBateau implements Serializable {
     public void setLicences(List<qLic> licences) {
         this.licences = licences;
     }
-
 
     public qNavireLegale() {
     }
@@ -149,6 +173,7 @@ public class qNavireLegale extends qBateau implements Serializable {
         this.qcatressources = qcatressources;
         this.enginsAuthorisees = enginsAuthorisees;
         this.nomar=nomar;
+
     }
 
 }

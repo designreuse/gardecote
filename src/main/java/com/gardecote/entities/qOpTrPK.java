@@ -35,4 +35,23 @@ public class qOpTrPK implements Serializable {
     public void setNumeroPage(String numeroPage) {
         this.numeroPage = numeroPage;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof qOpTrPK)) return false;
+
+        qOpTrPK qOpTrPK = (qOpTrPK) o;
+
+        if (!getIdOpTraitement().equals(qOpTrPK.getIdOpTraitement())) return false;
+        return getNumeroPage().equals(qOpTrPK.getNumeroPage());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getIdOpTraitement().hashCode();
+        result = 31 * result + getNumeroPage().hashCode();
+        return result;
+    }
 }

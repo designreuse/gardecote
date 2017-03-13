@@ -1,9 +1,11 @@
 package com.gardecote.business.service.impl;
 
+import com.gardecote.business.service.qCarnetService;
 import com.gardecote.business.service.qDocService;
 import com.gardecote.data.repository.jpa.*;
 import com.gardecote.entities.*;
 
+import com.gardecote.web.attributionValidator;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.springframework.batch.core.JobParameter;
@@ -18,15 +20,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.hibernate.Session;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -49,9 +51,13 @@ public class qDocServiceImpl implements qDocService {
     private qDocRepository qdocRepository;
     @Autowired
     private qCategRessourceRepository qcqtRepository;
+    @Autowired
+    private qEspeceTypeeRepository esptypeeRepository;
 
     @Autowired
     private qSeqRepository qseqRepository;
+    @Autowired
+    private qCarnetService qcarnetService;
     @Autowired
     private qCarnetRepository qcarnetRepository;
     @Autowired
@@ -69,7 +75,20 @@ public class qDocServiceImpl implements qDocService {
     private qRegistreNavireRepository navRepository;
     @Autowired
     private qOpTraitementRepository qopTraitementRepository;
-
+    @Autowired
+    private qNationRepository qnationRepository;
+    @Autowired
+    private qEspeceRepository espRepository;
+    @Autowired
+    private qTypeConcessionRepository typeconcessionRepository;
+    @Autowired
+    private qUsineRepository qusineRepository;
+    @Autowired
+    private attributionValidator attrValidator;
+    @Autowired
+    private qAccordPecheRepository accordRepository;
+    @Autowired
+    private qZoneRepository zoneRepo;
     @Override
     public qDoc findById(qDocPK idcarnet) {
         qDoc authprovEntity = qdocRepository.findOne(idcarnet);
@@ -1980,6 +1999,466 @@ Integer k=0;
         else currentnumimm=seletetedNavire.getNumimm();
         Page<qDoc> pgdocs= qdocRepository.findAllMatchedDocs(new PageRequest(0, 10),searchDateCapture, currentnumimm);
         return pgdocs;
+    }
+
+
+
+    @Override
+    public String importerNationalites(MultipartFile file, String fullpatchname) {
+
+        String  IdNation,codePays,descr,idEnc;
+        qNation nationToBeCreated=new qNation();
+        Integer k=0;
+        try {
+            file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+      //      FileReader reader = new FileReader(fullpatchname);
+            InputStreamReader reader =   new InputStreamReader(new FileInputStream(fullpatchname), StandardCharsets.UTF_8);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if(!first) {
+                    System.out.println(k);
+                    String splitarray[] = line.split("\t");
+                    IdNation=splitarray[0];
+
+                    descr=splitarray[1];
+                    idEnc=splitarray[2];
+                    System.out.print(descr);
+                    System.out.print("é");
+                    qNation nation=qnationRepository.findOne(Integer.parseInt(IdNation));
+                        nationToBeCreated.setIdNation(Integer.parseInt(IdNation));
+                        nationToBeCreated.setDesignation(descr);
+                        qAccordPeche rr=accordRepository.findOne(Integer.parseInt(idEnc));
+                        nationToBeCreated.setAccordPeche(rr);
+                        qnationRepository.save(nationToBeCreated);
+                }
+
+                k++;
+            }
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return null;
+    }
+
+
+    @Override
+    public String importerTypesConcession(MultipartFile file, String fullpatchname) {
+
+
+        String  TYPE_CONCESSION,	TypeConcessionPK,	designation,	prefixModel,	typeDoc,
+        enumAncCategRessource,	TypePecheHautiriere,	TypePecheCotiere;
+        Integer k=0;
+        qTypeConcession currentConcession=null;
+        try {
+            file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+            FileReader reader = new FileReader(fullpatchname);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if(!first) {
+                    System.out.println(k);
+
+                    String splitarray[] = line.split("\t");
+                    TYPE_CONCESSION=splitarray[0];
+                    TypeConcessionPK=splitarray[1];
+                    designation=splitarray[2];
+                     prefixModel=splitarray[3];
+                     typeDoc=splitarray[4];
+                     enumAncCategRessource=splitarray[5];
+                   TypePecheHautiriere=splitarray[6];
+                    TypePecheCotiere=splitarray[7];
+                   if(TYPE_CONCESSION.equals("TARTISANAL")) {
+                       currentConcession=new qTypeConcessionArtisanal() ;
+                       qPrefix prefcurrent=prefRepo.findOne(new qPrefixPK(prefixModel,enumTypeDoc.valueOf(typeDoc)));
+                       currentConcession.setPrefixNum(prefixModel);
+                       currentConcession.setDesignation(designation);
+                       currentConcession.setQtypeconcessionpk(Integer.parseInt(TypeConcessionPK));
+                       currentConcession.setTypeDoc(enumTypeDoc.valueOf(typeDoc));
+                       currentConcession.setPrefix(prefcurrent);
+                                }
+                    if(TYPE_CONCESSION.equals("TCOTIER")) {
+                        currentConcession=new qTypeConcessionCotiere() ;
+                        qPrefix prefcurrent=prefRepo.findOne(new qPrefixPK(prefixModel,enumTypeDoc.valueOf(typeDoc)));
+                        currentConcession.setPrefixNum(prefixModel);
+                        currentConcession.setDesignation(designation);
+                        currentConcession.setQtypeconcessionpk(Integer.parseInt(TypeConcessionPK));
+                        currentConcession.setTypeDoc(enumTypeDoc.valueOf(typeDoc));
+                        currentConcession.setPrefix(prefcurrent);
+                        ((qTypeConcessionCotiere)currentConcession).setEnumTypePecheCotiere(enumTypePechCotiere.valueOf( TypePecheCotiere));
+
+                                   }
+                    if(TYPE_CONCESSION.equals("THAUTIRIERE")) {
+                        currentConcession=new qTypeConcessionHautiriere();
+
+                        qPrefix prefcurrent=prefRepo.findOne(new qPrefixPK(prefixModel,enumTypeDoc.valueOf(typeDoc)));
+                        currentConcession.setPrefixNum(prefixModel);
+                        currentConcession.setDesignation(designation);
+                        currentConcession.setQtypeconcessionpk(Integer.parseInt(TypeConcessionPK));
+                        currentConcession.setTypeDoc(enumTypeDoc.valueOf(typeDoc));
+                        currentConcession.setPrefix(prefcurrent);
+                        ((qTypeConcessionHautiriere)currentConcession).setEnumTypePecheHautiriere(enumTypePecheHautiriere.valueOf(TypePecheHautiriere));
+
+                    }
+
+                    typeconcessionRepository.save(currentConcession);
+
+                }
+
+                k++;
+            }
+
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return null;
+    }
+    @Override
+    public String importerZones(MultipartFile file, String fullpatchname) {
+        String  IdZone,nomZone;
+        Integer k=0;
+        try {
+            file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+            FileReader reader = new FileReader(fullpatchname);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if(!first) {
+                    System.out.println(k);
+
+                    String splitarray[] = line.split("\t");
+
+                    IdZone=splitarray[0];
+                    nomZone=splitarray[1];
+                    qZone currentZone=new qZone(Integer.parseInt(IdZone),nomZone);
+                    zoneRepo.save(currentZone);
+
+                }
+
+                k++;
+            }
+
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return null;
+    }
+
+    @Override
+    public String importerModels(MultipartFile file, String fullpatchname) {
+
+        String prefixModel,typeDoc,	Especes,numOrdre;
+        qModelJP modelToBeCreated=new qModelJP();
+
+        String codEsp,espDesign,espType;
+        Integer k=0;
+        List<qEspeceTypee> esptypess=null;
+        try {
+            file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+            FileReader reader = new FileReader(fullpatchname);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if(!first) {
+                    System.out.println(k);
+                    esptypess=new ArrayList<qEspeceTypee>();
+                    String splitarray[] = line.split("\t");
+                    prefixModel=splitarray[0];
+                    typeDoc=splitarray[1];
+                    Especes=splitarray[2];
+//qModelJP modelCurrent=qmodelRepository.findOne(new qPrefixPK(prefixModel,enumTypeDoc.valueOf(typeDoc)));
+                    qPrefix prefCurrent=prefRepo.findOne(new qPrefixPK(prefixModel,enumTypeDoc.valueOf(typeDoc)));
+                    modelToBeCreated.setPrefix(prefixModel);
+                    modelToBeCreated.setQprefix(prefCurrent);
+                    modelToBeCreated.setTypeDoc(enumTypeDoc.valueOf(typeDoc));
+
+                    String[] lineEspeces=Especes.split("/");
+                    List<String> container =Arrays.asList(lineEspeces);
+                    for(String esp:container) {
+                        String[] espInfo=esp.split(",");
+                        List<String> espFields =Arrays.asList(espInfo);
+                        codEsp=espFields.get(0);
+                        espDesign=espFields.get(1);
+                        espType=espFields.get(2);
+                        numOrdre=espFields.get(3);
+
+                        qEspece currentEsp=espRepository.findOne(codEsp);
+
+                        if(currentEsp==null) {currentEsp=new qEspece(codEsp,"",espDesign,Integer.parseInt(numOrdre));}
+                        currentEsp.setNomFr(espDesign);
+                        currentEsp.setNumOrdre(Integer.parseInt(numOrdre));
+                        currentEsp=espRepository.save(currentEsp);
+
+
+                      //  qEspeceTypee currentEspTypee=new qEspeceTypee(enumEspType.valueOf(espType),currentEsp,null);
+
+                       qEspeceTypee currentEspTypee= esptypeeRepository.findOne(new qEspeceTypeePK(codEsp,enumEspType.valueOf(espType)));
+                        if(currentEspTypee==null) {currentEspTypee=new qEspeceTypee(enumEspType.valueOf(espType),currentEsp,null);
+                            }
+                        esptypess.add(currentEspTypee);
+
+                    }
+                    modelToBeCreated.setEspecestypees(esptypess);
+                    qmodelRepository.save(modelToBeCreated);
+                    esptypess=new ArrayList<qEspeceTypee>();
+                }
+
+                k++;
+            }
+
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return null;
+    }
+    @Override
+    public String importerCarnets(MultipartFile file, String fullpatchname,BindingResult bindingresult) {
+
+
+        String  debutPage1,prefixNum,typeDoc,DJTA,NbrLignes,NbrPages,refConcession,NumimmNav,RefAgr;
+        qCarnet currentCarnet=null;qNavireLegale currentNavLegale=null;qUsine currentUsine=null;
+        Integer k=0;
+        try {
+            file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+            FileReader reader = new FileReader(fullpatchname);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if(!first) {
+                    System.out.println(k);
+
+                    String splitarray[] = line.split("\t");
+                            debutPage1=splitarray[0];
+                            prefixNum=splitarray[1];
+                            typeDoc=splitarray[2];
+                NbrPages=splitarray[3];
+
+                            NumimmNav=splitarray[4];
+                            RefAgr=splitarray[5];
+                    qPrefix currentpref=prefRepo.findOne(new qPrefixPK(prefixNum,enumTypeDoc.valueOf(typeDoc)));
+
+                   currentNavLegale=(qNavireLegale)navRepository.findOne(NumimmNav);
+
+                        currentUsine=qusineRepository.findOne(RefAgr);
+                            //new qPrefix(prefixNum,enumTypeDoc.valueOf(typeDoc),Integer.parseInt(NbrLignes),"");
+                    currentCarnet=new qCarnet(currentpref,Long.parseLong(debutPage1),Integer.parseInt(NbrPages),currentNavLegale,currentUsine);
+
+    //              attrValidator.validate(currentCarnet, bindingresult);
+       //             if (!bindingresult.hasErrors()) {
+
+                        qCarnet crn = qcarnetService.entrerDansLeSystem(currentCarnet);
+                        qcarnetService.attribuerCarnetAuNavire(crn, currentNavLegale, null, currentUsine);
+
+                //    } else {
+              //          System.out.println("echec d'entrer le carnet");
+              //      }
+
+
+
+
+                }
+
+                k++;
+            }
+
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return null;
+    }
+    @Override
+    public String importerCategoriesPeche(MultipartFile file, String fullpatchname) {
+
+        String  idcateg,typeSupport,typeconcessionLiee;
+        Integer k=0;
+        qCategRessource currentCategorie=null ;
+        try {
+            file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+            FileReader reader = new FileReader(fullpatchname);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if(!first) {
+                    System.out.println(k);
+
+                    String splitarray[] = line.split("\t");
+                    idcateg=splitarray[0];
+                    typeSupport=splitarray[1];
+                    typeconcessionLiee=splitarray[2];
+                    currentCategorie=new qCategRessource();
+                    qTypeConcession currentType=typeconcessionRepository.findOne(Integer.parseInt(typeconcessionLiee));
+                    currentCategorie.setIdtypeConcession(Integer.parseInt(idcateg));
+                    currentCategorie.setTypeSupport(enumSupport.valueOf(typeSupport));
+                    currentCategorie.setTypeconcessionConcernee(currentType);
+
+                    qcqtRepository.save(currentCategorie);
+                }
+
+                k++;
+            }
+
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return null;
+    }
+
+    @Override
+    public String importerPrefixes(MultipartFile file, String fullpatchname) {
+
+        String  prefix,typedoc,information,nblifnesparcarnet;
+        Integer k=0;
+        qPrefix prefixToBeCreated=new qPrefix();
+        try {
+            file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+    //        FileReader reader = new FileReader(fullpatchname);
+            InputStreamReader reader =   new InputStreamReader(new FileInputStream(fullpatchname), StandardCharsets.UTF_8);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if(!first) {
+                    System.out.println(k);
+
+                    String splitarray[] = line.split("\t");
+                    prefix=splitarray[0];
+                    typedoc=splitarray[1];
+                    information=splitarray[2];
+                    nblifnesparcarnet=splitarray[3];
+
+                    qPrefix pref=prefRepo.findOne(new qPrefixPK(prefix,enumTypeDoc.valueOf(typedoc)));
+                    prefixToBeCreated.setTypeDoc(enumTypeDoc.valueOf(typedoc));
+                    prefixToBeCreated.setInformation(information);
+                    prefixToBeCreated.setPrefix(prefix);
+                    prefixToBeCreated.setNbrLigneCarnet(Integer.parseInt(nblifnesparcarnet));
+                    prefRepo.save(prefixToBeCreated);
+                           }
+
+                k++;
+            }
+
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return null;
     }
 }
 

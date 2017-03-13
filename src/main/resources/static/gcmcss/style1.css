@@ -21,3 +21,6 @@
     background-color: #D3D7FF;
      margin-bottom:0;
  }
+.btn-warning:focus {
+    background-color: red;
+}

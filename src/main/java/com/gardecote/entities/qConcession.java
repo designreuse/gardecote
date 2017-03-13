@@ -17,18 +17,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-//import javax.validation.constraints.* ;
-//import org.hibernate.validator.constraints.* ;
-
-/**
- * Persistent class for entity stored in table "quotasConcessions"
- *
- * @author Telosys Tools Generator
- *
- */
-
 @Entity
-@Table(name="qConcession", schema="dbo", catalog="GCM5" )
+@Table(name="qConcession", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qConcession.countAll", query="SELECT COUNT(x) FROM qConcession x" )
@@ -36,12 +26,10 @@ import java.util.List;
 public class qConcession implements Serializable
 {
     private static final long serialVersionUID = 2L;
-
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @Size(min = 2, max = 14)
     @Column(name="ref_concession", nullable=false)
     private String     refConcession ;
     //----------------------------------------------------------------------
@@ -49,31 +37,31 @@ public class qConcession implements Serializable
     //----------------------------------------------------------------------    
    // @Column(name="idconcession", nullable=false)
     @ManyToOne(cascade = CascadeType.PERSIST)
-  // @JoinColumn(name = "idconcession")
+    private qConsignataire    qconsignataire;
 
-     private qConsignataire    qconsignataire;
+    @OneToMany(targetEntity = qNavireLegale.class,mappedBy = "concession" )
+    private  List<qNavireLegale> navires;
 
     @OneToMany(mappedBy = "qconcession",targetEntity = qDoc.class)
-
     private List<qDoc> qdocs;
 
 
-
-   @Column(name="dateConcession")
    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date     dateConcession  ;
+   @Column(name="dateConcession")
+   private Date     dateConcession  ;
 
     @Column(name="quotaConcession")
     private Integer     quotaEnTonne  ;
     @Column(name="dureeconcession" )
 
     private Integer dureeConcession;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name="date_debut")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date dateDebut    ;
 
-    @Column(name="date_fin")
+    private Date dateDebut    ;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name="date_fin")
+
     private Date     dateFin      ;
 
     //----------------------------------------------------------------------
@@ -81,10 +69,9 @@ public class qConcession implements Serializable
     //----------------------------------------------------------------------
 
     @OneToMany(mappedBy="qconcession", targetEntity=qLicenceNational.class)
-
     private List<qLicenceNational>     qLicenceBatLastList;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = {CascadeType.MERGE},fetch=FetchType.LAZY)
     @JoinTable(name = "qAssocConessionCategRessources")
     private List<qCategRessource>     categoriesRessources ;
 
@@ -92,6 +79,14 @@ public class qConcession implements Serializable
    //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
+
+    public List<qNavireLegale> getNavires() {
+        return navires;
+    }
+
+    public void setNavires(List<qNavireLegale> navires) {
+        this.navires = navires;
+    }
 
     public List<qDoc> getQdocs() {
         return qdocs;
@@ -227,4 +222,6 @@ public class qConcession implements Serializable
         this.categoriesRessources=categoriesRessources;
         this.qLicenceBatLastList = qLicenceBatLastList;
     }
+
+
 }

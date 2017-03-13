@@ -3,6 +3,7 @@ package com.gardecote.business.service;
 import com.gardecote.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
@@ -30,7 +31,15 @@ public interface qDocService {
     List<qLic> retLicences(qSeq seqActive1,enumTypeDoc typeDoc);
     Page<qDoc> findAll(int p, int size);
     String importerDocuments(MultipartFile file, String fullpatchname);
-    String importerMarrees(MultipartFile file, String fullpatchname);
+ String importerMarrees(MultipartFile file, String fullpatchname);
+ String importerNationalites(MultipartFile file, String fullpatchname);
+ String importerPrefixes(MultipartFile file, String fullpatchname);
+ String importerTypesConcession(MultipartFile file, String fullpatchname);
+ String importerZones(MultipartFile file, String fullpatchname);
+ String importerModels(MultipartFile file, String fullpatchname);
+ String importerCarnets(MultipartFile file, String fullpatchname,BindingResult bindingresult);
+ String importerCategoriesPeche(MultipartFile file, String fullpatchname);
+
     String importerTraitements(MultipartFile file, String fullpatchname);
   //  List<qDoc> findAll(Pageable pageable);
 
@@ -94,5 +103,7 @@ public interface qDocService {
     qModelJP checkIfModelExist(Date dateDepart,Date dateRetour,qSeq seqActive1,enumTypeDoc typeDoc);
     boolean checkIfValidSeq(qSeq seqActive1);
     boolean checkIfNavAnnexIsSameAsNavPrincipal(Date dateDepart, qSeqPK spk, qMarree currentMaree,enumTypeDoc typeDoc);
+
+
 
 }

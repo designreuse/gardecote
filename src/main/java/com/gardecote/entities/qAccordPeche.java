@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by Dell on 09/10/2016.
  */
 @Entity
-@Table(name="qAccordPeche", schema="dbo", catalog="GCM5" )
+@Table(name="qAccordPeche", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qAccordPeche.countAll", query="SELECT COUNT(x) FROM qAccordPeche x" )
@@ -19,7 +19,7 @@ public class qAccordPeche implements Serializable {
     private Integer identificateurAccord;
 
     private enumModePeche modePeche;
-    private String abbrevAccor;
+    private String abbrevAccord;
     private String infos;
 
     public Integer getIdentificateurAccord() {
@@ -41,12 +41,12 @@ public class qAccordPeche implements Serializable {
         this.modePeche = modePeche;
     }
 
-    public String getAbbrevAccor() {
-        return abbrevAccor;
+    public String getAbbrevAccord() {
+        return abbrevAccord;
     }
 
-    public void setAbbrevAccor(String abbrevAccor) {
-        this.abbrevAccor = abbrevAccor;
+    public void setAbbrevAccord(String abbrevAccor) {
+        this.abbrevAccord = abbrevAccor;
     }
 
     public String getInfos() {
@@ -57,10 +57,10 @@ public class qAccordPeche implements Serializable {
         this.infos = infos;
     }
 
-    public qAccordPeche(Integer identificateurAccord, enumModePeche modePeche, String abbrevAccor, String infos) {
+    public qAccordPeche(Integer identificateurAccord, enumModePeche modePeche, String abbrevAccord, String infos) {
         this.identificateurAccord = identificateurAccord;
         this.modePeche = modePeche;
-        this.abbrevAccor = abbrevAccor;
+        this.abbrevAccord = abbrevAccord;
         this.infos = infos;
 
     }

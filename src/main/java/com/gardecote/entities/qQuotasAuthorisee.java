@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by Dell on 23/10/2016.
  */
 @Entity
-@Table(name="qQuotasAuthorisee", schema="dbo", catalog="GCM5" )
+@Table(name="qQuotasAuthorisee", schema="dbo", catalog="GCM8" )
 @IdClass(qQuotasAuthPK.class)
 public class qQuotasAuthorisee implements Serializable {
     @Id

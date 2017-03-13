@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Title</title>
+    <title>Gestion de concessions</title>
 </head>
 
 <body>
@@ -10,7 +10,7 @@
 
     <h3><p class="spacer"><kbd>Liste de concessions</kbd></p></h3>
     <form  th:action="@{/ActionConcession}"   method="post" th:object="${listConcessions}">
-        <span th:text="${listConcessions.failedSuppression}"></span>
+        <span class="label label-danger" th:text="${feedback}"></span>
         <input type="text" th:field="*{searchConcession}" />
 
         <button type="submit" >Trouver</button>

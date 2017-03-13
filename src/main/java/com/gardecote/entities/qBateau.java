@@ -11,23 +11,24 @@ import java.util.Date;
  * Created by Dell on 04/03/2017.
  */
 @Entity
-@Table(name="qBateau", schema="dbo", catalog="GCM5" )
+@Table(name="qBateau", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qBateau.countAll", query="SELECT COUNT(x) FROM qBateau x" )
 } )
-
 public class qBateau {
     @Id
     @Column(name="numimm", nullable=false)
     @NotEmpty
     private String     numimm;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name="createdOn", nullable=false)
     private Date updatedOn;
 
     @Column(name="typb", length=100)
      private enumTypeBat    typb;
+
 
     @Column(name="nomnav", length=255)
     @NotEmpty
@@ -108,9 +109,17 @@ public class qBateau {
 
     @Column(name="larg", length=255)
     //  @NotEmpty
-    private String     larg         ;
+    private String     larg ;
 
+    @PrePersist
+    void createdOn() {
+        this.updatedOn = new Date();
+    }
 
+    @PreUpdate
+    void updatedOn() {
+        this.updatedOn = new Date();
+    }
     public String getNumimm() {
         return numimm;
     }
@@ -145,6 +154,9 @@ public class qBateau {
         this.radio = radio;
         this.balise = balise;
         this.updatedOn=updatedOn;
+        this.nbrhomm=nbrhomm;
+        this.eff=eff;
+        this.count=count;
 
     }
 

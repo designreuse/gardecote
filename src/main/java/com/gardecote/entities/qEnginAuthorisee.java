@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Created by Dell on 03/03/2017.
  */
 @Entity
-@Table(name="qEnginAuthorisee", schema="dbo", catalog="GCM5" )
+@Table(name="qEnginAuthorisee", schema="dbo", catalog="GCM8" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qEnginAuthorisee.countAll", query="SELECT COUNT(x) FROM qEnginAuthorisee x" )
@@ -22,10 +22,24 @@ public class qEnginAuthorisee implements Serializable {
     private enumEnginDeb EnginDeb;
     @OneToOne
     private qCategRessource categorieLicence;
+
     @OneToOne(targetEntity = qEnginsLicence.class)
     private qEnginsLicence enginAuthorise;
+    @OneToOne(targetEntity = qConcession.class)
+    private qConcession concession;
     @OneToOne
     private qLic licence;
+
+    public qConcession getConcession() {
+        return concession;
+    }
+
+    public void setConcession(qConcession concession) {
+        this.concession = concession;
+    }
+
+    @OneToOne
+    private qNavireLegale navire;
 
     private Integer maillageAuthorise;
 
@@ -39,6 +53,54 @@ public class qEnginAuthorisee implements Serializable {
         this.enginAuthorise = enginAuthorise;
     }
 
+    public qNavireLegale getNavire() {
+        return navire;
+    }
+
+    public void setNavire(qNavireLegale navire) {
+        this.navire = navire;
+    }
+
+    public String getNumlic() {
+        return numlic;
+    }
+
+    public void setNumlic(String numlic) {
+        this.numlic = numlic;
+    }
+
+    public enumEngin getEnginMar() {
+        return EnginMar;
+    }
+
+    public void setEnginMar(enumEngin enginMar) {
+        EnginMar = enginMar;
+    }
+
+    public enumEnginDeb getEnginDeb() {
+        return EnginDeb;
+    }
+
+    public void setEnginDeb(enumEnginDeb enginDeb) {
+        EnginDeb = enginDeb;
+    }
+
+    public qCategRessource getCategorieLicence() {
+        return categorieLicence;
+    }
+
+    public void setCategorieLicence(qCategRessource categorieLicence) {
+        this.categorieLicence = categorieLicence;
+    }
+
+    public qLic getLicence() {
+        return licence;
+    }
+
+    public void setLicence(qLic licence) {
+        this.licence = licence;
+    }
+
     public Integer getMaillageAuthorise() {
         return maillageAuthorise;
     }
@@ -46,10 +108,11 @@ public class qEnginAuthorisee implements Serializable {
     public qEnginAuthorisee() {
     }
 
-    public qEnginAuthorisee(qCategRessource categorieLicence, qEnginsLicence enginAuthorise, qLic licence, Integer maillageAuthorise) {
+    public qEnginAuthorisee(qCategRessource categorieLicence, qEnginsLicence enginAuthorise, qLic licence,qConcession concession, Integer maillageAuthorise) {
         this.categorieLicence = categorieLicence;
         this.enginAuthorise = enginAuthorise;
         this.licence = licence;
+        this.concession=concession;
         this.maillageAuthorise = maillageAuthorise;
         this.EnginDeb=enginAuthorise.getEnginDeb();
         this.EnginMar=enginAuthorise.getEnginMar();

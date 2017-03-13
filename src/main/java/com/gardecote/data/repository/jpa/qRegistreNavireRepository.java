@@ -1,11 +1,8 @@
 package com.gardecote.data.repository.jpa;
 
-import com.gardecote.entities.qBateau;
-import com.gardecote.entities.qLic;
-import com.gardecote.entities.qLicenceNational;
+import com.gardecote.entities.*;
 
 
-import com.gardecote.entities.qNavireLegale;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,5 +30,6 @@ public interface qRegistreNavireRepository extends PagingAndSortingRepository<qB
 
     @Query("select l from qNavireLegale  l where TRIM(l.nomnav) = :searchBat")
     qNavireLegale findLegalByName(@Param("searchBat") String searchBat);
+
 
 }

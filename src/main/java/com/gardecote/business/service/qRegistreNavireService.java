@@ -41,7 +41,7 @@ public interface qRegistreNavireService {
      * @return
      */
     qBateau update(qBateau entity);
-
+    List<qLic> findLicences(qNavireLegale vleg);
     /**
      * Creates the given entity in the database
      * @param entity

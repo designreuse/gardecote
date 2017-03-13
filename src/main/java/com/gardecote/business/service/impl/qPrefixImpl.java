@@ -3,7 +3,7 @@ package com.gardecote.business.service.impl;
 import com.gardecote.business.service.qPrefixService;
 import com.gardecote.data.repository.jpa.qPrefixRepository;
 import com.gardecote.entities.enumTypeDoc;
-import com.gardecote.entities.qNavire;
+
 import com.gardecote.entities.qPrefix;
 import com.gardecote.entities.qPrefixPK;
 import org.springframework.beans.factory.annotation.Autowired;

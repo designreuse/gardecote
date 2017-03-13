@@ -1,11 +1,13 @@
 package com.gardecote.controllers;
 import com.gardecote.LicenceAc;
 import com.gardecote.business.service.*;
+import com.gardecote.data.repository.jpa.qHystoriquesRepository;
 import com.gardecote.dto.StatusResponse;
 import com.gardecote.entities.*;
 import com.gardecote.reports.bateauExcelView;
 import com.gardecote.reports.licencesExcelView;
 import com.gardecote.reports.zoneExcelView;
+import org.apache.commons.lang.SerializationUtils;
 import com.gardecote.web.*;
 import org.jgroups.util.*;
 import org.jgroups.util.UUID;
@@ -54,8 +56,9 @@ import java.util.*;
 */
 
 @Controller
-@SessionAttributes(types = {qModelJP.class,frmSearchPgsForDocCrea.class,lstBateauAchoisirForm.class,creationLicForm.class,attributionCarnetForm.class})
+@SessionAttributes(types = {qModelJP.class,frmSearchPgsForDocCrea.class,lstBateauAchoisirForm.class,creationLicForm.class,creationConcessionForm.class,attributionCarnetForm.class})
 @RequestMapping("/")
+
 public class LicenceController {
     @Autowired
     JobLauncher jobLauncher;
@@ -167,6 +170,10 @@ public class LicenceController {
     private LicenceAc ourLic;
     @Autowired
     private qMareeAnnexeService mareeAnnexService;
+    @Autowired
+    private qEnginAuthoriseeService engAuth;
+    @Autowired
+    private qHystoriquesRepository changRepo;
 
     public licenceValidator getLicValidator() {
         return licValidator;
@@ -310,7 +317,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         List<qZone> zones=new ArrayList<qZone>(),zonesToRendre=new ArrayList<qZone>();;
         zones=this.zoneService.findAll();
         for(qZone zz:zones) {
-            if (zz.getIdZone()>32) {
+            if (zz.getIdZone()>0) {
                 zonesToRendre.add(zz);
             }
         }
@@ -359,8 +366,56 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         model.addAttribute("selectedPrefixes",prefService.PrefixesByTypeDoc(enumTypeDoc.valueOf(typeDoc)));
            return "carnets/attribution::renderPrefixes";
     }
+    @RequestMapping(value="/logout",method = RequestMethod.POST)
+    public String lgout(final ModelMap model) {
+        return "logout";
+    }
 
-    @RequestMapping(value="/listBatASelectionner",method = RequestMethod.GET)
+    @RequestMapping(value="/recupererChangements",method = RequestMethod.GET)
+    public String recupererChangements(final ModelMap model) {
+        qLic currentprev=null;
+        int index=0;
+        qNavireLegale currentNav=null;
+        List<qNavireLegale> Navs=registrenavireService.findAllLegal();
+        for(qNavireLegale nvleg:Navs) {
+            index=0;
+            currentNav=nvleg;
+            List<qLic> currentLics=registrenavireService.findLicences(nvleg);
+            for(qLic lc:currentLics) {
+                System.out.println(index);
+                qNavireHistoriqueChangements nch=null;
+               // currentprev=lc;
+            if(index==0)   currentprev = (qLic) SerializationUtils.clone(lc);
+                else   {
+                    if(!lc.getNomnav().equals(currentprev.getNomnav()))
+                    {
+                        nch=new qNavireHistoriqueChangements(enumHistoriqueNavire.changement_Nom,nvleg,lc);
+                        nch.setDescriptif(currentprev.getNomnav()+"--->"+lc.getNomnav());
+                        changRepo.save(nch);
+                    }
+                if(!lc.getNation().getIdNation().equals(currentprev.getNation().getIdNation()))
+                {
+                   nch=new qNavireHistoriqueChangements(enumHistoriqueNavire.changementNationalite,nvleg,lc);
+                    nch.setDescriptif(currentprev.getNation().getDesignation()+"--->"+lc.getNation().getDesignation());
+                   changRepo.save(nch);
+                }
+                currentprev= (qLic) SerializationUtils.clone(lc);
+                       }
+                    index++;
+            }
+        }
+
+        return null;
+    }
+    @RequestMapping(value="/consulterHistoriques",method = RequestMethod.GET)
+    public String consulterHistoriques(@RequestParam(name="numimm") String numimm,final ModelMap model) {
+        qNavireLegale  currentNav=registrenavireService.findLegalById(numimm);
+        List<qNavireHistoriqueChangements> changements=changRepo.findChangNavById(currentNav);
+        model.addAttribute("changements",changements);
+        return "changements";
+            }
+
+        @RequestMapping(value="/listBatASelectionner",method = RequestMethod.GET)
     public String listBatASelectionner1(final lstBateauAchoisirForm batForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="terme",defaultValue = "") String terme){
         lstBateauAchoisirForm lstBat=new lstBateauAchoisirForm();
         int[] pages;
@@ -399,10 +454,40 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
             validateURL="qshowNewLicNational";
         }
         else        {
+            qNavireLegale currnv=registrenavireService.findLegalById(LicForm.getLicence().getNumimm());
+            currnv.setConcession(((qLicenceNational) LicForm.getLicence()).getQconcession());
+            //   registrenavireService.save(navireLegale);
+            currnv.setAccordPeche(null);
+            currnv.setNomnav(LicForm.getLicence().getNomnav());
+            currnv.setLongg(LicForm.getLicence().getLongg());
+            currnv.setPuimot(LicForm.getLicence().getPuimot());
+            currnv.setNation(LicForm.getLicence().getNation());
+            currnv.setLarg(LicForm.getLicence().getLarg());
+            currnv.setCount(LicForm.getLicence().getCount());
+            currnv.setNbrhomm(LicForm.getLicence().getNbrhomm());
+            currnv.setEff(LicForm.getLicence().getEff());
+            currnv.setAnneeconstr(LicForm.getLicence().getAnneeconstr());
+            currnv.setCalpoids(LicForm.getLicence().getCalpoids());
+            currnv.setGt(LicForm.getLicence().getGt());
+            currnv.setKw(LicForm.getLicence().getKw());
+            currnv.setTjb(LicForm.getLicence().getTjb());
+            currnv.setImo(LicForm.getLicence().getImo());
+            currnv.setPort(LicForm.getLicence().getPort());
+            currnv.setRadio(LicForm.getLicence().getRadio());
+            currnv.setBalise(LicForm.getLicence().getBalise());
+            currnv.setUpdatedOn(LicForm.getLicence().getUpdatedAt());
+            currnv.setNumlic(LicForm.getLicence().getNumlic());
+            currnv.setModePeche( enumModePeche.ETRANGER);
+            currnv.setDateDebutAuth(LicForm.getLicence().getDateDebutAuth());
+            currnv.setQcatressources(LicForm.getLicence().getQcatressources());
+            currnv.setEnginsAuthorisees(LicForm.getLicence().getEnginsAuthorisees());
+            currnv.setNomar(LicForm.getLicence().getNomar());
+            currnv.setTypb(LicForm.getLicence().getTypb());
+            currnv.setAccordPeche(((qLicenceLibre) LicForm.getLicence()).getAccord());
+            LicForm.getLicence().setQnavire(currnv);
 
             licenceService.create(LicForm.getLicence());
         //
-
             model.clear();
             validateURL = "redirect:afficherLstLicence";
        }
@@ -411,6 +496,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     @RequestMapping(value="/NouvLicenceBatExistant", params={"addLicenceLibre"},method = RequestMethod.POST)
     public String validatelibre(final   @ModelAttribute("LicForm")  creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
         String validateURL=null;
+        qNavireLegale currentnav=registrenavireService.findLegalById(LicForm.getNumSelected());
+        List<qEnginAuthorisee> engins=engAuth.getEnginsAuthorisees(currentnav);
+        List<qCategRessource> categs=engAuth.getCategoriesRattachees(currentnav);
         qLic licAct=LicForm.getLicence();
         licValidatorBE.validate(licAct, bindingresult);
         if(bindingresult.hasErrors()) {
@@ -418,11 +506,43 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
                 System.out.println(obj);
             }
             System.out.println(bindingresult.getAllErrors().size());
+            LicForm.setCategoriesRattaches(categs);
+            LicForm.setEnginsAuthorisees(engins);
             model.addAttribute("LicForm",LicForm);
             validateURL="qshowNewLicLibre";
         }
         else        {
 
+
+            // trouver le numimm et le mettre a jour
+            qNavireLegale currnv=registrenavireService.findLegalById(LicForm.getLicence().getNumimm());
+            currnv.setNomnav(LicForm.getLicence().getNomnav());
+            currnv.setLongg(LicForm.getLicence().getLongg());
+            currnv.setPuimot(LicForm.getLicence().getPuimot());
+            currnv.setNation(LicForm.getLicence().getNation());
+            currnv.setLarg(LicForm.getLicence().getLarg());
+            currnv.setCount(LicForm.getLicence().getCount());
+            currnv.setNbrhomm(LicForm.getLicence().getNbrhomm());
+            currnv.setEff(LicForm.getLicence().getEff());
+            currnv.setAnneeconstr(LicForm.getLicence().getAnneeconstr());
+            currnv.setCalpoids(LicForm.getLicence().getCalpoids());
+            currnv.setGt(LicForm.getLicence().getGt());
+            currnv.setKw(LicForm.getLicence().getKw());
+            currnv.setTjb(LicForm.getLicence().getTjb());
+            currnv.setImo(LicForm.getLicence().getImo());
+            currnv.setPort(LicForm.getLicence().getPort());
+            currnv.setRadio(LicForm.getLicence().getRadio());
+            currnv.setBalise(LicForm.getLicence().getBalise());
+            currnv.setUpdatedOn(LicForm.getLicence().getUpdatedAt());
+            currnv.setNumlic(LicForm.getLicence().getNumlic());
+            currnv.setModePeche( enumModePeche.ETRANGER);
+            currnv.setDateDebutAuth(LicForm.getLicence().getDateDebutAuth());
+            currnv.setQcatressources(LicForm.getLicence().getQcatressources());
+            currnv.setEnginsAuthorisees(LicForm.getLicence().getEnginsAuthorisees());
+            currnv.setNomar(LicForm.getLicence().getNomar());
+            currnv.setTypb(LicForm.getLicence().getTypb());
+            currnv.setAccordPeche(((qLicenceLibre) LicForm.getLicence()).getAccord());
+            LicForm.getLicence().setQnavire(currnv);
             licenceService.create(LicForm.getLicence());
             model.clear();
             validateURL = "redirect:afficherLstLicence";
@@ -526,13 +646,28 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         urlNavigation="usine/attribution";
         return urlNavigation;
     }
+    @RequestMapping(value="/NouvLicenceBatNouveau1LN",params={"removeRow2"},method = RequestMethod.POST)
+    public String removeRow2ln2(final @ModelAttribute("LicForm") creationLicForm LicForm,final HttpServletRequest req, final ModelMap model) {
+        String url=null;
+        final Integer rowId = Integer.valueOf(req.getParameter("removeRow2"));
 
+        if(LicForm.getEnginsAuthorisees()!=null) {LicForm.getEnginsAuthorisees().remove(rowId.intValue());
+        }
+        model.addAttribute("LicForm",LicForm);
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNationalNewBat";
+        else {
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibreNewBat";
+            else   System.out.println("jjjj");
+        }
+        return url;
+
+    }
     @RequestMapping(value="/NouvLicenceBatExistant",params={"removeRow2"},method = RequestMethod.POST)
     public String removeRow2(final @ModelAttribute("LicForm") creationLicForm LicForm,final HttpServletRequest req, final ModelMap model) {
         String url=null;
         final Integer rowId = Integer.valueOf(req.getParameter("removeRow2"));
 
-        if(LicForm.getLicence()!=null) {LicForm.getLicence().getEnginsAuthorisees().remove(rowId.intValue());
+        if(LicForm.getEnginsAuthorisees()!=null) {LicForm.getEnginsAuthorisees().remove(rowId.intValue());
         }
         model.addAttribute("LicForm",LicForm);
         if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
@@ -543,13 +678,24 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         return url;
 
     }
-    @RequestMapping(value="/NouvLicenceBatExistant",params={"removeRow"},method = RequestMethod.POST)
+    @RequestMapping(value="/NouvLicenceBatExistant",params={"removeRow3"},method = RequestMethod.POST)
     public String removeRow(final @ModelAttribute("LicForm") creationLicForm LicForm,final HttpServletRequest req, final ModelMap model) {
-        String url=null;
-        final Integer rowId = Integer.valueOf(req.getParameter("removeRow"));
 
-        if(LicForm.getLicence()!=null) {LicForm.getLicence().getQcatressources().remove(rowId.intValue());
-          }
+        final Integer rowId = Integer.valueOf(req.getParameter("removeRow3"));
+        String url=null;
+        List<qEnginAuthorisee> enginsToBeDelete=new ArrayList<qEnginAuthorisee>();
+        qCategRessource currentCateg=LicForm.getCategoriesRattaches().get(rowId.intValue());
+
+
+        if(currentCateg!=null) {
+            for(qEnginAuthorisee eng:LicForm.getEnginsAuthorisees())
+            { if(eng.getCategorieLicence().equals(currentCateg))
+                enginsToBeDelete.add(eng);
+            }
+            LicForm.getEnginsAuthorisees().removeAll(enginsToBeDelete);
+            LicForm.getCategoriesRattaches().remove(rowId.intValue());
+
+        }
         model.addAttribute("LicForm",LicForm);
         if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
         else {
@@ -562,29 +708,32 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         @RequestMapping(value="/NouvLicenceBatExistant", params={"addRow"},method = RequestMethod.POST)
     public String addRowLBNB(final @ModelAttribute("LicForm") creationLicForm LicForm, final ModelMap model,final BindingResult bindingresult) {
 
-        String url=null;
-
-        List<qCategRessource> ens=new ArrayList<qCategRessource>();
-        qCategRessource currentToBeAdd=new qCategRessource();
-List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
-
-                if (LicForm.getLicence().getQcatressources() == null) {
-                    ens.add(LicForm.getSelectedCategorieRessource());
-                    LicForm.getLicence().setQcatressources(ens);
-                    for(qEnginsLicence engl:LicForm.getSelectedCategorieRessource().getEngins()){
-                        engs.add(new qEnginAuthorisee(LicForm.getSelectedCategorieRessource(),engl,LicForm.getLicence(),0));
+            String url=null;
+            List<qCategRessource> ens=new ArrayList<qCategRessource>();
+            qCategRessource currentToBeAdd=categService.findById(LicForm.getSelectedCategorieRessource().getIdtypeConcession());
+            List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
+            System.out.println("new categ "+currentToBeAdd);
+            if (LicForm.getCategoriesRattaches() == null) {
+                ens.add(currentToBeAdd);
+                LicForm.setCategoriesRattaches(ens);
+                for(qEnginsLicence engl: currentToBeAdd.getEngins()){
+                    engs.add(new qEnginAuthorisee(currentToBeAdd,engl,LicForm.getLicence(),null,0));
+                }
+                LicForm.setEnginsAuthorisees(engs);
+                //   System.out.println(currentToBeAdd.getEngins().size());
+            } else {
+                if (!LicForm.getCategoriesRattaches().contains( currentToBeAdd))
+                {  LicForm.getCategoriesRattaches().add(currentToBeAdd);
+                    for(qCategRessource cat:LicForm.getCategoriesRattaches()){
+                        for(qEnginsLicence engl:cat.getEngins()){
+                            engs.add(new qEnginAuthorisee(cat,engl,LicForm.getLicence(),null,0));
+                        }
                     }
-                    LicForm.getLicence().setEnginsAuthorisees(engs);
-                    //   System.out.println(currentToBeAdd.getEngins().size());
-                } else {
-                    if(!LicForm.getLicence().getQcatressources().contains(LicForm.getSelectedCategorieRessource()))
-                       LicForm.getLicence().getQcatressources().add(LicForm.getSelectedCategorieRessource());
-                    for(qEnginsLicence engl:LicForm.getSelectedCategorieRessource().getEngins()){
-                        engs.add(new qEnginAuthorisee(LicForm.getSelectedCategorieRessource(),engl,LicForm.getLicence(),0));
-                    }
-                    LicForm.getLicence().getEnginsAuthorisees().addAll(engs);
+                    LicForm.setEnginsAuthorisees(engs);
+
                 }
 
+            }
         model.addAttribute("LicForm",LicForm);
         if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
         else {
@@ -813,7 +962,7 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
             attrCrn.setNavireSelected(selectedNavire);
             attrCrn.setLicenceActives(licencesActives);
 
-    // chercher les licences actives pour ce navire pour les afficher et choisisser une
+            // chercher les licences actives pour ce navire pour les afficher et choisisser une
             List<enumTypeDoc> ltsTypeDoc=new ArrayList<enumTypeDoc>();
             if(((qBateau)selectedNavire).getTypb().equals(enumTypeBat.PIROG))  ltsTypeDoc.add(enumTypeDoc.Fiche_Debarquement);
             else   ltsTypeDoc.add(enumTypeDoc.Journal_Peche);
@@ -833,20 +982,25 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
         @RequestMapping(value="/NouvLicenceBatExistant",method = RequestMethod.GET)
     public String NouvelLicenceBatExistant(@RequestParam(name="numimm") String numimm,@RequestParam(name="action") String action , final ModelMap model,HttpSession session){
 
-
      //   model.addAttribute("LicForm", LicForm);
-
-        qLic currentLicence=null;
-        creationLicForm licform=new creationLicForm();
-        qNavireLegale currentNav=registrenavireService.findLegalById(numimm);
+         qLic currentLicence=null;
+         creationLicForm licform=new creationLicForm();
+         qNavireLegale currentNav=registrenavireService.findLegalById(numimm);
          String forwardURL=null;
        if(action.equals("createlicenceNational")) {
            currentLicence=new qLicenceNational();
-           currentLicence.setQcatressources(currentNav.getQcatressources());
-           currentLicence.setEnginsAuthorisees(currentNav.getEnginsAuthorisees());
+           licform.setCategoriesRattaches(currentNav.getQcatressources());
+           licform.setEnginsAuthorisees(currentNav.getEnginsAuthorisees());
+     //      currentLicence.setQcatressources(currentNav.getQcatressources());
+       //    currentLicence.setEnginsAuthorisees(currentNav.getEnginsAuthorisees());
+           ((qLicenceNational)currentLicence).setQconcession(currentNav.getConcession());
            currentLicence.setQnavire(currentNav);
            currentLicence.setBalise(currentNav.getBalise());
            currentLicence.setAnneeconstr(currentNav.getAnneeconstr());
+           currentLicence.setEff(currentNav.getEff());
+           currentLicence.setNbrhomm(currentNav.getNbrhomm());
+           currentLicence.setCount(currentNav.getCount());
+           currentLicence.setTypb(currentNav.getTypb());
            currentLicence.setCalpoids(currentNav.getCalpoids());
            currentLicence.setCount(currentNav.getCount());
            currentLicence.setEff(currentNav.getEff());
@@ -886,7 +1040,9 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
            currentLicence.setRadio(currentNav.getRadio());
            currentLicence.setPuimot(currentNav.getPuimot());
            currentLicence.setNomar(currentNav.getNomar());
+           ((qLicenceLibre)currentLicence).setAccord(currentNav.getAccordPeche());
            licform.setLicence(currentLicence);
+
            model.addAttribute("LicForm",licform);
            forwardURL="qshowNewLicLibre";
        }
@@ -897,25 +1053,39 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
     public String NouvelLicenceBatNouv(final @ModelAttribute("LicForm") creationLicForm LicForm, final ModelMap model) {
         qLic lic=null;
         String url=null;
-        qNavireLegale navire=new qNavireLegale();
-         System.out.println("kkkkkkkkkkkkkkkkkk");
-       if(LicForm.getTypeOperation().equals("National")) {lic=new qLicenceNational();lic.setQnavire(navire); url="qShowNewLicNationalNewBat";}
-       if(LicForm.getTypeOperation().equals("Etranger")) {lic=new qLicenceLibre();lic.setQnavire(navire);url="qShowNewLicLibreNewBat";}
 
+        qNavireLegale navire=new qNavireLegale();
+        System.out.println("kkkkkkkkkkkkkkkkkk");
+      //  sessionStatus.setComplete();
+
+       if(LicForm.getTypeOperation().equals("National")) {
+           lic=new qLicenceNational();lic.setQnavire(navire); url="qShowNewLicNationalNewBat";
+       }
+       if(LicForm.getTypeOperation().equals("Etranger")) {lic=new qLicenceLibre();lic.setQnavire(navire);url="qShowNewLicLibreNewBat";}
         LicForm.setLicence(lic);
+        LicForm.setCategoriesRattaches(null);
+        LicForm.setEnginsAuthorisees(null);
+
         LicForm.setRefMessage("hh");
         model.addAttribute("LicForm",LicForm);
         return url;
     }
 
+
     @RequestMapping(value="/NouvLicenceBatNouveau1", method = RequestMethod.GET)
-    public String NouvelLicenceBatNouv77(@RequestParam(name="zeroEtape") boolean zeroEtape,final ModelMap model) {
+    public String NouvelLicenceBatNouv77(@RequestParam(name="zeroEtape") boolean zeroEtape,final ModelMap model, SessionStatus sessionStatus, HttpServletRequest request) {
        System.out.println("tttttttttttttttttttt");
+        HttpSession session = request.getSession();
         creationLicForm licf=new creationLicForm();
         licf.setTypeOperation("National");
         String urlnav=null;
         //if(!model.containsAttribute("LicForm"))
       if(zeroEtape==true)   {
+
+
+          licf.setCategoriesRattaches(null);
+          licf.setEnginsAuthorisees(null);
+          session.setAttribute("LicForm",  licf);
           model.addAttribute("LicForm", licf);
 
           urlnav="qChoixModeNouvBat";
@@ -924,58 +1094,113 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
         return urlnav;
     }
 
-    @RequestMapping(value="/NouvLicenceBatNouveau1", params={"addRow"},method = RequestMethod.POST)
+    @RequestMapping(value="/NouvLicenceBatNouveau1LN", params={"addRow"},method = RequestMethod.POST)
     public String NouvLicenceBatExistantaddrow(final  @ModelAttribute("LicForm") creationLicForm LicForm, final ModelMap model,final BindingResult bindingresult) {
+
         String url=null;
         List<qCategRessource> ens=new ArrayList<qCategRessource>();
+        qCategRessource currentToBeAdd=categService.findById(LicForm.getSelectedCategorieRessource().getIdtypeConcession());
+        List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
+        System.out.println("new categ "+currentToBeAdd);
+        if (LicForm.getCategoriesRattaches() == null) {
+            ens.add(currentToBeAdd);
+            LicForm.setCategoriesRattaches(ens);
+            for(qEnginsLicence engl: currentToBeAdd.getEngins()){
+                engs.add(new qEnginAuthorisee(currentToBeAdd,engl,LicForm.getLicence(),null,0));
+            }
+            LicForm.setEnginsAuthorisees(engs);
+            //   System.out.println(currentToBeAdd.getEngins().size());
+        } else {
+            if (!LicForm.getCategoriesRattaches().contains( currentToBeAdd))
+            {  LicForm.getCategoriesRattaches().add(currentToBeAdd);
+                for(qCategRessource cat:LicForm.getCategoriesRattaches()){
+                    for(qEnginsLicence engl:cat.getEngins()){
+                        engs.add(new qEnginAuthorisee(cat,engl,LicForm.getLicence(),null,0));
+                    }
+                }
+                LicForm.setEnginsAuthorisees(engs);
 
-        if (LicForm.getLicence().getQcatressources() == null) {
-            ens.add(new qCategRessource());
-            LicForm.getLicence().setQcatressources(ens);
-        } else LicForm.getLicence().getQcatressources().add(new qCategRessource());
-       model.addAttribute("LicForm",LicForm);
-       if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNationalNewBat";
+            }
+
+        }
+
+        model.addAttribute("LicForm",LicForm);
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNationalNewBat";
         else {
-           if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibreNewBat";
-           else System.out.println("jjjj");
-       }
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibreNewBat";
+            else   System.out.println("jjjj");
+        }
         return url;
     }
 
-    @RequestMapping(value="/NouvLicenceBatNouveau1",params = {"addNewLicNat"},method = RequestMethod.POST)
-    public String NouvLicenceBatNouveauadd(final  @Valid @ModelAttribute("LicForm") creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
-
-        String validateURL=null;
-        qLic licAct=LicForm.getLicence();
-        System.out.println(LicForm.getLicence().getQnavire().getBalise());
-      //  LicForm.getLicence().setBalise(LicForm.getLicence().getQnavire().getBalise());LicForm.getLicence().setAnneeconstr(LicForm.getLicence().getQnavire().getAnneeconstr());LicForm.getLicence().setCalpoids(LicForm.getLicence().getQnavire().getCalpoids());LicForm.getLicence().setGt(LicForm.getLicence().getQnavire().getGt());LicForm.getLicence().setImo(LicForm.getLicence().getQnavire().getImo());
-      //  LicForm.getLicence().setKw(LicForm.getLicence().getQnavire().getKw());LicForm.getLicence().setLarg(LicForm.getLicence().getQnavire().getLarg());LicForm.getLicence().setLongg(LicForm.getLicence().getQnavire().getLongg());LicForm.getLicence().setNomnav(LicForm.getLicence().getQnavire().getNomnav());LicForm.getLicence().setRadio(LicForm.getLicence().getQnavire().getRadio());LicForm.getLicence().setPuimot(LicForm.getLicence().getQnavire().getPuimot());
 
 
-    //    if (concessionService.validate(((qLicenceNational)LicForm.getLicence()).getQconcession().getRefConcession()) == false)
-    //    {
-     //       LicForm.setRefMessage("concession invalide");
-    //        System.out.println(LicForm.getRefMessage());
-   //         return "qshowNewLicNationalNewBat";
-    //    }
+    @RequestMapping(value="/NouvLicenceBatNouveau1LN", params={"removeRow3"},method = RequestMethod.POST)
+    public String NouvLicenceBatExistantRemoveRow(final  @ModelAttribute("LicForm") creationLicForm LicForm, final HttpServletRequest req,final ModelMap model) {
+        final Integer rowId = Integer.valueOf(req.getParameter("removeRow3"));
+        String url=null;
+        List<qEnginAuthorisee> enginsToBeDelete=new ArrayList<qEnginAuthorisee>();
+        qCategRessource currentCateg=LicForm.getCategoriesRattaches().get(rowId.intValue());
+
+
+        if(currentCateg!=null  ) {
+            for(qEnginAuthorisee eng:LicForm.getEnginsAuthorisees())
+            { if(eng.getCategorieLicence().equals(currentCateg))
+                enginsToBeDelete.add(eng);
+            }
+            LicForm.getEnginsAuthorisees().removeAll(enginsToBeDelete);
+            LicForm.getCategoriesRattaches().remove(rowId.intValue());
+
+        }
+
         model.addAttribute("LicForm",LicForm);
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNationalNewBat";
+        else {
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibreNewBat";
+            else   System.out.println("jjjj");
+        }
+        return url;
+    }
 
-        licValidator.validate(licAct, bindingresult);
+    @RequestMapping(value="/NouvLicenceBatNouveau1LN",params = {"addNewLicNat"},method = RequestMethod.POST)
+    public String NouvLicenceBatNouveauadd(final  @Valid @ModelAttribute("LicForm") creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
+         String validateURL=null;
+        qLic licAct=LicForm.getLicence();
+        qConcession currentConcession=null;
+        if(LicForm.getCategoriesRattaches()!=null) {LicForm.getLicence().setQcatressources(LicForm.getCategoriesRattaches());
+        if(LicForm.getEnginsAuthorisees()!=null)   LicForm.getLicence().setEnginsAuthorisees(LicForm.getEnginsAuthorisees());}
+        if(LicForm.getLicence() instanceof qLicenceNational && ((qLicenceNational) LicForm.getLicence()).getQconcession().getRefConcession()!=null ) {
+            currentConcession = concessionService.findById(((qLicenceNational) LicForm.getLicence()).getQconcession().getRefConcession());
+            ((qLicenceNational) LicForm.getLicence()).setQconcession(currentConcession);
+        }
+      licValidator.validate(licAct, bindingresult);
 
         if(bindingresult.hasErrors()) {
            for(ObjectError obj:bindingresult.getFieldErrors()) {
               System.out.println(obj);
            }
-            System.out.println(bindingresult.getAllErrors().size());
 
+            System.out.println(bindingresult.getAllErrors().size());
+            model.addAttribute("LicForm",LicForm);
             validateURL="qshowNewLicNationalNewBat";
         }
-        else        {
-            qNavireLegale bat=(qNavireLegale) registrenavireService.create(LicForm.getLicence().getQnavire());
-            LicForm.getLicence().setQnavire(bat);
-            LicForm.getLicence().setBalise(bat.getBalise());LicForm.getLicence().setAnneeconstr(bat.getAnneeconstr());LicForm.getLicence().setCalpoids(bat.getCalpoids());LicForm.getLicence().setCount(bat.getCount());LicForm.getLicence().setEff(bat.getEff());LicForm.getLicence().setGt(bat.getGt());LicForm.getLicence().setImo(bat.getImo());
-            LicForm.getLicence().setKw(bat.getKw());LicForm.getLicence().setNbrhomm(bat.getNbrhomm());LicForm.getLicence().setLarg(bat.getLarg());LicForm.getLicence().setLongg(bat.getLongg());LicForm.getLicence().setNomnav(bat.getNomnav());LicForm.getLicence().setRadio(bat.getRadio());LicForm.getLicence().setPuimot(bat.getPuimot());
-            LicForm.getLicence().setNomar(bat.getNomar());
+        else    {
+            List<qCategRessource> VV=new ArrayList<qCategRessource>();
+            for(qCategRessource cc:LicForm.getLicence().getQcatressources())
+            {
+                VV.add(new qCategRessource(cc.getTypeconcessionConcernee(),cc.getTypeSupport(),cc.getQlicences(),cc.getEngins(),
+                        cc.getAncienCategoriePeche()));
+            }
+              qNavireLegale navireLegale=new qNavireLegale(LicForm.getLicence().getNumimm(), LicForm.getLicence().getNomnav(),  LicForm.getLicence().getLongg(), LicForm.getLicence().getPuimot(), LicForm.getLicence().getNation(), LicForm.getLicence().getLarg(), LicForm.getLicence().getCount(), LicForm.getLicence().getNbrhomm(), LicForm.getLicence().getEff(), LicForm.getLicence().getAnneeconstr(), LicForm.getLicence().getCalpoids(), LicForm.getLicence().getGt(),LicForm.getLicence().getKw(), LicForm.getLicence().getTjb(), LicForm.getLicence().getImo(), LicForm.getLicence().getPort(),
+              LicForm.getLicence().getRadio(), LicForm.getLicence().getBalise(), LicForm.getLicence().getUpdatedAt(), LicForm.getLicence().getNumlic(), enumModePeche.NATIONAL, LicForm.getLicence().getDateDebutAuth(), LicForm.getLicence().getDateFinAuth(), null, LicForm.getLicence().getEnginsAuthorisees(),LicForm.getLicence().getNomar());
+            //qNavireLegale bat=(qNavireLegale) registrenavireService.create(navireLegale);
+            navireLegale.setTypb( LicForm.getLicence().getTypb());
+            //navireLegale.setConcession(LicForm.getLicence().get);
+           // (qBateau)navireLegale.set
+            navireLegale.setConcession(((qLicenceNational) LicForm.getLicence()).getQconcession());
+         //   registrenavireService.save(navireLegale);
+            navireLegale.setAccordPeche(null);
+            LicForm.getLicence().setQnavire(navireLegale);
 
             licenceService.create(LicForm.getLicence());
             model.clear();
@@ -983,11 +1208,17 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
         }
         return validateURL;
     }
-    @RequestMapping(value="/NouvLicenceBatNouveau1",params = {"addNewLicLib"},method = RequestMethod.POST)
+    @RequestMapping(value="/NouvLicenceBatNouveau1LN",params = {"addNewLicLib"},method = RequestMethod.POST)
     public String NouvLicenceBatNouveauadd1(final  @Valid  @ModelAttribute("LicForm") creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
         String validateURL=null;
 
         qLic licAct=LicForm.getLicence();
+
+        if(LicForm.getCategoriesRattaches()!=null) {
+            LicForm.getLicence().setQcatressources(LicForm.getCategoriesRattaches());
+        if(LicForm.getEnginsAuthorisees()!=null)   LicForm.getLicence().setEnginsAuthorisees(LicForm.getEnginsAuthorisees());
+        }
+
 
         licValidator.validate(licAct, bindingresult);
         model.addAttribute("LicForm",LicForm);
@@ -999,11 +1230,14 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
             validateURL="qshowNewLicLibreNewBat";
         }
         else        {
-            qNavireLegale bat=(qNavireLegale) registrenavireService.create(LicForm.getLicence().getQnavire());
-            LicForm.getLicence().setQnavire(bat);
-            LicForm.getLicence().setBalise(bat.getBalise());LicForm.getLicence().setAnneeconstr(bat.getAnneeconstr());LicForm.getLicence().setCalpoids(bat.getCalpoids());LicForm.getLicence().setCount(bat.getCount());LicForm.getLicence().setEff(bat.getEff());LicForm.getLicence().setGt(bat.getGt());LicForm.getLicence().setImo(bat.getImo());
-            LicForm.getLicence().setKw(bat.getKw());LicForm.getLicence().setNbrhomm(bat.getNbrhomm());LicForm.getLicence().setLarg(bat.getLarg());LicForm.getLicence().setLongg(bat.getLongg());LicForm.getLicence().setNomnav(bat.getNomnav());LicForm.getLicence().setRadio(bat.getRadio());LicForm.getLicence().setPuimot(bat.getPuimot());
-            LicForm.getLicence().setNomar(bat.getNomar());
+            qNavireLegale navireLegale=new qNavireLegale(LicForm.getLicence().getNumimm(), LicForm.getLicence().getNomnav(),  LicForm.getLicence().getLongg(), LicForm.getLicence().getPuimot(), LicForm.getLicence().getNation(), LicForm.getLicence().getLarg(), LicForm.getLicence().getCount(), LicForm.getLicence().getNbrhomm(), LicForm.getLicence().getEff(), LicForm.getLicence().getAnneeconstr(), LicForm.getLicence().getCalpoids(), LicForm.getLicence().getGt(),LicForm.getLicence().getKw(), LicForm.getLicence().getTjb(), LicForm.getLicence().getImo(), LicForm.getLicence().getPort(),
+                    LicForm.getLicence().getRadio(), LicForm.getLicence().getBalise(), LicForm.getLicence().getUpdatedAt(), LicForm.getLicence().getNumlic(), enumModePeche.ETRANGER, LicForm.getLicence().getDateDebutAuth(), LicForm.getLicence().getDateFinAuth(), LicForm.getLicence().getQcatressources(), LicForm.getLicence().getEnginsAuthorisees(),LicForm.getLicence().getNomar());
+            //qNavireLegale bat=(qNavireLegale) registrenavireService.create(navireLegale);
+            navireLegale.setTypb( LicForm.getLicence().getTypb());
+            // (qBateau)navireLegale.set
+
+            navireLegale.setAccordPeche(((qLicenceLibre) LicForm.getLicence()).getAccord());
+            LicForm.getLicence().setQnavire(navireLegale);
 
             licenceService.create(LicForm.getLicence());
             model.clear();
@@ -1859,15 +2093,15 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
         typeconcessionService.create(paPel);
         typeconcessionService.create(paAlAut);
 
-        qCategRessource qPACep = new qCategRessource(typeconcessionService.findById(1), enumSupport.Collectif, null, qEnginsdiff);
+        qCategRessource qPACep = new qCategRessource(typeconcessionService.findById(1), enumSupport.Collectif, null, qEnginsdiff,null);
 
-        qCategRessource qPACrust = new qCategRessource(paCrust, enumSupport.Collectif, null, qEnginsdiff);
+        qCategRessource qPACrust = new qCategRessource(paCrust, enumSupport.Collectif, null, qEnginsdiff,null);
 
-        qCategRessource qPADem = new qCategRessource(paDem, enumSupport.Collectif, null, qEnginsdiff);
+        qCategRessource qPADem = new qCategRessource(paDem, enumSupport.Collectif, null, qEnginsdiff,null);
 
-        qCategRessource qPAPel = new qCategRessource(paPel, enumSupport.Collectif, null, qEnginsdiff);
+        qCategRessource qPAPel = new qCategRessource(paPel, enumSupport.Collectif, null, qEnginsdiff,null);
 
-        qCategRessource qPAAlAut = new qCategRessource(paAlAut, enumSupport.Collectif, null, qEnginsdiff);
+        qCategRessource qPAAlAut = new qCategRessource(paAlAut, enumSupport.Collectif, null, qEnginsdiff,null);
 
 
         categService.create(qPACep);
@@ -1891,11 +2125,11 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
         typeconcessionService.create(pcNPPelSenneursM26);
         typeconcessionService.create(pcNPAutreMol);
 
-        qCategRessource qPCNPCep = new qCategRessource(pcNPCeph, enumSupport.Collectif, null, qEnginsdiff);
-        qCategRessource qPCNPCrust = new qCategRessource(pcNPCrust, enumSupport.Collectif, null, qEnginsdiff);
-        qCategRessource qPCNPDem = new qCategRessource(pcNPDem, enumSupport.Collectif, null, qEnginsdiff);
-        qCategRessource qPCNPPel1 = new qCategRessource(pcNPPelSenneursM26, enumSupport.Collectif, null, qEnginsdiff);
-        qCategRessource qPCNPAlAut = new qCategRessource(pcNPAutreMol, enumSupport.Collectif, null, qEnginsdiff);
+        qCategRessource qPCNPCep = new qCategRessource(pcNPCeph, enumSupport.Collectif, null, qEnginsdiff,null);
+        qCategRessource qPCNPCrust = new qCategRessource(pcNPCrust, enumSupport.Collectif, null, qEnginsdiff,null);
+        qCategRessource qPCNPDem = new qCategRessource(pcNPDem, enumSupport.Collectif, null, qEnginsdiff,null);
+        qCategRessource qPCNPPel1 = new qCategRessource(pcNPPelSenneursM26, enumSupport.Collectif, null, qEnginsdiff,null);
+        qCategRessource qPCNPAlAut = new qCategRessource(pcNPAutreMol, enumSupport.Collectif, null, qEnginsdiff,null);
 
 
         categService.create(qPCNPCep);
@@ -1920,11 +2154,11 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
         typeconcessionService.create(pcPAutreMol);
 
 
-        qCategRessource qPCPCep = new qCategRessource(pcPCeph, enumSupport.Collectif, null, qEnginsdiff);
-        qCategRessource qPCPCrust = new qCategRessource(pcPCrust, enumSupport.Collectif, null, qEnginsdiff);
-        qCategRessource qPCPDem = new qCategRessource(pcPDem, enumSupport.Collectif, null, qEnginsdiff);
-        qCategRessource qPCPPel1 = new qCategRessource(pcPPelSenneursM26, enumSupport.Collectif, null, qEnginsdiff);
-        qCategRessource qPCPAlAut = new qCategRessource(pcPAutreMol, enumSupport.Collectif, null, qEnginsdiff);
+        qCategRessource qPCPCep = new qCategRessource(pcPCeph, enumSupport.Collectif, null, qEnginsdiff,null);
+        qCategRessource qPCPCrust = new qCategRessource(pcPCrust, enumSupport.Collectif, null, qEnginsdiff,null);
+        qCategRessource qPCPDem = new qCategRessource(pcPDem, enumSupport.Collectif, null, qEnginsdiff,null);
+        qCategRessource qPCPPel1 = new qCategRessource(pcPPelSenneursM26, enumSupport.Collectif, null, qEnginsdiff,null);
+        qCategRessource qPCPAlAut = new qCategRessource(pcPAutreMol, enumSupport.Collectif, null, qEnginsdiff,null);
 
         categService.create(qPCPCep);
         categService.create(qPCPCrust);
@@ -1956,14 +2190,14 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
         typeconcessionService.create(phNThon);
 
 
-        qCategRessource qRCphNCeph = new qCategRessource(phNCeph, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphNAutres = new qCategRessource(phNAutres, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphNCrab = new qCategRessource(phNCrab, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphNCrv = new qCategRessource(phNCrv, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphNLangRose = new qCategRessource(phNMerlu, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphNMerlu = new qCategRessource(phNPel, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphNPel = new qCategRessource(phNDemAQM, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphNDemAQM = new qCategRessource(phNThon, enumSupport.Individuel, null, qEnginsdiff);
+        qCategRessource qRCphNCeph = new qCategRessource(phNCeph, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphNAutres = new qCategRessource(phNAutres, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphNCrab = new qCategRessource(phNCrab, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphNCrv = new qCategRessource(phNCrv, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphNLangRose = new qCategRessource(phNMerlu, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphNMerlu = new qCategRessource(phNPel, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphNPel = new qCategRessource(phNDemAQM, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphNDemAQM = new qCategRessource(phNThon, enumSupport.Individuel, null, qEnginsdiff,null);
         categService.create(qRCphNCeph);
         categService.create(qRCphNAutres);
         categService.create(qRCphNCrab);
@@ -1994,15 +2228,15 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
         typeconcessionService.create(phADemAQM);
         typeconcessionService.create(phAThon);
 
-        qCategRessource qRCphACeph = new qCategRessource(phACeph, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphAAutres = new qCategRessource(phAAutres, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphACrab = new qCategRessource(phACrab, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphACrv = new qCategRessource(phACrv, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qphALangRose = new qCategRessource(phALangRose, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphAMerlu = new qCategRessource(phAMerlu, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphAPel = new qCategRessource(phAPel, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphADemAQM = new qCategRessource(phADemAQM, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphAThon = new qCategRessource(phAThon, enumSupport.Individuel, null, qEnginsdiff);
+        qCategRessource qRCphACeph = new qCategRessource(phACeph, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphAAutres = new qCategRessource(phAAutres, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphACrab = new qCategRessource(phACrab, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphACrv = new qCategRessource(phACrv, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qphALangRose = new qCategRessource(phALangRose, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphAMerlu = new qCategRessource(phAMerlu, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphAPel = new qCategRessource(phAPel, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphADemAQM = new qCategRessource(phADemAQM, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphAThon = new qCategRessource(phAThon, enumSupport.Individuel, null, qEnginsdiff,null);
 
 
         categService.create(qRCphACeph);
@@ -2035,15 +2269,15 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
         typeconcessionService.create(phLDemAQM);
         typeconcessionService.create(phLThon);
 
-        qCategRessource qRCphLCeph = new qCategRessource(phLCeph, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphLAutres = new qCategRessource(phLAutres, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphLCrab = new qCategRessource(phLCrab, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCphLCrv = new qCategRessource(phLCrv, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qphLLangRose = new qCategRessource(phLLangRose, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCLphALangRose = new qCategRessource(phLMerlu, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCLphAMerlu = new qCategRessource(phLPel, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCLphAPel = new qCategRessource(phLDemAQM, enumSupport.Individuel, null, qEnginsdiff);
-        qCategRessource qRCLphADemAQM = new qCategRessource(phLThon, enumSupport.Individuel, null, qEnginsdiff);
+        qCategRessource qRCphLCeph = new qCategRessource(phLCeph, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphLAutres = new qCategRessource(phLAutres, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphLCrab = new qCategRessource(phLCrab, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCphLCrv = new qCategRessource(phLCrv, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qphLLangRose = new qCategRessource(phLLangRose, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCLphALangRose = new qCategRessource(phLMerlu, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCLphAMerlu = new qCategRessource(phLPel, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCLphAPel = new qCategRessource(phLDemAQM, enumSupport.Individuel, null, qEnginsdiff,null);
+        qCategRessource qRCLphADemAQM = new qCategRessource(phLThon, enumSupport.Individuel, null, qEnginsdiff,null);
         categService.create(qRCphLCeph);
         categService.create(qRCphLAutres);
         categService.create(qRCphLCrab);
@@ -2297,18 +2531,37 @@ List<qEnginAuthorisee> engs=new ArrayList<qEnginAuthorisee>();
         return "autres/typeslic";
     }
     @RequestMapping(value="/SupprimerConcessionnaire",method = RequestMethod.GET)
-    public String SupprimerConcessionnaire(@RequestParam(name="refConcessionnairePK") String refConcessionnairePK,final ModelMap model) {
+    public String SupprimerConcessionnaire(final RedirectAttributes redirects,@RequestParam(name="refConcessionnairePK") String refConcessionnairePK,final ModelMap model) {
     //   List<qTypeLic> typeslic=typelicService.findAll();
-qConsignataire deletedConsignataire=consignataireService.findById(refConcessionnairePK);
+         qConsignataire deletedConsignataire=consignataireService.findById(refConcessionnairePK);
         if( deletedConsignataire!=null) {
-            if(deletedConsignataire.getQconcession()!=null)
+            if(deletedConsignataire.getQconcession()==null)
             {  consignataireService.delete(refConcessionnairePK);
-            model.addAttribute("feedback","supprimé");}
-            else {model.addAttribute("feedback","impossible de supprimer");}
+                redirects.addFlashAttribute("feedback","le consignataire est bien supprimé");}
+            else {redirects.addFlashAttribute("feedback","Impossible de supprimé le consignataire");}
         }
-        else model.addAttribute("feedback","impossible de supprimer");
+        else redirects.addFlashAttribute("feedback","Impossible de supprimé le consignataire");
 
-        return "autres/typeslic";
+        return "redirect:listConcessionnaires";
+    }
+
+    @RequestMapping(value="/ActionConcession",method = RequestMethod.GET)
+    public String ActionConcession(final RedirectAttributes redirectAttributes,@RequestParam(name="refConcessionPK") String refConcessionPK,final ModelMap model) {
+        //   List<qTypeLic> typeslic=typelicService.findAll();
+        qConcession deletedConcession=concessionService.findById(refConcessionPK);
+        if( deletedConcession!=null) {
+            if(deletedConcession.getNavires().size()==0 && deletedConcession.getqLicenceBatLastList().size()==0)
+            {
+                deletedConcession.setCategoriesRessources(null);
+                concessionService.save(deletedConcession);
+                concessionService.delete(deletedConcession);
+                redirectAttributes.addFlashAttribute("feedback","supprimé");
+            }
+            else {redirectAttributes.addFlashAttribute("feedback","Impossible de supprimer la concession, il y a une historique");}
+        }
+        else redirectAttributes.addFlashAttribute("feedback","impossible de supprimer");
+
+        return "redirect:listConcessions";
     }
     @RequestMapping(value="/AjouterConcession",method = RequestMethod.GET)
     public String AjouterConcession(final @RequestParam(name="refConcessionnairePK") String refConcessionnairePK,final ModelMap model) {
@@ -2316,8 +2569,9 @@ qConsignataire deletedConsignataire=consignataireService.findById(refConcessionn
         qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
      if(currentConsignataire!=null)   newConcession.setQconsignataire(currentConsignataire);
         else System.out.println("impssiiiiiiiiiiiiiiiible");
-
-        model.addAttribute("newConcession",newConcession);
+        creationConcessionForm  creConcess=new creationConcessionForm();
+        creConcess.setCurrentConcession(newConcession);
+        model.addAttribute("concessionForm",creConcess);
 
         return "concessions/nouvelleConcession";
     }
@@ -2426,33 +2680,64 @@ qConsignataire deletedConsignataire=consignataireService.findById(refConcessionn
 
         return "concessions/newConcessionnaire";
     }
+
+
+    @RequestMapping(value="/submitConcession", params={"removeRowX"},method = RequestMethod.POST)
+    public String NouvLicenceBatExistantRemoveRowXX(final  @ModelAttribute("concessionForm") creationConcessionForm concessionForm, final HttpServletRequest req,final ModelMap model) {
+        final Integer rowId = Integer.valueOf(req.getParameter("removeRowX"));
+        String url=null;
+
+        qCategRessource currentCateg=concessionForm.getCategoriesRattaches().get(rowId.intValue());
+
+
+        if(currentCateg!=null) {
+
+
+            concessionForm.getCategoriesRattaches().remove(rowId.intValue());
+
+        }
+
+        model.addAttribute("concessionForm",concessionForm);
+        return "concessions/nouvelleConcession";
+
+    }
     @RequestMapping(value="/submitConcession", params={"addRow"},method = RequestMethod.POST)
-    public String submitConcessionAddRow(final   qConcession newConcession,final BindingResult bindingresult,final ModelMap model) {
+    public String submitConcessionAddRow(final  @ModelAttribute("concessionForm") creationConcessionForm concessionForm,final BindingResult bindingresult,final ModelMap model) {
+        String url=null;
         List<qCategRessource> ens=new ArrayList<qCategRessource>();
-        System.out.println(newConcession.getRefConcession());
-        System.out.println(newConcession.getQconsignataire());
-        System.out.println(newConcession.getDateConcession());
-        System.out.println(newConcession.getDateDebut());
-        System.out.println(newConcession.getDateFin());
-        System.out.println(newConcession.getQuotaEnTonne());
-        model.addAttribute("newConcession",newConcession);
-        if (newConcession.getCategoriesRessources() == null) {
-            ens.add(new qCategRessource());
-            newConcession.setCategoriesRessources(ens);
-        } else newConcession.getCategoriesRessources().add(new qCategRessource());
+        qCategRessource currentToBeAdd=categService.findById(concessionForm.getSelectedCategorieRessource().getIdtypeConcession());
+        System.out.println("new categ "+currentToBeAdd);
+        if(concessionForm.getCategoriesRattaches() == null) {
+            ens.add(currentToBeAdd);
+            concessionForm.setCategoriesRattaches(ens);
+          //   System.out.println(currentToBeAdd.getEngins().size());
+        } else {
+            if (!concessionForm.getCategoriesRattaches().contains(currentToBeAdd))
+            {
+                ens.add(currentToBeAdd);
+                concessionForm.getCategoriesRattaches().addAll(ens);
+            }
+        }
+        System.out.println("nombre de ca"+concessionForm.getCategoriesRattaches().size());
+        //concessionForm.setCategoriesRattaches(ens);
+        model.addAttribute("concessionForm",concessionForm);
+
         return "concessions/nouvelleConcession";
     }
     @RequestMapping(value="/submitConcession", params={"saveConcession"},method = RequestMethod.POST)
-    public String submitConcessionSave(final  @ModelAttribute("newConcession") qConcession newConcession,final BindingResult bindingresult,final ModelMap model) {
+    public String submitConcessionSave(final  @ModelAttribute("concessionForm") creationConcessionForm concessionForm,final BindingResult bindingresult,final ModelMap model) {
 
-        concessionValidator.validate(newConcession, bindingresult);
+        concessionForm.getCurrentConcession().setCategoriesRessources(concessionForm.getCategoriesRattaches());
+        concessionValidator.validate(concessionForm.getCurrentConcession(), bindingresult);
 
       if(!bindingresult.hasErrors()) {
-          concessionService.create(newConcession);
+          concessionService.create(concessionForm.getCurrentConcession());
           model.addAttribute("feedback","la concession est sauvgardée");
           qConcession newConc=new qConcession();
-          newConc.setQconsignataire(newConcession.getQconsignataire());
-          model.addAttribute("newConcession",newConc);
+          newConc.setQconsignataire(concessionForm.getCurrentConcession().getQconsignataire());
+          creationConcessionForm frm=new creationConcessionForm();
+          frm.setCurrentConcession(newConc);
+          model.addAttribute("concessionForm",frm);
           return "concessions/nouvelleConcession";
       }
         else {
@@ -2460,15 +2745,12 @@ qConsignataire deletedConsignataire=consignataireService.findById(refConcessionn
           for( ObjectError err:bindingresult.getAllErrors()) {
              System.out.println(err.getCode());
               System.out.println(err.getObjectName());
-
           }
           System.out.println(bindingresult.getAllErrors().size());
-           model.addAttribute("newConcession",newConcession);
+          model.addAttribute("concessionForm",concessionForm);
           model.addAttribute("feedback","");
           return "concessions/nouvelleConcession";
           }
-
-
     }
 
 
@@ -2809,7 +3091,7 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
         else  myred.addFlashAttribute("prefnontrouve","prefix non trouvé");
         return "redirect:listZones";
     }
-    @RequestMapping(value="/Actiony ZoneModifySave",method = RequestMethod.POST)
+    @RequestMapping(value="/ActionZoneModifySave",method = RequestMethod.POST)
     public String ActionZoneModifySave(final @ModelAttribute("modifiedZone") qZone modifiedZone,final ModelMap model) {
         zoneService.save(modifiedZone);
         model.addAttribute("modifZone",modifiedZone);
@@ -3192,4 +3474,201 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
         }
     }
 
+    @RequestMapping(value="/importerNationalites",method = RequestMethod.GET)
+    public String importerNationalites(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileNationalites", fileModel);
+        return "imports/importerNationalites";
+    }
+
+
+    @RequestMapping(value="/importerCategoriesPeche",method = RequestMethod.GET)
+    public String importerCategoriesPeche(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileCategoriesPeche", fileModel);
+        return "imports/importerCategoriesPeche";
+    }
+    @RequestMapping(value="/importerTypesConcession",method = RequestMethod.GET)
+    public String importerTypesConcession(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileTypesConcession", fileModel);
+        return "imports/importerTypesConcession";
+    }
+    @RequestMapping(value="/importerPrefixes",method = RequestMethod.GET)
+    public String importerPrefixes(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("filePrefixes", fileModel);
+        return "imports/importerPrefixes";
+    }
+    @RequestMapping(value="/importerModels",method = RequestMethod.GET)
+    public String importerModels(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileModels", fileModel);
+        return "imports/importerModels";
+    }
+    @RequestMapping(value="/importerZones",method = RequestMethod.GET)
+    public String importerZones(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileZones", fileModel);
+        return "imports/importerZones";
+    }
+    @RequestMapping(value="/importerCarnets",method = RequestMethod.GET)
+    public String importerCarnets(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileCarnets", fileModel);
+        return "imports/importerCarnets";
+    }
+
+    //---------------------------
+
+    @RequestMapping(value="/importerNationalites",method = RequestMethod.POST)
+    public String importerNationalitesPOST(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            docService.importerNationalites(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+
+
+
+        return "redirect:importerNationalites";
+    }
+    @RequestMapping(value="/importerCategoriesPeche",method = RequestMethod.POST)
+    public String importerCategoriesPechePOST(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            docService.importerCategoriesPeche(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+        return "redirect:importerCategoriesPeche";
+    }
+    @RequestMapping(value="/importerTypesConcession",method = RequestMethod.POST)
+    public String importerTypesConcessionPOST(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            docService.importerTypesConcession(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+        return "redirect:importerTypesConcession";
+    }
+    @RequestMapping(value="/importerPrefixes",method = RequestMethod.POST)
+    public String importerPrefixesPOST(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            docService.importerPrefixes(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+        return "redirect:importerPrefixes";
+    }
+    @RequestMapping(value="/importerModels",method = RequestMethod.POST)
+    public String importerModelsPOST(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            docService.importerModels(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+        return "redirect:importerModels";
+    }
+    @RequestMapping(value="/importerZones",method = RequestMethod.POST)
+    public String importerZonesPOST(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            docService.importerZones(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+        return "redirect:importerZones";
+    }
+    @RequestMapping(value="/importerCarnets",method = RequestMethod.POST)
+    public String importerCarnetsPOST(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            docService.importerCarnets(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename(),result);
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+        return "redirect:importerCarnets";
+    }
 }

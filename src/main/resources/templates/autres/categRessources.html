@@ -1,11 +1,13 @@
-<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorator="layout/sitelayout">
 
 <head>
     <meta charset="UTF-8" />
     <title>Title</title>
 </head>
 <body>
-<div layout:fragment="content">
+<div layout:fragment="content" sec:authorize="hasRole('ROLE_USER')">
 
     <h3><p class="spacer"><kbd>Liste de categories de ressources </kbd></p></h3>
 <label ></label>
