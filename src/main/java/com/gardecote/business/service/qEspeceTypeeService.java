@@ -1,9 +1,6 @@
 package com.gardecote.business.service;
 
-import com.gardecote.entities.qCapture;
-import com.gardecote.entities.qCategRessource;
-import com.gardecote.entities.qEspeceTypee;
-import com.gardecote.entities.qEspeceTypeePK;
+import com.gardecote.entities.*;
 
 import java.util.List;
 
@@ -16,7 +13,8 @@ public interface qEspeceTypeeService {
      * @param idact
      * @return entity
      */
-    qEspeceTypee findById(qEspeceTypeePK idact) ;
+    qEspeceTypee findById(qEspeceTypeePK idact);
+    List<qModelJP> findModel(qEspeceTypee mjp);
 
     /**
      * Loads all entities.

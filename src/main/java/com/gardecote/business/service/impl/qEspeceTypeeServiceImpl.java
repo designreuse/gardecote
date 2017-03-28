@@ -3,14 +3,15 @@ package com.gardecote.business.service.impl;
 import com.gardecote.business.service.qEspeceTypeeService;
 import com.gardecote.data.repository.jpa.qCarnetRepository;
 import com.gardecote.data.repository.jpa.qEspeceTypeeRepository;
-import com.gardecote.entities.qCarnet;
-import com.gardecote.entities.qCarnetPK;
-import com.gardecote.entities.qEspeceTypee;
-import com.gardecote.entities.qEspeceTypeePK;
+import com.gardecote.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,8 @@ import java.util.List;
 @Service
 @Transactional
 public class qEspeceTypeeServiceImpl implements qEspeceTypeeService {
+    @PersistenceContext
+    private EntityManager em;
     @Autowired
     private qEspeceTypeeRepository qEspeceTypeeRepository;
 
@@ -73,4 +76,19 @@ public class qEspeceTypeeServiceImpl implements qEspeceTypeeService {
     public void setqEspeceTypeeRepository(com.gardecote.data.repository.jpa.qEspeceTypeeRepository qEspeceTypeeRepository) {
         this.qEspeceTypeeRepository = qEspeceTypeeRepository;
     }
+
+    @Override
+    public List<qModelJP> findModel(qEspeceTypee espt)
+     {
+         List<qModelJP> res=new ArrayList<qModelJP>();
+     //    TypedQuery<qModelJP> queryMemberOf = em.createQuery("SELECT a FROM qModelJP a", qModelJP.class);
+         List<qModelJP> resultMemberOf = qEspeceTypeeRepository.findModel();
+      //           queryMemberOf.getResultList();
+
+         for(qModelJP mjp:resultMemberOf) {
+             if(mjp.getEspecestypees().contains(espt))
+                 res.add(mjp);
+         }
+        return res;
+     }
 }

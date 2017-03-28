@@ -32,7 +32,7 @@ import java.util.Set;
  *
  */
 @Entity
-@Table(name="qlicence", schema="dbo", catalog="GCM8")
+@Table(name="qlicence", schema="dbo", catalog="GCM11")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPELICENCE", discriminatorType=DiscriminatorType.STRING, length=20)
 // Define named queries here

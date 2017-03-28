@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 
-       xmlns:batch="http://www.springframework.org/schema/batch" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
-http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
-
-
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="dataSource1" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
-        <property name="url" value="jdbc:sqlserver://DELL-PC\\sqlexpress:1433;databaseName=GCM8;" />
+        <property name="url" value="jdbc:sqlserver://DELL-PC\\sqlexpress:1433;databaseName=GCM11;" />
         <property name="username" value="lehbib" />
         <property name="password" value="google" />
     </bean>
@@ -18,7 +16,7 @@ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="default" />
         <property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml"/>
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource1" />
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="showSql" value="false" />

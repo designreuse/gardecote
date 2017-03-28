@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name="qNavireLegale", schema="dbo", catalog="GCM8" )
+@Table(name="qNavireLegale", schema="dbo", catalog="GCM11" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qNavireLegale.countAll", query="SELECT COUNT(x) FROM qNavireLegale x" )
@@ -164,8 +164,8 @@ public class qNavireLegale extends qBateau implements Serializable {
         this.historiqueChangements = historiqueChangements;
     }
 
-    public qNavireLegale(String numimm, String nomnav,  String longg, String puimot, qNation nation, String larg, String count, String nbrhomm, String eff, Integer anneeconstr, String calpoids, float gt, float kw, float tjb, Integer imo, String port, String radio, String balise, Date updatedOn, String numlic, enumModePeche modePeche, Date dateDebutAuth, Date dateFinAuth, List<qCategRessource> qcatressources, List<qEnginAuthorisee> enginsAuthorisees,String nomar) {
-        super(numimm, nomnav,longg, puimot, nation, larg, count, nbrhomm, eff, anneeconstr, calpoids, gt, kw, tjb, imo, port, radio, balise, updatedOn);
+    public qNavireLegale(String numimm, String nomnav,  String longg, String puimot, qNation nation, String larg, String count, String nbrhomm, String eff, Integer anneeconstr, String calpoids, float gt, float kw, float tjb, Integer imo, String port, String radio, String balise, Date updatedOn, String numlic, enumModePeche modePeche, Date dateDebutAuth, Date dateFinAuth, List<qCategRessource> qcatressources, List<qEnginAuthorisee> enginsAuthorisees,String nomar,enumTypeBat b) {
+        super(numimm, nomnav,longg, puimot, nation, larg, count, nbrhomm, eff, anneeconstr, calpoids, gt, kw, tjb, imo, port, radio, balise, updatedOn,b);
         this.numlic = numlic;
         this.modePeche = modePeche;
         this.dateDebutAuth = dateDebutAuth;
@@ -173,6 +173,7 @@ public class qNavireLegale extends qBateau implements Serializable {
         this.qcatressources = qcatressources;
         this.enginsAuthorisees = enginsAuthorisees;
         this.nomar=nomar;
+
 
     }
 

@@ -107,3 +107,9 @@ li a {
 li a:hover {
   background-color: #111;
 }
+
+.form-control-inline {
+  min-width: 0;
+  width: auto;
+  display: inline;
+}

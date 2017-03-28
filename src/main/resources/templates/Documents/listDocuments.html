@@ -125,8 +125,9 @@
             <td th:text="${b.enumtypedoc}"></td>
             <td th:text="${b.qconcession!=null?b.qconcession.refConcession:'non applicable'}"></td>
             <td th:text="${b.qconcession!=null?b.qconcession.qconsignataire.nomconsignataire:'non applicable'}"></td>
-
-        </tr>
+            <td><a th:target="_blank" th:href="@{printReport1(numimm=${b.numImm},depart=${b.depart},PARAMETER_TYPE='pdf')}">Imprimer</a> </td>
+            <td><a th:target="_blank" th:href="@{printReport(reportname='rpt_A',numimm=${b.numImm},depart=${b.depart},FILE_FORMAT='pdf')}">Imprimer</a> </td>
+     </tr>
         </tbody>
     </table>
 

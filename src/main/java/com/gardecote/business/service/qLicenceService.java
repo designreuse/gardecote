@@ -23,7 +23,7 @@ public interface qLicenceService {
 	 * @return entity
 	 */
 	qLic findById(String idchact) ;
-
+	void updatechangements();
 	void  importerLicence(MultipartFile file, String fullname);
 	String importerLicenceNV(MultipartFile file, String fullpatchname);
 	/**

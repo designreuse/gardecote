@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qEspece", schema="dbo", catalog="GCM8" )
+@Table(name="qEspece", schema="dbo", catalog="GCM11" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qEspece.countAll", query="SELECT COUNT(x) FROM qEspece x" )
@@ -36,7 +36,7 @@ public class qEspece implements Serializable
     @Column(name="Code_Esp", nullable=false)
     private String   codeEsp      ;
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL,mappedBy = "qespece")
   private List<qEspeceTypee> qespecetypee;
   // @OneToMany
   //  qOpTraitement qopTraitement;
@@ -49,8 +49,7 @@ public class qEspece implements Serializable
     @Column(name="Nom_Fr", nullable=false, length=50)
     private String     nomFr        ;
 
-    @Column(name="Num_Ordre", nullable=false, length=50)
-    private Integer     numOrdre        ;
+
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
@@ -68,16 +67,10 @@ public class qEspece implements Serializable
         this.codeEsp = codeEsp;
         this.nomAr = nomAr;
         this.nomFr = nomFr;
-        this.numOrdre=numOrdre;
+
     }
 
-    public Integer getNumOrdre() {
-        return numOrdre;
-    }
 
-    public void setNumOrdre(Integer numOrdre) {
-        this.numOrdre = numOrdre;
-    }
 
     public List<qEspeceTypee> getQespecetypee() {
         return qespecetypee;

@@ -9,7 +9,6 @@
 <div layout:fragment="content">
     <h3>Modification de Model de capture </h3>
 
-
     <form  th:action="@{/ActionModelModifySave}"   method="post" th:object="${modifiedModel}">
         <div class="panel panel-primary">
             <div class="panel-heading"><b class="danger">
@@ -18,8 +17,6 @@
             <div class="panel-body">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Prefixe de document</label>
-
-
                     <select class="form-control" th:field="*{prefix}">
                         <option th:each="var : ${allPrefixess}"
                                 th:value="${var}"

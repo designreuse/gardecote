@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name="qPrefixConcession", schema="dbo", catalog="GCM8" )
+@Table(name="qPrefixConcession", schema="dbo", catalog="GCM11" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qPrefix.countAll", query="SELECT COUNT(x) FROM qPrefix  x" )

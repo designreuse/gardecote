@@ -23,7 +23,7 @@ import java.io.Serializable;
  */
 import java.util.Date;
 @Entity
-@Table(name="qCapture", schema="dbo", catalog="GCM8" )
+@Table(name="qCapture", schema="dbo", catalog="GCM11" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qCapture.countAll", query="SELECT COUNT(x) FROM qCapture x" )
@@ -32,7 +32,6 @@ import java.util.Date;
 public class qCapture implements Serializable
 {
     private static final long serialVersionUID = 1L;
-
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
@@ -45,14 +44,14 @@ public class qCapture implements Serializable
     @Id
      private    String      idespece;
     @Id
+    private    Integer      numOrdre;
+    @Id
      private    enumEspType esptype;
     @Id
     private  Integer          indexLigne;
     @Id
-    private  String         numPage ;
-
+    private  String         numPage;
     @OneToOne(cascade = CascadeType.ALL)
-
     private qDoc qdoc;
     @OneToOne
     private qEspeceTypee especeTypee;
@@ -71,6 +70,14 @@ public class qCapture implements Serializable
 
     public void setEspeceTypee(qEspeceTypee especeTypee) {
         this.especeTypee = especeTypee;
+    }
+
+    public Integer getNumOrdre() {
+        return numOrdre;
+    }
+
+    public void setNumOrdre(Integer numOrdre) {
+        this.numOrdre = numOrdre;
     }
 
     public Date getDatedepart() {
@@ -104,6 +111,8 @@ public class qCapture implements Serializable
     public void setIdespece(String idespece) {
         this.idespece = idespece;
     }
+
+
 
     public enumEspType getEsptype() {
         return esptype;
@@ -149,17 +158,17 @@ public class qCapture implements Serializable
     }
 
      public qCapturePK  getCapturePK() {
-         qCapturePK qcappk=new qCapturePK(datedepart,nummimm,dateJour,idespece,esptype);
+         qCapturePK qcappk=new qCapturePK(datedepart,nummimm,dateJour,idespece,esptype,numOrdre);
          return qcappk;
       }
 
-    public qCapture(Integer indexLigne,String numPage,qDoc qdoc, qEspeceTypee especeTypee, Integer quantite, qJourMere jourMere, qJourDeb jourDeb) {
+    public qCapture(Integer indexLigne,String numPage,qDoc qdoc, qEspeceTypee especeTypee, Integer quantite,Integer numOrdre, qJourMere jourMere, qJourDeb jourDeb) {
         this.datedepart = qdoc.getDepart();
         this.nummimm = qdoc.getNumImm();
         this.indexLigne=indexLigne;
         this.numPage=numPage;
-        if(qdoc.getEnumtypedoc().equals(enumTypeDoc.Fiche_Debarquement))this.dateJour = jourDeb.getDatejourDeb();
-        if(qdoc.getEnumtypedoc().equals(enumTypeDoc.Journal_Peche)) this.dateJour = jourMere.getDatejourMere();
+        if(qdoc.getEnumtypedoc().equals(enumTypeDoc.Fiche_Debarquement)) this.dateJour = jourDeb.getDatejourDeb();
+        if(qdoc.getEnumtypedoc().equals(enumTypeDoc.Journal_Peche))  this.dateJour = jourMere.getDatejourMere();
         this.idespece = especeTypee.getQespeceId();
         this.esptype = especeTypee.getEnumesptype();
         this.qdoc = qdoc;
@@ -167,6 +176,7 @@ public class qCapture implements Serializable
         this.quantite = quantite;
         this.jourMere = jourMere;
         this.jourDeb = jourDeb;
+        this.numOrdre=numOrdre;
     }
 
     public Integer getIndexLigne() {

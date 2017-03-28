@@ -55,6 +55,8 @@ public class qLicenceServiceImpl implements qLicenceService {
 	@Autowired
 	private qTypeLicService typlicService;
 	@Autowired
+	private qHystoriquesRepository changRepo;
+	@Autowired
 	private qDocService docService;
 	@Autowired
 	private qZoneService zoneService;
@@ -207,6 +209,60 @@ public class qLicenceServiceImpl implements qLicenceService {
 return "OK";
 
 	}
+
+	@Override
+	public void updatechangements()
+	{
+		Integer index=0;
+		String prevNom=null,currentNom=null;
+		qNation prevNationalite=null,currentNationalite=null;
+		qNavireHistoriqueChangements changNom=null,changNationalite=null;
+		for(qNavireLegale nl:navService.findAllLegal())
+		{
+
+			List<qLic> ourlic=nl.getLicences();
+			for(qLic currentlic:ourlic) {
+				index++;
+				if(index==1)  {prevNom= currentlic.getNomnav();prevNationalite= currentlic.getqNation();}
+				else        {
+					currentNom= currentlic.getNomnav();
+					currentNationalite=currentlic.getNation();
+					if(!currentNom.equals(prevNom))  {
+						changNom = new qNavireHistoriqueChangements();
+						changNom.setLicenceDeBase(currentlic);
+						changNom.setNavireConcernee(currentlic.getQnavire());
+						System.out.println("Numimm"+nl.getNumimm());
+						changNom.setNumimm(nl.getNumimm());
+						changNom.setDescriptif(prevNom+"->"+currentNom);
+
+						changNom.setNumLic(currentlic.getNumlic());
+						changNom.setTypeHystaurique(enumHistoriqueNavire.changement_Nom);
+						changRepo.save(changNom);
+					}
+					if(!currentNationalite.equals(prevNationalite)) {
+						changNationalite = new qNavireHistoriqueChangements();
+						changNationalite.setLicenceDeBase(currentlic);
+						changNationalite.setNavireConcernee(currentlic.getQnavire());
+						System.out.println("NumimmNqt"+nl.getNumimm());
+						changNationalite.setNumimm(nl.getNumimm());
+						System.out.println("prev");
+						System.out.println(prevNationalite);
+						System.out.println("nat");
+						System.out.println(currentNationalite);
+						changNationalite.setDescriptif(prevNationalite.getDesignation()+"->"+currentNationalite.getDesignation());
+						changNationalite.setNumLic(currentlic.getNumlic());
+						changNationalite.setTypeHystaurique(enumHistoriqueNavire.changementNationalite);
+						changRepo.save(changNationalite);
+					}
+					prevNom= currentlic.getNomnav();
+					prevNationalite= currentlic.getqNation();
+				}
+
+			}
+			index=0;
+		}
+	//	return null;
+	}
 	@Override
 	public void importerLicence(MultipartFile file, String fullpatchname) {
 		Long nCarnet,nDebut;
@@ -330,6 +386,9 @@ List<qCategRessource> currentRessources=null;
 					if (MINTYPNAV.equals("C4")) typeNavire = enumTypeBat.Congelateur_STM.toString();
 					if (MINTYPNAV.equals("CG")) typeNavire = enumTypeBat.Congelateur_glacier.toString();
 					if (MINTYPNAV.equals("COT")) typeNavire = enumTypeBat.COTIERE.toString();
+					if (MINTYPNAV.equals("CL")) typeNavire = enumTypeBat.Congelateur.toString();
+					if (MINTYPNAV.equals("GL")) typeNavire = enumTypeBat.GLACIER.toString();
+				//	if (MINTYPNAV.equals("GL")) typeNavire = enumTypeBat.COTIERE.toString();
 					if (MINTYPNAV.equals("G")) typeNavire = enumTypeBat.GLACIER_Refrigeration.toString();
 					if (MINTYPNAV.equals("GR")) typeNavire = enumTypeBat.GLACIER_Refrigeration.toString();
 					if (MINTYPNAV.equals("REF")) typeNavire = enumTypeBat.REFRIGERATION.toString();
@@ -341,7 +400,6 @@ List<qCategRessource> currentRessources=null;
 					if (MINTYPNAV.equals("C.F.")) typeNavire = enumTypeBat.Congelateur_Refrigerateur.toString();
 					if (MINTYPNAV.equals("INDEF")) typeNavire = enumTypeBat.INDEF.toString();
 					if (MINTYPNAV.equals("0")) typeNavire = enumTypeBat.INDEF.toString();
-
 
 					if (MINTYPNAV.equals("INDEF")) typeNavire = enumTypeBat.INDEF.toString();
 
@@ -361,7 +419,6 @@ if(Integer.parseInt(XX)>182){
 							System.out.println(DEBAUT);
 							// on compare le numimm de currentNavire avec le numimm de navire encours.
 							if (createdOn.before(DEBAUT)) {
-
 								currentNavire.setNomnav(NOMNAV);
 								currentNavire.setUpdatedOn(DEBAUT);
 								currentNavire.setDateDebutAuth(DEBAUT);
@@ -394,28 +451,14 @@ if(Integer.parseInt(XX)>182){
 
 							}
 						} else {
-							newNavire = new qNavireLegale(NUMIMM, NOMNAV, LONGG, PUIMOT, nation, LARG, COUNT, NBRHOMM, EFF, 0, CALPOIDS, 0, 0, 0, 0, PORT, RADIO, "0", DEBAUT, NUMLIC, enumModePeche.NATIONAL, DEBAUT, FINAUTO, null, null, NOMAR);
+							newNavire = new qNavireLegale(NUMIMM, NOMNAV, LONGG, PUIMOT, nation, LARG, COUNT, NBRHOMM, EFF, 0, CALPOIDS, 0, 0, 0, 0, PORT, RADIO, "0", DEBAUT, NUMLIC, enumModePeche.NATIONAL, DEBAUT, FINAUTO, null, null, NOMAR,enumTypeBat.valueOf(typeNavire));
+							newNavire.setTypb(enumTypeBat.valueOf(typeNavire));
 							navService.create(newNavire);
 							insertedNavire = newNavire;
 						}
 
 						currentLic = new qLicenceNational(typlic, zone, nation, null, insertedNavire, enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0, "0", CALPOIDS, COUNT, EFF, 0, 0, 0, LARG, LONGG, NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT, PUIMOT, RADIO, 0, null, null, enumModePeche.NATIONAL);
-						if (currentNavire != null && !currentNavire.getNomnav().equals(NOMNAV)) {
-							changNom = new qNavireHistoriqueChangements(enumHistoriqueNavire.changement_Nom,currentNavire,currentLic);
-							h++;
-						//	qhistoriqueService.save(chang);
-						}
 
-						if (currentNavire != null && !currentNavire.getNation().equals(NATION1)) {
-							changNationalite = new qNavireHistoriqueChangements();
-							changNationalite.setLicenceDeBase(currentLic);
-							changNationalite.setNavireConcernee(currentNavire);
-							changNationalite.setNumimm(NUMIMM);
-							changNationalite.setNumLic(NUMLIC);
-							changNationalite.setTypeHystaurique(enumHistoriqueNavire.changementNationalite);
-							h++;
-						//	qhistoriqueService.save(chang);
-						}
 					} else {
 						System.out.println("type navire :" + typeNavire);
 						System.out.println("type navire :" + MINTYPNAV);
@@ -455,33 +498,16 @@ if(Integer.parseInt(XX)>182){
 						} else {
 
 							newNavire = new qNavireLegale(NUMIMM, NOMNAV, LONGG, PUIMOT, nation, LARG, COUNT, NBRHOMM, EFF, 0, CALPOIDS, 0, 0, 0, 0, PORT, RADIO, "0", DEBAUT, NUMLIC, enumModePeche.ETRANGER,
-									DEBAUT, FINAUTO, null, null, NOMAR);
+									DEBAUT, FINAUTO, null, null, NOMAR,enumTypeBat.valueOf(typeNavire));
+							newNavire.setTypb(enumTypeBat.valueOf(typeNavire));
 							navService.create(newNavire);
 							insertedNavire = newNavire;
 						}
 
 						currentLic = new qLicenceLibre(typlic, zone, nation, null, insertedNavire, enumTypeBat.valueOf(typeNavire), DEBAUT, FINAUTO, 0, "0", CALPOIDS, COUNT, EFF, 0, 0, 0, LARG, LONGG, NBRHOMM, NOMAR, NOMNAV, NUMLIC, PORT, PUIMOT, RADIO, 0, encadrement, null, enumModePeche.ETRANGER);
-						if (currentNavire != null && !currentNavire.getNomnav().equals(NOMNAV)) {
-							changNom = new qNavireHistoriqueChangements();
-							changNom.setLicenceDeBase(currentLic);
-							changNom.setNavireConcernee(currentNavire);
-							changNom.setNumimm(NUMIMM);
-							changNom.setNumLic(NUMLIC);
-							changNom.setTypeHystaurique(enumHistoriqueNavire.changement_Nom);
-							h++;
-						}
-						if (currentNavire != null && !currentNavire.getNation().equals(nation)) {
-							changNationalite = new qNavireHistoriqueChangements();
-							changNationalite.setLicenceDeBase(currentLic);
-							changNationalite.setNavireConcernee(currentNavire);
-							changNationalite.setNumimm(NUMIMM);
-							changNationalite.setNumLic(NUMLIC);
-							changNationalite.setTypeHystaurique(enumHistoriqueNavire.changementNationalite);
-							//qhistoriqueService.save(changNationalite);
-							h++;
-						}
+
 					}
-					codauthJpaRepository.save(currentLic);
+	codauthJpaRepository.save(currentLic);
 	if(changNom!=null) qhistoriqueService.save(changNom);
 	if(changNationalite!=null) qhistoriqueService.save(changNationalite);
 	System.out.println("Chanemest est : " + h);
@@ -489,7 +515,7 @@ if(Integer.parseInt(XX)>182){
 
 				}
 					else {
-	               qNavireIllicite  navireIllicite=new qNavireIllicite();
+	qNavireIllicite  navireIllicite=new qNavireIllicite();
 	navireIllicite.setNumimm(NUMIMM);
 	navireIllicite.setNomnav(NOMNAV);
 	navireIllicite.setUpdatedOn(DEBAUT);
@@ -511,7 +537,6 @@ if(Integer.parseInt(XX)>182){
 	navireIllicite.setTjb(Float.parseFloat(TJB));
 	navireIllicite.setTypb(enumTypeBat.valueOf(typeNavire));
 	navService.save(navireIllicite);
-
 
 }
 				}

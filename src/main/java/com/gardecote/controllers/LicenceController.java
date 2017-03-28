@@ -1,12 +1,39 @@
 package com.gardecote.controllers;
 import com.gardecote.LicenceAc;
+import com.gardecote.PojoGenerator;
+import com.gardecote.TestFactory;
 import com.gardecote.business.service.*;
+import com.gardecote.data.repository.jpa.qEspeceTypeeRepository;
 import com.gardecote.data.repository.jpa.qHystoriquesRepository;
 import com.gardecote.dto.StatusResponse;
 import com.gardecote.entities.*;
-import com.gardecote.reports.bateauExcelView;
-import com.gardecote.reports.licencesExcelView;
-import com.gardecote.reports.zoneExcelView;
+import com.gardecote.reports.*;
+
+import static net.sf.dynamicreports.report.builder.DynamicReports.*;
+
+import net.sf.cglib.beans.BeanGenerator;
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+
+import net.sf.dynamicreports.report.base.AbstractScriptlet;
+import net.sf.dynamicreports.report.builder.ReportBuilder;
+import net.sf.dynamicreports.report.builder.column.ColumnBuilder;
+import net.sf.dynamicreports.report.builder.column.ColumnBuilders;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
+
+import net.sf.dynamicreports.report.constant.PageType;
+import net.sf.dynamicreports.report.exception.DRException;
+
+import net.sf.jasperreports.engine.JRDataSource;
+
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.exception.DRException;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.lang.SerializationUtils;
 import com.gardecote.web.*;
 import org.jgroups.util.*;
@@ -40,17 +67,24 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import javax.sql.DataSource;
 
+import javassist.CtMethod;
 /**
  * Created by Dell on 12/11/2016.
 */
@@ -60,6 +94,21 @@ import java.util.*;
 @RequestMapping("/")
 
 public class LicenceController {
+    private static final String FILE_FORMAT = "format";
+    private static final String DATASOURCE = "datasource";
+    private static final String PARAMETER_TYPE = "type";
+    private static final String VALUE_TYPE_PDF = "pdf";
+    private static final String VALUE_TYPE_XLS = "xls";
+
+    private static final Map<String, String> FILE_TYPE_2_CONTENT_TYPE =
+            new HashMap<String, String>();
+    static {
+        FILE_TYPE_2_CONTENT_TYPE.put(VALUE_TYPE_PDF, "application/pdf");
+        FILE_TYPE_2_CONTENT_TYPE.put(VALUE_TYPE_XLS, "application/vnd.ms-excel");
+    }
+
+   @Autowired
+    private DataSource dbsoruce;
     @Autowired
     JobLauncher jobLauncher;
     @Autowired @Qualifier("licencesExportJob")
@@ -160,6 +209,9 @@ public class LicenceController {
     private qRegistreNavireService registrenavireService;
     @Autowired
     private qSeqService seqService;
+
+    @Autowired
+    private qEspeceTypeeRepository qesptypeeRepository;
     @Autowired
     private qTypeLicService typelicService;
     @Autowired
@@ -218,6 +270,8 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
     @ModelAttribute("allEspeces")
     public List<qEspece> populateEspeces() {
+        List<qEspece> especes=new ArrayList<qEspece>();
+
        return especeService.findAll();
 
     }
@@ -306,6 +360,11 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     @ModelAttribute("allEspTypes")
     public List<enumEspType> populateEspTypes() {
         return Arrays.asList(enumEspType.values());
+    }
+
+    @ModelAttribute("allTypesEspTypes")
+    public List<enumTypeEspTypee> populateallTypesEspTypes() {
+        return Arrays.asList(enumTypeEspTypee.values());
     }
 
     @ModelAttribute("allTypesBat")
@@ -1192,7 +1251,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
                         cc.getAncienCategoriePeche()));
             }
               qNavireLegale navireLegale=new qNavireLegale(LicForm.getLicence().getNumimm(), LicForm.getLicence().getNomnav(),  LicForm.getLicence().getLongg(), LicForm.getLicence().getPuimot(), LicForm.getLicence().getNation(), LicForm.getLicence().getLarg(), LicForm.getLicence().getCount(), LicForm.getLicence().getNbrhomm(), LicForm.getLicence().getEff(), LicForm.getLicence().getAnneeconstr(), LicForm.getLicence().getCalpoids(), LicForm.getLicence().getGt(),LicForm.getLicence().getKw(), LicForm.getLicence().getTjb(), LicForm.getLicence().getImo(), LicForm.getLicence().getPort(),
-              LicForm.getLicence().getRadio(), LicForm.getLicence().getBalise(), LicForm.getLicence().getUpdatedAt(), LicForm.getLicence().getNumlic(), enumModePeche.NATIONAL, LicForm.getLicence().getDateDebutAuth(), LicForm.getLicence().getDateFinAuth(), null, LicForm.getLicence().getEnginsAuthorisees(),LicForm.getLicence().getNomar());
+              LicForm.getLicence().getRadio(), LicForm.getLicence().getBalise(), LicForm.getLicence().getUpdatedAt(), LicForm.getLicence().getNumlic(), enumModePeche.NATIONAL, LicForm.getLicence().getDateDebutAuth(), LicForm.getLicence().getDateFinAuth(), null, LicForm.getLicence().getEnginsAuthorisees(),LicForm.getLicence().getNomar(),LicForm.getLicence().getTypb());
             //qNavireLegale bat=(qNavireLegale) registrenavireService.create(navireLegale);
             navireLegale.setTypb( LicForm.getLicence().getTypb());
             //navireLegale.setConcession(LicForm.getLicence().get);
@@ -1231,7 +1290,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         }
         else        {
             qNavireLegale navireLegale=new qNavireLegale(LicForm.getLicence().getNumimm(), LicForm.getLicence().getNomnav(),  LicForm.getLicence().getLongg(), LicForm.getLicence().getPuimot(), LicForm.getLicence().getNation(), LicForm.getLicence().getLarg(), LicForm.getLicence().getCount(), LicForm.getLicence().getNbrhomm(), LicForm.getLicence().getEff(), LicForm.getLicence().getAnneeconstr(), LicForm.getLicence().getCalpoids(), LicForm.getLicence().getGt(),LicForm.getLicence().getKw(), LicForm.getLicence().getTjb(), LicForm.getLicence().getImo(), LicForm.getLicence().getPort(),
-                    LicForm.getLicence().getRadio(), LicForm.getLicence().getBalise(), LicForm.getLicence().getUpdatedAt(), LicForm.getLicence().getNumlic(), enumModePeche.ETRANGER, LicForm.getLicence().getDateDebutAuth(), LicForm.getLicence().getDateFinAuth(), LicForm.getLicence().getQcatressources(), LicForm.getLicence().getEnginsAuthorisees(),LicForm.getLicence().getNomar());
+                    LicForm.getLicence().getRadio(), LicForm.getLicence().getBalise(), LicForm.getLicence().getUpdatedAt(), LicForm.getLicence().getNumlic(), enumModePeche.ETRANGER, LicForm.getLicence().getDateDebutAuth(), LicForm.getLicence().getDateFinAuth(), LicForm.getLicence().getQcatressources(), LicForm.getLicence().getEnginsAuthorisees(),LicForm.getLicence().getNomar(),LicForm.getLicence().getTypb());
             //qNavireLegale bat=(qNavireLegale) registrenavireService.create(navireLegale);
             navireLegale.setTypb( LicForm.getLicence().getTypb());
             // (qBateau)navireLegale.set
@@ -1756,7 +1815,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
        if(editedModel.getEspecestypees()!=null) editedModel.getEspecestypees().add(new qEspeceTypee());
         else {
-           List<qEspeceTypee> espts=new ArrayList<>();
+           List<qEspeceTypee> espts=new ArrayList<qEspeceTypee>();
            espts.add(new qEspeceTypee());
            editedModel.setEspecestypees(espts);
       }
@@ -1785,10 +1844,13 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
             prefPK=new qPrefixPK(editedModel.getPrefix(),editedModel.getTypeDoc());
             prefcurrent=prefService.findById(prefPK);
             if(prefcurrent!=null)
-            { jp=new qModelJP(prefcurrent,editedModel.getEspecestypees());
-            modeljpService.save(jp);}
+            {
+            jp=new qModelJP(prefcurrent,editedModel.getEspecestypees());
+            modeljpService.save(jp);
+            }
+
             model.addAttribute("editedModel",editedModel);
-              }
+            }
         return "Documents/editModel";
     }
 
@@ -3174,8 +3236,8 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
     public String DeleteModel(final RedirectAttributes redAttributes,final @RequestParam(name="especePK") String especePK,final ModelMap model) {
      //   qPrefixPK prefPK = new qPrefixPK(modelPK, enumTypeDoc.valueOf(typeDoc));
         qEspece esp = especeService.findById(especePK);
-        if (esp.getQespecetypee() == null ) {
-            especeService.delete(esp.getCodeEsp());
+        Integer resultDelete=especeService.delete(esp.getCodeEsp());
+        if (resultDelete == 0 ) {
             redAttributes.addAttribute("successmes","l'espece est bien supprimé");
         } else
         {
@@ -3191,7 +3253,7 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
         qEspece esp=especeService.findById(newEspece.getCodeEsp());
         if(esp==null) {
             especeService.create(newEspece);
-}
+                      }
         else  myred.addFlashAttribute("esptrouve","l'espece est déja crée");
         return "redirect:listEspeces";
     }
@@ -3412,12 +3474,12 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
             System.out.println("Fetching file");
             MultipartFile multipartFile = fileBucket.getFile();
 
-            //Now do something with file...
-        //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+         // Now do something with file...
+        //  FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
             licenceService.importerLicence(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
             String fileName = multipartFile.getOriginalFilename();
             model.addAttribute("fileName", fileName);
-         //   return "success";
+         // return "success";
         }
 
         //
@@ -3670,5 +3732,154 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
             //   return "success";
         }
         return "redirect:importerCarnets";
+    }
+
+
+    @RequestMapping(value = "/printReport1", method = RequestMethod.GET)
+    public void export(@RequestParam(name="numimm") String numimm, @RequestParam(name="depart") String depart,final @RequestParam(name="PARAMETER_TYPE") String PARAMETER_TYPE,ModelMap model,HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException , Exception{
+        String fileType = PARAMETER_TYPE;List<Object> pgs=new ArrayList<Object>();
+        List<String> colsPage=new ArrayList<String>();List<String> colsHPage=new ArrayList<String>();
+        Map<String,List<String>> colspagemap=new HashMap<String,List<String>>();
+        BeanGenerator beanGenerator = new BeanGenerator();
+        SimpleDateFormat sdfmt1 = new SimpleDateFormat("yyyy-MM-dd");
+        Map<String, Object> dataForReport = new HashMap<String, Object>();
+        Date dateDepart = null;
+        try {
+            dateDepart = sdfmt1.parse(depart);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        qDoc currentDoc = docService.findById(new qDocPK(numimm, dateDepart));
+        Data currentData=new Data();
+        Data[] list = new Data[1];
+
+
+            // creation of beans
+        beanGenerator.addProperty("Date", Date.class);
+
+
+
+        for(qCapture vv:((qMarree) currentDoc).getPages().get(0).getListJours().get(0).getCapturesDuMarree()) {
+            beanGenerator.addProperty(StringUtils.uncapitalize(vv.getEspeceTypee().getQespece().getNomFr().replaceAll("\\s+", "")),Integer.class);
+            colsPage.add(StringUtils.uncapitalize(vv.getEspeceTypee().getQespece().getNomFr().replaceAll("\\s+", "")));
+            colsHPage.add(vv.getEspeceTypee().getQespece().getNomFr());
+      //     Method setter = myBean.getClass().getMethod("set"+StringUtils.capitalize(vv.getEspeceTypee().getQespece().getNomFr().replaceAll("\\s+", "")), String.class);
+        }
+        Method setter, getter;Object myBean;
+        for(qJourMere jm:((qMarree) currentDoc).getPages().get(0).getListJours()) {
+            myBean = beanGenerator.create();
+            setter = myBean.getClass().getMethod("setDate", Date.class);
+            setter.invoke(myBean, jm.getDateJour());
+
+            for (qCapture vv : jm.getCapturesDuMarree())
+            {
+                setter = myBean.getClass().getMethod("set"+StringUtils.capitalize(vv.getEspeceTypee().getQespece().getNomFr().replaceAll("\\s+", "")), Integer.class);
+                setter.invoke(myBean, vv.getQuantite());
+                getter = myBean.getClass().getMethod("get"+StringUtils.capitalize(vv.getEspeceTypee().getQespece().getNomFr().replaceAll("\\s+", "")));
+            }
+            pgs.add(myBean);
+        }
+
+        currentData.setDepart(currentDoc.getDepart());
+        currentData.setPages(pgs);
+
+
+        response.setContentType(FILE_TYPE_2_CONTENT_TYPE.get(fileType));
+        OutputStream out = response.getOutputStream();
+
+        list[0]= currentData;
+        colspagemap.put("headers",colsHPage);
+        colspagemap.put("colNames",colsPage);
+      try {
+            JasperReportBuilder jrb=createJasperReport(colspagemap);
+          jrb.setDataSource( new JRBeanArrayDataSource(list));
+          jrb.setPageFormat(PageType.A4);
+
+          if (VALUE_TYPE_PDF.equals(fileType)) {
+                     jrb.toPdf(out);
+            } else if (VALUE_TYPE_XLS.equals(fileType)) {
+                        jrb.toExcelApiXls(out);
+            }
+                 jrb.toPdf(out);
+
+             } catch (DRException e) {
+               throw new ServletException(e);
+             }
+            out.close();
+
+       // }
+    }
+
+    private JasperReportBuilder createJasperReport(Map<String,List<String>> colspagemap) {
+        SubreportBuilder subreport = cmp.subreport(createSubreport(colspagemap))
+                .setDataSource(exp.subDatasourceBeanCollection("pages"));
+        JasperReportBuilder report = report();
+        report
+                .setTemplate(Templates.reportTemplate)
+                .title(cmp.text("pages").setStyle(Templates.boldCenteredStyle))
+                .columns(
+                       col.column("depart", "depart", type.dateType()))
+                .title(Templates.createTitleComponent("Marree"))
+                .detail(subreport)
+                .pageFooter(cmp.pageXofY());
+          return  report;
+
+    }
+    private JasperReportBuilder createSubreport(Map<String,List<String>> colspagemap) {
+        JasperReportBuilder report = report();
+        report
+                .setTemplate(Templates.reportTemplate)
+                .title(cmp.text("pages").setStyle(Templates.boldCenteredStyle))
+                .addScriptlet(new ReportScriptlet())
+
+                .columns(
+                     // col.column("Date", "depart", type.stringType()),
+                      col.column(colspagemap.get("headers").get(0), colspagemap.get("colNames").get(0), type.integerType()));
+        return report;
+
+    }
+
+
+    private class ReportScriptlet extends AbstractScriptlet {
+
+    }
+
+    @RequestMapping(value = "printReport", method = RequestMethod.GET)
+    public ModelAndView getRptByParam(final ModelMap modelMap, ModelAndView modelAndView, @RequestParam("reportname")  final String reportname,@RequestParam("numimm")
+                                      final String numimm, @RequestParam("depart")   final String depart, @RequestParam("FILE_FORMAT")  final String format) {
+
+        Map[] reportRows = initializeMapArray();
+
+        Date dateDepart=null;List<String> paramMap = new ArrayList<>();
+        SimpleDateFormat sdfmt1 = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            dateDepart = sdfmt1.parse("2017-03-01 00:00:00.0000000");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        qDocPK pk=new qDocPK(numimm,dateDepart);
+        qDoc currentDoc=docService.findById(pk);
+        if(currentDoc instanceof qMarree)
+        {
+            qMarree[] list = new qMarree[1];
+            list[0]=(qMarree) currentDoc;
+            modelMap.put("datasource", new JRBeanArrayDataSource(list));
+            modelMap.put(FILE_FORMAT, format);
+            modelMap.put("docNumimm", numimm);
+            modelMap.put("docDepart", depart);
+        }
+        modelAndView = new ModelAndView(reportname, modelMap);
+        return modelAndView;
+    }
+    private Map[] initializeMapArray()
+    {
+         return null;
+    }
+
+    @RequestMapping(value="/maj",method = RequestMethod.GET)
+    public String maj(ModelMap model)
+    {
+        licenceService.updatechangements();
+        return "index/start";
     }
 }

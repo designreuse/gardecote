@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @DynamicUpdate
-@Table(name="qDocuments", schema="dbo", catalog="GCM8")
+@Table(name="qDocuments", schema="dbo", catalog="GCM11")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
@@ -71,6 +71,7 @@ public class qDoc implements Serializable {
 
     @OneToOne
     private qConcession qconcession;
+
 
     public boolean isBloquerDeletion() {
         return bloquerDeletion;

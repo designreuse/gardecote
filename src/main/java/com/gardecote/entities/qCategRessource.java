@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name="qCategoriesRessourcesPeche", schema="dbo", catalog="GCM8" )
+@Table(name="qCategoriesRessourcesPeche", schema="dbo", catalog="GCM11" )
 // Define named queries here
 
 @NamedQueries ( {

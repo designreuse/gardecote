@@ -11,7 +11,7 @@ import java.util.List;
 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_CONCESSION", discriminatorType=DiscriminatorType.STRING, length=20)
-@Table(name="qTypeConcession", schema="dbo", catalog="GCM8")
+@Table(name="qTypeConcession", schema="dbo", catalog="GCM11")
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qTypeConcession.countAll", query="SELECT COUNT(x) FROM qTypeConcession x" )

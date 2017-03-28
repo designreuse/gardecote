@@ -24,7 +24,7 @@ import java.util.List;
  *
  */
 @Entity
-@Table(name="qPageCarnet", schema="dbo", catalog="GCM8" )
+@Table(name="qPageCarnet", schema="dbo", catalog="GCM11" )
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_PAGE", discriminatorType=DiscriminatorType.STRING, length=20)
 // Define named queries here

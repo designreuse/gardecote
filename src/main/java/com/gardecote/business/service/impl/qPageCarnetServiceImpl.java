@@ -27,6 +27,7 @@ import com.gardecote.data.repository.jpa.qCarnetRepository;
 /**
  * Implementation of CodesEspService
  */
+
 @Service
 @Transactional
 public class qPageCarnetServiceImpl implements qPageCarnetService {

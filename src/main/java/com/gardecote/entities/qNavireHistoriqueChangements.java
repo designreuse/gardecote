@@ -7,11 +7,11 @@ import java.io.Serializable;
  * Created by Dell on 04/03/2017.
  */
 @Entity
-@Table(name="qNavireHistoriqueChangements", schema="dbo", catalog="GCM8" )
+@Table(name="qNavireHistoriqueChangements", schema="dbo", catalog="GCM11" )
 // Define named queries here
 @NamedQueries ( {
         @NamedQuery ( name="qNavireHistoriqueChangements.countAll", query="SELECT COUNT(x) FROM qNavireHistoriqueChangements x" )
-} )
+})
 @IdClass(qNavireHistoriqueChangementsPK.class)
 public class qNavireHistoriqueChangements implements Serializable {
     @Id

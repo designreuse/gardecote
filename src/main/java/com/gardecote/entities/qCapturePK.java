@@ -22,19 +22,23 @@ public class qCapturePK implements Serializable{
     private String         numPage ;
 
     private    String      idespece;
+    private    Integer      numOrdre;
 
     private    enumEspType esptype;
 
-    public qCapturePK(Date datedepart, String nummimm, Date dateJour, String idespece, enumEspType esptype) {
+    public qCapturePK(Date datedepart, String nummimm, Date dateJour, String idespece, enumEspType esptype,Integer numordre) {
         this.datedepart = datedepart;
         this.nummimm = nummimm;
         this.dateJour = dateJour;
         this.idespece = idespece;
         this.esptype = esptype;
+        this.numOrdre=numordre;
     }
 
     public qCapturePK() {
     }
+
+
 
     public Integer getIndexLigne() {
         return indexLigne;
@@ -77,6 +81,14 @@ public class qCapturePK implements Serializable{
         this.dateJour = dateJour;
     }
 
+    public Integer getNumOrdre() {
+        return numOrdre;
+    }
+
+    public void setNumOrdre(Integer numOrdre) {
+        this.numOrdre = numOrdre;
+    }
+
     public String getIdespece() {
         return idespece;
     }
@@ -106,6 +118,7 @@ public class qCapturePK implements Serializable{
         if (!getIndexLigne().equals(that.getIndexLigne())) return false;
         if (!getNumPage().equals(that.getNumPage())) return false;
         if (!getIdespece().equals(that.getIdespece())) return false;
+        if (!getNumOrdre().equals(that.getNumOrdre())) return false;
         return getEsptype() == that.getEsptype();
 
     }
@@ -118,6 +131,7 @@ public class qCapturePK implements Serializable{
         result = 31 * result + getIndexLigne().hashCode();
         result = 31 * result + getNumPage().hashCode();
         result = 31 * result + getIdespece().hashCode();
+        result = 31 * result + getNumOrdre().hashCode();
         result = 31 * result + getEsptype().hashCode();
         return result;
     }

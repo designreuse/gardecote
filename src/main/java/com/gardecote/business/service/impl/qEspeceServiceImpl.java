@@ -11,16 +11,17 @@ import javax.annotation.Resource;
 
 ;
 
+import com.gardecote.business.service.qEspeceTypeeService;
 import com.gardecote.data.repository.jpa.qEspeceRepository;
+import com.gardecote.data.repository.jpa.qEspeceTypeeRepository;
 import com.gardecote.data.repository.jpa.qPageCarnetRepository;
-import com.gardecote.entities.enumTypeDoc;
-import com.gardecote.entities.qPageCarnet;
+import com.gardecote.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.gardecote.entities.qEspece;
+
 /**
  * Implementation of ChangmentactService
  */
@@ -30,6 +31,8 @@ public class qEspeceServiceImpl implements qEspeceService {
 
 	@Autowired
 	private qEspeceRepository changmentactJpaRepository;
+	@Autowired
+	private qEspeceTypeeService esptypeeRepository;
 
 
 	@Override
@@ -75,8 +78,28 @@ public class qEspeceServiceImpl implements qEspeceService {
 	}
 
 	@Override
-	public void delete(String idchact) {
-		changmentactJpaRepository.delete(idchact);
+	public Integer delete(String idchact) {
+		// check if his esptypee linked  to models
+		int j=0,returnedVal=1;
+		List<qModelJP> mjp=null;
+		qEspece curr=changmentactJpaRepository.findOne(idchact);
+		if(curr.getQespecetypee().size()==0)
+		{
+			changmentactJpaRepository.delete(idchact);
+			returnedVal=0;
+		}
+		else {
+	for(qEspeceTypee espt:curr.getQespecetypee()) {
+	    	mjp=esptypeeRepository.findModel(espt);
+			if(mjp.size()!=0) j++;
+	}
+			if(j==0) {
+				changmentactJpaRepository.delete(idchact);
+				returnedVal=0;
+			        }
+	}
+		// check if his esptypee used in captures or if it is used in traitements
+return returnedVal;
 	}
 
 	public qEspeceRepository getChangmentactJpaRepository() {

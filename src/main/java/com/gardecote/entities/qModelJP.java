@@ -6,6 +6,9 @@
 
 package com.gardecote.entities;
 
+import org.hibernate.action.internal.OrphanRemovalAction;
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -20,7 +23,7 @@ import java.util.Set;
  *
  */
 @Entity
-@Table(name="qModelCaptures", schema="dbo", catalog="GCM8" )
+@Table(name="qModelCaptures", schema="dbo", catalog="GCM11" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qModelJP.countAll", query="SELECT COUNT(x) FROM qModelJP x" )
@@ -49,7 +52,7 @@ public class qModelJP implements Serializable
     @OneToOne
     @NotNull
     private qPrefix qprefix;
-    @ManyToMany(cascade = CascadeType.MERGE,targetEntity =qEspeceTypee.class,fetch = FetchType.EAGER)
+    @ManyToMany(cascade ={CascadeType.ALL} , targetEntity =qEspeceTypee.class,fetch = FetchType.EAGER)
     @JoinTable(name = "qAssocModelEspeceTypee3BIS")
     private List<qEspeceTypee> especestypees;
    //----------------------------------------------------------------------

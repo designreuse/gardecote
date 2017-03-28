@@ -11,7 +11,7 @@ import java.util.Date;
  * Created by Dell on 04/03/2017.
  */
 @Entity
-@Table(name="qBateau", schema="dbo", catalog="GCM8" )
+@Table(name="qBateau", schema="dbo", catalog="GCM11" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qBateau.countAll", query="SELECT COUNT(x) FROM qBateau x" )
@@ -135,15 +135,13 @@ public class qBateau {
         this.numimm = numimm;
     }
 
-    public qBateau(String numimm, String nomnav,String longg, String puimot, qNation nation, String larg, String count, String nbrhomm, String eff, Integer anneeconstr, String calpoids, float gt, float kw, float tjb, Integer imo, String port, String radio,String balise,Date updatedOn) {
+    public qBateau(String numimm, String nomnav,String longg, String puimot, qNation nation, String larg, String count, String nbrhomm, String eff, Integer anneeconstr, String calpoids, float gt, float kw, float tjb, Integer imo, String port, String radio,String balise,Date updatedOn,enumTypeBat b) {
         this.numimm = numimm;
         this.nomnav = nomnav;
-
         this.longg = longg;
         this.puimot = puimot;
         this.nation = nation;
         this.larg = larg;
-
         this.anneeconstr = anneeconstr;
         this.calpoids = calpoids;
         this.gt = gt;
@@ -157,6 +155,7 @@ public class qBateau {
         this.nbrhomm=nbrhomm;
         this.eff=eff;
         this.count=count;
+        this.typb=b;
 
     }
 

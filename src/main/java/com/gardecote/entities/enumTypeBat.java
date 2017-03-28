@@ -3,7 +3,6 @@ package com.gardecote.entities;
 /**
  * Created by Dell on 23/10/2016.
  */
-
 public enum enumTypeBat {
     CONGELATION_FARINE,
     Congelateur_RTMS,
@@ -22,5 +21,6 @@ public enum enumTypeBat {
     PIROG,
     REF,
     Congelateur_Refrigerateur,
-    INDEF
+    INDEF,
+    Congelateur
 }

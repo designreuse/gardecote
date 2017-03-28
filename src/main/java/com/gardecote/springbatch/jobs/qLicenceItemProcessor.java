@@ -74,7 +74,7 @@ public class qLicenceItemProcessor implements ItemProcessor<qLicenceModel, qLic>
 
                 qNavireLegale newnavire=new qNavireLegale(qLicModelInput.getNumimm(),qLicModelInput.getNomnav(),qLicModelInput.getLongueur(),qLicModelInput.getPuimot(),currentNation,qLicModelInput.getLarg(),qLicModelInput.getCount(),qLicModelInput.getNbrhomm(),
                         qLicModelInput.getEff(),qLicModelInput.getAncons(),qLicModelInput.getCalpoids(),Float.valueOf(qLicModelInput.getGt().toString()),Float.valueOf(qLicModelInput.getKw().toString()),Float.valueOf(qLicModelInput.getTjb().toString()),qLicModelInput.getImo(),qLicModelInput.getPort(),qLicModelInput.getRadio(),qLicModelInput.getBalise(),DEBAUT,
-                        qLicModelInput.getNumlic(),enumModePeche.NATIONAL,DEBAUT,FINAUTO,null,null,qLicModelInput.getNomar());
+                        qLicModelInput.getNumlic(),enumModePeche.NATIONAL,DEBAUT,FINAUTO,null,null,qLicModelInput.getNomar(),null);
 
                 insertedNavire=newnavire;
                 System.out.println("nouv bat"+newnavire.getNomnav());
@@ -110,7 +110,7 @@ public class qLicenceItemProcessor implements ItemProcessor<qLicenceModel, qLic>
             {
                 qNavireLegale newnavire=new qNavireLegale(qLicModelInput.getNumimm(),qLicModelInput.getNomnav(),qLicModelInput.getLongueur(),qLicModelInput.getPuimot(),currentNation,qLicModelInput.getLarg(),qLicModelInput.getCount(),qLicModelInput.getNbrhomm(),
                         qLicModelInput.getEff(),qLicModelInput.getAncons(),qLicModelInput.getCalpoids(),Float.valueOf(qLicModelInput.getGt().toString()),Float.valueOf(qLicModelInput.getKw().toString()),Float.valueOf(qLicModelInput.getTjb().toString()),qLicModelInput.getImo(),qLicModelInput.getPort(),qLicModelInput.getRadio(),qLicModelInput.getBalise(),DEBAUT,
-                        qLicModelInput.getNumlic(),enumModePeche.ETRANGER,DEBAUT,FINAUTO,null,null,qLicModelInput.getNomar());
+                        qLicModelInput.getNumlic(),enumModePeche.ETRANGER,DEBAUT,FINAUTO,null,null,qLicModelInput.getNomar(),null);
 
                 System.out.println("nouv bat"+newnavire.getNomnav());
 

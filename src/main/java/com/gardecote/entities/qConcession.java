@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name="qConcession", schema="dbo", catalog="GCM8" )
+@Table(name="qConcession", schema="dbo", catalog="GCM11" )
 // Define named queries here
 @NamedQueries ( {
   @NamedQuery ( name="qConcession.countAll", query="SELECT COUNT(x) FROM qConcession x" )

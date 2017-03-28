@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by Dell on 09/10/2016.
  */
 @Entity
-@Table(name="qAccordPeche", schema="dbo", catalog="GCM8" )
+@Table(name="qAccordPeche", schema="dbo", catalog="GCM11" )
 // Define named queries here
 @NamedQueries( {
         @NamedQuery( name="qAccordPeche.countAll", query="SELECT COUNT(x) FROM qAccordPeche x" )

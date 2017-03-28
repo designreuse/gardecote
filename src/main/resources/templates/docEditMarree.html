@@ -190,8 +190,6 @@
 
           <button type="submit" class="btn btn-primary" id="save" name="save">Enregistrer</button>
 
-
-
         <ul class="nav nav-tabs">
             <li  th:each="page, stat : *{currentDoc.pages}" th:class="${__${stat.index}__==__${frmSearchPgsForDocCrea.createDocFormm.currentPage}__}? active : ''"><a data-toggle="tab" th:href="'#page'+${stat.index}" th:text="'page '+*{currentDoc.pages[__${stat.index}__].numeroPage}"></a> </li>
 
@@ -203,14 +201,16 @@
                 <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].numeroPage}" th:value="*{currentDoc.pages[__${statp.index}__].numeroPage}"/>
                 <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].typeDoc}" th:value="*{currentDoc.pages[__${statp.index}__].typeDoc}" />
 
-                <table class="table-bordered">
+                <table class="table table-striped table-bordered table-hover">
                     <tr>
-
-
-                        <th >Date du jour</th>
+                        <th>Date du jour</th>
+                        <th>Secteur statistique</th>
                         <th th:each="p, statesp : *{currentDoc.pages[__${statp.index}__].listJours[0].capturesDuMarree}">
                             <span  th:text="*{currentDoc.pages[__${statp.index}__].listJours[0].capturesDuMarree[__${statesp.index}__].especeTypee.qespece.nomFr}" />
                         </th>
+                        <th>Total Capturé</th>
+                        <th>Total Congelé/Nbr Caisses</th>
+
                     </tr>
                     <tr th:each="jourLigne, statj : *{currentDoc.pages[__${statp.index}__].listJours}" class="danger">
                        <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].indexLigne}"/>
@@ -224,8 +224,9 @@
 
 
                         <td>
-                       <input type="date" class="form-control input-sm " th:disabled="true" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{#dates.format(currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour, 'yyyy-MM-dd')}" />
+                       <input type="date" class="form-control form-control-inline" th:disabled="true" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour}" th:value="*{#dates.format(currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].dateJour, 'yyyy-MM-dd')}" />
                        </td>
+                        <td >  <input type="text" class="form-control "  th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].secteur}"  /></td>
                         <td th:each="jourCap, statc : *{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree}">
                             <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].indexLigne}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].indexLigne}"/>
 
@@ -235,8 +236,14 @@
                             <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].idespece}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].idespece}"/>
                             <input type="hidden" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].esptype}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].esptype}"/>
 
-                        <input type="text" class="form-control input-sm " th:tabindex="((*{currentDoc.pages[__${statp.index}__].nbrLigne}*${statc.index})+${statj.index}+1)" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].quantite}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].quantite}"/>
+                        <input type="number" class="form-control form-control-inline " th:tabindex="((*{currentDoc.pages[__${statp.index}__].nbrLigne}*${statc.index})+${statj.index}+1)" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].quantite}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].capturesDuMarree[__${statc.index}__].quantite}"/>
                         </td>
+                        <td><input type="number" class="form-control form-control-inline "  th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].totalCapturs}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].totalCapturs}" />
+                       </td><td>
+                        <input type="number" class="form-control form-control-inline "  th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].totalCong}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].totalCong}" />
+                       /  <input type="number" class="form-control form-control-inline "  th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].nbrCaisse}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].nbrCaisse}" />
+
+                    </td>
                     </tr>
                 </table>
 

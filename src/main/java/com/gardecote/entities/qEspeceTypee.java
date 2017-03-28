@@ -6,37 +6,68 @@ import java.util.List;
 /**
  * Created by Dell on 25/10/2016.
  */
+
 @Entity
-@Table(name="qEspeceTypee", schema="dbo", catalog="GCM8" )
+@Table(name="qEspeceTypee", schema="dbo", catalog="GCM11" )
 @IdClass(qEspeceTypeePK.class)
 public class qEspeceTypee implements Serializable, Comparable<qEspeceTypee> {
     @Id
     private String qespeceId;
     @Id
-    private enumEspType enumesptype;
-   // @Id
- //   private String idmodel;
+    private enumEspType enumesptype;    
+    @Id
+    private Integer numOrdre;
+    @Id
+    private String prefix;
+    @Id
+    private enumTypeEspTypee typeesptypee;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,targetEntity = qEspece.class)
     private qEspece qespece;
 
     @ManyToMany(mappedBy ="especestypees",cascade = CascadeType.REFRESH)
     private List<qModelJP> modeljp;
 
     public qEspeceTypeePK getQEspeceTypeePK(){
-    qEspeceTypeePK espPK=new qEspeceTypeePK(this.qespeceId,this.enumesptype);
-    return espPK;
+        qEspeceTypeePK espPK=new qEspeceTypeePK(this.qespeceId,this.enumesptype,this.getNumOrdre(),this.getPrefix(),this.getTypeesptypee());
+       return espPK;
     }
 
-    public qEspeceTypee(enumEspType enumesptype, qEspece qespece, List<qModelJP> modeljp) {
-        this.qespeceId = qespece.getCodeEsp();
+    public qEspeceTypee(enumEspType enumesptype, qEspece qespece, List<qModelJP> modeljp,Integer numOrdre,String prefix,enumTypeEspTypee typeesptypee) {
+        if(qespece!=null) this.qespeceId = qespece.getCodeEsp();
+        else  this.qespeceId = "-1";
         this.enumesptype = enumesptype;
         this.qespece = qespece;
         this.modeljp = modeljp;
-
+        this.prefix=prefix;
+        this.typeesptypee=typeesptypee;
+        this.numOrdre=numOrdre;
     }
 
+    public Integer getNumOrdre() {
+        return numOrdre;
+    }
 
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public enumTypeEspTypee getTypeesptypee() {
+        return typeesptypee;
+    }
+
+    public void setTypeesptypee(enumTypeEspTypee typeesptypee) {
+
+        this.typeesptypee = typeesptypee;
+    }
+
+    public void setNumOrdre(Integer numOrdre) {
+        this.numOrdre = numOrdre;
+    }
 
     public qEspeceTypee() {
     }
@@ -75,34 +106,12 @@ public class qEspeceTypee implements Serializable, Comparable<qEspeceTypee> {
         this.modeljp = modeljp;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof qEspeceTypee)) return false;
-
-        qEspeceTypee that = (qEspeceTypee) o;
-
-        if (getQespeceId() != null ? !getQespeceId().equals(that.getQespeceId()) : that.getQespeceId() != null)
-            return false;
-        if (getEnumesptype() != that.getEnumesptype()) return false;
-        return !(getModeljp() != null ? !getModeljp().equals(that.getModeljp()) : that.getModeljp() != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getQespeceId() != null ? getQespeceId().hashCode() : 0;
-        result = 31 * result + (getEnumesptype() != null ? getEnumesptype().hashCode() : 0);
-        result = 31 * result + (getModeljp() != null ? getModeljp().hashCode() : 0);
-        return result;
-    }
-
 
 
     @Override
     public int compareTo(qEspeceTypee o) {
-        String qespeceIDo=o.getQespeceId().toString()+o.getEnumesptype().toString();
-        String qespeceID=this.qespeceId.toString()+o.getEnumesptype().toString();
-        return qespeceIDo.compareTo(qespeceID);
+        String qespeceIDo=o.getNumOrdre().toString()+o.getQespeceId().toString()+o.getEnumesptype().toString();
+        String qespeceID=this.getNumOrdre().toString()+this.qespeceId.toString()+this.getEnumesptype().toString();
+        return qespeceID.compareTo(qespeceIDo);
         }
 }

@@ -51,7 +51,7 @@ public interface qEspeceService {
 	 * Deletes an entity using its Primary Key
 	 * @param idBatobs
 	 */
-	void delete(String idBatobs);
+	Integer delete(String idBatobs);
 
 	public Page<qEspece> getSuggEsp(String esp);
 }

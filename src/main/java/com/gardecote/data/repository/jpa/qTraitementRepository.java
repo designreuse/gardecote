@@ -6,10 +6,7 @@ package com.gardecote.data.repository.jpa;
 
 import com.gardecote.entities.qDocPK;
 import com.gardecote.entities.qTraitement;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 

@@ -7,7 +7,7 @@
     <title>Title</title>
 </head>
 <body>
-<div layout:fragment="content" sec:authorize="hasRole('ROLE_USER')">
+<div layout:fragment="content" sec:authorize="hasRole('ROLE_admin')">
 
     <h3><p class="spacer"><kbd>Liste de categories de ressources </kbd></p></h3>
 <label ></label>
@@ -33,8 +33,7 @@
                 </td>
                 <td th:text="${cat.idtypeConcession}"></td>
                 <td th:text="${cat.typeSupport}"></td>
-                <td >
-
+                <td>
                     <table class="table"><tr th:each="eng:${cat.Engins}" >
                         <td th:text="${eng.EnginDeb}"></td>
                         <td th:text="${eng.EnginMar}"></td>

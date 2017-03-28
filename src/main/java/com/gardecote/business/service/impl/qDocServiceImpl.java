@@ -2,6 +2,8 @@ package com.gardecote.business.service.impl;
 
 import com.gardecote.business.service.qCarnetService;
 import com.gardecote.business.service.qDocService;
+import com.gardecote.business.service.qEspeceDynamicService;
+import com.gardecote.business.service.qModelJPService;
 import com.gardecote.data.repository.jpa.*;
 import com.gardecote.entities.*;
 
@@ -42,7 +44,8 @@ import java.util.List;
 public class qDocServiceImpl implements qDocService {
     @Autowired
     private qPrefixRepository prefRepo;
-
+    @Autowired
+    private qEspeceDynamicService dynService;
     @Autowired
     private qMarreeAnnexeRepository qmarreeannexeRepository;
     @PersistenceContext
@@ -62,6 +65,8 @@ public class qDocServiceImpl implements qDocService {
     private qCarnetRepository qcarnetRepository;
     @Autowired
     private qModelJPRepository qmodelRepository;
+    @Autowired
+    private qModelJPService qmodelService;
 
     @Autowired
     private qPageCarnetRepository qpagecarnetRepository;
@@ -302,6 +307,7 @@ public class qDocServiceImpl implements qDocService {
     @Override
     public qDebarquement creerDebarquementByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsDebs,List<Boolean> categDebs,Map<String,Map<Integer,List<Double>>> quantities) {
         // qSeq seqActive=qseqRepository.findOne(seqActive1.getSeqPK());
+        List<qEspeceDynamic> especesDyn=null;
         qSeq seqActive=seqActive1;
         String numeroDebut = seqActive.getDebut(),numeroFin = seqActive.getFin(), debutPrefix = null,finPrefix = null;
         qDebarquement      documentCree=null;
@@ -372,20 +378,26 @@ public class qDocServiceImpl implements qDocService {
         if (carnetDebut.getPrefixNumerotation().equals("PC")) {
             // la peche cotiere
             documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
-                    choixEnginsDeb,  enumTypeDebarquement.Cotier, qconcess,categsCot, null);
+                    choixEnginsDeb,  enumTypeDebarquement.Cotier, qconcess,categsCot, null,qmodelService.getEspecestypeesDyn(qnav.getNumimm(),dateDepart,currentModel));
             documentCree.setSegPeche(debutPrefix);
             documentCree.setNomNavire(qnav.getNomnav());
+            for(qEspeceDynamic dn:qmodelService.getEspecestypeesDyn(qnav.getNumimm(),dateDepart,currentModel)) {
+                dn.setDebarquement(documentCree);
+            }
         }
 
         if (carnetDebut.getPrefixNumerotation().equals("PA")) {
             // la peche artisanal
 
             documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
-                    choixEnginsDeb, enumTypeDebarquement.Artisanal,qconcess, categsArt,null);
+                    choixEnginsDeb, enumTypeDebarquement.Artisanal,qconcess, categsArt,null,qmodelService.getEspecestypeesDyn(qnav.getNumimm(),dateDepart,currentModel));
 
 
             documentCree.setSegPeche(debutPrefix);
             documentCree.setNomNavire(qnav.getNomnav());
+            for(qEspeceDynamic dn:qmodelService.getEspecestypeesDyn(qnav.getNumimm(),dateDepart,currentModel)) {
+                dn.setDebarquement(documentCree);
+            }
 
         }
 
@@ -417,7 +429,7 @@ public class qDocServiceImpl implements qDocService {
                     // traitement des captures
                     i=0;
                     for (qEspeceTypee esptypee : currentModel.getEspecestypees()) {
-                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee, currentLineQuantities.get(i).intValue(), null, jourDeb);
+                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee, currentLineQuantities.get(i).intValue(),esptypee.getNumOrdre(), null, jourDeb);
                         qcapture.setQdoc(documentCree);
                         qcapture.setJourDeb(jourDeb);
                         qcapture.setDatedepart(documentCree.getDepart());
@@ -487,7 +499,9 @@ public class qDocServiceImpl implements qDocService {
 
         choixEnginsMar.add(engmar6);
         choixEnginsMar.add(engmar7);
-
+        qPrefixPK pref=new qPrefixPK(debutPrefix,typeDoc);
+        // cat du dernier licence
+        qModelJP currentModel=qmodelRepository.findOne(pref);
 
         List<qCategRessource>  ours=new ArrayList<qCategRessource>();
         Integer flagcotiere = 0, flaghautiriere = 0;
@@ -495,23 +509,25 @@ public class qDocServiceImpl implements qDocService {
             ours.addAll(carnetDebut.getQconcession().getCategoriesRessources());}
         else qconcess=null;
 
+        List<qEspeceDynamic> espdyn=qmodelService.getEspecestypeesDyn(qnav.getNumimm(),dateDepart,currentModel);
+for(qEspeceDynamic espd:espdyn) {
+   dynService.save(espd);
+}
         documentCree = new qMarree(enumTypeDoc.Journal_Peche, dateDepart, dateRetour, seqActive, qnav,null,
-                qconcess,selectedTypeJP ,  choixEnginsMar, null);
+                qconcess,selectedTypeJP ,  choixEnginsMar, null,espdyn);
         documentCree.setSegPeche(debutPrefix);
         documentCree.setNomNavire(qnav.getNomnav());
         documentCree.setTypeJP(selectedTypeJP );
-        qPrefixPK pref=new qPrefixPK(debutPrefix,typeDoc);
-        // cat du dernier licence
-        qModelJP currentModel=qmodelRepository.findOne(pref);
+        for(qEspeceDynamic espd:espdyn) {
+            espd.setMaree(documentCree);
+            dynService.save(espd);
+        }
         System.out.println(debutPrefix);
         // pour la journal de peche
         System.out.println("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
         System.out.println(currentModel.getEspecestypees());
         System.out.println(currentModel.getEspecestypees().size());
-        for (qEspeceTypee esptypee : currentModel.getEspecestypees()){
-            System.out.println(esptypee.getQespece().getCodeEsp());
-            System.out.println(esptypee.getQespece().getNomFr());
-        }
+
         System.out.println("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
         List<qPageMarree> lstPgsMar = new ArrayList<qPageMarree>();
         // preparer les pages
@@ -541,7 +557,7 @@ public class qDocServiceImpl implements qDocService {
                          i=0;
                     for (qEspeceTypee esptypee : currentModel.getEspecestypees()) {
 
-                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee,  currentLineQuantities.get(i).intValue(), jourMar, null);
+                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee,  currentLineQuantities.get(i).intValue(),esptypee.getNumOrdre(), jourMar, null);
                         qcapture.setQdoc(documentCree);
                         qcapture.setJourMere(jourMar);
                         qcapture.setDatedepart(documentCree.getDepart());
@@ -593,7 +609,7 @@ List<Boolean> choixEnginsPA=new ArrayList<Boolean>(),choixCategoriesPA=new Array
         qPrefixPK prefpknew=null;
         qModelJP currentModelnew=null;
         qSeq seqActivenew=null;
-Integer k=0;
+        Integer k=0;
         try {
           file.transferTo(new File(fullpatchname));
         } catch (IllegalStateException e) {
@@ -1396,7 +1412,7 @@ Integer k=0;
         if (carnetDebut.getPrefixNumerotation().equals("PC")) {
             // la peche cotiere
             documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
-                    choixEnginsDeb,  enumTypeDebarquement.Cotier, qconcess,categsCot, null);
+                    choixEnginsDeb,  enumTypeDebarquement.Cotier, qconcess,categsCot, null,qmodelService.getEspecestypeesDyn(qnav.getNumimm(),dateDepart,currentModel));
             documentCree.setSegPeche(debutPrefix);
             documentCree.setNomNavire(qnav.getNomnav());
         }
@@ -1405,7 +1421,7 @@ Integer k=0;
             // la peche artisanal
 
             documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
-                    choixEnginsDeb, enumTypeDebarquement.Artisanal,qconcess, categsArt,null);
+                    choixEnginsDeb, enumTypeDebarquement.Artisanal,qconcess, categsArt,null,qmodelService.getEspecestypeesDyn(qnav.getNumimm(),dateDepart,currentModel));
             documentCree.setSegPeche(debutPrefix);
             documentCree.setNomNavire(qnav.getNomnav());
 
@@ -1435,7 +1451,7 @@ Integer k=0;
                     // traitement des captures
 
                     for (qEspeceTypee esptypee : currentModel.getEspecestypees()) {
-                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee, 0, null, jourDeb);
+                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee, 0,esptypee.getNumOrdre(), null, jourDeb);
                         qcapture.setQdoc(documentCree);
                         qcapture.setJourDeb(jourDeb);
                         qcapture.setDatedepart(documentCree.getDepart());
@@ -1531,6 +1547,7 @@ Integer k=0;
     @Override
     public qMarree creerMarree(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc) {
      //   qSeq seqActive=qseqRepository.findOne(seqActive1.getSeqPK());
+        List<qEspeceDynamic> especesDyn=null;
         qSeq seqActive=seqActive1;
         String numeroDebut = seqActive.getDebut(),numeroFin = seqActive.getFin(), debutPrefix = null,finPrefix = null;
         qMarree documentCree=null;
@@ -1561,7 +1578,9 @@ Integer k=0;
 
         choixEnginsMar.add(engmar6);
         choixEnginsMar.add(engmar7);
-
+        qPrefixPK pref=new qPrefixPK(debutPrefix,typeDoc);
+        // cat du dernier licence
+        qModelJP currentModel=qmodelRepository.findOne(pref);
 
         List<qCategRessource>  ours=new ArrayList<qCategRessource>();
         Integer flagcotiere = 0, flaghautiriere = 0;
@@ -1569,23 +1588,22 @@ Integer k=0;
         ours.addAll(carnetDebut.getQconcession().getCategoriesRessources());}
         else qconcess=null;
 
+        especesDyn=qmodelService.getEspecestypeesDyn(qnav.getNumimm(),dateDepart,currentModel);
+
         documentCree = new qMarree(enumTypeDoc.Journal_Peche, dateDepart, dateRetour, seqActive, qnav,null,
-                qconcess,enumJP.Hautirere ,  choixEnginsMar, null);
+                qconcess,enumJP.Hautirere ,  choixEnginsMar, null,especesDyn);
         documentCree.setSegPeche(debutPrefix);
         documentCree.setNomNavire(qnav.getNomnav());
+for(qEspeceDynamic dn:especesDyn) {
+    dn.setMaree(documentCree);
+}
 
-         qPrefixPK pref=new qPrefixPK(debutPrefix,typeDoc);
-        // cat du dernier licence
-        qModelJP currentModel=qmodelRepository.findOne(pref);
         System.out.println(debutPrefix);
         // pour la journal de peche
         System.out.println("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
         System.out.println(currentModel.getEspecestypees());
         System.out.println(currentModel.getEspecestypees().size());
-        for (qEspeceTypee esptypee : currentModel.getEspecestypees()){
-            System.out.println(esptypee.getQespece().getCodeEsp());
-                    System.out.println(esptypee.getQespece().getNomFr());
-        }
+
         System.out.println("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
         List<qPageMarree> lstPgsMar = new ArrayList<qPageMarree>();
         // preparer les pages
@@ -1608,7 +1626,7 @@ Integer k=0;
                     // traitement des captures
                     List<qCapture> capturesLine = new ArrayList<qCapture>();
                     for (qEspeceTypee esptypee : currentModel.getEspecestypees()) {
-                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee, 0, jourMar, null);
+                        qCapture qcapture = new qCapture(k,currp.getNumeroPage(),documentCree, esptypee, 0,esptypee.getNumOrdre(), jourMar, null);
                         qcapture.setQdoc(documentCree);
                         qcapture.setJourMere(jourMar);
                         qcapture.setDatedepart(documentCree.getDepart());
@@ -2112,7 +2130,7 @@ Integer k=0;
                         currentConcession.setQtypeconcessionpk(Integer.parseInt(TypeConcessionPK));
                         currentConcession.setTypeDoc(enumTypeDoc.valueOf(typeDoc));
                         currentConcession.setPrefix(prefcurrent);
-                        ((qTypeConcessionCotiere)currentConcession).setEnumTypePecheCotiere(enumTypePechCotiere.valueOf( TypePecheCotiere));
+                        ((qTypeConcessionCotiere)currentConcession).setEnumTypePecheCotiere(enumTypePechCotiere.valueOf(TypePecheCotiere));
 
                                    }
                     if(TYPE_CONCESSION.equals("THAUTIRIERE")) {
@@ -2198,7 +2216,7 @@ Integer k=0;
     @Override
     public String importerModels(MultipartFile file, String fullpatchname) {
 
-        String prefixModel,typeDoc,	Especes,numOrdre;
+        String prefixModel,typeDoc,	Especes,numOrdre,espTypeeType;
         qModelJP modelToBeCreated=new qModelJP();
 
         String codEsp,espDesign,espType;
@@ -2227,6 +2245,8 @@ Integer k=0;
                     prefixModel=splitarray[0];
                     typeDoc=splitarray[1];
                     Especes=splitarray[2];
+
+
 //qModelJP modelCurrent=qmodelRepository.findOne(new qPrefixPK(prefixModel,enumTypeDoc.valueOf(typeDoc)));
                     qPrefix prefCurrent=prefRepo.findOne(new qPrefixPK(prefixModel,enumTypeDoc.valueOf(typeDoc)));
                     modelToBeCreated.setPrefix(prefixModel);
@@ -2242,22 +2262,21 @@ Integer k=0;
                         espDesign=espFields.get(1);
                         espType=espFields.get(2);
                         numOrdre=espFields.get(3);
-
+                        espTypeeType=espFields.get(4);
                         qEspece currentEsp=espRepository.findOne(codEsp);
 
                         if(currentEsp==null) {currentEsp=new qEspece(codEsp,"",espDesign,Integer.parseInt(numOrdre));}
                         currentEsp.setNomFr(espDesign);
-                        currentEsp.setNumOrdre(Integer.parseInt(numOrdre));
+                    //    currentEsp.setNumOrdre(Integer.parseInt(numOrdre));
                         currentEsp=espRepository.save(currentEsp);
 
 
                       //  qEspeceTypee currentEspTypee=new qEspeceTypee(enumEspType.valueOf(espType),currentEsp,null);
 
-                       qEspeceTypee currentEspTypee= esptypeeRepository.findOne(new qEspeceTypeePK(codEsp,enumEspType.valueOf(espType)));
-                        if(currentEspTypee==null) {currentEspTypee=new qEspeceTypee(enumEspType.valueOf(espType),currentEsp,null);
+                       qEspeceTypee currentEspTypee= esptypeeRepository.findOne(new qEspeceTypeePK(codEsp,enumEspType.valueOf(espType),Integer.valueOf(numOrdre),prefixModel,enumTypeEspTypee.valueOf(espTypeeType)));
+                        if(currentEspTypee==null) {currentEspTypee=new qEspeceTypee(enumEspType.valueOf(espType),currentEsp,null,Integer.valueOf(numOrdre),prefixModel,enumTypeEspTypee.valueOf(espTypeeType));
                             }
                         esptypess.add(currentEspTypee);
-
                     }
                     modelToBeCreated.setEspecestypees(esptypess);
                     qmodelRepository.save(modelToBeCreated);

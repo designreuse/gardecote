@@ -54,8 +54,8 @@ public class qNavireIllicite  extends qBateau implements Serializable {
         this.informations = informations;
     }
 
-    public qNavireIllicite(String numimm, String nomnav, String longg, String puimot, qNation nation, String larg, String count, String nbrhomm, String eff, Integer anneeconstr, String calpoids, float gt, float kw, float tjb, Integer imo, String port, String radio, String balise, Date updatedOn, Date dateActivite, qZone zoneActivite, String informations) {
-        super(numimm, nomnav, longg, puimot, nation, larg, count, nbrhomm, eff, anneeconstr, calpoids, gt, kw, tjb, imo, port, radio, balise, updatedOn);
+    public qNavireIllicite(String numimm, String nomnav, String longg, String puimot, qNation nation, String larg, String count, String nbrhomm, String eff, Integer anneeconstr, String calpoids, float gt, float kw, float tjb, Integer imo, String port, String radio, String balise, Date updatedOn, Date dateActivite, qZone zoneActivite, String informations,enumTypeBat b) {
+        super(numimm, nomnav, longg, puimot, nation, larg, count, nbrhomm, eff, anneeconstr, calpoids, gt, kw, tjb, imo, port, radio, balise, updatedOn,b);
         this.dateActivite = dateActivite;
         this.zoneActivite = zoneActivite;
         this.informations = informations;

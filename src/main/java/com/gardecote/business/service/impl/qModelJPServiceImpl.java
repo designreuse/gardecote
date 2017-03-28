@@ -5,19 +5,19 @@
 package com.gardecote.business.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 
 import com.gardecote.business.service.qModelJPService;
 
+import com.gardecote.data.repository.jpa.qEspeceTypeeRepository;
 import com.gardecote.data.repository.jpa.qModelJPRepository;
-import com.gardecote.entities.enumPrefix;
-import com.gardecote.entities.qPrefixPK;
+import com.gardecote.entities.*;
+import org.apache.commons.lang.SerializationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.gardecote.entities.qModelJP;
-import com.gardecote.entities.qTypeConcession;
 
 /**
  * Implementation of CodesAmendeService
@@ -28,6 +28,8 @@ public class qModelJPServiceImpl implements qModelJPService {
 
 	@Autowired
 	private qModelJPRepository codesAmendeJpaRepository;
+	@Autowired
+	private qEspeceTypeeRepository qesptypeeRepository;
 
 	@Override
 	public qModelJP findById(qPrefixPK id) {
@@ -61,6 +63,8 @@ public class qModelJPServiceImpl implements qModelJPService {
 	public qModelJP update(qModelJP codesAmende) {
 //		qModelJP codesAmendeEntity = codesAmendeJpaRepository.findOne(codesAmende.getPrefixModel());
 		qModelJP codesAmendeEntitySaved = codesAmendeJpaRepository.save(codesAmende);
+
+
 		return codesAmendeEntitySaved;
 	}
 
@@ -77,6 +81,20 @@ public class qModelJPServiceImpl implements qModelJPService {
 		this.codesAmendeJpaRepository = codesAmendeJpaRepository;
 	}
 
-	
+	@Override
+	public List<qEspeceTypee> findEspTypees(String pr) {
+		return codesAmendeJpaRepository.findEspTypees(pr);
+	}
 
+	@Override
+	public List<qEspeceDynamic> getEspecestypeesDyn(String numimm, Date dd, qModelJP md) {
+       List<qEspeceDynamic> result=new ArrayList<qEspeceDynamic>();
+
+       for(qEspeceTypee esp:md.getEspecestypees()) {
+		   if(esp.getTypeesptypee().equals(enumTypeEspTypee.DYNAMIC)) {
+			   result.add(new qEspeceDynamic(numimm,dd,esp.getNumOrdre(),esp,esp.getQespece()));
+		   }
+	   }
+		return result;
+	}
 }

@@ -1,7 +1,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:batch="http://www.springframework.org/schema/batch"
        xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
        xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
@@ -9,7 +10,7 @@
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory" />
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource1" />
     </bean>
 
 
@@ -23,14 +24,14 @@
     <!-- http://forum.springsource.org/showthread.php?59779-Spring-Batch-1-1-2-Standard-JPA-does-not-support-custom-isolation-levels-use-a-sp -->
     <job-repository id="jobRepository" xmlns="http://www.springframework.org/schema/batch"
                     isolation-level-for-create="READ_COMMITTED"
-                    transaction-manager="transactionManager"
-                   />
+                    transaction-manager="transactionManager" data-source="dataSource1"
+    />
     <!-- ItemReader which reads from database and returns the row mapped by
         rowMapper -->
     <!-- Optional JobExecutionListener to perform business logic before and after the job -->
-  <bean id="jobListener" class="com.gardecote.springbatch.qLicenceModelJobListener" />
-  <bean id="licencesItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
-        <property name="dataSource" ref="dataSource" />
+    <bean id="jobListener" class="com.gardecote.springbatch.qLicenceModelJobListener" />
+    <bean id="licencesItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
+        <property name="dataSource" ref="dataSource1" />
         <property name="sql"
                   value="SELECT typelicence, numlic, ancons, balise, calpoids, count, created_at, debaut, finauto, eff, gt, imo, kw, larg, longueur, nbrhomm, nomar, nomnav, numimm, port, puimot, radio, tjb, typb, updated_at, typencad, nation_idNation, qnavire_numimm, qtypnav_id_typelic, zone_IdZone, qConcessionid FROM dbo.qlic30" />
         <property name="rowMapper">
@@ -63,7 +64,7 @@
     <!-- Types de Navires Export -->
 
     <bean id="TypesNavireItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource1" />
         <property name="sql"
                   value="SELECT [idqTypeNav],[descr] FROM [GCM1].[dbo].[qTypeNav30]" />
         <property name="rowMapper">
@@ -95,11 +96,11 @@
     <!-- Zones Export -->
 
     <bean id="ZonesItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource1" />
         <property name="sql"
                   value="SELECT  [IdZone] ,[nom] FROM [GCM1].[dbo].[qZone30]" />
         <property name="rowMapper">
-                   <bean class="com.gardecote.springbatch.qZoneRowMapper" />
+            <bean class="com.gardecote.springbatch.qZoneRowMapper" />
         </property>
     </bean>
     <!-- Optional ItemProcessor to perform business logic/filtering on the input records -->
@@ -125,7 +126,7 @@
     <!-- Nations Export -->
 
     <bean id="NationsItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource1" />
         <property name="sql"
                   value="SELECT  [idNation],[designation] FROM [GCM1].[dbo].[qNation30]" />
         <property name="rowMapper">
@@ -156,7 +157,7 @@
 
     <!-- Categories de ressources Export -->
     <bean id="categoriesRessourcesItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource1" />
         <property name="sql"
                   value="SELECT  [idcateg],[typeSupport],[typeconcessionConcernee_qtypeconcessionpk] FROM [GCM1].[dbo].[qCategoriesRessources30]" />
         <property name="rowMapper">
@@ -171,7 +172,7 @@
     <bean id="categoriesRessourcesItemWriterExport" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
         <property name="resource" value="file:c:/tt/categressourcesimp.txt" />
         <property name="lineAggregator">
-         <!-- An Aggregator which converts an object into delimited list of strings -->
+            <!-- An Aggregator which converts an object into delimited list of strings -->
             <bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
                 <property name="delimiter" value="|" />
                 <property name="fieldExtractor">
@@ -189,7 +190,7 @@
     <!-- Concession Export  -->
 
     <bean id="ConcessionsItemReaderExport"   class="org.springframework.batch.item.database.JdbcCursorItemReader">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource1" />
         <property name="sql"
                   value="SELECT [ref_concession],[dateConcession],[date_debut],[date_fin],[dureeconcession],[quotaConcession] ,[qconsignataire_nomconsignataire],[qconsignataire_idconsignataire] FROM [GCM1].[dbo].[qConcession30]" />
         <property name="rowMapper">
@@ -233,19 +234,19 @@
             </batch:tasklet>
         </batch:step>
         <batch:step id="ZonesExport" next="NationsExport">
-        <batch:tasklet transaction-manager="transactionManager">
-            <batch:chunk reader="ZonesItemReaderExport" writer="ZonesItemWriterExport"
-                         processor="ZonesItemProcessorExport" commit-interval="10" />
+            <batch:tasklet transaction-manager="transactionManager">
+                <batch:chunk reader="ZonesItemReaderExport" writer="ZonesItemWriterExport"
+                             processor="ZonesItemProcessorExport" commit-interval="10" />
 
-        </batch:tasklet>
-    </batch:step>
+            </batch:tasklet>
+        </batch:step>
         <batch:step id="NationsExport" next="categoriesRessourcesExport">
-        <batch:tasklet transaction-manager="transactionManager">
-            <batch:chunk reader="NationsItemReaderExport" writer="NationsItemWriterExport"
-                         processor="NationsItemProcessorExport" commit-interval="10" />
+            <batch:tasklet transaction-manager="transactionManager">
+                <batch:chunk reader="NationsItemReaderExport" writer="NationsItemWriterExport"
+                             processor="NationsItemProcessorExport" commit-interval="10" />
 
-        </batch:tasklet>
-    </batch:step>
+            </batch:tasklet>
+        </batch:step>
         <batch:step id="categoriesRessourcesExport" next="concessionsExport">
             <batch:tasklet transaction-manager="transactionManager">
                 <batch:chunk reader="categoriesRessourcesItemReaderExport" writer="categoriesRessourcesItemWriterExport"

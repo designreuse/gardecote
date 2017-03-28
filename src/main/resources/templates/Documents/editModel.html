@@ -1,5 +1,4 @@
 <html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
-
 <head>
     <meta charset="UTF-8" />
     <title>Definition de model</title>
@@ -17,6 +16,7 @@
 
     <td>
        <select th:field="${editedModel.especestypees[__${modelStat.index}__].qespeceId}">
+           <option value="-1" ></option>
             <option th:each="var : ${allEspeces}"
                     th:value="${var.codeEsp}"
                     th:text= "${var.nomFr} ">hhh</option>
@@ -29,8 +29,23 @@
                     th:value="${var}"
                     th:text= "${var} ">hhh</option>
         </select>
+        <input type="text" th:disabled="true" th:field="${editedModel.especestypees[__${modelStat.index}__].prefix}" />
+    </td>
+    <td>
+        <select th:field="${editedModel.especestypees[__${modelStat.index}__].typeesptypee}">
+            <option th:each="var : ${allTypesEspTypes}"
+                    th:value="${var}"
+                    th:text= "${var} ">hhh</option>
+        </select>
+    </td>
+    <td>
+        <input type="number" th:field="${editedModel.especestypees[__${modelStat.index}__].numOrdre}" th:value  ="${editedModel.especestypees[__${modelStat.index}__].numOrdre}" />
+
     </td>
 <td> <button  type="submit"  th:value="${modelStat.index}" name="deleteEspece"  class="btn btn-success" >Supprimer </button></td>
+
+
+
 
 </tr>
         </table>
