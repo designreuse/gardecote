@@ -1447,6 +1447,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         if(currentDoc instanceof qMarree)  {
           qMarreeAnnexe annex=((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getMarreeAnnexe();
          lics=docService.retLicences(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getQseq(),frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getEnumtypedoc());
+            currentDoc=docService.treatEspDynamic(currentDoc);
          docService.save(currentDoc);
          for(qPageCarnet PC:((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getPages())
          pagecarnetService.save(PC);

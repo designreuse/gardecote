@@ -54,4 +54,5 @@ public interface qEspeceService {
 	Integer delete(String idBatobs);
 
 	public Page<qEspece> getSuggEsp(String esp);
+	public qEspece getSuggEspExact(String esp);
 }

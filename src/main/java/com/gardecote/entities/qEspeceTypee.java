@@ -1,4 +1,7 @@
 package com.gardecote.entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Comparator;
@@ -23,7 +26,11 @@ public class qEspeceTypee implements Serializable, Comparable<qEspeceTypee> {
     private enumTypeEspTypee typeesptypee;
 
     @OneToOne(cascade = CascadeType.ALL,targetEntity = qEspece.class)
+    @JsonManagedReference
     private qEspece qespece;
+
+    @OneToMany(targetEntity = qEspeceDynamic.class,cascade = CascadeType.ALL)
+    private List<qEspeceDynamic> especesDynamic;
 
     @ManyToMany(mappedBy ="especestypees",cascade = CascadeType.REFRESH)
     private List<qModelJP> modeljp;
@@ -42,6 +49,14 @@ public class qEspeceTypee implements Serializable, Comparable<qEspeceTypee> {
         this.prefix=prefix;
         this.typeesptypee=typeesptypee;
         this.numOrdre=numOrdre;
+    }
+
+    public List<qEspeceDynamic> getEspecesDynamic() {
+        return especesDynamic;
+    }
+
+    public void setEspecesDynamic(List<qEspeceDynamic> especesDynamic) {
+        this.especesDynamic = especesDynamic;
     }
 
     public Integer getNumOrdre() {
@@ -110,8 +125,10 @@ public class qEspeceTypee implements Serializable, Comparable<qEspeceTypee> {
 
     @Override
     public int compareTo(qEspeceTypee o) {
-        String qespeceIDo=o.getNumOrdre().toString()+o.getQespeceId().toString()+o.getEnumesptype().toString();
-        String qespeceID=this.getNumOrdre().toString()+this.qespeceId.toString()+this.getEnumesptype().toString();
+        //String qespeceIDo=o.getNumOrdre().toString()+o.getQespeceId().toString()+o.getEnumesptype().toString();
+       // String qespeceID=this.getNumOrdre().toString()+this.qespeceId.toString()+this.getEnumesptype().toString();
+        Integer qespeceIDo=o.getNumOrdre();
+        Integer qespeceID=this.getNumOrdre();
         return qespeceID.compareTo(qespeceIDo);
         }
 }

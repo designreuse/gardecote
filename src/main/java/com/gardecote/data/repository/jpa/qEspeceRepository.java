@@ -15,4 +15,6 @@ public interface qEspeceRepository extends PagingAndSortingRepository<qEspece, S
 
     @Query("select esp from qEspece  esp where esp.nomFr like %:esp% order by esp.nomFr DESC")
     Page<qEspece> returnSuggPage(Pageable pageable, @Param("esp") String esp);
+    @Query("select esp from qEspece  esp where esp.nomFr = :esp ")
+    qEspece returnSuggPageExact( @Param("esp") String esp);
 }

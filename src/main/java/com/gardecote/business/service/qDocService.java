@@ -23,7 +23,7 @@ public interface qDocService {
     qDoc findById(qDocPK idact) ;
     boolean checkPrefix(qPrefix deletedPrefix);
    Page<qDoc> findAllMatcheds(String numeroPage);
-
+   qDoc treatEspDynamic(qDoc currentDoc);
     /**
      * Loads all entities.
      * @return all entities

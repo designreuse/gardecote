@@ -113,3 +113,19 @@ li a:hover {
   width: auto;
   display: inline;
 }
+.table-nonfluid {
+  width: auto !important;
+}
+table {
+  max-width: none;
+}
+table th {
+  width: auto !important;
+}
+table td {
+  width:auto !important;
+}
+.tdleft {
+  width:10%;
+  min-width:200px;
+}

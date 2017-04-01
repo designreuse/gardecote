@@ -26,7 +26,9 @@ public class qPageMarree extends qPageCarnet implements Serializable {
     // "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
     @OneToOne(targetEntity = qMarree.class,cascade = CascadeType.ALL)
     private qMarree     qmarree;
-
+    @OneToMany(targetEntity=qEspeceDynamic.class,cascade = CascadeType.ALL)
+    @JoinTable(name = "qAssocPagesMareesEspDyn")
+    private List<qEspeceDynamic> especesDyn;
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -41,10 +43,19 @@ public class qPageMarree extends qPageCarnet implements Serializable {
         this.listJours = listJours;
     }
 
-    public qPageMarree(String numeroPage,Long numeroOrdrePage,  enumEtatPage etat,qCarnet carnet, qMarree qmarree, List<qJourMere> listJours) {
+    public List<qEspeceDynamic> getEspecesDyn() {
+        return especesDyn;
+    }
+
+    public void setEspecesDyn(List<qEspeceDynamic> especesDyn) {
+        this.especesDyn = especesDyn;
+    }
+
+    public qPageMarree(String numeroPage, Long numeroOrdrePage, enumEtatPage etat, qCarnet carnet, qMarree qmarree, List<qJourMere> listJours, List<qEspeceDynamic> especesDyn) {
         super(numeroPage,  carnet,numeroOrdrePage,etat);
         this.qmarree = qmarree;
         this.listJours = listJours;
+        this.especesDyn=especesDyn;
     }
 
     public qMarree getQmarree() {

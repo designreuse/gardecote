@@ -45,7 +45,9 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
 
    @OneToOne(targetEntity = qDebarquement.class,cascade = CascadeType.ALL)
     private qDebarquement qdebarquement;
-
+    @OneToMany(targetEntity=qEspeceDynamic.class,cascade = CascadeType.ALL)
+    @JoinTable(name = "qAssocPagesDebEspDyn")
+    private List<qEspeceDynamic> especesDyn;
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -58,6 +60,14 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
 
         this.qdebarquement = qdebarquement;
         this.listJours = listJours;
+    }
+
+    public List<qEspeceDynamic> getEspecesDyn() {
+        return especesDyn;
+    }
+
+    public void setEspecesDyn(List<qEspeceDynamic> especesDyn) {
+        this.especesDyn = especesDyn;
     }
 
     public qPageDebarquement() {

@@ -116,4 +116,9 @@ return returnedVal;
 		return changmentactJpaRepository.returnSuggPage(new PageRequest(0, 10),esp);
 	}
 
+	@Override
+	public qEspece getSuggEspExact(String esp) {
+		System.out.println("hoooo"+esp);
+		return changmentactJpaRepository.returnSuggPageExact(esp);
+	}
 }

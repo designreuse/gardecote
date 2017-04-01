@@ -449,6 +449,78 @@ alert("hhhhh")
                     //define select handler
 
                 });
+                $('#disablebutton').click(function(){
+
+                    $("[id$=especeChoisie\\.codeEsp]").prop('type', 'text');
+                    $("[id=disablebutton]").hide();
+
+                });
+                $('input[id$=especeChoisie\\.codeEsp]').each(function(){
+
+                  //  this.value = $(this).attr('title');
+                    $(this).addClass('text-label');
+
+                    $(this).focus(function(){
+
+                           // this.value = '';
+                            $(this).removeClass('text-label');
+
+                    });
+
+                    $(this).blur(function(){
+
+                         //   this.value = $(this).attr('title');
+                            $(this).addClass('text-label');
+
+                    });
+                });
+                $("[id$=especeChoisie\\.codeEsp]").autocomplete({
+                    minLength: 1,
+                    delay: 500,
+                    //define callback to format results
+                    source: function (request, response) {
+
+                        $this = $(this.element).val();
+
+                        var text = $(this.element).attr('id').replace('nomFr','codeEsp');
+                         //   alert(text);
+
+                        //    alert($this);
+                        $.getJSON("/autocomNomEspece",  {
+
+                            esp: $this
+                        }, function(result) {
+                            var selectedState='';
+                            response($.map(result, function(item) {
+                                selectedState = item.codeEsp;
+                                return {
+                                    // following property gets displayed in drop down
+                                    label: item.nomFr,
+                                    // following property gets entered in the textbox
+                                    value: item.codeEsp,
+                                    //following property is added for our own use
+
+                                }
+
+                            }));
+                     //    ret(jq(text),selectedState);
+
+                        });
+
+                        //      $(jq(text)).text("rrr");
+                        //$("input[id='" + jq(text) + "']").val("hh");
+                        //alert("input[id='" + jq(text) + "']");
+                        // $(jq(text)).val();
+                        //  var t=document.getDocumentById(jq(text)).value
+                        // alert(cde);
+                        //      alert($(jq(text)).val());
+                        //         $(jq(text)).val(selectedState);
+                    }
+
+
+                    //define select handler
+
+                });
                 function ret(idToUpdate,valueToUpdate) {
 
                     $(idToUpdate).attr('value',valueToUpdate);

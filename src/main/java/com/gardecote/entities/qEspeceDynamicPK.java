@@ -11,27 +11,13 @@ import java.util.Date;
  */
 public class qEspeceDynamicPK implements Serializable {
 
-    private String numimm;
+    private String     numeroPage;
 
-    private Date dateDepart;
+    private enumTypeDoc     typeDoc;
 
     private Integer numOrdre;
 
-    public String getNumimm() {
-        return numimm;
-    }
 
-    public void setNumimm(String numimm) {
-        this.numimm = numimm;
-    }
-
-    public Date getDateDepart() {
-        return dateDepart;
-    }
-
-    public void setDateDepart(Date dateDepart) {
-        this.dateDepart = dateDepart;
-    }
 
     public Integer getNumOrdre() {
         return numOrdre;
@@ -45,9 +31,25 @@ public class qEspeceDynamicPK implements Serializable {
         super();
     }
 
-    public qEspeceDynamicPK(String numimm, Date dateDepart, Integer numOrdre) {
-        this.numimm = numimm;
-        this.dateDepart = dateDepart;
+    public String getNumeroPage() {
+        return numeroPage;
+    }
+
+    public void setNumeroPage(String numeroPage) {
+        this.numeroPage = numeroPage;
+    }
+
+    public enumTypeDoc getTypeDoc() {
+        return typeDoc;
+    }
+
+    public void setTypeDoc(enumTypeDoc typeDoc) {
+        this.typeDoc = typeDoc;
+    }
+
+    public qEspeceDynamicPK(String numeroPage, enumTypeDoc typeDoc, Integer numOrdre) {
+        this.numeroPage = numeroPage;
+        this.typeDoc= typeDoc;
         this.numOrdre = numOrdre;
     }
 
@@ -58,16 +60,16 @@ public class qEspeceDynamicPK implements Serializable {
 
         qEspeceDynamicPK that = (qEspeceDynamicPK) o;
 
-        if (!getNumimm().equals(that.getNumimm())) return false;
-        if (!getDateDepart().equals(that.getDateDepart())) return false;
+        if (!numeroPage.equals(that.numeroPage)) return false;
+        if (typeDoc != that.typeDoc) return false;
         return getNumOrdre().equals(that.getNumOrdre());
 
     }
 
     @Override
     public int hashCode() {
-        int result = getNumimm().hashCode();
-        result = 31 * result + getDateDepart().hashCode();
+        int result = numeroPage.hashCode();
+        result = 31 * result + typeDoc.hashCode();
         result = 31 * result + getNumOrdre().hashCode();
         return result;
     }

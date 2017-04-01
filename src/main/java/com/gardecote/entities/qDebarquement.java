@@ -33,8 +33,7 @@ public class qDebarquement extends qDoc implements Serializable {
     @OneToMany(targetEntity=qPageDebarquement.class)
     @JoinTable(name = "qAssocDebarqPagesBIS")
     private List<qPageDebarquement> pages;
-    @OneToMany(targetEntity=qEspeceDynamic.class,cascade = CascadeType.ALL)
-    private List<qEspeceDynamic> especesDyn;
+
 
     public List<qEnginPecheDebar> getEngins() {
         return Engins;
@@ -69,13 +68,13 @@ public class qDebarquement extends qDoc implements Serializable {
         this.pages = pages;
     }
 
-    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,qSeq qseq,qNavireLegale qnavire,qUsine qusine,  List<qEnginPecheDebar> qEngins, enumTypeDebarquement typeDeb,qConcession qconcess,List<qCategDeb> categories, List<qPageDebarquement> pages,List<qEspeceDynamic> especesDyn) {
+    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,qSeq qseq,qNavireLegale qnavire,qUsine qusine,  List<qEnginPecheDebar> qEngins, enumTypeDebarquement typeDeb,qConcession qconcess,List<qCategDeb> categories, List<qPageDebarquement> pages) {
         super(enumtypedoc, depart, retour,qseq, qnavire,qusine,qconcess);
         this.categories=categories;
         this.Engins=qEngins;
         this.typeDeb = typeDeb;
         this.pages = pages;
-        this.especesDyn=especesDyn;
+
     }
 
 

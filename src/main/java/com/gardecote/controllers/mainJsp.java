@@ -117,6 +117,14 @@ public class mainJsp  {
 		return numpages;
 	}
 
+	@RequestMapping(value = "/findEspCode",method = RequestMethod.GET)
+	public @ResponseBody String findEspCode(@RequestParam("esp") String esp) {
+		System.out.println(esp);
+
+		qEspece pq=espService.getSuggEspExact(esp);
+
+		return pq.getCodeEsp();
+	}
 	@RequestMapping(value="/autocomPagesG",method = RequestMethod.GET)
 	public List<String> getAutocompletePagesP(@RequestParam("numeroP") String numeroD) {
 

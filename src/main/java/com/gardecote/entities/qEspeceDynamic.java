@@ -15,11 +15,11 @@ import java.util.Date;
 public class qEspeceDynamic implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    private String numimm;
-
+    @Column(name="numPage", nullable=false, length=50)
+    private String     numeroPage;
     @Id
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date dateDepart;
+    @Column(name="typeDoc", nullable=false, length=50)
+    private enumTypeDoc     typeDoc;
 
     @Id
     private Integer numOrdre;
@@ -28,57 +28,57 @@ public class qEspeceDynamic implements Serializable {
     private qEspeceTypee masterEspeceTypee;
     @OneToOne(targetEntity = qEspece.class)
     private qEspece   especeChoisie;
-    @OneToOne(targetEntity = qMarree.class)
-    private qMarree  maree;
-    @OneToOne(targetEntity = qDebarquement.class)
-    private qDebarquement  debarquement;
+    @ManyToOne
+    private qPageMarree  pagemaree;
+    @ManyToOne
+    private qPageDebarquement  pagedebarquement;
 
     public qEspeceDynamicPK getQEspeceDynamicPK(){
-        qEspeceDynamicPK espPK=new qEspeceDynamicPK(numimm,dateDepart,numOrdre);
+        qEspeceDynamicPK espPK=new qEspeceDynamicPK(numeroPage,typeDoc,numOrdre);
         return espPK;
     }
     public qEspeceDynamic() {
         super();
     }
 
-    public qEspeceDynamic(String numimm, Date dateDepart, Integer numOrdre, qEspeceTypee masterEspeceTypee, qEspece especeChoisie) {
-        this.numimm = numimm;
-        this.dateDepart = dateDepart;
+    public qEspeceDynamic(String numeroPage, enumTypeDoc typeDoc, Integer numOrdre, qEspeceTypee masterEspeceTypee, qEspece especeChoisie) {
+        this.numeroPage = numeroPage;
+        this.typeDoc = typeDoc;
         this.numOrdre = numOrdre;
         this.masterEspeceTypee = masterEspeceTypee;
         this.especeChoisie = especeChoisie;
     }
 
-    public qMarree getMaree() {
-        return maree;
+    public qPageMarree getPagemaree() {
+        return pagemaree;
     }
 
-    public void setMaree(qMarree maree) {
-        this.maree = maree;
+    public void setPagemaree(qPageMarree pagemaree) {
+        this.pagemaree = pagemaree;
     }
 
-    public qDebarquement getDebarquement() {
-        return debarquement;
+    public qPageDebarquement getPagedebarquement() {
+        return pagedebarquement;
     }
 
-    public void setDebarquement(qDebarquement debarquement) {
-        this.debarquement = debarquement;
+    public void setPagedebarquement(qPageDebarquement pagedebarquement) {
+        this.pagedebarquement = pagedebarquement;
     }
 
-    public String getNumimm() {
-        return numimm;
+    public String getNumeroPage() {
+        return numeroPage;
     }
 
-    public void setNumimm(String numimm) {
-        this.numimm = numimm;
+    public void setNumeroPage(String numeroPage) {
+        this.numeroPage = numeroPage;
     }
 
-    public Date getDateDepart() {
-        return dateDepart;
+    public enumTypeDoc getTypeDoc() {
+        return typeDoc;
     }
 
-    public void setDateDepart(Date dateDepart) {
-        this.dateDepart = dateDepart;
+    public void setTypeDoc(enumTypeDoc typeDoc) {
+        this.typeDoc = typeDoc;
     }
 
     public Integer getNumOrdre() {

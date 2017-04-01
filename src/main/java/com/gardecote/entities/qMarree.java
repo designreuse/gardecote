@@ -44,9 +44,7 @@ public class qMarree extends qDoc implements Serializable
     private List<qPageMarree> pages;
     @OneToOne(targetEntity = qMarreeAnnexe.class,cascade = {CascadeType.MERGE})
     private qMarreeAnnexe marreeAnnexe;
-    @OneToMany(targetEntity=qEspeceDynamic.class,cascade = CascadeType.ALL)
-    @JoinTable(name = "qAssocMareesEspDyn")
-    private List<qEspeceDynamic> especesDyn;
+
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -70,20 +68,14 @@ public class qMarree extends qDoc implements Serializable
         return serialVersionUID;
     }
 
-    public List<qEspeceDynamic> getEspecesDyn() {
-        return especesDyn;
-    }
 
-    public void setEspecesDyn(List<qEspeceDynamic> especesDyn) {
-        this.especesDyn = especesDyn;
-    }
 
-    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale qnavire, qUsine qusine, qConcession qconcess, enumJP typeJP, List<qEnginPecheMar> qEngins, List<qPageMarree> pages, List<qEspeceDynamic> especesDyn) {
+    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale qnavire, qUsine qusine, qConcession qconcess, enumJP typeJP, List<qEnginPecheMar> qEngins, List<qPageMarree> pages) {
         super(enumtypedoc, depart, retour,qseq, qnavire,qusine,qconcess);
         this.typeJP = typeJP;
         this.qEngins = qEngins;
         this.pages = pages;
-        this.especesDyn=especesDyn;
+
     }
 
     //--- DATABASE MAPPING : Depart ( date )

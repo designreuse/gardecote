@@ -29,7 +29,7 @@ import java.util.Date;
   @NamedQuery ( name="qCapture.countAll", query="SELECT COUNT(x) FROM qCapture x" )
 } )
 @IdClass(qCapturePK.class)
-public class qCapture implements Serializable
+public class qCapture implements Serializable, Comparable<qCapture>
 {
     private static final long serialVersionUID = 1L;
     //----------------------------------------------------------------------
@@ -193,5 +193,13 @@ public class qCapture implements Serializable
 
     public void setNumPage(String numPage) {
         this.numPage = numPage;
+    }
+    @Override
+    public int compareTo(qCapture o) {
+        //String qespeceIDo=o.getNumOrdre().toString()+o.getQespeceId().toString()+o.getEnumesptype().toString();
+        // String qespeceID=this.getNumOrdre().toString()+this.qespeceId.toString()+this.getEnumesptype().toString();
+        Integer qespeceIDo=o.getNumOrdre();
+        Integer qespeceID=this.getNumOrdre();
+        return qespeceID.compareTo(qespeceIDo);
     }
 }

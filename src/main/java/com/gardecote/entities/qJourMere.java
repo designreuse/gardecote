@@ -58,6 +58,7 @@ public class qJourMere implements Serializable
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
     @OneToMany(mappedBy="jourMere", targetEntity=qCapture.class,cascade = CascadeType.ALL)
+    @OrderBy("especeTypee.numOrdre ASC")
     private List<qCapture> capturesDuMarree;
 
     @Column(name="totalCapturs", nullable=false, length=10)

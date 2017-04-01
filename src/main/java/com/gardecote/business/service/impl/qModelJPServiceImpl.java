@@ -87,14 +87,14 @@ public class qModelJPServiceImpl implements qModelJPService {
 	}
 
 	@Override
-	public List<qEspeceDynamic> getEspecestypeesDyn(String numimm, Date dd, qModelJP md) {
-       List<qEspeceDynamic> result=new ArrayList<qEspeceDynamic>();
+	public List<qEspeceDynamic> getEspecestypeesDyn(String numeroPage, enumTypeDoc typeDoc, qModelJP md) {
+		List<qEspeceDynamic> result=new ArrayList<qEspeceDynamic>();
 
-       for(qEspeceTypee esp:md.getEspecestypees()) {
-		   if(esp.getTypeesptypee().equals(enumTypeEspTypee.DYNAMIC)) {
-			   result.add(new qEspeceDynamic(numimm,dd,esp.getNumOrdre(),esp,esp.getQespece()));
-		   }
-	   }
+		for(qEspeceTypee esp:md.getEspecestypees()) {
+			if(esp.getTypeesptypee().equals(enumTypeEspTypee.DYNAMIC)) {
+				result.add(new qEspeceDynamic(numeroPage,typeDoc,esp.getNumOrdre(),esp,esp.getQespece()));
+			}
+		}
 		return result;
 	}
 }

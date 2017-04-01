@@ -25,7 +25,7 @@ public interface qModelJPService {
 	List<qEspeceTypee>   findEspTypees(String pr);
 
 
-	List<qEspeceDynamic> getEspecestypeesDyn(String numimm, Date dd, qModelJP md);
+	List<qEspeceDynamic> getEspecestypeesDyn(String numeroPage,enumTypeDoc  typeDoc, qModelJP md);
 	/**
 	 * Loads all entities.
 	 * @return all entities

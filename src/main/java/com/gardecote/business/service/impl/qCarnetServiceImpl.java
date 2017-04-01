@@ -98,7 +98,7 @@ public class qCarnetServiceImpl implements qCarnetService {
 		if (carnet.getTypeDoc().equals(enumTypeDoc.Journal_Peche)){
     			for(int i=0;i<carnet.getNbrPages();i++) {
 				qPageCarnet  qp= new qPageMarree(carnet.getPrefixNumerotation()+Long.toString(carnet.getNumeroDebutPage()+i),
-						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null );
+						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null,null );
 				//   qp.setQcarnet(this);
 
 				pgs.add(qp);
