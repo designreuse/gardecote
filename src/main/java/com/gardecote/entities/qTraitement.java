@@ -30,18 +30,29 @@ public class qTraitement extends  qDoc implements Serializable {
     @OneToMany(targetEntity=qPageTraitement.class)
     @JoinTable(name = "qAssocTraitPagesBIS")
     private List<qPageTraitement> pagesTraitement;
+    @Column(name="totalCaptures", nullable=false, length=10)
+    private float totalCapturs;
 
 
-    public qTraitement(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale qnavire, qUsine qusine, qConcession qconcess, String refAgrement, Date dateTraitement, List<qSegUsines> segs, List<qQuantiteExportee> qQteExp,qQuantitesTraites qQteTraitees, Long qteDechu, List<qPageTraitement> pagesTraitement) {
+    public qTraitement(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale qnavire, qUsine qusine, qConcession qconcess, String refAgrement, Date dateTraitement, List<qSegUsines> segs, List<qQuantiteExportee> qQteExp,qQuantitesTraites qQteTraitees, Long qteDechu, List<qPageTraitement> pagesTraitement,float totalCapturs) {
         super(enumtypedoc, depart, retour, qseq, qnavire, qusine, qconcess);
         this.segs = segs;
         this.qQteExp = qQteExp;
         this.qQteTraitees = qQteTraitees;
         this.qteDechu = qteDechu;
         this.pagesTraitement = pagesTraitement;
+        this.totalCapturs=totalCapturs;
     }
 
     public qTraitement() {
+    }
+
+    public float getTotalCapturs() {
+        return totalCapturs;
+    }
+
+    public void setTotalCapturs(float totalCapturs) {
+        this.totalCapturs = totalCapturs;
     }
 
     public qQuantitesTraites getqQteTraitees() {
@@ -80,6 +91,7 @@ public class qTraitement extends  qDoc implements Serializable {
     public List<qPageTraitement> getPagesTraitement() {
         return pagesTraitement;
     }
+
 
     public void setPagesTraitement(List<qPageTraitement> pagesTraitement) {
         this.pagesTraitement = pagesTraitement;

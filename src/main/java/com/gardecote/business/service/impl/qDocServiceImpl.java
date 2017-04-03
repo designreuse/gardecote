@@ -401,7 +401,7 @@ public class qDocServiceImpl implements qDocService {
         if (carnetDebut.getPrefixNumerotation().equals("PC")) {
             // la peche cotiere
             documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
-                    choixEnginsDeb,  enumTypeDebarquement.Cotier, qconcess,categsCot, null);
+                    choixEnginsDeb,  enumTypeDebarquement.Cotier, qconcess,categsCot, null,0);
             documentCree.setSegPeche(debutPrefix);
             documentCree.setNomNavire(qnav.getNomnav());
 
@@ -411,7 +411,7 @@ public class qDocServiceImpl implements qDocService {
             // la peche artisanal
 
             documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
-                    choixEnginsDeb, enumTypeDebarquement.Artisanal,qconcess, categsArt,null);
+                    choixEnginsDeb, enumTypeDebarquement.Artisanal,qconcess, categsArt,null,0);
 
 
             documentCree.setSegPeche(debutPrefix);
@@ -447,7 +447,7 @@ public class qDocServiceImpl implements qDocService {
             for (int k = 0; k < currp.getNbrLigne(); k++) {
                 if (dateJourCourant.before(documentCree.getRetour()) || dateJourCourant.equals(documentCree.getRetour())) {
                     currentLineQuantities= currentPageAQuanties.get(k);
-                    qJourDeb jourDeb = new qJourDeb(k,currp.getNumeroPage(),dateJourCourant, qnav, null, currp);
+                    qJourDeb jourDeb = new qJourDeb(k,currp.getNumeroPage(),dateJourCourant, qnav, null, currp,0);
                     List<qCapture> capturesLine = new ArrayList<qCapture>();
                     // traitement des captures
                     i=0;
@@ -534,7 +534,7 @@ public class qDocServiceImpl implements qDocService {
 
 
         documentCree = new qMarree(enumTypeDoc.Journal_Peche, dateDepart, dateRetour, seqActive, qnav,null,
-                qconcess,selectedTypeJP ,  choixEnginsMar, null);
+                qconcess,selectedTypeJP ,  choixEnginsMar, null,0,0,0);
         documentCree.setSegPeche(debutPrefix);
         documentCree.setNomNavire(qnav.getNomnav());
         documentCree.setTypeJP(selectedTypeJP );
@@ -1433,7 +1433,7 @@ List<Boolean> choixEnginsPA=new ArrayList<Boolean>(),choixCategoriesPA=new Array
         if (carnetDebut.getPrefixNumerotation().equals("PC")) {
             // la peche cotiere
             documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
-                    choixEnginsDeb,  enumTypeDebarquement.Cotier, qconcess,categsCot, null);
+                    choixEnginsDeb,  enumTypeDebarquement.Cotier, qconcess,categsCot, null,0);
             documentCree.setSegPeche(debutPrefix);
             documentCree.setNomNavire(qnav.getNomnav());
         }
@@ -1442,7 +1442,7 @@ List<Boolean> choixEnginsPA=new ArrayList<Boolean>(),choixCategoriesPA=new Array
             // la peche artisanal
 
             documentCree = new qDebarquement(enumTypeDoc.Fiche_Debarquement, dateDepart, dateRetour, seqActive, qnav,null,
-                    choixEnginsDeb, enumTypeDebarquement.Artisanal,qconcess, categsArt,null);
+                    choixEnginsDeb, enumTypeDebarquement.Artisanal,qconcess, categsArt,null,0);
             documentCree.setSegPeche(debutPrefix);
             documentCree.setNomNavire(qnav.getNomnav());
 
@@ -1471,7 +1471,7 @@ List<Boolean> choixEnginsPA=new ArrayList<Boolean>(),choixCategoriesPA=new Array
             for (int k = 0; k < currp.getNbrLigne(); k++) {
                 if (dateJourCourant.before(documentCree.getRetour()) || dateJourCourant.equals(documentCree.getRetour())) {
 
-                    qJourDeb jourDeb = new qJourDeb(k,currp.getNumeroPage(),dateJourCourant, qnav, null, currp);
+                    qJourDeb jourDeb = new qJourDeb(k,currp.getNumeroPage(),dateJourCourant, qnav, null, currp,0);
                     List<qCapture> capturesLine = new ArrayList<qCapture>();
                     // traitement des captures
 
@@ -1616,7 +1616,7 @@ List<Boolean> choixEnginsPA=new ArrayList<Boolean>(),choixCategoriesPA=new Array
 
 
         documentCree = new qMarree(enumTypeDoc.Journal_Peche, dateDepart, dateRetour, seqActive, qnav,null,
-                qconcess,enumJP.Hautirere ,  choixEnginsMar, null);
+                qconcess,enumJP.Hautirere ,  choixEnginsMar, null,0,0,0);
         documentCree.setSegPeche(debutPrefix);
         documentCree.setNomNavire(qnav.getNomnav());
 
@@ -1711,7 +1711,7 @@ List<Boolean> choixEnginsPA=new ArrayList<Boolean>(),choixCategoriesPA=new Array
 
         //carnetDebut.getQconcession();
         documentCree = new qTraitement(enumTypeDoc.Fiche_Traitement, dateDepart, dateRetour, seqActive, null,qusine,
-                null,qusine.getRefAgrement() , dateDepart,null,null,null,0L, null);
+                null,qusine.getRefAgrement() , dateDepart,null,null,null,0L, null,0);
 
         List<qSegUsines> lstSegUsine=new ArrayList<qSegUsines>();
         qSegUsines seg1=new qSegUsines(documentCree.getNumImm(),documentCree.getDepart(),enumSegPeche.Peche_Artisanal,false,false,false,false,false,false);

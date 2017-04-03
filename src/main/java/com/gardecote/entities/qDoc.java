@@ -39,9 +39,9 @@ public class qDoc implements Serializable {
     private String  GT;
     @Column(name="nomcapitaine", nullable=true, length=20)
     private String nomCapitaine;
-    @Column(name="debloquerModification", nullable=false, length=10)
+    @Column(name="debloquerModification", nullable=true, length=10)
     private boolean debloquerModification;
-    @Column(name="bloquerDeletion", nullable=false, length=10)
+    @Column(name="bloquerDeletion", nullable=true, length=10)
     private boolean bloquerDeletion;
 
     private enumSupport support;

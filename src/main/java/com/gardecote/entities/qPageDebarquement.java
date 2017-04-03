@@ -49,17 +49,23 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
     @JoinTable(name = "qAssocPagesDebEspDyn")
     private List<qEspeceDynamic> especesDyn;
     //----------------------------------------------------------------------
+    @Column(name="totalCaptures", nullable=true, length=10)
+    private float totalCapturs;
+
+
+
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
     @OneToMany(mappedBy = "pagesDeb",targetEntity = qJourDeb.class,cascade = CascadeType.ALL)
       // @NotFound(action=NotFoundAction.IGNORE)
     private List<qJourDeb>  listJours;
 
-    public qPageDebarquement(String numeroPage,Long numeroOrdrePage, enumEtatPage etat, qCarnet carnet, qDebarquement qdebarquement, List<qJourDeb> listJours) {
+    public qPageDebarquement(String numeroPage,Long numeroOrdrePage, enumEtatPage etat, qCarnet carnet, qDebarquement qdebarquement, List<qJourDeb> listJours,float totalCapturs) {
         super(numeroPage,  carnet,numeroOrdrePage,etat);
 
         this.qdebarquement = qdebarquement;
         this.listJours = listJours;
+        this.totalCapturs=totalCapturs;
     }
 
     public List<qEspeceDynamic> getEspecesDyn() {
@@ -74,6 +80,13 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
 
     }
 
+    public float getTotalCapturs() {
+        return totalCapturs;
+    }
+
+    public void setTotalCapturs(float totalCapturs) {
+        this.totalCapturs = totalCapturs;
+    }
 
     public qDebarquement getQdebarquement() {
         return qdebarquement;
@@ -91,4 +104,7 @@ public class qPageDebarquement extends qPageCarnet implements Serializable
     public void setListJours(List<qJourDeb> listJours) {
         this.listJours = listJours;
     }
+
+
+
 }

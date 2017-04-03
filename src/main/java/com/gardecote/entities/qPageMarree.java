@@ -29,6 +29,12 @@ public class qPageMarree extends qPageCarnet implements Serializable {
     @OneToMany(targetEntity=qEspeceDynamic.class,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocPagesMareesEspDyn")
     private List<qEspeceDynamic> especesDyn;
+    @Column(name="totalCaptures", nullable=false, length=10)
+    private float totalCapturs;
+    @Column(name="totalCongs", nullable=true, length=10)
+    private float totalCong;
+    @Column(name="totalNbrCaisses", nullable=true, length=10)
+    private float nbrCaisse;
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -51,11 +57,16 @@ public class qPageMarree extends qPageCarnet implements Serializable {
         this.especesDyn = especesDyn;
     }
 
-    public qPageMarree(String numeroPage, Long numeroOrdrePage, enumEtatPage etat, qCarnet carnet, qMarree qmarree, List<qJourMere> listJours, List<qEspeceDynamic> especesDyn) {
+    public qPageMarree(String numeroPage, Long numeroOrdrePage, enumEtatPage etat, qCarnet carnet, qMarree qmarree, List<qJourMere> listJours, List<qEspeceDynamic> especesDyn,float totalCapturs,float totalCong,float nbrCaisse) {
         super(numeroPage,  carnet,numeroOrdrePage,etat);
         this.qmarree = qmarree;
         this.listJours = listJours;
         this.especesDyn=especesDyn;
+        this.totalCapturs=totalCapturs;
+        this.totalCong=totalCong;
+        this.totalCapturs=totalCapturs;
+        this.totalCong=totalCong;
+        this.nbrCaisse=nbrCaisse;
     }
 
     public qMarree getQmarree() {
@@ -72,5 +83,29 @@ public class qPageMarree extends qPageCarnet implements Serializable {
 
     public void setListJours(List<qJourMere> listJours) {
         this.listJours = listJours;
+    }
+
+    public float getTotalCapturs() {
+        return totalCapturs;
+    }
+
+    public void setTotalCapturs(float totalCapturs) {
+        this.totalCapturs = totalCapturs;
+    }
+
+    public float getTotalCong() {
+        return totalCong;
+    }
+
+    public void setTotalCong(float totalCong) {
+        this.totalCong = totalCong;
+    }
+
+    public float getNbrCaisse() {
+        return nbrCaisse;
+    }
+
+    public void setNbrCaisse(float nbrCaisse) {
+        this.nbrCaisse = nbrCaisse;
     }
 }

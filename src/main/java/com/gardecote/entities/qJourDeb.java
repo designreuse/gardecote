@@ -59,6 +59,9 @@ public class qJourDeb implements Serializable
 
     private qPageDebarquement pagesDeb;
 
+    @Column(name="totalCapturs", nullable=false, length=10)
+    private float totalCapturs;
+
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
@@ -72,14 +75,15 @@ public class qJourDeb implements Serializable
         return qjp;
     }
 
-    public qJourDeb(Integer indexLigne,String numPage,Date datejourDeb, qNavireLegale navire, List<qCapture> debarqDuJour, qPageDebarquement pagesDeb) {
+    public qJourDeb(Integer indexLigne,String numPage,Date datejourDeb, qNavireLegale navire, List<qCapture> debarqDuJour, qPageDebarquement pagesDebm,float totalCapturs) {
         this.indexLigne=indexLigne;
         this.numPage=numPage;
         this.numImm = navire.getNumimm();
         this.dateJour = datejourDeb;
         this.navire = navire;
         this.debarqDuJour = debarqDuJour;
-        this.pagesDeb = pagesDeb;
+        this.pagesDeb = pagesDebm;
+        this.totalCapturs=totalCapturs;
     }
 
     public String getNumImm() {
@@ -146,4 +150,17 @@ public class qJourDeb implements Serializable
     public void setPagesDeb(qPageDebarquement pagesDeb) {
         this.pagesDeb = pagesDeb;
     }
+
+    public float getTotalCapturs() {
+        return totalCapturs;
+    }
+
+    public void setTotalCapturs(float totalCapturs) {
+        this.totalCapturs = totalCapturs;
+    }
+
+
+
+
+
 }

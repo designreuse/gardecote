@@ -1420,6 +1420,8 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     @Transactional
     public String saveDocument(final  frmSearchPgsForDocCrea frmSearchPgsForDocCrea, final BindingResult result,final ModelMap model) {
     //  qDoc currentDoc=new qDoc(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+        List<Integer>  nbrJours=new ArrayList<Integer>();
+        Integer nbrCaptures=0;
         qDoc currentDoc=frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc();
         String urlNav=null;
         List<qLic> lics=new ArrayList<qLic>();
@@ -1441,6 +1443,14 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
             for(qPageCarnet PD:((qDebarquement) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getPages())
             pagecarnetService.save(PD);
             model.addAttribute("licencesRef", lics);
+            nbrCaptures=  ((qDebarquement) currentDoc).getPages().get(0).getListJours().get(0).getDebarqDuJour().size();
+            for (qPageDebarquement ju : ((qDebarquement) currentDoc).getPages()) {
+                System.out.println(ju.getNumeroPage().toString());
+                nbrJours.add(ju.getListJours().size());
+
+            }
+            model.addAttribute("nbrCaptures", nbrCaptures);
+            model.addAttribute("nbrJours", nbrJours);
             urlNav="docEditDebarquement";
         }
 
@@ -1456,7 +1466,14 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
                for(qPageCarnet PM:((qMarreeAnnexe) ((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getMarreeAnnexe()).getPages())
                    pagecarnetService.save(PM);
            }
+            nbrCaptures=  ((qMarree) currentDoc).getPages().get(0).getListJours().get(0).getCapturesDuMarree().size();
+            for (qPageMarree ju : ((qMarree) currentDoc).getPages()) {
+                System.out.println(ju.getNumeroPage().toString());
+                nbrJours.add(ju.getListJours().size());
 
+            }
+            model.addAttribute("nbrCaptures", nbrCaptures);
+            model.addAttribute("nbrJours", nbrJours);
             model.addAttribute("licencesRef", lics);
             urlNav="docEditMarree";
         }
@@ -1523,6 +1540,8 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     @RequestMapping(value="/editDoc",method = RequestMethod.GET)
     public String modifyDocument(@RequestParam(name="numimm") String numimm, @RequestParam(name="depart") String depart,@RequestParam(name="typeDoc") String typeDoc,final ModelMap model) {
         frmSearchPgsForDocCrea frmSearchPgsForDocCrea=new frmSearchPgsForDocCrea();
+        List<Integer>  nbrJours=new ArrayList<Integer>();
+        Integer nbrCaptures=0;
         String urlNav=null;
         CreateDocForm docForm=new CreateDocForm();
         Date dateDepart=null;
@@ -1552,6 +1571,14 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
             titre = "Débarquement" + ((qDebarquement) currentDoc).getTypeDeb().toString();
             docForm.setTitre(titre);
+            nbrCaptures=  ((qDebarquement) currentDoc).getPages().get(0).getListJours().get(0).getDebarqDuJour().size();
+            for (qPageDebarquement ju : ((qDebarquement) currentDoc).getPages()) {
+                System.out.println(ju.getNumeroPage().toString());
+                nbrJours.add(ju.getListJours().size());
+
+            }
+            model.addAttribute("nbrCaptures", nbrCaptures);
+            model.addAttribute("nbrJours", nbrJours);
             urlNav= "docEditDebarquement";
         }
         if (currentDoc instanceof qTraitement) {
@@ -1571,15 +1598,18 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         System.out.println(currentDoc.getNumImm());
         frmSearchPgsForDocCrea.setCreateDocFormm(docForm);
         if(currentDoc instanceof  qMarree) {
+          nbrCaptures=  ((qMarree) currentDoc).getPages().get(0).getListJours().get(0).getCapturesDuMarree().size();
             for (qPageMarree ju : ((qMarree) currentDoc).getPages()) {
                 System.out.println(ju.getNumeroPage().toString());
-                for (qJourMere qjm : ju.getListJours()) {
-                    System.out.println(qjm.getDatejourMere().toString() + qjm.getDateJour().toString());
+                nbrJours.add(ju.getListJours().size());
 
-                }
             }
+            model.addAttribute("nbrCaptures", nbrCaptures);
+            model.addAttribute("nbrJours", nbrJours);
         }
         model.addAttribute("licencesRef", lics);
+
+
         model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea);
         return urlNav;
 
@@ -1659,6 +1689,8 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     @RequestMapping(value="/createDocument",params = {"creer"},method = RequestMethod.POST)
     public String creerDocument(final frmSearchPgsForDocCrea frmSearchPgsForDocCrea ,final ModelMap model,BindingResult bindingresult) {
         String urlNav=null;
+        List<Integer>  nbrJours=new ArrayList<Integer>();
+        Integer nbrCaptures=0;
         List<qEnginPecheMar> enginsmarvides=new ArrayList<qEnginPecheMar>();
         List<qEnginPecheDebar> enginsdebarvides=new ArrayList<qEnginPecheDebar>();
         CreateDocForm docForm=new CreateDocForm();
@@ -1715,6 +1747,14 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
                 enginsmarvides.add(engMar1); enginsmarvides.add(engMar2); enginsmarvides.add(engMar3); enginsmarvides.add(engMar4); enginsmarvides.add(engMar5);
                 enginsmarvides.add(engMar6);
                 ((qMarree) currentDoc).setqEngins(enginsmarvides);
+                nbrCaptures=  ((qMarree) currentDoc).getPages().get(0).getListJours().get(0).getCapturesDuMarree().size();
+                for (qPageMarree ju : ((qMarree) currentDoc).getPages()) {
+                    System.out.println(ju.getNumeroPage().toString());
+                    nbrJours.add(ju.getListJours().size());
+
+                }
+                model.addAttribute("nbrCaptures", nbrCaptures);
+                model.addAttribute("nbrJours", nbrJours);
                 urlNav= "docEditMarree";
             }
             if (currentDoc instanceof qDebarquement) {
@@ -1736,7 +1776,14 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
                 enginsdebarvides.add(engDeb1); enginsdebarvides.add(engDeb2); enginsdebarvides.add(engDeb3); enginsdebarvides.add(engDeb4); enginsdebarvides.add(engDeb5);
                 enginsdebarvides.add(engDeb6); enginsdebarvides.add(engDeb7); enginsdebarvides.add(engDeb8);
                 ((qDebarquement) currentDoc).setEngins(enginsdebarvides);
+                nbrCaptures=  ((qDebarquement) currentDoc).getPages().get(0).getListJours().get(0).getDebarqDuJour().size();
+                for (qPageDebarquement ju : ((qDebarquement) currentDoc).getPages()) {
+                    System.out.println(ju.getNumeroPage().toString());
+                    nbrJours.add(ju.getListJours().size());
 
+                }
+                model.addAttribute("nbrCaptures", nbrCaptures);
+                model.addAttribute("nbrJours", nbrJours);
                 urlNav= "docEditDebarquement";
             }
                 if (currentDoc instanceof  qTraitement ) {
@@ -1762,6 +1809,10 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
                         urlNav= "docEditTraitement";
                     }
                 }
+
+
+
+
             docForm.setCurrentPage(0);
             docForm.setPageFin(frmSearchPgsForDocCrea.getNumeroFin());
             docForm.setCurrentDoc(currentDoc);

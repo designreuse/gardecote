@@ -98,7 +98,7 @@ public class qCarnetServiceImpl implements qCarnetService {
 		if (carnet.getTypeDoc().equals(enumTypeDoc.Journal_Peche)){
     			for(int i=0;i<carnet.getNbrPages();i++) {
 				qPageCarnet  qp= new qPageMarree(carnet.getPrefixNumerotation()+Long.toString(carnet.getNumeroDebutPage()+i),
-						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null,null );
+						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null,null,0,0,0 );
 				//   qp.setQcarnet(this);
 
 				pgs.add(qp);
@@ -109,7 +109,7 @@ public class qCarnetServiceImpl implements qCarnetService {
 
 			for(int i=0;i<carnet.getNbrPages();i++) {
 				qPageCarnet  qp= new qPageDebarquement(carnet.getPrefixNumerotation().toString()+Long.toString(carnet.getNumeroDebutPage()+i),
-						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null);
+						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null,0);
 				pgs.add(qp);
 			}
 
@@ -129,7 +129,7 @@ public class qCarnetServiceImpl implements qCarnetService {
 			carnet.setNbrLigneParPage(20);
 			for(int i=0;i<carnet.getNbrPages();i++) {
 				qPageCarnet  qp= new qPageTraitement(Long.toString(carnet.getNumeroDebutPage()+i),
-						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null);
+						carnet.getNumeroDebutPage()+i,enumEtatPage.LIBRE,carnet,null,null,0);
 
 
 				pgs.add(qp);

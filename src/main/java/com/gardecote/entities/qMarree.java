@@ -45,6 +45,13 @@ public class qMarree extends qDoc implements Serializable
     @OneToOne(targetEntity = qMarreeAnnexe.class,cascade = {CascadeType.MERGE})
     private qMarreeAnnexe marreeAnnexe;
 
+    @Column(name="totalCaptures", nullable=false, length=10)
+    private float totalCapturs;
+    @Column(name="totalCongs", nullable=false, length=10)
+    private float totalCong;
+    @Column(name="totalNbrCaisses", nullable=false, length=10)
+    private float nbrCaisse;
+
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
@@ -70,12 +77,38 @@ public class qMarree extends qDoc implements Serializable
 
 
 
-    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale qnavire, qUsine qusine, qConcession qconcess, enumJP typeJP, List<qEnginPecheMar> qEngins, List<qPageMarree> pages) {
+    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale qnavire, qUsine qusine, qConcession qconcess, enumJP typeJP, List<qEnginPecheMar> qEngins, List<qPageMarree> pages,float totalCapturs,float totCong,float nbrCaisse) {
         super(enumtypedoc, depart, retour,qseq, qnavire,qusine,qconcess);
         this.typeJP = typeJP;
         this.qEngins = qEngins;
         this.pages = pages;
+        this.totalCapturs=totalCapturs;
+        this.totalCong=totCong;
+        this.nbrCaisse=nbrCaisse;
+    }
 
+    public float getTotalCapturs() {
+        return totalCapturs;
+    }
+
+    public void setTotalCapturs(float totalCapturs) {
+        this.totalCapturs = totalCapturs;
+    }
+
+    public float getTotalCong() {
+        return totalCong;
+    }
+
+    public void setTotalCong(float totalCong) {
+        this.totalCong = totalCong;
+    }
+
+    public float getNbrCaisse() {
+        return nbrCaisse;
+    }
+
+    public void setNbrCaisse(float nbrCaisse) {
+        this.nbrCaisse = nbrCaisse;
     }
 
     //--- DATABASE MAPPING : Depart ( date )

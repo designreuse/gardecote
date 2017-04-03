@@ -62,11 +62,11 @@ public class qJourMere implements Serializable
     private List<qCapture> capturesDuMarree;
 
     @Column(name="totalCapturs", nullable=false, length=10)
-    private Integer totalCapturs;
+    private float totalCapturs;
     @Column(name="totalCong", nullable=false, length=10)
-    private Integer totalCong;
+    private float totalCong;
     @Column(name="nbrCaisse", nullable=false, length=10)
-    private Integer nbrCaisse;
+    private float nbrCaisse;
 
     @ManyToOne
     private qPageMarree pageMarree;
@@ -79,7 +79,7 @@ public class qJourMere implements Serializable
 		super();
     }
 
-    public Integer getTotalCapturs() {
+    public float getTotalCapturs() {
         return totalCapturs;
     }
 
@@ -87,7 +87,7 @@ public class qJourMere implements Serializable
         this.totalCapturs = totalCapturs;
     }
 
-    public Integer getTotalCong() {
+    public float getTotalCong() {
         return totalCong;
     }
 
@@ -95,7 +95,7 @@ public class qJourMere implements Serializable
         this.totalCong = totalCong;
     }
 
-    public Integer getNbrCaisse() {
+    public float getNbrCaisse() {
         return nbrCaisse;
     }
 
@@ -111,7 +111,7 @@ public class qJourMere implements Serializable
         this.secteur = secteur;
     }
 
-    public qJourMere(Integer idLigne, String numPage, Date datejourMere, qNavireLegale navire, List<qCapture> capturesDuMarree, Integer totalCapturs, Integer totalCong, Integer nbrCaisse, qPageMarree pageMarree) {
+    public qJourMere(Integer idLigne, String numPage, Date datejourMere, qNavireLegale navire, List<qCapture> capturesDuMarree, float totalCapturs,float  totalCong,float  nbrCaisse, qPageMarree pageMarree) {
       this.indexLigne=idLigne;
         this.numPage=numPage;
         this.dateJour = datejourMere;
@@ -193,5 +193,17 @@ public class qJourMere implements Serializable
 
     public void setNumPage(String numPage) {
         this.numPage = numPage;
+    }
+
+    public void setTotalCapturs(float totalCapturs) {
+        this.totalCapturs = totalCapturs;
+    }
+
+    public void setTotalCong(float totalCong) {
+        this.totalCong = totalCong;
+    }
+
+    public void setNbrCaisse(float nbrCaisse) {
+        this.nbrCaisse = nbrCaisse;
     }
 }

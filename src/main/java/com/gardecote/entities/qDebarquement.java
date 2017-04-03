@@ -33,6 +33,8 @@ public class qDebarquement extends qDoc implements Serializable {
     @OneToMany(targetEntity=qPageDebarquement.class)
     @JoinTable(name = "qAssocDebarqPagesBIS")
     private List<qPageDebarquement> pages;
+    @Column(name="totalCaptures", nullable=false, length=10)
+    private float totalCapturs;
 
 
     public List<qEnginPecheDebar> getEngins() {
@@ -46,6 +48,14 @@ public class qDebarquement extends qDoc implements Serializable {
 
     public enumTypeDebarquement getTypeDeb() {
         return typeDeb;
+    }
+
+    public float getTotalCapturs() {
+        return totalCapturs;
+    }
+
+    public void setTotalCapturs(float totalCapturs) {
+        this.totalCapturs = totalCapturs;
     }
 
     public void setTypeDeb(enumTypeDebarquement typeDeb) {
@@ -68,13 +78,13 @@ public class qDebarquement extends qDoc implements Serializable {
         this.pages = pages;
     }
 
-    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,qSeq qseq,qNavireLegale qnavire,qUsine qusine,  List<qEnginPecheDebar> qEngins, enumTypeDebarquement typeDeb,qConcession qconcess,List<qCategDeb> categories, List<qPageDebarquement> pages) {
+    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,qSeq qseq,qNavireLegale qnavire,qUsine qusine,  List<qEnginPecheDebar> qEngins, enumTypeDebarquement typeDeb,qConcession qconcess,List<qCategDeb> categories, List<qPageDebarquement> pages,float totCap) {
         super(enumtypedoc, depart, retour,qseq, qnavire,qusine,qconcess);
         this.categories=categories;
         this.Engins=qEngins;
         this.typeDeb = typeDeb;
         this.pages = pages;
-
+        this.totalCapturs=totCap;
     }
 
 

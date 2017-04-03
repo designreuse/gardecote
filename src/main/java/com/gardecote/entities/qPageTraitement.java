@@ -26,14 +26,17 @@ public class qPageTraitement extends qPageCarnet implements Serializable {
     @OneToMany(mappedBy = "pageTraitement",targetEntity = qOpTraitement.class,cascade = CascadeType.ALL)
     private List<qOpTraitement> opTraitements;
     //----------------------------------------------------------------------
+    @Column(name="totalCaptures", nullable=false, length=10)
+    private float totalCapturs;
 
    public qPageTraitement() {
    }
 
-    public qPageTraitement(String numeroPage,Long numeroOrdrePage, enumEtatPage etat, qCarnet carnet, qTraitement qtraitement, List<qOpTraitement> opTraitements) {
+    public qPageTraitement(String numeroPage,Long numeroOrdrePage, enumEtatPage etat, qCarnet carnet, qTraitement qtraitement, List<qOpTraitement> opTraitements,float totalCapturs) {
         super(numeroPage,  carnet,numeroOrdrePage,etat);
         this.qtraitement = qtraitement;
         this.opTraitements = opTraitements;
+        this.totalCapturs=totalCapturs;
     }
 
     public qTraitement getQtraitement() {
@@ -53,6 +56,11 @@ public class qPageTraitement extends qPageCarnet implements Serializable {
     }
 
 
+    public float getTotalCapturs() {
+        return totalCapturs;
+    }
 
-
+    public void setTotalCapturs(float totalCapturs) {
+        this.totalCapturs = totalCapturs;
+    }
 }

@@ -155,7 +155,7 @@
             <script src="gcmjs/underscore.js"></script>
             <script src="gcmjs/myApp.js" th:src="@{gcmjs/myApp.js}"></script>
 
-            <script type="text/javascript">
+            <script  th:inline="javascript">
                 /* <![CDATA[ */
                 function jq( myid ) {
 
@@ -378,7 +378,38 @@ alert("hhhhh")
                     $('#numeroDebut').val("");
 
                 }
+                $("[id$=\\.quantite]").on('change', function() {
+                    var intRegex = /[0-9]/;
+               //     alert( this.id );
+                 //   var price = intRegex.exec(this.id);
+                    var nbrCaptures =/*[[${nbrCaptures}]]*/ '0';
+                    var nbrJours = /*[[${nbrJours}]]*/ '0';
+                    var sumLine=0;
+                    for(var i=0;i<nbrCaptures;i++) {
+                     //    console.log(i);
+                   //     console.log($("[id=createDocFormm\\.currentDoc\\.pages"+get_numbers(this.id)[0]+"\\.listJours"+get_numbers(this.id)[1]+"\\.capturesDuMarree"+i+"\\.quantite]").val());
+                        sumLine= sumLine+ parseFloat($("[id=createDocFormm\\.currentDoc\\.pages"+get_numbers(this.id)[0]+"\\.listJours"+get_numbers(this.id)[1]+"\\.capturesDuMarree"+i+"\\.quantite]").val());
+                            }
+                    $("[id=createDocFormm\\.currentDoc\\.pages"+get_numbers(this.id)[0]+"\\.listJours"+get_numbers(this.id)[1]+"\\.totalCapturs]").val(sumLine);
+                 //   console.log(get_numbers(this.id)[0]);
+               //     console.log(sumLine);
+                   var  firstTotCap=0;
+                    for(var j=0; j<nbrJours[get_numbers(this.id)[0]];j++)
+                    {
+                        firstTotCap=firstTotCap +  parseFloat($("[id=createDocFormm\\.currentDoc\\.pages"+get_numbers(this.id)[0]+"\\.listJours"+j+"\\.totalCapturs]").val());
+                    }
 
+                    $("[id=createDocFormm\\.currentDoc\\.pages"+get_numbers(this.id)[0]+"\\.totalCapturs]").val(firstTotCap);
+
+                    console.log(nbrJours);
+                //    createDocFormm.currentDoc.pages0.listJours2.totalCapturs
+
+                })
+
+                // Returns an array of numbers located in the string
+                function get_numbers(input) {
+                    return input.match(/[0-9]+/g);
+                }
                 $("#licence\\.qconcession\\.refConcession").autocomplete({
                     minLength: 1,
                     delay: 500,
