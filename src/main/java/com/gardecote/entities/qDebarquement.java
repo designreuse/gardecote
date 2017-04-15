@@ -13,13 +13,14 @@ import java.util.List;
  */
 @Entity
 @DynamicUpdate
-
 @DiscriminatorValue("DEBARQUEMENT")
 public class qDebarquement extends qDoc implements Serializable {
     private static final long serialVersionUID = 1L;
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS
     //----------------------------------------------------------------------
+    private enumModePeche modeDocument;
+
     @ManyToMany(targetEntity = qEnginPecheDebar.class,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocDebarqEnginPecheBIS")
     private List<qEnginPecheDebar> Engins;
@@ -28,13 +29,18 @@ public class qDebarquement extends qDoc implements Serializable {
     @JoinTable(name = "qAssocDebarqCategoriesBIS")
     private List<qCategDeb> categories;
 
+    @ManyToMany(targetEntity = qTypeConcession.class)
+    @JoinTable(name = "qAssocDebarqTypeConcessionBIS")
+    private List<qTypeConcession> typesConcession;
+
     private enumTypeDebarquement typeDeb;
 
     @OneToMany(targetEntity=qPageDebarquement.class)
     @JoinTable(name = "qAssocDebarqPagesBIS")
-    private List<qPageDebarquement> pages;
+        private List<qPageDebarquement> pages;
     @Column(name="totalCaptures", nullable=false, length=10)
     private float totalCapturs;
+
 
 
     public List<qEnginPecheDebar> getEngins() {
@@ -45,6 +51,13 @@ public class qDebarquement extends qDoc implements Serializable {
         Engins = engins;
     }
 
+    public enumModePeche getModeDocument() {
+        return modeDocument;
+    }
+
+    public void setModeDocument(enumModePeche modeDocument) {
+        this.modeDocument = modeDocument;
+    }
 
     public enumTypeDebarquement getTypeDeb() {
         return typeDeb;
@@ -74,17 +87,27 @@ public class qDebarquement extends qDoc implements Serializable {
         return pages;
     }
 
+    public List<qTypeConcession> getTypesConcession() {
+        return typesConcession;
+    }
+
+    public void setTypesConcession(List<qTypeConcession> typesConcession) {
+        this.typesConcession = typesConcession;
+    }
+
     public void setPages(List<qPageDebarquement> pages) {
         this.pages = pages;
     }
 
-    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,qSeq qseq,qNavireLegale qnavire,qUsine qusine,  List<qEnginPecheDebar> qEngins, enumTypeDebarquement typeDeb,qConcession qconcess,List<qCategDeb> categories, List<qPageDebarquement> pages,float totCap) {
+    public qDebarquement(enumTypeDoc enumtypedoc,  Date depart, Date retour,qSeq qseq,qNavireLegale qnavire,qUsine qusine,  List<qEnginPecheDebar> qEngins, enumTypeDebarquement typeDeb,qConcession qconcess,List<qCategDeb> categories, List<qPageDebarquement> pages,float totCap,enumModePeche modeDoc) {
         super(enumtypedoc, depart, retour,qseq, qnavire,qusine,qconcess);
         this.categories=categories;
         this.Engins=qEngins;
         this.typeDeb = typeDeb;
         this.pages = pages;
         this.totalCapturs=totCap;
+        this.modeDocument=modeDoc;
+
     }
 
 

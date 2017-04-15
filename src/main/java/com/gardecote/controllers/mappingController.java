@@ -2,29 +2,23 @@ package com.gardecote.controllers;
 import com.gardecote.LicenceAc;
 import com.gardecote.business.service.*;
 import com.gardecote.entities.*;
-import com.gardecote.web.CreateDocForm;
-import com.gardecote.web.creationLicForm;
-import com.gardecote.web.lstLicForm;
-import com.gardecote.web.searchAccueil;
-import com.sun.xml.internal.ws.policy.sourcemodel.ModelNode;
+import com.gardecote.web.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.awt.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -81,6 +75,9 @@ public class mappingController {
     private qJourDebService   jourdebService;
     @Autowired
     private qNationService  nationService;
+    @Autowired
+    private qTaskBarService  taskbarService;
+
 
     @Autowired
     private qRegistreNavireService registrenavireService;
@@ -93,12 +90,37 @@ public class mappingController {
 
     @Autowired
     private LicenceAc ourLic;
+    private qTaskProgressBar task=null;
 
     @RequestMapping(value="/start")
-    public String ggg(final ModelMap model){
+    public String ggg(final ModelMap model,HttpServletRequest request){
+        HttpSession httpSession=request.getSession();
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = auth.getName();
         searchAccueil sacc=new searchAccueil();
+        searchBetweenTwoDates searchBetweenTwoDates=new searchBetweenTwoDates();
+        searchBetweenTwoDatesByConcession searchBetweenTwoDatesByConcession=new searchBetweenTwoDatesByConcession();
+       List<choixTypeConcession> types=new ArrayList<choixTypeConcession>();
+        choixTypeConcession h=null;
+        for(qTypeConcession tc:typeconcessionService.findAll()){
+           h=new choixTypeConcession();
+            h.setChoix(false);
+            h.setTypeConcession(tc);
+
+            types.add(h);
+        }
+        searchBetweenTwoDatesByConcession.setTypes(types);
+
+
+        this.task=taskbarService.findById(username);
+        searchBetweenTwoDatesByConcession.setProgressBar(task);
+
         model.addAttribute("page","");
         model.addAttribute("sacc",sacc);
+        model.addAttribute("searchBetweenTwoDates",searchBetweenTwoDates);
+        model.addAttribute("searchBetweenTwoDatesByConcession",searchBetweenTwoDatesByConcession);
         return "index";
     }
     @RequestMapping(value="/startDP")

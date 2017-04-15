@@ -211,7 +211,7 @@
 
                         <th th:each="p, statesp : *{currentDoc.pages[__${statp.index}__].listJours[0].debarqDuJour}">
 
-                            <div class="form-group col-xs-3" >  <span th:if="*{currentDoc.pages[__${statp.index}__].listJours[0].debarqDuJour[__${statesp.index}__].especeTypee.qespece!=null}" th:text="*{currentDoc.pages[0].listJours[0].debarqDuJour[__${statesp.index}__].especeTypee.qespece.nomFr}" />
+                            <div  >  <span th:if="*{currentDoc.pages[__${statp.index}__].listJours[0].debarqDuJour[__${statesp.index}__].especeTypee.qespece!=null}" th:text="*{currentDoc.pages[0].listJours[0].debarqDuJour[__${statesp.index}__].especeTypee.qespece.nomFr}" />
                                 <div th:if="*{currentDoc.pages[__${statp.index}__].listJours[0].debarqDuJour[__${statesp.index}__].especeTypee.qespece==null}">
                                     <div th:each="e,state: *{currentDoc.pages[__${statp.index}__].especesDyn}"  >
 
@@ -249,9 +249,21 @@
                         <input type="text" class="form-control input-sm " th:tabindex="((*{currentDoc.pages[__${statp.index}__].nbrLigne}*${statc.index})+${statj.index}+1)" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].quantite}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].debarqDuJour[__${statc.index}__].quantite}"/>
                         </td>
                         <td>
-                            <input  type="text" class="form-control input-sm" th:field="*{currentDoc.pages[__${statp.index}__].totalCapturs}"  />
+                            <input  type="text" class="form-control input-sm" th:field="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].totalCapturs}" th:value="*{currentDoc.pages[__${statp.index}__].listJours[__${statj.index}__].totalCapturs}"  />
                         </td>
                     </tr>
+                    <tr>
+                        <td></td>
+                        <td class="tdleft" th:each="p, statesp : *{currentDoc.pages[__${statp.index}__].listJours[0].debarqDuJour}" >
+
+
+
+                        </td>
+                        <td>
+                            <input  type="text" class="form-control" th:field="*{currentDoc.pages[__${statp.index}__].totalCapturs}"  />
+                        </td>
+                        <td></td>
+                        <td></td></tr>
                 </table>
 
 

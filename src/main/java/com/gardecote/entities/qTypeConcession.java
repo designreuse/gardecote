@@ -27,6 +27,10 @@ public class qTypeConcession implements Serializable,Comparable<qTypeConcession>
 
     private enumTypeDoc typeDoc;
 
+    @OneToMany(targetEntity = qMarree.class,mappedBy = "typeConcessionLiee")
+
+    private  List<qMarree> marrees;
+
     @OneToOne
     @NotNull
     private qPrefix    prefix;
@@ -34,6 +38,14 @@ public class qTypeConcession implements Serializable,Comparable<qTypeConcession>
 
     public qTypeConcession() {
         super();
+    }
+
+    public List<qMarree> getMarrees() {
+        return marrees;
+    }
+
+    public void setMarrees(List<qMarree> marrees) {
+        this.marrees = marrees;
     }
 
     public qTypeConcession(Integer qtypeconcessionpk, qPrefix prefix, String designation) {

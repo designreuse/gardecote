@@ -18,12 +18,14 @@ import java.util.List;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="TYPE_DOC", discriminatorType=DiscriminatorType.STRING, length=20)
 @IdClass(qDocPK.class)
-public class qDoc implements Serializable {
+public class qDoc implements Serializable , Comparable<qDoc> {
     @Id
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date depart       ;
     @Id
     private String numImm;
+    @OneToOne
+    private qPrefix qprefix;
     @OneToOne
     private qLic licenceImputation;
     private String segPeche;
@@ -43,7 +45,8 @@ public class qDoc implements Serializable {
     private boolean debloquerModification;
     @Column(name="bloquerDeletion", nullable=true, length=10)
     private boolean bloquerDeletion;
-
+    @Column(name="validation", nullable=true, length=10)
+    private boolean validation;
     private enumSupport support;
     @OneToOne( cascade = CascadeType.ALL,targetEntity = qSeq.class)
     private qSeq qseq;
@@ -58,11 +61,29 @@ public class qDoc implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date     retour       ;
 
+    public qPrefix getQprefix() {
+        return qprefix;
+    }
+
+    public void setQprefix(qPrefix qprefix) {
+        this.qprefix = qprefix;
+    }
+
     @Column(name="doctype", nullable=false, length=10)
     private enumTypeDoc enumtypedoc;
 
     public boolean isDebloquerModification() {
         return debloquerModification;
+    }
+
+    public boolean isValidation() {
+        return validation;
+    }
+
+
+
+    public void setValidation(boolean validation) {
+        this.validation = validation;
     }
 
     public void setDebloquerModification(boolean debloquerModification) {
@@ -229,6 +250,7 @@ public class qDoc implements Serializable {
 
     public qDoc(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale   qnavire, qUsine   qusine, qConcession qconcess){
         this.qconcession=qconcess;
+
         this.qnavire=qnavire;
         this.qusine=qusine;
         this.enumtypedoc = enumtypedoc;
@@ -240,6 +262,7 @@ public class qDoc implements Serializable {
     }
     public qDoc(qDoc other){
         this.qconcession=other.getQconcession();
+
         this.qnavire=other.getQnavire();
         this.qusine=other.getQusine();
         this.enumtypedoc = other.getEnumtypedoc();
@@ -291,5 +314,15 @@ public class qDoc implements Serializable {
         int result = getDepart().hashCode();
         result = 31 * result + getNumImm().hashCode();
         return result;
+    }
+
+
+    @Override
+    public int compareTo(qDoc o) {
+        //String qespeceIDo=o.getNumOrdre().toString()+o.getQespeceId().toString()+o.getEnumesptype().toString();
+        // String qespeceID=this.getNumOrdre().toString()+this.qespeceId.toString()+this.getEnumesptype().toString();
+        String qespeceIDo=o.getDepart().toString()+o.getNumImm();
+        String qespeceID=this.getDepart().toString()+this.getNumImm();
+        return qespeceID.compareTo(qespeceIDo);
     }
 }

@@ -229,7 +229,8 @@
             <div class="tab-content">
                 <div th:each="page, statp : *{currentDoc.pagesTraitement}" th:attr="id='page'+${statp.index}" class="tab-pane fade in active" th:class="${__${statp.index}__==__${frmSearchPgsForDocCrea.createDocFormm.currentPage}__}? 'tab-pane fade in active' : 'tab-pane fade'" >
                     <input type="hidden" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].numeroPage}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].numeroPage}" />
-                    <table class="table table-condensed table-striped  table-hover">
+                    <table class="table-bordered" style="border-spacing: 20px;" ><tr><td>
+                    <table class="table ">
                         <tr>
 
                             <th>Code Esp</th>
@@ -240,7 +241,7 @@
                                 Poids en Killogrammes
                             </th>
                         </tr>
-                        <tr th:each="jourLigne, statj : *{currentDoc.pagesTraitement[__${statp.index}__].opTraitements}" class="danger">
+                        <tr th:each="jourLigne, statj : *{currentDoc.pagesTraitement[__${statp.index}__].opTraitements}" class="danger" th:if="${statj.index &lt; 20}">
 
                                 <input type="hidden" class="form-control input-sm" th:tabindex="((${statj.index}*4)+2)" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement:''}" />
 
@@ -249,7 +250,7 @@
                             <td>
                                 <input type="text" class="form-control input-sm" th:tabindex="((${statj.index}*4)+3)" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.codeEsp}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.codeEsp:''}" />
                             </td>
-                            <td >
+                            <td>
                                 <input type="text" class="form-control input-sm" th:tabindex="((${statj.index}*4)+4)"  th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.nomFr}"  th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.nomFr:''}"/>
                             </td>
                             <td>
@@ -257,7 +258,40 @@
                             </td>
                         </tr>
                     </table>
+                    </td>
+                        <td>****</td> <td>****</td>
+                        <td>
+                        <table class="table">
+                            <tr>
 
+                                <th>Code Esp</th>
+                                <th>
+                                    Nom Esp
+                                </th>
+                                <th>
+                                    Poids en Killogrammes
+                                </th>
+                            </tr>
+                            <tr th:each="jourLigne, statj : *{currentDoc.pagesTraitement[__${statp.index}__].opTraitements}" class="danger" th:if="${statj.index &gt;= 20}">
+
+                                <input type="hidden" class="form-control input-sm" th:tabindex="((${statj.index}*4)+2)" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].IdOpTraitement:''}" />
+
+                                <input type="hidden" class="form-control input-sm" th:tabindex="((${statj.index}*4)+2)" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].numeroPage}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].numeroPage!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].numeroPage:''}" />
+
+                                <td>
+                                    <input type="text" class="form-control input-sm" th:tabindex="((${statj.index}*4)+3)" th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.codeEsp}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.codeEsp:''}" />
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control input-sm" th:tabindex="((${statj.index}*4)+4)"  th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.nomFr}"  th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp!=null?currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].esp.nomFr:''}"/>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control input-sm " th:tabindex="((${statj.index}*4)+5)"  th:field="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].qte}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].opTraitements[__${statj.index}__].qte}" />
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td></tr></table>
+                    Total :  <input type="text" class="form-control input-sm "   th:field="*{currentDoc.pagesTraitement[__${statp.index}__].totalCapturs}" th:value="*{currentDoc.pagesTraitement[__${statp.index}__].totalCapturs}" />
 
                 </div>
 

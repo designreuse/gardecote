@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
+import com.gardecote.business.service.qTaskBarService;
+import com.gardecote.entities.qTaskProgressBar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 
@@ -34,6 +36,9 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 	    HttpSession session;
 	  @Autowired
 	    private LicenceAc ourLic;
+	@Autowired
+	private qTaskBarService progressbarService;
+
       @Override
     public void onAuthenticationSuccess(HttpServletRequest request,	HttpServletResponse response,Authentication auth)
 		throws IOException, ServletException {
@@ -72,22 +77,33 @@ if (auth != null) {
 	}
 //	SavedRequest savedReq = (SavedRequest) session.getAttribute(WebAttributes.SAVED_REQUEST);
   if(licenseSS.getValidationStatus()==ValidationStatus.LICENSE_EXPIRED) {
+      qTaskProgressBar taskbar=progressbarService.findById(auth.getName());
+	  if(taskbar==null) {
+	  taskbar=new qTaskProgressBar();
+	  taskbar.setStatus("created");taskbar.setNbrTaitee(0);taskbar.setProgress(0);taskbar.setTotal(100);
+	  taskbar.setIdProgressBar(auth.getName());
+	 }
+	  else {
+		  taskbar.setNbrTaitee(0);
+		  taskbar.setTotal(100);
+		  taskbar.setProgress(0);
+	  }
+	  progressbarService.save(taskbar);
 	  for(GrantedAuthority vv:auth.getAuthorities()) {
-
 		  currentAuth.add(vv.getAuthority().toString());
 	  }
-
 	  response.setStatus(HttpServletResponse.SC_OK);
-
 	  if(currentAuth.contains("ROLE_saisiejp"))
 		  response.sendRedirect(request.getContextPath() + "/createDocument?firstEtp=0");
 	  else
-	    response.sendRedirect(request.getContextPath() + "/start");
+	  { response.sendRedirect(request.getContextPath() + "/start");}
+
 	}
 	else {
 		 session.invalidate();
-		response.setStatus(HttpServletResponse.SC_OK);
+	     response.setStatus(HttpServletResponse.SC_OK);
 		 response.sendRedirect(request.getContextPath() + "/licence.html");
-	}
+	    }
+
     }
 }

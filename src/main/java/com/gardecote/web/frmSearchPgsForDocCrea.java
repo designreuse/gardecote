@@ -2,6 +2,7 @@ package com.gardecote.web;
 
 import com.gardecote.entities.enumTypeDoc;
 import com.gardecote.entities.qDoc;
+import com.gardecote.entities.qTaskProgressBar;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -29,6 +30,7 @@ public class frmSearchPgsForDocCrea implements Serializable{
     Page<qDoc> lstDocuments;
     private CreateDocForm createDocFormm;
     private enumTypeDoc typeDoc;
+    private qTaskProgressBar currentBar;
 
     private Integer pageCount;
     private int[] numPages;
@@ -44,6 +46,14 @@ public class frmSearchPgsForDocCrea implements Serializable{
 
     public List<String> getNumsfin() {
         return numsfin;
+    }
+
+    public qTaskProgressBar getCurrentBar() {
+        return currentBar;
+    }
+
+    public void setCurrentBar(qTaskProgressBar currentBar) {
+        this.currentBar = currentBar;
     }
 
     public enumTypeDoc getTypeDoc() {

@@ -208,7 +208,7 @@
                         <th>Date Jour  <input type="button" value="edit" name="button1" id="disablebutton" /></th>
 
                         <th>Secteur</th>
-                        <th class="tdleft" th:each="p, statesp : *{currentDoc.pages[__${statp.index}__].listJours[0].capturesDuMarree}" >
+                        <th  th:each="p, statesp : *{currentDoc.pages[__${statp.index}__].listJours[0].capturesDuMarree}" >
 
     <div class="form-group col-xs-3" >  <span th:if="*{currentDoc.pages[__${statp.index}__].listJours[0].capturesDuMarree[__${statesp.index}__].especeTypee.qespece!=null}" th:text="*{currentDoc.pages[0].listJours[0].capturesDuMarree[__${statesp.index}__].especeTypee.qespece.nomFr}" />
 <div th:if="*{currentDoc.pages[__${statp.index}__].listJours[0].capturesDuMarree[__${statesp.index}__].especeTypee.qespece==null}">
@@ -271,7 +271,7 @@
                         </td>
                     </tr>
                     </tbody>
-                   <td></td>
+                  <tr> <td></td>
                     <td></td>
                     <td class="tdleft" th:each="p, statesp : *{currentDoc.pages[__${statp.index}__].listJours[0].capturesDuMarree}" >
 
@@ -282,7 +282,7 @@
                         <input  type="text" class="form-control" th:field="*{currentDoc.pages[__${statp.index}__].totalCapturs}"  />
                     </td>
                     <td></td>
-                    <td></td>
+                    <td></td></tr>
                 </table>
 
 

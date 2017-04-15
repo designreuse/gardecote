@@ -1,15 +1,23 @@
 package com.gardecote.business.service;
 
 import com.gardecote.entities.*;
+import com.gardecote.web.printedDocument;
+import com.gardecote.web.taskCommander;
+import com.gardecote.web.choixTypeConcession;
+import com.gardecote.web.resultatsCapturesByConcession;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.criteria.Expression;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Dell on 08/11/2016.
@@ -78,17 +86,20 @@ public interface qDocService {
     // si les docs n sont pas null, retourner la liste de ces documents avec leurs sequences et demander de l administrateur de supprimer un document si necessaire
     qDoc verifierAncienDoc(qSeqPK sequencepk);
     Page<qDoc> findAllMatchedDocs(Date searchDateCapture,String searchBat);
+    Page<qDoc> findAllMatchedDocsBetweenDates(Date searchDateCapture1,Date searchDateCapture2,String searchBat);
+    Page<qDoc> findAllMatchedDocsBetweenDatesTr(Date searchDateCapture1,Date searchDateCapture2,String searchBat);
+    Page<qDoc> findAllMatchedDocsBetweenDatesConcession(Date searchDateCapture1, Date searchDateCapture2, List<choixTypeConcession> types);
 
     qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
-    qDebarquement creerDebarquementByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsDeb,List<Boolean> categDebs,Map<String,Map<Integer,List<Double>>> quantities);
+    qDebarquement creerDebarquementByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsDeb,List<Boolean> categDebs,Map<String,Map<Integer,List<Float>>> quantities);
     qMarree creerMarree(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
-    qMarree creerMarreesByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP typeJP,Map<String,Map<Integer,List<Double>>> quantities);
+    qMarree creerMarreesByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP typeJP,Map<String,Map<Integer,List<Float>>> quantities,String typeM);
         //   qSeq seqActive=qseqRepository.findOne(seqActive1.getSeqPK());
 
     qTraitement creerTraitement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
     qTraitement creerTraitementByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP typeJP,Map<String,Map<Integer,List<Double>>> quantities);
         //   qSeq seqActive=qseqRepository.findOne(seqActive1.getSeqPK());
-
+        public Expression<Class> rendreTypeM(enumJP jp);
         qDoc creerNouvDoc(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
     qMarreeAnnexe  creerNouvAnnexe(Date dateDepart,qMarree qCurrentMaree,qSeqPK spk,enumTypeDoc typeDoc);
     qMarreeAnnexe creerAnnexe(Date dateDepart,qMarree qCurrentMaree,qSeqPK spk,enumTypeDoc typeDoc);
@@ -103,7 +114,8 @@ public interface qDocService {
     qModelJP checkIfModelExist(Date dateDepart,Date dateRetour,qSeq seqActive1,enumTypeDoc typeDoc);
     boolean checkIfValidSeq(qSeq seqActive1);
     boolean checkIfNavAnnexIsSameAsNavPrincipal(Date dateDepart, qSeqPK spk, qMarree currentMaree,enumTypeDoc typeDoc);
+    resultatsCapturesByConcession findAllMatchedDocsBetweenDatesConcessionCap(Date searchDateCapture1, Date searchDateCapture2, List<choixTypeConcession> types, final @RequestParam(name="PARAMETER_TYPE") String PARAMETER_TYPE,qTaskProgressBar task)  throws IOException, ServletException, Exception;
+    List<printedDocument> printDocument(qDoc currentDoc, String PARAMETER_TYPE, HttpServletRequest request, HttpServletResponse response,qTaskProgressBar currentpro,String paperType) throws IOException, ServletException, Exception;
 
 
-
-}
+    }

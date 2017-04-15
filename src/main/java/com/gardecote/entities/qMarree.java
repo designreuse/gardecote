@@ -36,6 +36,9 @@ public class qMarree extends qDoc implements Serializable
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------
     private enumJP typeJP;
+    private enumModePeche modeDocument;
+    @OneToOne
+    private  qTypeConcession typeConcessionLiee;
     @ManyToMany(targetEntity = qEnginPecheMar.class,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocMarreeEnginsBIS")
     private List<qEnginPecheMar> qEngins;
@@ -71,13 +74,27 @@ public class qMarree extends qDoc implements Serializable
         this.marreeAnnexe = marreeAnnexe;
     }
 
+    public qTypeConcession getTypeConcessionLiee() {
+        return typeConcessionLiee;
+    }
+
+    public void setTypeConcessionLiee(qTypeConcession typeConcessionLiee) {
+        this.typeConcessionLiee = typeConcessionLiee;
+    }
+
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
 
+    public enumModePeche getModeDocument() {
+        return modeDocument;
+    }
 
+    public void setModeDocument(enumModePeche modeDocument) {
+        this.modeDocument = modeDocument;
+    }
 
-    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale qnavire, qUsine qusine, qConcession qconcess, enumJP typeJP, List<qEnginPecheMar> qEngins, List<qPageMarree> pages,float totalCapturs,float totCong,float nbrCaisse) {
+    public qMarree(enumTypeDoc enumtypedoc, Date depart, Date retour, qSeq qseq, qNavireLegale qnavire, qUsine qusine, qConcession qconcess, enumJP typeJP, List<qEnginPecheMar> qEngins, List<qPageMarree> pages, float totalCapturs, float totCong, float nbrCaisse,enumModePeche modeDoc,qTypeConcession typeConcession) {
         super(enumtypedoc, depart, retour,qseq, qnavire,qusine,qconcess);
         this.typeJP = typeJP;
         this.qEngins = qEngins;
@@ -85,6 +102,8 @@ public class qMarree extends qDoc implements Serializable
         this.totalCapturs=totalCapturs;
         this.totalCong=totCong;
         this.nbrCaisse=nbrCaisse;
+        this.modeDocument=modeDoc;
+        this.typeConcessionLiee=typeConcession;
     }
 
     public float getTotalCapturs() {

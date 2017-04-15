@@ -29,4 +29,5 @@ public class qTypeHorsConcession extends qTypeConcession  implements Serializabl
 
     public qTypeHorsConcession() {
     }
+
 }

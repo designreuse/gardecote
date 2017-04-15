@@ -56,7 +56,7 @@ public class qCapture implements Serializable, Comparable<qCapture>
     @OneToOne
     private qEspeceTypee especeTypee;
 
-    private Integer quantite;
+    private Float quantite;
 
     @ManyToOne
     private qJourMere jourMere;
@@ -130,11 +130,11 @@ public class qCapture implements Serializable, Comparable<qCapture>
         this.qdoc = qdoc;
     }
 
-    public Integer getQuantite() {
+    public Float getQuantite() {
         return quantite;
     }
 
-    public void setQuantite(Integer quantite) {
+    public void setQuantite(Float quantite) {
         this.quantite = quantite;
     }
 
@@ -162,7 +162,7 @@ public class qCapture implements Serializable, Comparable<qCapture>
          return qcappk;
       }
 
-    public qCapture(Integer indexLigne,String numPage,qDoc qdoc, qEspeceTypee especeTypee, Integer quantite,Integer numOrdre, qJourMere jourMere, qJourDeb jourDeb) {
+    public qCapture(Integer indexLigne,String numPage,qDoc qdoc, qEspeceTypee especeTypee, Float quantite,Integer numOrdre, qJourMere jourMere, qJourDeb jourDeb) {
         this.datedepart = qdoc.getDepart();
         this.nummimm = qdoc.getNumImm();
         this.indexLigne=indexLigne;

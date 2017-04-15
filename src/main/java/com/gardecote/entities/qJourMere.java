@@ -66,7 +66,7 @@ public class qJourMere implements Serializable
     @Column(name="totalCong", nullable=false, length=10)
     private float totalCong;
     @Column(name="nbrCaisse", nullable=false, length=10)
-    private float nbrCaisse;
+    private Integer nbrCaisse;
 
     @ManyToOne
     private qPageMarree pageMarree;
@@ -79,23 +79,16 @@ public class qJourMere implements Serializable
 		super();
     }
 
+
     public float getTotalCapturs() {
         return totalCapturs;
-    }
-
-    public void setTotalCapturs(Integer totalCapturs) {
-        this.totalCapturs = totalCapturs;
     }
 
     public float getTotalCong() {
         return totalCong;
     }
 
-    public void setTotalCong(Integer totalCong) {
-        this.totalCong = totalCong;
-    }
-
-    public float getNbrCaisse() {
+    public Integer getNbrCaisse() {
         return nbrCaisse;
     }
 
@@ -111,7 +104,7 @@ public class qJourMere implements Serializable
         this.secteur = secteur;
     }
 
-    public qJourMere(Integer idLigne, String numPage, Date datejourMere, qNavireLegale navire, List<qCapture> capturesDuMarree, float totalCapturs,float  totalCong,float  nbrCaisse, qPageMarree pageMarree) {
+    public qJourMere(Integer idLigne, String numPage, Date datejourMere, qNavireLegale navire, List<qCapture> capturesDuMarree, float totalCapturs,float  totalCong,Integer  nbrCaisse, qPageMarree pageMarree) {
       this.indexLigne=idLigne;
         this.numPage=numPage;
         this.dateJour = datejourMere;
@@ -203,7 +196,5 @@ public class qJourMere implements Serializable
         this.totalCong = totalCong;
     }
 
-    public void setNbrCaisse(float nbrCaisse) {
-        this.nbrCaisse = nbrCaisse;
-    }
+
 }

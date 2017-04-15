@@ -1,57 +1,52 @@
 package com.gardecote.business.service;
 
-import com.gardecote.entities.*;
+import com.gardecote.entities.qSeq;
+import com.gardecote.entities.qSeqPK;
+import com.gardecote.entities.qTaskProgressBar;
 
-import javax.persistence.criteria.Expression;
 import java.util.List;
 
 /**
- * Created by Dell on 08/11/2016.
+ * Created by Dell on 13/04/2017.
  */
-public interface qCategRessourceService {
+public interface qTaskBarService {
     /**
      * Loads an entity from the database using its Primary Key
      * @param idact
      * @return entity
      */
-    qCategRessource findById(Integer idact) ;
-
-    public qCategRessource findCategH(qPrefix curpref);
-
-   public  qCategRessource findCategC(qPrefix curpref);
+    qTaskProgressBar findById(String idact) ;
 
     /**
      * Loads all entities.
      * @return all entities
      */
-    List<qCategRessource> findAll();
-    List<qEnginsLicence> getEngL(Integer idTypeConcession);
-    List<qCategRessource> getCategories(String refConcession);
+
+
     /**
      * Saves the given entity in the database (create or update)
      * @param entity
      * @return entity
      */
-    qCategRessource save(qCategRessource entity);
+    qTaskProgressBar save(qTaskProgressBar entity);
 
     /**
      * Updates the given entity in the database
      * @param entity
      * @return
      */
-    qCategRessource update(qCategRessource entity);
+    qTaskProgressBar update(qTaskProgressBar entity);
 
     /**
      * Creates the given entity in the database
      * @param entity
      * @return
      */
-    qCategRessource create(qCategRessource entity);
+    qTaskProgressBar create( qTaskProgressBar entity);
 
     /**
      * Deletes an entity using its Primary Key
      * @param idCapture
      */
-    void delete(Integer idCapture);
-
+    void delete(String idCapture);
 }
