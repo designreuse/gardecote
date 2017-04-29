@@ -54,6 +54,7 @@ public class qModelJP implements Serializable
     private qPrefix qprefix;
     @ManyToMany(cascade ={CascadeType.ALL} , targetEntity =qEspeceTypee.class,fetch = FetchType.EAGER)
     @JoinTable(name = "qAssocModelEspeceTypee3BIS")
+    @OrderBy("numOrdre ASC")
     private List<qEspeceTypee> especestypees;
    //----------------------------------------------------------------------
     // CONSTRUCTOR(S)

@@ -23,8 +23,8 @@ public class qConsignataire implements Serializable {
     @Column(name="nomconsignataire", nullable=false)
     private String  nomconsignataire;
     //mappedBy ="concessionaire" ,  ,targetEntity =qConcession.class,cascade = CascadeType.ALL
-
-    @OneToMany(mappedBy ="qconsignataire",fetch = FetchType.EAGER,targetEntity =qConcession.class,orphanRemoval = true)
+// a ete supprime mais vous pouvez toujours le ramene si il y aira des erurreurs
+    @OneToMany(mappedBy ="qconsignataire",fetch = FetchType.EAGER,targetEntity =qConcession.class)
   //@JoinColumn(name="qpagedeb",insertable = false,updatable = false)
   //@JoinTable(name="LiaisonConcessionConcessionaire",joinColumns=@JoinColumn(name="consignataire_fk"),inverseJoinColumns = @JoinColumn(name="concession_fk"))
   //@JoinColumn(name = "idconcession")
@@ -32,11 +32,14 @@ public class qConsignataire implements Serializable {
 
     public String getNomconsignataire() {
         return nomconsignataire;
-    } public void setNomconsignataire(String nomconsignataire) {
+    }
+    public void setNomconsignataire(String nomconsignataire) {
         this.nomconsignataire = nomconsignataire;
-    } public List<qConcession> getQconcession() {
+    }
+    public List<qConcession> getQconcession() {
         return qconcession;
-    } public void setQconcession(List<qConcession> qconcession) {
+    }
+    public void setQconcession(List<qConcession> qconcession) {
         this.qconcession = qconcession;
     }
 

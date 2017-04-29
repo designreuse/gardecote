@@ -149,7 +149,7 @@ public class qCarnetServiceImpl implements qCarnetService {
 		carnet.setQusine(usine);
         if(licence instanceof qLicenceLibre )  carnet.setQconcession(conHors);
         if(licence instanceof qLicenceNational )  carnet.setQconcession(((qLicenceNational) licence).getQconcession());
-
+		System.out.println("attribue au : "+carnet.getQnavire().getNomnav());
 		qCarnetRepository.save(carnet);
 		return carnet;
 

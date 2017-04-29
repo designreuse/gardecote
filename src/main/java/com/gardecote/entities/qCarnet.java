@@ -29,7 +29,7 @@ import org.springframework.format.annotation.NumberFormat;
   @NamedQuery ( name="qCarnet.countAll", query="SELECT COUNT(x) FROM qCarnet x" )
 } )
 @IdClass(qCarnetPK.class)
-public class qCarnet implements Serializable
+public class qCarnet implements Serializable , Comparable<qCarnet>
 {
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
@@ -205,5 +205,20 @@ public class qCarnet implements Serializable
         result = 31 * result + getNumeroDebutPage().hashCode();
         result = 31 * result + getTypeDoc().hashCode();
         return result;
+    }
+    @Override
+    public int compareTo(qCarnet o) {
+        //String qespeceIDo=o.getNumOrdre().toString()+o.getQespeceId().toString()+o.getEnumesptype().toString();
+        // String qespeceID=this.getNumOrdre().toString()+this.qespeceId.toString()+this.getEnumesptype().toString();
+        String prefo=o.getPrefixNumerotation();
+        String pref=this.getPrefixNumerotation();
+
+        enumTypeDoc typeDocO=o.getTypeDoc();
+        enumTypeDoc typeDoc=this.getTypeDoc();
+
+        String numeroDebutPageO=o.getNumeroDebutPage().toString();
+        String numeroDebutPage=this.getNumeroDebutPage().toString();
+
+       return prefo.concat(typeDocO.toString()).concat(numeroDebutPageO.toString()).compareTo(pref.concat(typeDoc.toString()).concat(numeroDebutPage.toString()));
     }
 }

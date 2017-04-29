@@ -53,6 +53,7 @@ public class qJourDeb implements Serializable
     private qNavireLegale navire;
 
     @OneToMany(mappedBy = "jourDeb",targetEntity=qCapture.class,cascade = CascadeType.ALL)
+    @OrderBy("especeTypee.numOrdre ASC")
     private List<qCapture> debarqDuJour;
 
     @ManyToOne

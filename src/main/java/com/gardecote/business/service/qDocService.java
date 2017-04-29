@@ -1,10 +1,7 @@
 package com.gardecote.business.service;
 
 import com.gardecote.entities.*;
-import com.gardecote.web.printedDocument;
-import com.gardecote.web.taskCommander;
-import com.gardecote.web.choixTypeConcession;
-import com.gardecote.web.resultatsCapturesByConcession;
+import com.gardecote.web.*;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -116,6 +114,6 @@ public interface qDocService {
     boolean checkIfNavAnnexIsSameAsNavPrincipal(Date dateDepart, qSeqPK spk, qMarree currentMaree,enumTypeDoc typeDoc);
     resultatsCapturesByConcession findAllMatchedDocsBetweenDatesConcessionCap(Date searchDateCapture1, Date searchDateCapture2, List<choixTypeConcession> types, final @RequestParam(name="PARAMETER_TYPE") String PARAMETER_TYPE,qTaskProgressBar task)  throws IOException, ServletException, Exception;
     List<printedDocument> printDocument(qDoc currentDoc, String PARAMETER_TYPE, HttpServletRequest request, HttpServletResponse response,qTaskProgressBar currentpro,String paperType) throws IOException, ServletException, Exception;
-
-
+    public String[][] traiterConcessions(MultipartFile file, String fullpatchname);
+    public String[][] genererDocumentsImport(MultipartFile file, String fullpatchname);
     }

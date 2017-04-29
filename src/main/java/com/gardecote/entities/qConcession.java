@@ -23,7 +23,7 @@ import java.util.List;
 @NamedQueries ( {
   @NamedQuery ( name="qConcession.countAll", query="SELECT COUNT(x) FROM qConcession x" )
 } )
-public class qConcession implements Serializable
+public class qConcession implements Serializable, Comparable<qConcession>
 {
     private static final long serialVersionUID = 2L;
     //----------------------------------------------------------------------
@@ -36,6 +36,7 @@ public class qConcession implements Serializable
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
    // @Column(name="idconcession", nullable=false)
+    // ajouter cela apres l import
     @ManyToOne(cascade = CascadeType.PERSIST)
     private qConsignataire    qconsignataire;
 
@@ -45,7 +46,6 @@ public class qConcession implements Serializable
     @OneToMany(mappedBy = "qconcession",targetEntity = qDoc.class)
     private List<qDoc> qdocs;
 
-
    @DateTimeFormat(pattern = "yyyy-MM-dd")
    @Column(name="dateConcession")
    private Date     dateConcession  ;
@@ -53,15 +53,12 @@ public class qConcession implements Serializable
     @Column(name="quotaConcession")
     private Integer     quotaEnTonne  ;
     @Column(name="dureeconcession" )
-
     private Integer dureeConcession;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name="date_debut")
-
     private Date dateDebut    ;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name="date_fin")
-
     private Date     dateFin      ;
 
     //----------------------------------------------------------------------
@@ -197,12 +194,9 @@ public class qConcession implements Serializable
     //----------------------------------------------------------------------
     // GETTERS & SETTERS FOR LINKS
     //----------------------------------------------------------------------
-
-
     public List<qLicenceNational> getqLicenceBatLastList() {
         return qLicenceBatLastList;
     }
-
     public void setqLicenceBatLastList(List<qLicenceNational> qLicenceBatLastList) {
         this.qLicenceBatLastList = qLicenceBatLastList;
     }
@@ -211,17 +205,37 @@ public class qConcession implements Serializable
     // toString METHOD
     //----------------------------------------------------------------------
 
-
     public qConcession(String refConcession, qConsignataire concessionaire, Date dateLicence, Date dateDebut, Date dateFin, List<qCategRessource> categoriesRessources, List<qLicenceNational> qLicenceBatLastList) {
         this.refConcession = refConcession;
         this.qconsignataire = concessionaire;
-
         this.dateConcession = dateLicence;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.categoriesRessources=categoriesRessources;
         this.qLicenceBatLastList = qLicenceBatLastList;
     }
+    @Override
+    public int compareTo(qConcession o) {
+        //String qespeceIDo=o.getNumOrdre().toString()+o.getQespeceId().toString()+o.getEnumesptype().toString();
+        // String qespeceID=this.getNumOrdre().toString()+this.qespeceId.toString()+this.getEnumesptype().toString();
+        String qespeceIDo=o.getRefConcession();
+        String qespeceID=this.getRefConcession();
+        return qespeceID.compareTo(qespeceIDo);
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof qConcession)) return false;
 
+        qConcession that = (qConcession) o;
+
+        return getRefConcession().equals(that.getRefConcession());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getRefConcession().hashCode();
+    }
 }

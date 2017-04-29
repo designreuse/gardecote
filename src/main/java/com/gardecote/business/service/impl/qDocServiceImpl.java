@@ -31,8 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -48,6 +50,8 @@ public class qDocServiceImpl implements qDocService {
     private qEspeceDynamicRepository especeDynamicRepo;
     @Autowired
     private qTaskBarService progressService;
+    @Autowired
+    private qRegistreNavireService navService;
 
     @Autowired
     private qPrefixRepository prefRepo;
@@ -63,7 +67,6 @@ public class qDocServiceImpl implements qDocService {
     private qCategRessourceRepository qcqtRepository;
     @Autowired
     private qEspeceTypeeRepository esptypeeRepository;
-
     @Autowired
     private qSeqRepository qseqRepository;
     @Autowired
@@ -74,7 +77,6 @@ public class qDocServiceImpl implements qDocService {
     private qModelJPRepository qmodelRepository;
     @Autowired
     private qModelJPService qmodelService;
-
     @Autowired
     private qPageCarnetRepository qpagecarnetRepository;
     @Autowired
@@ -101,6 +103,11 @@ public class qDocServiceImpl implements qDocService {
     private qAccordPecheRepository accordRepository;
     @Autowired
     private qZoneRepository zoneRepo;
+    @Autowired
+    private qConcessionService concessionService;
+
+    @Autowired
+    private qConsignataireService consignataireService;
     @Override
     public qDoc findById(qDocPK idcarnet) {
         qDoc authprovEntity = qdocRepository.findOne(idcarnet);
@@ -653,6 +660,7 @@ public class qDocServiceImpl implements qDocService {
         //  ((qDebarquement)qdoc).setCaptures(capturesTotal);
         return documentCree;
     }
+
 
     @Override
     public String importerDocuments(MultipartFile file, String fullpatchname) {
@@ -1244,6 +1252,7 @@ List<Boolean> choixEnginsPA=new ArrayList<Boolean>(),choixCategoriesPA=new Array
                     if(splitarray[0].equals("DEBARQUEMENTA"))
                     {
                         currentPageCaps=new HashMap<Integer,List<Float>>();
+
                         try {
                             DDepart=sdfmt1.parse(Depart);
                         } catch (ParseException e) {
@@ -1728,6 +1737,7 @@ qPrefixPK pk=new qPrefixPK(debutPrefix,typeDoc);
             lstPgsMar.add((qPageMarree) qpc);
         }
         Iterator<qPageMarree> qmarpages = lstPgsMar.iterator();
+
         Date dateJourCourant = documentCree.getDepart();
         List<qJourMere> joursMar = null;
        List<qEspeceDynamic> dynEsps=null;
@@ -2260,7 +2270,7 @@ List<qCapture> lstCa=jd.getDebarqDuJour();
 
         BeanGenerator beanGenerator = new BeanGenerator();
         Object myBean=null;
-        beanGenerator.addProperty("Date", Date.class);
+        beanGenerator.addProperty("date", Date.class);
         //myBean = beanGenerator.create();
 
         for(qEspece vv:listeCompleteEsp) {
@@ -2336,18 +2346,23 @@ List<qCapture> lstCa=jd.getDebarqDuJour();
         Date dateDepart = null;
         List<printedDocument> list = new ArrayList<printedDocument>();
         List<Object> capturesPage=null;
-
+        List<Boolean> choixEngins=new ArrayList<Boolean>();
         task.setProgress(0);
-
+         String segPeche=null;
+         String zonePeche=null;
+         List<String> choisTypesConcessions=new ArrayList<String>();
         //myBean = beanGenerator.create();
 
         // creation of beans
-
+        printedDocument currentPrintedDoc=null;
+        List<String> mrgs=new ArrayList<String>();
         BeanGenerator beanGenerator = new BeanGenerator();
 
+        if(currentDoc instanceof qMarree) {
+
         Object myBean=null;
-        beanGenerator.addProperty("Date", Date.class);
-        beanGenerator.addProperty("Secteur", String.class);
+        beanGenerator.addProperty("date", Date.class);
+        beanGenerator.addProperty("secteur", String.class);
         for (qCapture vv : ((qMarree) currentDoc).getPages().get(0).getListJours().get(0).getCapturesDuMarree()) {
             if(vv.getEspeceTypee().getQespece()!=null) {
                 beanGenerator.addProperty(StringUtils.uncapitalize((vv.getEspeceTypee().getQespece().getNomFr()+vv.getEspeceTypee().getNumOrdre()).replaceAll("\\s+", "")), Float.class);
@@ -2367,13 +2382,9 @@ List<qCapture> lstCa=jd.getDebarqDuJour();
         beanGenerator.addProperty("totalCong", Float.class);
         beanGenerator.addProperty("nbrCaisse", Integer.class);
 
-
-
-
-
         Method setter, getter;
 
-        printedDocument currentPrintedDoc;
+
         for (qPageMarree pm : ((qMarree) currentDoc).getPages()) {
             currentPrintedDoc=new printedDocument();
             currentPrintedDoc.setCurrentDoc(currentDoc);
@@ -2417,10 +2428,227 @@ List<qCapture> lstCa=jd.getDebarqDuJour();
             currentPrintedDoc.setPagesDocCaptures(capturesPage);
             currentPrintedDoc.setResultatsEntetesCol(colsHPage);
             currentPrintedDoc.setResultatsNamesCol(colsPage);
+
+            if(currentDoc.getQconcession()!=null) {
+            if(currentDoc.getQconcession().getRefConcession()!=null)   currentPrintedDoc.setRefConcession(currentDoc.getQconcession().getRefConcession());
+                else currentPrintedDoc.setRefConcession("");
+             if(currentDoc.getQconcession().getQconsignataire()!=null)   currentPrintedDoc.setNomConcessionnaire(currentDoc.getQconcession().getQconsignataire().getNomconsignataire());
+             else currentPrintedDoc.setNomConcessionnaire("");
+            }
+
+            currentPrintedDoc.setSupport(currentDoc.getSupport().toString());
+            if(currentDoc.getQuota()!=null) currentPrintedDoc.setQuota(currentDoc.getQuota().toString());
+            else currentPrintedDoc.setQuota("");
+
+            if(currentDoc.getDureeConcession()!=null) currentPrintedDoc.setDureeCobcession(currentDoc.getDureeConcession().toString());
+            else currentPrintedDoc.setDureeCobcession("");
+            if(currentDoc.getDateExpiration()!=null)
+            currentPrintedDoc.setDateExpiration(currentDoc.getDateExpiration().toString());
+            else
+                currentPrintedDoc.setDateExpiration("");
+            if(currentDoc.getLicenceImputation()!=null)
+            currentPrintedDoc.setLicencePeche(currentDoc.getLicenceImputation().toString());
+            else
+                currentPrintedDoc.setLicencePeche("");
+            if(currentDoc.getNomNavire()!=null)
+            currentPrintedDoc.setNomNavire(currentDoc.getNomNavire());
+            else  currentPrintedDoc.setNomNavire("");
+           if(currentDoc.getImo()!=null)
+            currentPrintedDoc.setImo(currentDoc.getImo());
+            else currentPrintedDoc.setImo("");
+            if(currentDoc.getGT()!=null)
+            currentPrintedDoc.setGt(currentDoc.getGT());
+            else currentPrintedDoc.setGt("");
+            if(currentDoc.getNomCapitaine()!=null)
+            currentPrintedDoc.setNomCapitaine(currentDoc.getNomCapitaine());
+            else  currentPrintedDoc.setNomCapitaine("");
+
+               for(qEnginPecheMar epm:((qMarree) currentDoc).getqEngins()) {
+                  if(epm.getEnginMar().equals(enumEngin.Chalut)){
+                      mrgs.add(((qMarree) currentDoc).getqEngins().get(0).getMaillage().toString());
+                      choixEngins.add(((qMarree) currentDoc).getqEngins().get(0).isFlag());
+                  }
+                 if(epm.getEnginMar().equals(enumEngin.Casier)) {
+                     mrgs.add(((qMarree) currentDoc).getqEngins().get(1).getMaillage().toString());
+                     choixEngins.add(((qMarree) currentDoc).getqEngins().get(1).isFlag());
+                 }
+                 if(epm.getEnginMar().equals(enumEngin.Nasses)) {
+                     mrgs.add(((qMarree) currentDoc).getqEngins().get(2).getMaillage().toString());
+                     choixEngins.add(((qMarree) currentDoc).getqEngins().get(2).isFlag());
+                 }
+                 if(epm.getEnginMar().equals(enumEngin.Filet_tremail)) {
+                     mrgs.add(((qMarree) currentDoc).getqEngins().get(3).getMaillage().toString());
+                     choixEngins.add(((qMarree) currentDoc).getqEngins().get(3).isFlag());
+                 }
+                 if(epm.getEnginMar().equals(enumEngin.Turlutte)) {
+                     mrgs.add(((qMarree) currentDoc).getqEngins().get(4).getMaillage().toString());
+                     choixEngins.add(((qMarree) currentDoc).getqEngins().get(4).isFlag());
+                 }
+
+                }
+            currentPrintedDoc.setMaillages(mrgs) ;//= new String[2][5];
+            currentPrintedDoc.setChoixEngins(choixEngins); ;
+
             list.add(currentPrintedDoc);
+            }
+
         }
+        if(currentDoc instanceof qDebarquement) {
+            Object myBean=null;
+            beanGenerator.addProperty("date", Date.class);
+
+            for (qCapture vv : ((qDebarquement) currentDoc).getPages().get(0).getListJours().get(0).getDebarqDuJour()) {
+                if(vv.getEspeceTypee().getQespece()!=null) {
+                    beanGenerator.addProperty(StringUtils.uncapitalize((vv.getEspeceTypee().getQespece().getNomFr()+vv.getEspeceTypee().getNumOrdre()).replaceAll("\\s+", "")), Float.class);
+                    colsPage.add(StringUtils.uncapitalize((vv.getEspeceTypee().getQespece().getNomFr()+vv.getEspeceTypee().getNumOrdre()).replaceAll("\\s+", "")));
+                    colsHPage.add(vv.getEspeceTypee().getQespece().getNomFr());
+                }
+                else
+                {
+                    beanGenerator.addProperty(StringUtils.uncapitalize(("Esp"+vv.getEspeceTypee().getNumOrdre()).replaceAll("\\s+", "")), Float.class);
+                    colsPage.add(StringUtils.uncapitalize("Esp"+vv.getEspeceTypee().getNumOrdre()).replaceAll("\\s+", ""));
+                    colsHPage.add("Esp"+vv.getEspeceTypee().getNumOrdre());
+                }
 
 
+            }
+            beanGenerator.addProperty("totalCapturs", Float.class);
+
+
+            Method setter, getter;
+
+
+            for (qPageDebarquement pdeb : ((qDebarquement) currentDoc).getPages()) {
+                currentPrintedDoc=new printedDocument();
+                currentPrintedDoc.setCurrentDoc(currentDoc);
+                currentPrintedDoc.setNumeroPage(pdeb.getNumeroPage());
+                capturesPage=new ArrayList<Object>();
+
+                for (qJourDeb jdeb : pdeb.getListJours()) {
+
+                    myBean = beanGenerator.create();
+                    setter = myBean.getClass().getMethod("setDate", Date.class);
+                    setter.invoke(myBean, jdeb.getDateJour());
+
+
+                    setter = myBean.getClass().getMethod("setTotalCapturs", Float.class);
+                    setter.invoke(myBean, jdeb.getTotalCapturs());
+
+
+
+
+                    for (qCapture vv : jdeb.getDebarqDuJour()) {
+                        if (vv.getEspeceTypee().getQespece() != null) {
+                            setter = myBean.getClass().getMethod("set" + StringUtils.capitalize((vv.getEspeceTypee().getQespece().getNomFr()+vv.getEspeceTypee().getNumOrdre()).replaceAll("\\s+", "")), Float.class);
+                            setter.invoke(myBean, vv.getQuantite());
+                            getter = myBean.getClass().getMethod("get" + StringUtils.capitalize((vv.getEspeceTypee().getQespece().getNomFr()+vv.getEspeceTypee().getNumOrdre()).replaceAll("\\s+", "")));
+                        }
+                        else {
+                            setter = myBean.getClass().getMethod("set" + StringUtils.capitalize(("Esp"+vv.getEspeceTypee().getNumOrdre()).replaceAll("\\s+", "")), Float.class);
+                            setter.invoke(myBean, vv.getQuantite());
+                            getter = myBean.getClass().getMethod("get" + StringUtils.capitalize("Esp"+vv.getEspeceTypee().getNumOrdre()).replaceAll("\\s+", ""));
+
+                        }
+                    }
+                    capturesPage.add(myBean);
+
+                }
+                currentPrintedDoc.setPagesDocCaptures(capturesPage);
+                currentPrintedDoc.setResultatsEntetesCol(colsHPage);
+                currentPrintedDoc.setResultatsNamesCol(colsPage);
+                System.out.println("ent:"+currentPrintedDoc.getResultatsEntetesCol().size());
+                if(currentDoc.getQconcession()!=null) {
+                    if(currentDoc.getQconcession().getRefConcession()!=null)    currentPrintedDoc.setRefConcession(currentDoc.getQconcession().getRefConcession());
+                    else currentPrintedDoc.setRefConcession("");
+                    if(currentDoc.getQconcession().getQconsignataire()!=null)   currentPrintedDoc.setNomConcessionnaire(currentDoc.getQconcession().getQconsignataire().getNomconsignataire());
+                    else currentPrintedDoc.setNomConcessionnaire("");
+                }
+if(((qDebarquement) currentDoc).getTypesConcession().size()!=0) {
+//    String segPeche=null;
+ //   String zonePeche=null;
+    for(qTypeConcession tc:((qDebarquement) currentDoc).getTypesConcession()) {
+        System.out.println("id :"+tc.getQtypeconcessionpk().toString());
+       choisTypesConcessions.add(tc.getQtypeconcessionpk().toString());
+    }
+    currentPrintedDoc.setChoisTypesConcessions(choisTypesConcessions);
+}
+                currentPrintedDoc.setSupport(currentDoc.getSupport().toString());
+                if(currentDoc.getQuota()!=null) currentPrintedDoc.setQuota(currentDoc.getQuota().toString());
+                else currentPrintedDoc.setQuota("");
+
+                if(currentDoc.getDureeConcession()!=null) currentPrintedDoc.setDureeCobcession(currentDoc.getDureeConcession().toString());
+                else currentPrintedDoc.setDureeCobcession("");
+                if(currentDoc.getDateExpiration()!=null)
+                    currentPrintedDoc.setDateExpiration(currentDoc.getDateExpiration().toString());
+                else
+                    currentPrintedDoc.setDateExpiration("");
+                if(currentDoc.getLicenceImputation()!=null)
+                    currentPrintedDoc.setLicencePeche(currentDoc.getLicenceImputation().toString());
+                else
+                    currentPrintedDoc.setLicencePeche("");
+                if(currentDoc.getNomNavire()!=null)
+                    currentPrintedDoc.setNomNavire(currentDoc.getNomNavire());
+                else  currentPrintedDoc.setNomNavire("");
+
+
+                if(currentDoc.getNomCapitaine()!=null)
+                    currentPrintedDoc.setNomCapitaine(currentDoc.getNomCapitaine());
+                else  currentPrintedDoc.setNomCapitaine("");
+                if(currentDoc.getLicenceImputation().getZone()!=null) {
+                    currentPrintedDoc.setZonePeche(currentDoc.getLicenceImputation().getZone().getNom());
+                          }
+                else  currentPrintedDoc.setZonePeche("");
+                    currentPrintedDoc.setSegPeche(currentDoc.getSegPeche());
+
+
+
+                for(qEnginPecheDebar epd:((qDebarquement) currentDoc).getEngins()) {
+                    if(epd.getEnginDeb().equals(enumEnginDeb.Pots)){
+                        mrgs.add(((qDebarquement) currentDoc).getEngins().get(0).getMaillage().toString());
+                        choixEngins.add(((qDebarquement) currentDoc).getEngins().get(0).isFlag());
+                    }
+                    if(epd.getEnginDeb().equals(enumEnginDeb.Casier)) {
+                        mrgs.add(((qDebarquement) currentDoc).getEngins().get(1).getMaillage().toString());
+                        choixEngins.add(((qDebarquement) currentDoc).getEngins().get(1).isFlag());
+                    }
+                    if(epd.getEnginDeb().equals(enumEnginDeb.Filet_tremail)) {
+                        mrgs.add(((qDebarquement) currentDoc).getEngins().get(2).getMaillage().toString());
+                        choixEngins.add(((qDebarquement) currentDoc).getEngins().get(2).isFlag());
+                    }
+                    if(epd.getEnginDeb().equals(enumEnginDeb.Filet_maillant)) {
+                        mrgs.add(((qDebarquement) currentDoc).getEngins().get(3).getMaillage().toString());
+                        choixEngins.add(((qDebarquement) currentDoc).getEngins().get(3).isFlag());
+                    }
+                    if(epd.getEnginDeb().equals(enumEnginDeb.Turlutte)) {
+                        mrgs.add(((qDebarquement) currentDoc).getEngins().get(4).getMaillage().toString());
+                        choixEngins.add(((qDebarquement) currentDoc).getEngins().get(4).isFlag());
+                    }
+                    if(epd.getEnginDeb().equals(enumEnginDeb.Ligne)) {
+                        mrgs.add(((qDebarquement) currentDoc).getEngins().get(4).getMaillage().toString());
+                        choixEngins.add(((qDebarquement) currentDoc).getEngins().get(4).isFlag());
+                    }
+                    if(epd.getEnginDeb().equals(enumEnginDeb.Palangre)) {
+                        mrgs.add(((qDebarquement) currentDoc).getEngins().get(4).getMaillage().toString());
+                        choixEngins.add(((qDebarquement) currentDoc).getEngins().get(4).isFlag());
+                    }
+                    if(epd.getEnginDeb().equals(enumEnginDeb.Filet_Enc_ST)) {
+                        mrgs.add(((qDebarquement) currentDoc).getEngins().get(4).getMaillage().toString());
+                        choixEngins.add(((qDebarquement) currentDoc).getEngins().get(4).isFlag());
+                    }
+
+                }
+                currentPrintedDoc.setMaillages(mrgs) ;//= new String[2][5];
+                currentPrintedDoc.setChoixEngins(choixEngins);
+
+                list.add(currentPrintedDoc);
+            }
+
+
+
+        }
+        if(currentDoc instanceof qTraitement) {
+
+        }
 
 return list;
     }
@@ -2799,7 +3027,7 @@ return list;
                     qPrefix currentpref=prefRepo.findOne(new qPrefixPK(prefixNum,enumTypeDoc.valueOf(typeDoc)));
 
                    currentNavLegale=(qNavireLegale)navRepository.findOne(NumimmNav);
-
+System.out.println(NumimmNav);
                         currentUsine=qusineRepository.findOne(RefAgr);
                             //new qPrefix(prefixNum,enumTypeDoc.valueOf(typeDoc),Integer.parseInt(NbrLignes),"");
                     currentCarnet=new qCarnet(currentpref,Long.parseLong(debutPage1),Integer.parseInt(NbrPages),currentNavLegale,currentUsine);
@@ -2808,15 +3036,12 @@ return list;
        //             if (!bindingresult.hasErrors()) {
 
                         qCarnet crn = qcarnetService.entrerDansLeSystem(currentCarnet);
+                    System.out.println("worked");
                         qcarnetService.attribuerCarnetAuNavire(crn, currentNavLegale, null, currentUsine);
 
                 //    } else {
               //          System.out.println("echec d'entrer le carnet");
               //      }
-
-
-
-
                 }
 
                 k++;
@@ -2966,9 +3191,675 @@ return list;
             }
 
         }
-
-
         return currentDoc;
+    }
+
+    @Override
+    public String[][] traiterConcessions(MultipartFile file, String fullpatchname) {
+        String  prefix,typedoc,information,nblifnesparcarnet;
+        Integer k=0;Long debut=null;
+        Set<qModelConcessionExport> edd=new HashSet<qModelConcessionExport>();
+        List<qConcession> concessions=new ArrayList<qConcession>();
+        qConcession concess=null;qConsignataire consign=null;Long pagelong=null;
+        String[][] value = null;
+        String[][] npgs= null; qPrefixPK prefpk=null;
+        Set<String> concSet=new HashSet<String>();
+        Set<String> pgSet=new HashSet<String>();
+        Set<qConcession> concessionsSet=new HashSet<qConcession>();
+        Set<qCarnet> carnetsSet=new HashSet<qCarnet>();
+        qPrefix prefixToBeCreated=new qPrefix();
+        try {
+            file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+            //  FileReader reader = new FileReader(fullpatchname);
+            InputStreamReader reader =   new InputStreamReader(new FileInputStream(fullpatchname), StandardCharsets.UTF_8);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if(!first) {
+                    k++;
+                    System.out.println(k);
+                    String splitarray[] = line.split("\t");
+                    String numero=splitarray[0];
+                    String seg=splitarray[1];
+                    String typepeche=splitarray[2];
+                    String nomnav=splitarray[3];
+                    String Ref=splitarray[4];
+                    String Nom=splitarray[5];
+                    String Npage=splitarray[6];
+                    String date	=splitarray[7];
+                    String chinchard=splitarray[8];
+                    String nomnadup=splitarray[9];
+                    String esp1=splitarray[10];
+                    String esp2=splitarray[11];
+                    String esp3=splitarray[12];
+                    String esp4=splitarray[13];
+                    String esp5=splitarray[14];
+                    String esp6=splitarray[15];
+                    String esp7=splitarray[16];
+                    String esp8=splitarray[17];
+                    String esp9=splitarray[18];
+                    String esp10=splitarray[19];
+                    String esp11=splitarray[20];
+                    String esp12=splitarray[21];
+                    String esp13=splitarray[22];
+                    qBateau currentBat=null;
+
+
+
+                    pgSet.add(Npage);
+                    if(!Npage.equals("")) {
+
+                        System.out.println(nomnav);
+                        currentBat=navService.getSuggNavire(nomnav).getContent().get(0);
+                        System.out.println(Npage.substring(0, 2));
+                        if (Npage.substring(0, 3).equals("PEL")) {
+                            prefpk = new qPrefixPK("PE", enumTypeDoc.Journal_Peche);
+                        }
+                        if (Npage.substring(0, 3).equals("DEM")) {
+                            prefpk = new qPrefixPK("DEM", enumTypeDoc.Journal_Peche);
+                        }
+                        if (Npage.substring(0, 5).equals("CRUST")) {
+                            prefpk = new qPrefixPK("CRUST", enumTypeDoc.Journal_Peche);
+                        }
+                        if (Npage.substring(0, 3).equals("CEP")) {
+                            prefpk = new qPrefixPK("CEPH", enumTypeDoc.Journal_Peche);
+                        }
+                        qPrefix currentPref = prefRepo.findOne(prefpk);
+                        System.out.println("npage "+Npage);
+                        pagelong = Long.parseLong(Npage.substring(4));
+                        Long gg = pagelong;
+                        Integer Count = 0;
+                        Integer firstnumber=0;
+
+                        String lastpart=null;String firstpart=null;
+                        Integer lastnumber =null;
+                        if(gg.toString().length()>=2)
+                        {  lastpart = gg.toString().substring(gg.toString().length() - 2);
+                            System.out.println("lastpart"+lastpart);
+                            firstpart = gg.toString().substring(0, gg.toString().length() - 2);
+                            if(!firstpart.equals("")) firstnumber = Integer.parseInt(firstpart);
+                            System.out.println("firstpart "+firstpart);
+                            lastnumber = Integer.parseInt(lastpart);
+                            System.out.println("lastnumber"+lastnumber);
+                            System.out.println("firstnumber"+firstnumber);
+                        }
+                        else {lastpart = gg.toString();firstpart="0";lastnumber=Integer.parseInt(gg.toString());firstnumber=0;}
+
+                        if (50 < lastnumber || lastnumber == 0) {
+                            debut = Long.parseLong(firstpart.concat("51"));
+                        } else debut = Long.parseLong(firstpart.concat("01"));
+
+                        qCarnetPK currentCarnet = new qCarnetPK(currentPref.getPrefix(), debut, enumTypeDoc.Journal_Peche);
+                        qCarnet currcarnett = new qCarnet(currentPref, debut, 50, (qNavireLegale) currentBat, null);
+                        currcarnett.setNumeroDebutPage(debut);
+                        currcarnett.setQnavire((qNavireLegale) currentBat);
+                        currcarnett.setPrefixNumerotation(currentPref.getPrefix());
+                        carnetsSet.add(currcarnett);
+                    }
+                    consign=new qConsignataire(Nom,null);
+                    concess=new qConcession(Ref,consign,null,null,null,null,null);
+                    if(!Nom.equals("") && !Ref.equals(""))   concessionsSet.add(concess);
+               }
+
+                k++;
+            }
+for(qConcession co:concessionsSet) {
+    qConsignataire consignat=null; qConcession concessi=null;
+   if(!co.getRefConcession().equals("")) {
+       if(co.getQconsignataire().getNomConsignataire()!=null ) {
+       //    qConsignataire ccc=new qConsignataire();
+         //  ccc.setNomConsignataire(co.getRefConcession());
+         //  System.out.println(ccc);
+          //    consignat= consignataireService.create(ccc);
+            //  co.setQconsignataire(consignat);
+         // concessi= concessionService.create(co);
+       }
+   }
+
+
+        concSet.add(co.getRefConcession());
+   }
+            npgs=new String[pgSet.size()][1];
+            int i=0;
+            for(String pg:pgSet) {
+                npgs[i][0]=pg;
+                i++;
+            }
+            int rownumber=0;
+            value=new String[carnetsSet.size()][6];
+            for(qCarnet cv:carnetsSet) {
+            value[rownumber][0]=cv.getNumeroDebutPage().toString();
+            value[rownumber][1]=cv.getPrefixNumerotation().toString();
+            value[rownumber][2]=cv.getTypeDoc().toString();
+                value[rownumber][3]=cv.getNbrPages().toString();
+                value[rownumber][4]=cv.getQnavire().getNumimm().toString();
+                value[rownumber][5]="NULL";
+                rownumber=rownumber+1;
+            }
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return value; //concessions; //new ArrayList<qModelConcessionExport>(concessions);
+
+    }
+
+
+    @Override
+    public String[][] genererDocumentsImport(MultipartFile file, String fullpatchname) {
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        String  prefix,typedoc,information,nblifnesparcarnet;
+        List<qDoc> documents= new ArrayList<qDoc>();
+        List<qEspeceDynamic> especesDyn=null;
+        qPageMarree currentp=null;
+        List<qJourMere> currentJours= null;
+        List<qPageMarree> currentPagesMaree= null;
+        Integer compteurLignes=0;
+        qModelJP currentModel=null;
+        Long currentPNL=null;
+        String currentPNS=null;
+        Integer i=0;
+        qJourMere currJM=new qJourMere();
+        qDoc currentDocument=null;
+        Integer k=0;Long debut=null;
+        Integer lastnumber = null;
+        String lastpart = null;
+        String firstpart = null;
+        Integer firstnumber = 0;
+        Date currentDateJour=null;
+        qPrefix currentPref=null;
+        Set<qModelConcessionExport> edd=new HashSet<qModelConcessionExport>();
+        List<qConcession> concessions=new ArrayList<qConcession>();
+        qConcession concess=null;qConsignataire consign=null;Long pagelong=null;
+        String[][] value = null;
+        String[][] npgs= null; qPrefixPK prefpk=null;
+        Set<String> concSet=new HashSet<String>();
+        Set<String> pgSet=new HashSet<String>();
+        Set<qConcession> concessionsSet=new HashSet<qConcession>();
+        Set<qCarnet> carnetsSet=new HashSet<qCarnet>();
+        qPrefix prefixToBeCreated=new qPrefix();
+        try {
+            file.transferTo(new File(fullpatchname));
+        } catch (IllegalStateException e) {
+        }  catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Boolean fl=true;
+        SimpleDateFormat sdfmt1 = new SimpleDateFormat("dd/MM/yyyy");
+
+        Date dateDepart = null;
+        // Read test file.
+        BufferedReader bufferedReader = null;
+        try {
+            //  FileReader reader = new FileReader(fullpatchname);
+            InputStreamReader reader =   new InputStreamReader(new FileInputStream(fullpatchname), StandardCharsets.UTF_8);
+            bufferedReader = new BufferedReader(reader);
+            String next, line = bufferedReader.readLine();
+            for (boolean first = true, last = (line == null); !last; first = false, line = next) {
+                last = ((next = bufferedReader.readLine()) == null);
+                if (!first) {
+                    System.out.println(k);
+                    String splitarray[] = line.split("\t");
+                    String numero = splitarray[0];
+                    String seg = splitarray[1];
+                    String typepeche = splitarray[2];
+                    String nomnav = splitarray[3];
+                    String Ref = splitarray[4];
+                    String Nom = splitarray[5];
+                    String Npage = splitarray[6];
+                    String datedep = splitarray[7];
+                    String deuxNomNav = splitarray[8];
+                    String secteur = splitarray[9];
+
+                    String esp1 = splitarray[10];
+                    String esp2 = splitarray[11];
+                    String esp3 = splitarray[12];
+                    String esp4 = splitarray[13];
+                    String esp5 = splitarray[14];
+                    String esp6 = splitarray[15];
+                    String esp7 = splitarray[16];
+                    String esp8 = splitarray[17];
+                    String esp9 = splitarray[18];
+                    String esp10 = splitarray[19];
+                    String esp11 = splitarray[20];
+                    String esp12 = splitarray[21];
+                    String esp13 = splitarray[22];
+                    String esp14 = splitarray[23];
+                    String esp15 = splitarray[24];
+                    String esp16 = splitarray[25];
+
+                    List<Float> currentLineQuantities = new ArrayList<>();
+                    currentLineQuantities.add(Float.parseFloat(esp1));
+                    currentLineQuantities.add(Float.parseFloat(esp2));
+                    currentLineQuantities.add(Float.parseFloat(esp3));
+                    currentLineQuantities.add(Float.parseFloat(esp4));
+                    currentLineQuantities.add(Float.parseFloat(esp5));
+                    currentLineQuantities.add(Float.parseFloat(esp6));
+                    currentLineQuantities.add(Float.parseFloat(esp7));
+                    currentLineQuantities.add(Float.parseFloat(esp8));
+                    currentLineQuantities.add(Float.parseFloat(esp9));
+                    currentLineQuantities.add(Float.parseFloat(esp10));
+                    currentLineQuantities.add(Float.parseFloat(esp11));
+                    currentLineQuantities.add(Float.parseFloat(esp12));
+                    currentLineQuantities.add(Float.parseFloat(esp13));
+                    currentLineQuantities.add(Float.parseFloat(esp14));
+                    currentLineQuantities.add(Float.parseFloat(esp15));
+                    currentLineQuantities.add(Float.parseFloat(esp16));
+                    qBateau currentBat = null;
+
+
+                    pgSet.add(Npage);
+
+                    if (!Npage.equals("")) {
+                        currentDocument = new qMarree();
+                        currentPagesMaree=new ArrayList<qPageMarree>();
+                        currentJours=new ArrayList<qJourMere>();
+                        currentBat = navService.getSuggNavire(nomnav).getContent().get(0);
+                        currentDocument.setEnumtypedoc(enumTypeDoc.Journal_Peche);
+                        currentDocument.setQnavire((qNavireLegale) currentBat);
+
+
+                        currentDocument.setTypePeche(enumJP.Hautirere);
+
+                        System.out.println("first blok");
+                        System.out.println((qNavireLegale) currentBat);
+
+                        //      currentDocument.setQnavire((qNavireLegale) currentBat);
+                        compteurLignes++;
+                        i = 0;// first line.
+                        System.out.println(nomnav);
+
+                        System.out.println(Npage.substring(0, 2));
+                        if (Npage.substring(0, 3).equals("PEL")) {
+                            prefpk = new qPrefixPK("PE", enumTypeDoc.Journal_Peche);
+                        }
+                        if (Npage.substring(0, 3).equals("DEM")) {
+                            prefpk = new qPrefixPK("DEM", enumTypeDoc.Journal_Peche);
+                        }
+                        if (Npage.substring(0, 5).equals("CRUST")) {
+                            prefpk = new qPrefixPK("CRUST", enumTypeDoc.Journal_Peche);
+                        }
+                        if (Npage.substring(0, 3).equals("CEP")) {
+                            prefpk = new qPrefixPK("CEPH", enumTypeDoc.Journal_Peche);
+                        }
+                        currentPref = prefRepo.findOne(prefpk);
+                        currentDocument.setQprefix(currentPref);
+                        System.out.println("npage " + Npage);
+                        pagelong = Long.parseLong(Npage.substring(4));
+                        Long gg = pagelong;
+                        Integer Count = 0;
+                        firstnumber = 0;
+                        currentDocument.setQprefix(currentPref);
+                        currentDocument.setPrefix(currentPref.getPrefix());
+                        try {
+                            dateDepart = sdfmt1.parse(datedep);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        currentDocument.setDepart(dateDepart);
+                        lastpart = null;
+                        firstpart = null;
+
+                        lastnumber = null;
+
+                        if (gg.toString().length() >= 2) {
+                            lastpart = gg.toString().substring(gg.toString().length() - 2);
+                            System.out.println("lastpart" + lastpart);
+                            firstpart = gg.toString().substring(0, gg.toString().length() - 2);
+                            if(!firstpart.equals("")) firstnumber = Integer.parseInt(firstpart);
+                            System.out.println("firstpart " + firstpart);
+                            lastnumber = Integer.parseInt(lastpart);
+                            System.out.println("lastnumber" + lastnumber);
+                            System.out.println("firstnumber" + firstnumber);
+                        } else {
+                            lastpart = gg.toString();
+                            firstpart = "0";
+                            lastnumber = Integer.parseInt(gg.toString());
+                            firstnumber = 0;
+                        }
+
+                        if (50 < lastnumber || lastnumber == 0) {
+                            debut = Long.parseLong(firstpart.concat("51"));
+                        } else debut = Long.parseLong(firstpart.concat("01"));
+
+                        currentPNL = Long.parseLong(firstnumber.toString().concat(lastpart).toString());
+                        currentPNS = currentPref.getPrefix().concat(firstnumber.toString().concat(lastpart).toString());
+                        qCarnetPK currentCarnet = new qCarnetPK(currentPref.getPrefix(), debut, enumTypeDoc.Journal_Peche);
+                        qCarnet currcarnett = new qCarnet(currentPref, debut, 50, (qNavireLegale) currentBat, null);
+                        currcarnett.setNumeroDebutPage(debut);
+                        currcarnett.setQnavire((qNavireLegale) currentBat);
+                        currcarnett.setPrefixNumerotation(currentPref.getPrefix());
+                        carnetsSet.add(currcarnett);
+                        currentModel = qmodelRepository.findOne(prefpk);
+
+                        currJM=new qJourMere();
+
+                        List<qCapture> captures = new ArrayList<qCapture>();
+                        // Date dateJourCourant = documentCree.getDepart();
+                        float tot = 0;
+                        especesDyn = qmodelService.getEspecestypeesDyn(currentPNS, enumTypeDoc.Journal_Peche, currentModel);
+
+                        for (qEspeceDynamic dn : especesDyn) {
+                            dn.setPagemaree(currentp);
+                        }
+                        i=0;
+                        for (qEspeceTypee currespt : currentModel.getEspecestypees()) {
+                            if (currentPref.getPrefix().equals("DEM")) {
+                                if (!esp14.equals(null) || !esp15.equals(null)) {
+
+                                }
+                            }
+                            qCapture qcapture = new qCapture(compteurLignes, currentPNS, currentDocument, currespt, currentLineQuantities.get(i), currespt.getNumOrdre(), currJM, null);
+                            tot = tot + currentLineQuantities.get(i);
+                            qcapture.setDateJour(dateDepart);
+                            qcapture.setEsptype(currespt.getEnumesptype());
+                            captures.add(qcapture);
+                        i++;
+                        }
+                        currentDateJour=dateDepart;
+
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(currentDateJour);
+                        cal.add(Calendar.DATE, 1);
+                        currentDateJour = cal.getTime();
+                        currJM.setDateJour(currentDateJour);
+                        currJM.setCapturesDuMarree(captures);
+                        currJM.setTotalCapturs(tot);
+                        currJM.setTotalCong(tot);
+                        currentJours.add(currJM);
+                        currentp = new qPageMarree();
+                        currentp.setNumeroPage(currentPNS);
+                        currentp.setNumeroOrdrePage(currentPNL);
+                    } else {
+                        compteurLignes++;
+                     if(secteur.equals("") && deuxNomNav.equals("") && datedep.equals("")){
+                        if (currentJours.size() > 0) {
+                            compteurLignes = 0;
+                            currentp.setListJours(currentJours);
+                            currentPagesMaree.add(currentp);
+
+                            //currentp=new qPageMarree(); currentDocument.setEnumtypedoc(enumTypeDoc.Journal_Peche);currentDocument.setQnavire((qNavireLegale) currentBat); currentDocument.setQprefix(currentPref);
+                            // System.out.println("first blok 2");
+                            //  System.out.println((qNavireLegale) currentBat);}
+                    //        documents.add(currentDocument);
+                            //currentDocument=new qMarree();
+                            //currentDocument.setEnumtypedoc(enumTypeDoc.Journal_Peche);
+                            //currentDocument.setQnavire((qNavireLegale) currentBat);
+                            //currentDocument.setQprefix(currentPref);
+                            //System.out.println("first blok 3");
+                            //System.out.println((qNavireLegale) currentBat);
+                        }
+                         ((qMarree) currentDocument).setPages(currentPagesMaree);
+                         ((qMarree) currentDocument).setRetour(currentDateJour);
+                        documents.add(currentDocument);
+                        compteurLignes = 0;
+                    }
+                        else {
+                         // sequence du marree
+                        i = 0;
+                        //        if (!deuxNomNav.equals("") || !secteur.equals("") || !numero.equals("")) {
+                         //compteurLignes++;
+                         currJM = new qJourMere();
+                         List<qCapture> captures = new ArrayList<qCapture>();
+                         currJM.setSecteur(secteur);
+                         currJM.setDateJour(dateDepart);
+
+                         // Date dateJourCourant = documentCree.getDepart();
+
+                         float tot = 0;
+                         for (qEspeceTypee currespt : currentModel.getEspecestypees()) {
+                             qCapture qcapture = new qCapture(1, currentPNS, currentDocument, currespt, currentLineQuantities.get(i), currespt.getNumOrdre(), currJM, null);
+                             tot = tot + currentLineQuantities.get(i);
+                             qcapture.setDateJour(dateDepart);
+
+                             qcapture.setEsptype(currespt.getEnumesptype());
+                             captures.add(qcapture);
+                             i = i++;
+                         }
+
+
+                         Calendar cal = Calendar.getInstance();
+                         cal.setTime(currentDateJour);
+                         cal.add(Calendar.DATE, 1);
+                         currentDateJour = cal.getTime();
+                         currJM.setDateJour(currentDateJour);
+
+                         currJM.setCapturesDuMarree(captures);
+                         currJM.setTotalCapturs(tot);
+                         currJM.setTotalCong(tot);
+                         currentJours.add(currJM);
+
+                        if (compteurLignes == 5) {
+                            compteurLignes = 0;
+                            currentp.setListJours(currentJours);
+                            currentPagesMaree.add(currentp);
+
+                            currentp = new qPageMarree();
+                            currentJours = new ArrayList<qJourMere>();
+                            currentPNL =currentPNL + 1L;
+                            currentPNS = currentPref.getPrefix().toString().concat(Long.toString(currentPNL));
+
+
+                            currentp.setNumeroPage(currentPNS);
+                            currentp.setNumeroOrdrePage(currentPNL);
+
+                        } //else currentPNS = currentPref.toString().concat(Long.toString(currentPNL));
+
+
+
+                        consign = new qConsignataire(Nom, null);
+                        concess = new qConcession(Ref, consign, null, null, null, null, null);
+                        if (!Nom.equals("") && !Ref.equals("")) concessionsSet.add(concess);
+                    }
+                    }
+
+
+                }
+                for (qConcession co : concessionsSet) {
+                    qConsignataire consignat = null;
+                    qConcession concessi = null;
+                    if (!co.getRefConcession().equals("")) {
+                        if (co.getQconsignataire().getNomConsignataire() != null) {
+                            //    qConsignataire ccc=new qConsignataire();
+                            //  ccc.setNomConsignataire(co.getRefConcession());
+                            //  System.out.println(ccc);
+                            //    consignat= consignataireService.create(ccc);
+                            //  co.setQconsignataire(consignat);
+                            // concessi= concessionService.create(co);
+                        }
+                    }
+
+
+                    concSet.add(co.getRefConcession());
+                }
+            }
+
+            npgs=new String[pgSet.size()][1];
+             i=0;
+            for(String pg:pgSet) {
+                npgs[i][0]=pg;
+                i++;
+            }
+           System.out.println(documents.size());
+            int rownumber=0;
+            String typePec=null;
+            Integer nbrjour=0;
+            for(qDoc mr:documents) {
+                for (qPageMarree pm : ((qMarree) mr).getPages()) {
+                   nbrjour=nbrjour+pm.getListJours().size();
+                }
+            }
+            System.out.print(nbrjour+1);
+            value=new String[nbrjour+1][35];
+
+            value[0][0]="TypeDoc";
+            value[0][1]="Depart";
+            value[0][2]="NumImm";
+            value[0][3]="SegPecheDebutPref";
+            value[0][4]="typePecheJPMaree";
+            value[0][5]="EngMarreeChalut";
+            value[0][6]="EngMareeCasier";
+            value[0][7]="EngMarreeNasses";
+            value[0][8]="EngMarreePots";
+            value[0][9]="FiletTurlutte";
+            value[0][10]="EngMarreeFiletTremail";
+            value[0][11]="debloquerModification";
+            value[0][12]="bloquerDeletion";
+            value[0][13]="enumsupport";
+            value[0][14]="qseqdebut";
+            value[0][15]="qseqfin";
+            value[0][16]="DateRetour";
+            value[0][17]="Date Jour";
+            value[0][18]="Page";
+            value[0][19]="Esp1";
+            value[0][20]="Esp2";
+            value[0][21]="Esp3";
+            value[0][22]="Esp4";
+            value[0][23]="Esp5";
+            value[0][24]="Esp6";
+            value[0][25]="Esp7";
+            value[0][26]="Esp8";
+            value[0][27]="Esp9";
+            value[0][28]="Esp10";
+            value[0][29]="Esp11";
+            value[0][30]="Esp12";
+            value[0][31]="Esp13";
+            value[0][32]="Esp14";
+            value[0][33]="Esp15";
+            value[0][34]="Esp16";
+
+            int u=0;
+            rownumber=1;
+            Date dateCJ=null,dateR=null,date=null;
+            for(qDoc mr:documents) {
+                u=0;
+                if(mr.getTypePeche().equals(enumJP.Hautirere)) typePec="H";
+                if(mr.getTypePeche().equals(enumJP.Cotier)) typePec="C";
+
+                System.out.println("size is : " + ((qMarree) mr).getPages().size());
+                for (qPageMarree pm : ((qMarree) mr).getPages()) {
+                    for (qJourMere currjm : pm.getListJours()) {
+                        System.out.println(rownumber);
+                        if (u == 0) {
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(mr.getDepart());
+
+                            date = cal.getTime();
+                            cal.setTime(mr.getRetour());
+                            dateR = cal.getTime();
+                            cal.setTime(currjm.getDatejourMere());
+                            dateCJ = cal.getTime();
+
+                            value[rownumber][0] = "MARREE";
+                            value[rownumber][1] = sdfmt1.format(date);
+                            value[rownumber][2] = mr.getQnavire().getNumimm();
+                            value[rownumber][3] = mr.getPrefix();
+                            value[rownumber][4] = typePec;
+
+                            value[rownumber][5] = "0";
+                            value[rownumber][6] = "0";
+                            value[rownumber][7] = "0";
+                            value[rownumber][8] = "0";
+                            value[rownumber][9] = "0";
+                            value[rownumber][10] = "0";
+                            value[rownumber][11] = "0";
+                            value[rownumber][12] = "1";
+                            value[rownumber][13] = "";
+                            value[rownumber][14] = ((qMarree) mr).getPages().get(0).getNumeroPage();
+                            value[rownumber][15] = ((qMarree) mr).getPages().get(((qMarree) mr).getPages().size()-1).getNumeroPage();
+                            value[rownumber][16] = sdfmt1.format(dateR);
+                            value[rownumber][17] = sdfmt1.format(dateCJ);
+                            value[rownumber][18] = currjm.getNumPage();
+                            value[rownumber][19] = currjm.getCapturesDuMarree().get(0).getQuantite().toString();
+                            value[rownumber][20] = currjm.getCapturesDuMarree().get(1).getQuantite().toString();
+                            value[rownumber][21] =currjm.getCapturesDuMarree().get(2).getQuantite().toString();
+                            value[rownumber][22] =currjm.getCapturesDuMarree().get(3).getQuantite().toString();
+                            value[rownumber][23] = currjm.getCapturesDuMarree().get(4).getQuantite().toString();
+
+                            value[rownumber][24] = currjm.getCapturesDuMarree().get(5).getQuantite().toString();
+                            value[rownumber][25] = currjm.getCapturesDuMarree().get(6).getQuantite().toString();
+                            value[rownumber][26] = currjm.getCapturesDuMarree().get(7).getQuantite().toString();
+                            value[rownumber][27] = currjm.getCapturesDuMarree().get(8).getQuantite().toString();
+                            value[rownumber][28] = currjm.getCapturesDuMarree().get(9).getQuantite().toString();
+                            value[rownumber][29] = currjm.getCapturesDuMarree().get(10).getQuantite().toString();
+                            value[rownumber][30] = currjm.getCapturesDuMarree().get(11).getQuantite().toString();
+                            value[rownumber][31] = currjm.getCapturesDuMarree().get(12).getQuantite().toString();
+                            value[rownumber][32] = currjm.getCapturesDuMarree().get(13).getQuantite().toString();
+                            value[rownumber][33] = currjm.getCapturesDuMarree().get(14).getQuantite().toString();
+                            value[rownumber][34] = currjm.getCapturesDuMarree().get(15).getQuantite().toString();
+                            u= u + 1;
+                        }
+                        else {
+                            value[rownumber][0] = "V";
+                            value[rownumber][1] = "V";
+                            value[rownumber][2] ="V";
+                            value[rownumber][3] ="V";
+                            value[rownumber][4] ="V";
+                            value[rownumber][5] = "V";
+                            value[rownumber][6] = "V";
+                            value[rownumber][7] = "V";
+                            value[rownumber][8] = "V";
+                            value[rownumber][9] = "V";
+                            value[rownumber][10] = "V";
+                            value[rownumber][11] = "V";
+                            value[rownumber][12] = "V";
+                            value[rownumber][13] = "V";
+                            value[rownumber][14] = "V";
+                            value[rownumber][15] = "V";
+                            value[rownumber][16] = "V";
+                            value[rownumber][17] = sdfmt1.format(dateCJ);
+                            value[rownumber][18] = currjm.getNumPage();
+                            value[rownumber][19] = currjm.getCapturesDuMarree().get(0).getQuantite().toString();
+                            value[rownumber][20] = currjm.getCapturesDuMarree().get(1).getQuantite().toString();
+                            value[rownumber][21] =currjm.getCapturesDuMarree().get(2).getQuantite().toString();
+                            value[rownumber][22] =currjm.getCapturesDuMarree().get(3).getQuantite().toString();
+                            value[rownumber][23] = currjm.getCapturesDuMarree().get(4).getQuantite().toString();
+                            value[rownumber][24] = currjm.getCapturesDuMarree().get(5).getQuantite().toString();
+                            value[rownumber][25] = currjm.getCapturesDuMarree().get(6).getQuantite().toString();
+                            value[rownumber][26] = currjm.getCapturesDuMarree().get(7).getQuantite().toString();
+                            value[rownumber][27] = currjm.getCapturesDuMarree().get(8).getQuantite().toString();
+                            value[rownumber][28] = currjm.getCapturesDuMarree().get(9).getQuantite().toString();
+                            value[rownumber][29] = currjm.getCapturesDuMarree().get(10).getQuantite().toString();
+                            value[rownumber][30] = currjm.getCapturesDuMarree().get(11).getQuantite().toString();
+                            value[rownumber][31] = currjm.getCapturesDuMarree().get(12).getQuantite().toString();
+                            value[rownumber][32] = currjm.getCapturesDuMarree().get(13).getQuantite().toString();
+                            value[rownumber][33] = currjm.getCapturesDuMarree().get(14).getQuantite().toString();
+                            value[rownumber][34] = currjm.getCapturesDuMarree().get(15).getQuantite().toString();
+                        }
+                        rownumber=rownumber+1;
+                    }
+                }
+            }
+
+            reader.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (bufferedReader!= null) try { bufferedReader.close(); } catch (IOException logOrIgnore) {}
+        }
+        return value; //concessions; //new ArrayList<qModelConcessionExport>(concessions);
+
     }
 }
 

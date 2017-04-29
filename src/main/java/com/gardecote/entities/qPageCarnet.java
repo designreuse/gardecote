@@ -82,6 +82,7 @@ public class qPageCarnet implements Serializable
         this.numeroOrdrePage=numeroOrdrePage;
         this.etatPage=etatPage;
     }
+
     public qPageCarnetPK getPageCarnetPK(){
     qPageCarnetPK pcpk=new qPageCarnetPK(this.numeroPage,this.typeDoc);
     return pcpk;

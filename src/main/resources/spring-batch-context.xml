@@ -1,10 +1,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:batch="http://www.springframework.org/schema/batch"
        xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 
        xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <import resource="classpath:context-datasource.xml" />
 
@@ -217,8 +217,68 @@
             </bean>
         </property>
     </bean>
-    <!-- Export Job -->
+
+    <!-- ItemWriter writes a line into output flat file -->
+    <bean id="traitememtItemWriterExport" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
+        <property name="resource" value="file:c:/AA/recap1.txt" />
+        <property name="lineAggregator">
+            <!-- An Aggregator which converts an object into delimited list of strings -->
+            <bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+                <property name="delimiter" value="|" />
+                <property name="fieldExtractor">
+                    <!-- Extractor which returns the value of beans property through reflection -->
+                    <bean     class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+                        <property name="names" value="Npage,depart,secteur,Ref,Nom,Date_dpart,Navire,chinchard,sardine,sardinelle,anchois,maquereau,sabres,thonides,mulet,merlu,calamar,diversDorades,Fish_p_chat,red_bait,seaBrum,autrePPel,autrePDem"  />
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="traitememtItemReaderImport" class="org.springframework.batch.item.file.FlatFileItemReader" scope="step">
+        <!-- Read a csv file -->
+        <property name="resource" value="file:c:/AA/recap.txt" />
+        <property name="lineMapper">
+            <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+                <!-- split it -->
+                <property name="lineTokenizer">
+                    <bean  class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="delimiter">
+                            <util:constant
+                                    static-field="org.springframework.batch.item.file.transform.DelimitedLineTokenizer.DELIMITER_TAB" />
+                        </property>
+                        <property name="strict"         value="false"/>
+                        <property name="names" value="id,Ref,Nom,Npage,depart,Navire,secteur,anchois,chinchard,sardine,sardinelle,maquereau,sabres,thonides,mulet,merlu,calamar,diversDorades,Fish_p_chat,red_bait,seaBrum,autrePPel,autrePDem" />
+
+                    </bean>
+                </property>
+                <property name="fieldSetMapper" >
+                    <!-- return back to reader, rather than a mapped object. -->
+                    <bean class="com.gardecote.springbatch.jobs.traitementFieldSetMapper" />
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="traitememtItemProcessorExport" class="com.gardecote.springbatch.traitementItemProcessor" />
+
+    <batch:job id="traitementJob">
+    <batch:step id="traitementJobstep" >
+        <batch:tasklet transaction-manager="transactionManager">
+            <batch:chunk reader="traitememtItemReaderImport" writer="traitememtItemWriterExport"
+                         processor="traitememtItemProcessorExport" commit-interval="10000" />
+
+        </batch:tasklet>
+    </batch:step>
+        <batch:listeners>
+            <batch:listener ref="jobListener" />
+        </batch:listeners>
+    </batch:job>
+
     <batch:job id="licencesExportJob">
+
+    <!-- Export Job -->
+
+
         <batch:step id="licencesExport" next="typesNaviresExport">
             <batch:tasklet transaction-manager="transactionManager" >
                 <batch:chunk reader="licencesItemReaderExport" writer="licencesItemWriterExport"
@@ -226,6 +286,8 @@
 
             </batch:tasklet>
         </batch:step>
+
+
         <batch:step id="typesNaviresExport" next="ZonesExport">
             <batch:tasklet transaction-manager="transactionManager">
                 <batch:chunk reader="TypesNavireItemReaderExport" writer="TypesNavireItemWriterExport"

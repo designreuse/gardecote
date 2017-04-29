@@ -55,8 +55,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -64,7 +67,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.sql.DataSource;
-
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 /**
  * Created by Dell on 12/11/2016.
 */
@@ -93,6 +102,8 @@ public class LicenceController {
     JobLauncher jobLauncher;
     @Autowired @Qualifier("licencesExportJob")
     Job job1;
+    @Autowired @Qualifier("traitementJob")
+    Job jobTraitements;
     private static String UPLOAD_LOCATION="C:/mytemp/";
     @Autowired
     FileValidator fileValidator;
@@ -952,7 +963,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
             }
         }
         if(carnetAnnulle.getTypeDoc()==enumTypeDoc.Journal_Annexe) {
-            carnetAnnulle.setPages(null);
+//            carnetAnnulle.setPages(null);
             for (qPageCarnet qp : carnetAnnulle.getPages()) {
                 if (((qPageAnnexe)qp).getQmarreeAnexe()!=null)
                     compteurAnnexe++;
@@ -4234,4 +4245,133 @@ System.out.print(captures.getResultatsEntetesCol().size());
         licenceService.updatechangements();
         return "index/start";
     }
+
+    @RequestMapping(value="/traiterHistoriques",method = RequestMethod.POST)
+    public void traiterImportPOST(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        List<String> concession=null;
+        List<qModelDoc> captures=null;
+        List<qCarnet> carnets=null;
+        String[][] value = null;
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+         value=docService.traiterConcessions(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+          //  captures=docService.traiterCaptures(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+           // carnets=docService.traiterCarnets(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+     //   model.put("Concession", concession);
+      //  model.put("Captures", captures);
+        //model.put("Carnets", carnets);
+
+       exportData("result.xls","test",value);//new ModelAndView(new concessionExportExcelView(),model);
+
+    }
+
+    public static void exportData(String fileName, String tabName, String[][] data) throws FileNotFoundException, IOException
+    {
+        //Create new workbook and tab
+        Workbook wb = new HSSFWorkbook();
+        FileOutputStream fileOut = new FileOutputStream(fileName);
+        Sheet sheet = wb.createSheet(tabName);
+
+        //Create 2D Cell Array
+        Row[] row = new Row[data.length];
+        Cell[][] cell = new Cell[row.length][];
+
+        //Define and Assign Cell Data from Given
+        for(int i = 0; i < row.length; i ++)
+        {
+            row[i] = sheet.createRow(i);
+            cell[i] = new Cell[data[i].length];
+
+            for(int j = 0; j < cell[i].length; j ++)
+            {
+                cell[i][j] = row[i].createCell(j);
+                cell[i][j].setCellValue(data[i][j]);
+            }
+
+        }
+
+        //Export Data
+        wb.write(fileOut);
+        fileOut.close();
+
+    }
+    @RequestMapping(value="/traiterHistoriques",method = RequestMethod.GET)
+    public String traiterHistoriquesGET(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileCarnets", fileModel);
+        return "imports/traiterImports";
+    }
+
+    @RequestMapping(value="/traitements", method=RequestMethod.GET)
+    public @ResponseBody   StatusResponse jobTraitement() {
+        System.out.println("jjjjj");
+        JobParameters jobParameters =
+                new JobParametersBuilder().addString("input.file.name", "cvs/recap.txt").toJobParameters();
+        try {
+            Map<String,JobParameter> parameters = new HashMap<String,JobParameter>();
+            parameters.put("date", new JobParameter(new Date()));
+            jobLauncher.run(jobTraitements, new JobParameters(parameters));
+            return new StatusResponse(true);
+        } catch (JobInstanceAlreadyCompleteException ex) {
+            return new StatusResponse(false, "This job has been completed already!");
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @RequestMapping(value="/genererDocuments",method = RequestMethod.GET)
+    public String genererDocumentsGET(ModelMap model)
+    {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileCarnets", fileModel);
+        return "imports/traiterImportsDocuments";
+    }
+    @RequestMapping(value="/genererDocuments",method = RequestMethod.POST)
+    public void genererDocuments(@Valid FileBucket fileBucket, BindingResult result,ModelMap model) throws IOException
+    {
+        String[][] data=null;
+        List<qModelDoc> captures=null;
+        List<qCarnet> carnets=null;
+        String[][] value = null;
+        //   storageService.store(file);
+        if (result.hasErrors()) {
+            System.out.println("validation errors");
+            //    return "singleFileUploader";
+        } else {
+            System.out.println("Fetching file");
+            MultipartFile multipartFile = fileBucket.getFile();
+            //Now do something with file...
+            //    FileCopyUtils.copy(fileBucket.getFile().getBytes(), new File(UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename()));
+            data=docService.genererDocumentsImport(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            //  captures=docService.traiterCaptures(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            // carnets=docService.traiterCarnets(multipartFile,UPLOAD_LOCATION + fileBucket.getFile().getOriginalFilename());
+            String fileName = multipartFile.getOriginalFilename();
+            model.addAttribute("fileName", fileName);
+            //   return "success";
+        }
+
+
+        exportData("documents.xls","test",data);//new ModelAndView(new concessionExportExcelView(),model);
+
+    }
+
+
+
+
+
 }

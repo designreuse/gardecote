@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import com.gardecote.entities.qConsignataire;
 import javax.annotation.Resource;
-
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 
 import com.gardecote.data.repository.jpa.qConsignataireRepository;
+import com.gardecote.entities.qDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +30,8 @@ public class qConsignataireServiceImpl implements qConsignataireService {
 
 	@Autowired
 	private qConsignataireRepository batobservJpaRepository;
-
+	@PersistenceContext
+	private EntityManager em;
 	
 	@Override
 	public qConsignataire findById(String idBatobs) {
@@ -59,8 +62,23 @@ public class qConsignataireServiceImpl implements qConsignataireService {
 	public qConsignataire create(qConsignataire batobserv) {
 
 
-		qConsignataire batobservEntitySaved = batobservJpaRepository.save(batobserv);
-		return batobservEntitySaved;
+	//	qConsignataire batobservEntitySaved = batobservJpaRepository.save(batobserv);
+	//	return batobservEntitySaved;
+		qConsignataire tt=em.find(qConsignataire.class,batobserv.getNomconsignataire());
+		//      System.out.println(tt.toString());
+		Integer i=0;
+
+if(tt!=null)        System.out.println("dup :"+tt.getNomConsignataire());
+
+		if (tt!=null){
+
+			em.merge(batobserv);
+		}else{
+
+			em.persist(batobserv);
+		}
+
+		return batobservJpaRepository.save(batobserv);
 	}
 
 	@Override

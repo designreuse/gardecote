@@ -36,17 +36,17 @@ public class qCapture implements Serializable, Comparable<qCapture>
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-     private    Date        datedepart;
+    private    Date        datedepart;
     @Id
-     private    String      nummimm;
+    private    String      nummimm;
     @Id
-     private    Date        dateJour;
+    private    Date        dateJour;
     @Id
-     private    String      idespece;
+    private    String      idespece;
     @Id
     private    Integer      numOrdre;
     @Id
-     private    enumEspType esptype;
+    private    enumEspType esptype;
     @Id
     private  Integer          indexLigne;
     @Id
