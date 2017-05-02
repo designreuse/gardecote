@@ -16,6 +16,7 @@ import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Dell on 08/11/2016.
@@ -91,7 +92,7 @@ public interface qDocService {
     qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
     qDebarquement creerDebarquementByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsDeb,List<Boolean> categDebs,Map<String,Map<Integer,List<Float>>> quantities);
     qMarree creerMarree(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
-    qMarree creerMarreesByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP typeJP,Map<String,Map<Integer,List<Float>>> quantities,String typeM);
+    qMarree creerMarreesByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP typeJP,Map<String,Map<Integer,List<Float>>> quantities,String typeM,Set<String> numeros);
         //   qSeq seqActive=qseqRepository.findOne(seqActive1.getSeqPK());
 
     qTraitement creerTraitement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);

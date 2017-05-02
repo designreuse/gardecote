@@ -20,4 +20,7 @@ import java.util.List;
         public List<qPageCarnet> retPages(@Param("carnetDebut") qCarnet  carnetDebut,@Param("debutNumberL") long  debutNumberL ,@Param("finNumberL") long  finNumberL);
         @Query("select cp.numeroOrdrePage from qPageCarnet cp where cp.numeroPage = :nump and cp.typeDoc=:typeDoc")
         public Long retNumOrdre(@Param("nump") String  nump,@Param("typeDoc") enumTypeDoc  typeDoc);
+        @Query("select cp.numeroOrdrePage from qPageCarnet cp where cp.numeroPage = :str ")
+        public String check(@Param("str") String  str);
+
     }

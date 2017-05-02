@@ -1453,7 +1453,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         //System.out.println(docForm.getCurrentDoc().getqDocPK().toString());
         if(currentDoc instanceof qDebarquement)  {
             lics=docService.retLicences(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getQseq(),frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getEnumtypedoc());
-           docService.save((qDebarquement)frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
+            docService.save((qDebarquement)frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc());
             for(qPageCarnet PD:((qDebarquement) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getPages())
             pagecarnetService.save(PD);
             model.addAttribute("licencesRef", lics);
@@ -3099,8 +3099,9 @@ for(qJourDeb jd:ju.getListJours()) {
     @RequestMapping(value="/AjouterCategorie",method = RequestMethod.GET)
     public String AjouterCategorie(final ModelMap model) {
         qCategRessource newCat=new qCategRessource();
-        //  qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
-        model.addAttribute("newCat",newCat);
+    //   newCat.setIdtypeConcession(0);
+           //qConsignataire currentConsignataire=consignataireService.findById(refConcessionnairePK);
+         model.addAttribute("newCat",newCat);
         return "categories/newCat";
     }
     @RequestMapping(value="/AjouterCategorieSave",method = RequestMethod.POST)
