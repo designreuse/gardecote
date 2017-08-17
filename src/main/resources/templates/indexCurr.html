@@ -1,0 +1,74 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorator="layout/sitelayout" >
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Garde Cote Maritime</title>
+    <!-- BOOTSTRAP STYLES-->
+        <link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css" th:href="@{css/bootstrap.css}" />
+
+    <!-- FONTAWESOME STYLES-->
+    <link href="../static/assets/css/font-awesome.css" rel="stylesheet"  th:href="@{assets/css/font-awesome.css}" />
+    <link href="../static/js/angucomplete-alt.css" rel="stylesheet" th:href="@{js/angucomplete-alt.css}" />
+    <link href="../static/js/ngprogress.css" rel="stylesheet" th:href="@{js/ngprogress.css}" />
+
+    <!-- CUSTOM STYLES-->
+    <link href="../static/assets/css/custom.css" rel="stylesheet"  th:href="@{assets/css/custom.css}"/>
+
+    <link href="../static/css/print.css" rel="stylesheet" th:href="@{css/print.css}" />
+    <link href="../static/css/style1.css" rel="stylesheet" type="text/css" th:href="@{css/style1.css}" />
+
+
+</head>
+
+<body>
+
+
+<section class="col-sm-12">
+    <div layout:fragment="content">
+        <div id="home"  ng-controller="searchpageController">
+    <div class="panel panel-default">
+        <div class="panel-heading col-sm-12 ">
+            <div class="form-inline col-sm-12"   >
+                <form th:action="@{creerDoc}" methode="get">
+                    <div class="input-sm  col-sm-1 " >
+
+                        <label>Numeros de pages :</label>
+                    </div>
+
+                    <div class="input-sm col-sm-2 ">
+
+                        <input type="text" class="form-control input-sm" id="debut" name="debut"  ng-model="$parent.debut" typeahead-editable="true" typeahead-min-length="1" placeholder="Locations loaded via $http" uib-typeahead="searchcode for searchcode in getSugg($viewValue)" typeahead-loading="loadingLocations" typeahead-no-results="noResults" />
+                        <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+                        <div ng-show="noResults">
+                            <i class="glyphicon glyphicon-remove"></i> pas des resultats trouvés
+                        </div>
+
+                    </div>
+
+                    <div class="input-sm col-sm-2 ">
+                        <label >
+                            <input type="text" class="form-control input-sm" id="fin" name="fin"    placeholder="numero de fin" />
+
+                        </label>
+                    </div>
+
+
+
+                    <div class="input-sm col-sm-1  ">
+                        <button type="submit" >OK </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+
+
+    </div>
+        </div>
+    </div>
+</section>
+
+
+</body>
+</html>

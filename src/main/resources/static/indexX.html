@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymleaf.org">
+
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Garde Cote Maritime</title>
+	<!-- BOOTSTRAP STYLES-->
+    <link href="gcmcss/bootstrap.css" rel="stylesheet" />
+    <!-- FONTAWESOME STYLES-->
+    <link href="gcmcss/font-awesome.css" rel="stylesheet" />
+    <link href="gcmcss/angucomplete-alt.css" rel="stylesheet" />
+    <!-- CUSTOM STYLES-->
+    <link href="gcmcss/custom.css" rel="stylesheet" />
+
+
+    <link href="gcmcss/style1.css" rel="stylesheet" />
+
+</head>
+
+<body  ng-app="mygcmApp" ng-controller="searchpageController">
+
+<div class="container-fluid"  >
+
+    <header class="row col-sm-12">
+
+        <div class="panel-heading center">
+            <h1>Mon beau site<img src="images/papillon.png" class="pull-right"/><button class="btn btn-danger btn-lg" ng-click="generate()" >OK </button></h1>
+            <ul class="list-unstyled horiz">
+                <li  class="active"><a href="default.asp">Saisie des captures</a></li>
+                <li><a href="news.asp">Operation de controle</a></li>
+                <li><a href="contact.asp">Gestion des amendes</a></li>
+                <li><a  href="about.asp">A propos de nous</a></li>
+            </ul>
+        </div>
+
+    </header>
+    <div class="row col-sm-12">
+
+        <section class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading col-sm-12 ">
+                  <div class="form-inline col-sm-12" >
+                      <form th:action="@{creerDoc}" methode="get">
+                        <div class="input-sm  col-sm-1 " >
+
+                            <label>Numeros de pages :</label>
+                        </div>
+                        <div class="input-sm col-sm-2 ">
+                            <label >
+                            <input type="text" class="form-control input-sm"   ng-model="$parent.debut" typeahead-on-select="updateFinds($parent.debut)"  typeahead-wait-ms=10 typeahead-editable="false" typeahead-min-length=1 placeholder="Pages loaded via $http" uib-typeahead="searchpage for searchpage in getSuggPages($viewValue)" typeahead-loading="loadingPages" typeahead-no-results="noResults" />
+                            <i ng-show="loadingPages" class="glyphicon glyphicon-refresh"></i>
+                            <div ng-show="noResults">
+                                <i class="glyphicon glyphicon-remove"></i> pas des resultats trouvés
+                            </div>
+                            </label>
+                        </div>
+
+                        <div class="input-sm col-sm-2 ">
+                            <label ng-if="$parent.debut!=null">
+                                 <select class="form-control" ng-model="$parent.fin"  ng-options="item as item.numeroPage for item in finList" ></select>
+
+                            </label>
+                        </div>
+                        <div class="input-sm col-sm-1" ng-if="$parent.debut!=null">
+                            <button type="submit" class="btn btn-danger btn-lg">OK </button>
+
+                        </div>
+                      </form>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </section>
+    </div>
+    <footer class="row col-sm-12">
+        <div class="panel panel-body">
+            <p>Tous droits réservés par moi...</p>
+        </div>
+    </footer>
+</div>
+
+
+<script src="gcmjs/jquery-1.10.2.js"></script>
+
+<!-- BOOTSTRAP SCRIPTS -->
+<script src="gcmjs/bootstrap.min.js"></script>
+<!-- METISMENU SCRIPTS -->
+<script src="gcmjs/jquery.metisMenu.js"></script>
+
+<!-- CUSTOM SCRIPTS -->
+
+<script src="gcmjs/angular.js"></script>
+
+
+<script src="gcmjs/ui-bootstrap-tpls-1.3.2.min.js"></script>
+<script src="gcmjs/angular-route.js"></script>
+
+<script src="gcmjs/underscore.js"></script>
+<script src="gcmjs/myApp.js"></script>
+
+
+</body>
+</html>
