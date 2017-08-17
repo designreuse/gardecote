@@ -1,0 +1,50 @@
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Liste des utilisateurs</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h3> List de models existants </h3>
+    <form  th:action="@{/listUsers}"   method="post" th:object="${listUsersfrm}">
+
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>...</th>
+                <th>Email</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Password</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u:${listUsersfrm.lstUsers}">
+
+                <td>
+                    <div class="dropdown">
+                    <button th:field="${u.qprefix}" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{suspention(user=${m.email})}">Suspendre</a></li>
+
+                    </ul></div></td>
+                <td th:text="${m.email}"></td>
+                <td th:text="${m.firstName}"></td>
+                <td th:text="${m.lastName}"></td>
+                <td th:text="${m.password}"></td>
+
+            </tr>
+            </tbody>
+        </table>
+
+    </form>
+
+</div>
+
+
+</body>
+</html>

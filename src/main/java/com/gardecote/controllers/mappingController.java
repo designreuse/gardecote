@@ -102,6 +102,7 @@ public class mappingController {
         searchAccueil sacc=new searchAccueil();
         searchBetweenTwoDates searchBetweenTwoDates=new searchBetweenTwoDates();
         searchBetweenTwoDatesByConcession searchBetweenTwoDatesByConcession=new searchBetweenTwoDatesByConcession();
+        searchBetweenTwoDatesByConcession.setExclureDetails(false);
        List<choixTypeConcession> types=new ArrayList<choixTypeConcession>();
         choixTypeConcession h=null;
         for(qTypeConcession tc:typeconcessionService.findAll()){
@@ -123,6 +124,7 @@ public class mappingController {
         model.addAttribute("searchBetweenTwoDatesByConcession",searchBetweenTwoDatesByConcession);
         return "index";
     }
+
     @RequestMapping(value="/startDP")
     public String startDP(){
         return "startDP";
@@ -135,8 +137,6 @@ public class mappingController {
     public String docedit(){
         return "docEdit";
     }
-
-
 
     @RequestMapping(value="/creationLicenceNouv",method = RequestMethod.POST)
     public String NVBat(final creationLicForm lf ,final ModelMap model){

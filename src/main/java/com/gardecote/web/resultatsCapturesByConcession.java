@@ -1,5 +1,6 @@
 package com.gardecote.web;
 import com.gardecote.entities.qTypeConcession;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public class resultatsCapturesByConcession {
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date searchDateCapture1;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -15,13 +17,14 @@ public class resultatsCapturesByConcession {
     private List<choixTypeConcession> types;
     private List<qTypeConcession> TypesC;
     private List<String> typesCons;
-    private List<Object> resultatCaptures;
+    private List<resultatCapturesCl> resultatCaptures;
     private List<String> resultatsEntetesCol;
     private List<String> resultatsNamesCol;
 
     public List<String> getTypesCons() {
         return typesCons;
     }
+
 
     public void setTypesCons(List<String> typesCons) {
         this.typesCons = typesCons;
@@ -35,7 +38,8 @@ public class resultatsCapturesByConcession {
         this.task = task;
     }
 
-    public resultatsCapturesByConcession(Date searchDateCapture1, Date searchDateCapture2, List<choixTypeConcession> types, List<Object> resultatCaptures, List<qTypeConcession> TypesC, List<String> resultatsEntetesCol, List<String> resultatsNamesCol) {
+    public resultatsCapturesByConcession(Date searchDateCapture1, Date searchDateCapture2, List<choixTypeConcession> types, List<resultatCapturesCl> resultatCaptures, List<qTypeConcession> TypesC, List<String> resultatsEntetesCol, List<String> resultatsNamesCol) {
+
         List<String> strList=new ArrayList<String>();
         this.searchDateCapture1 = searchDateCapture1;
         this.searchDateCapture2 = searchDateCapture2;
@@ -84,11 +88,11 @@ public class resultatsCapturesByConcession {
         this.types = types;
     }
 
-    public List<Object> getResultatCaptures() {
+    public List<resultatCapturesCl> getResultatCaptures() {
         return resultatCaptures;
     }
 
-    public void setResultatCaptures(List<Object> resultatCaptures) {
+    public void setResultatCaptures(List<resultatCapturesCl> resultatCaptures) {
         this.resultatCaptures = resultatCaptures;
     }
 

@@ -21,14 +21,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //	private SimpleUrlAuthenticationSuccessHandler cust;
 @Autowired
 private SimpleUrlAuthenticationSuccessHandler cust;
-	@Autowired
+@Autowired
 public  void globalConfig(AuthenticationManagerBuilder auth,DataSource dataSource)  throws Exception{
 
 		
 auth.jdbcAuthentication()
  .dataSource(dataSource)
- .usersByUsernameQuery("select UserName as principal,Password as credentiel, 1 from Users where UserName=?")
- .authoritiesByUsernameQuery("select users_username as principal,roles_role as role from users_roles where users_username= ?")
+ .usersByUsernameQuery("select email as principal,password as credentiel,1 from qUsern where email=?")
+ .authoritiesByUsernameQuery("select user_id as principal,role_id as role from quser_roles where user_id= ? ")
 	.rolePrefix("ROLE_");
 
 

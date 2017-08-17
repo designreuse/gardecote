@@ -15,6 +15,7 @@ public class lstLicForm implements Serializable{
     private int pageCount;
     private  int[] numPages;
     private int pageCourante;
+    private String searchNomNav;
 
     public lstLicForm(Page<qLic> licences) {
         this.licences = licences;
@@ -22,6 +23,14 @@ public class lstLicForm implements Serializable{
 
     public lstLicForm() {
 
+    }
+
+    public String getSearchNomNav() {
+        return searchNomNav;
+    }
+
+    public void setSearchNomNav(String searchNomNav) {
+        this.searchNomNav = searchNomNav;
     }
 
     public int getPageCount() {

@@ -31,6 +31,7 @@ public interface qLicenceService {
 	 * @return all entities
 	 */
 	Page<qLic> findAll(int p, int size);
+	Page<qLic> findAllLic(int p, int size,String terme);
 	List<qLic> findAll();
 	/**
 	 * Saves the given entity in the database (create or update)

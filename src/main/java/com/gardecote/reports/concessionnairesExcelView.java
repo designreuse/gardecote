@@ -31,7 +31,7 @@ public class concessionnairesExcelView extends AbstractXlsxView {
         headerStyle.setFont(headerFont);
         //POPULATE HEADER COLUMNS
         Row headerRow = sheet.createRow(currentRow);
-        RichTextString text = new XSSFRichTextString("Id zone");
+       RichTextString text = new XSSFRichTextString("Id zone");
         RichTextString text1 = new XSSFRichTextString("NOM");
         Cell cell = headerRow.createCell(0);
         cell.setCellStyle(headerStyle);
@@ -47,11 +47,11 @@ public class concessionnairesExcelView extends AbstractXlsxView {
             System.out.println(currentRow);
             currentColumn = 0;
             Row row = sheet.createRow(currentRow);
-       //  cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-       //  cell.setCellValue(result.getIdZone());
+        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+         cell.setCellValue(result.getIdZone());
             Cell cellX0 = row.createCell(currentColumn);
             RichTextString textg = new XSSFRichTextString(result.getIdZone().toString());
-            cellX0.setCellValue(textg);
+          cellX0.setCellValue(textg);
             currentColumn++;
             Cell cellX1 = row.createCell(currentColumn);
             RichTextString textb = new XSSFRichTextString(result.getNom().toString());

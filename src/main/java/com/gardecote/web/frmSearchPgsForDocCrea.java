@@ -31,10 +31,12 @@ public class frmSearchPgsForDocCrea implements Serializable{
     private CreateDocForm createDocFormm;
     private enumTypeDoc typeDoc;
     private qTaskProgressBar currentBar;
-
+    private  String typeForm;
     private Integer pageCount;
     private int[] numPages;
     private Integer pageCourante;
+
+
 
     public boolean isDisplaydateRetourfrg() {
         return displaydateRetourfrg;
@@ -42,6 +44,14 @@ public class frmSearchPgsForDocCrea implements Serializable{
 
     public void setDisplaydateRetourfrg(boolean displaydateRetourfrg) {
         this.displaydateRetourfrg = displaydateRetourfrg;
+    }
+
+    public String getTypeForm() {
+        return typeForm;
+    }
+
+    public void setTypeForm(String typeForm) {
+        this.typeForm = typeForm;
     }
 
     public List<String> getNumsfin() {

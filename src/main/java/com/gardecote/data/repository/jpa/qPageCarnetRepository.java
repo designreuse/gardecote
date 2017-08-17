@@ -26,7 +26,11 @@ public interface qPageCarnetRepository extends PagingAndSortingRepository<qPageC
     Page<qPageCarnet>  returnSuggPageP(Pageable pageable, @Param("numeroP") String numeroP);
     @Query("select p  from qPageCarnet p where (p.numeroPage  =:numeroP)")
     Page<qPageCarnet>  returnSearchedPage(Pageable pageable, @Param("numeroP") String numeroP);
+    @Query("select count(p)  from qPageMarree p where (p.qmarree is not null and p.numeroPage  =:numeroP)")
+    Integer retDoc(@Param("numeroP") String numeroP);
 
+    @Query("select espd.especesDyn  from qPageMarree espd where espd=:pm ")
+    ArrayList<qEspeceDynamic> findEspDynForPage(@Param("pm") qPageMarree pm);
 
 
 

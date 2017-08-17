@@ -11,7 +11,7 @@
     <span class="label label-danger" th:text="${deletefeedback}"></span>
     <span class="label label-danger" th:text="${deblocagefeedback}"></span>
 
-    <form th:action="@{createAnnexe}" method="post"  th:object="${frmAnnexe}" class="form-inline" >
+    <form  action="#" th:action="@{/createAnnexe}" method="post"  th:object="${frmAnnexe}" class="form-inline" >
 
         <label   th:text="${frmAnnexe.nomnavAnnexe}" />
         <label    th:text="${frmAnnexe.dateDepartAnnexe}" />
@@ -24,26 +24,20 @@
         <input type="hidden"   th:field="${frmAnnexe.typeDocAnnexe}" />
 
         <div class="jumbotron text-left">
-
-
             <label  >Numéro de debut de JP ANNEXE:</label>
             <span class="label label-danger" th:text="${frmAnnexe.prefixeAnnexe}"></span> <input type="number"  th:field="${frmAnnexe.numeroDebutAnnexe}" onchange="clearFields()"/>
             <span class="label label-danger" th:errors="${frmAnnexe.numeroDebutAnnexe}"></span>
             <button type="button" id="butAnnexe" name="butAnnexe" ><span class="glyphicon glyphicon-search"></span></button>
-
-
-
-
             <div id="dependentContentAnnexe">
                 <label th:fragment="finListFragAnnexe"  >Numero page fin JP Annexe :</label>
 
-                <select class="form-control"   th:field="${frmAnnexe.numeroFinAnnexe}" th:fragment="finListFragAnnexe"  >
+                <select class="form-control"   th:field="${frmAnnexe.numeroFinAnnexe}" th:fragment="finListFragAnnexe" >
                     <option th:each="i : ${frmAnnexe.numsfinAnnexe}"
-                            th:value="${i}"
-                            th:text="${i}">
-
+                                     th:value="${i}"
+                                     th:text="${i}" >
                     </option>
                 </select>
+
                 <span class="label label-danger" th:errors="${frmAnnexe.numeroFinAnnexe}"></span>
 
 

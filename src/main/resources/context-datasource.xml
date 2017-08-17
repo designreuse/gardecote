@@ -7,7 +7,8 @@
 
     <bean id="dataSource1" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
-        <property name="url" value="jdbc:sqlserver://DELL-PC\\sqlexpress:1433;databaseName=GCM11;" />
+        <property name="url" value="jdbc:sqlserver://LAPTOP-2OCBC1QU\\SQLEXPRESS:1433;databaseName=GCM11;" />
+
         <property name="username" value="lehbib" />
         <property name="password" value="google" />
     </bean>

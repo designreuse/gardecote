@@ -36,9 +36,9 @@ public class prefixesExcelView extends AbstractXlsxView {
         Cell cell = headerRow.createCell(0);
         cell.setCellStyle(headerStyle);
         cell.setCellValue(text);
-        Cell cell1 = headerRow.createCell(1);
+      Cell cell1 = headerRow.createCell(1);
         cell1.setCellStyle(headerStyle);
-        cell1.setCellValue(text1);
+       cell1.setCellValue(text1);
 
         //POPULATE VALUE ROWS/COLUMNS
         currentRow++;//exclude header
@@ -47,15 +47,15 @@ public class prefixesExcelView extends AbstractXlsxView {
             System.out.println(currentRow);
             currentColumn = 0;
             Row row = sheet.createRow(currentRow);
-       //  cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-       //  cell.setCellValue(result.getIdZone());
+      cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+         cell.setCellValue(result.getIdZone());
             Cell cellX0 = row.createCell(currentColumn);
             RichTextString textg = new XSSFRichTextString(result.getIdZone().toString());
             cellX0.setCellValue(textg);
             currentColumn++;
             Cell cellX1 = row.createCell(currentColumn);
-            RichTextString textb = new XSSFRichTextString(result.getNom().toString());
-            cellX1.setCellValue(textb);
+          RichTextString textb = new XSSFRichTextString(result.getNom().toString());
+           cellX1.setCellValue(textb);
             currentColumn++;
             currentRow++;
             }

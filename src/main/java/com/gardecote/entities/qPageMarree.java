@@ -17,7 +17,6 @@ import java.util.List;
 public class qPageMarree extends qPageCarnet implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
@@ -26,7 +25,7 @@ public class qPageMarree extends qPageCarnet implements Serializable {
     // "idcarnet" (column "IdCarnet") is not defined by itself because used as FK in a link
     @OneToOne(targetEntity = qMarree.class,cascade = CascadeType.ALL)
     private qMarree     qmarree;
-    @OneToMany(targetEntity=qEspeceDynamic.class,cascade = CascadeType.ALL)
+    @OneToMany(fetch=FetchType.EAGER ,targetEntity=qEspeceDynamic.class,cascade = CascadeType.ALL)
     @JoinTable(name = "qAssocPagesMareesEspDyn")
     private List<qEspeceDynamic> especesDyn;
     @Column(name="totalCaptures", nullable=false, length=10)

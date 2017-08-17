@@ -3,6 +3,7 @@ package com.gardecote.web;
 import com.gardecote.entities.enumTypeDoc;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Created by Dell on 24/12/2016.
  */
-public class frmAnnexe {
+public class frmAnnexe implements Serializable {
     private String prefixeAnnexe;
     private String nomnavAnnexe;
     private String numImmAnnexe;
@@ -47,8 +48,6 @@ public class frmAnnexe {
     public void setNumImmAnnexe(String numImmAnnexe) {
         this.numImmAnnexe = numImmAnnexe;
     }
-
-
 
     public enumTypeDoc getTypeDocAnnexe() {
         return typeDocAnnexe;

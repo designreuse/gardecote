@@ -79,7 +79,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 */
 
 @Controller
-@SessionAttributes(types = {qModelJP.class,frmSearchPgsForDocCrea.class,lstBateauAchoisirForm.class,creationLicForm.class,creationConcessionForm.class,attributionCarnetForm.class})
+@SessionAttributes(types = {frmAnnexe.class,qModelJP.class,frmSearchPgsForDocCrea.class,lstBateauAchoisirForm.class,creationLicForm.class,creationConcessionForm.class,attributionCarnetForm.class})
 @RequestMapping("/")
 
 public class LicenceController {
@@ -166,6 +166,8 @@ public class LicenceController {
     private qEnginPecheDebarService enginsPecheDebarService;
     @Autowired
     private qAccordPecheService accordPecheService;
+    @Autowired
+    private userService userService;
 
     @Autowired
     private qEspeceService especesService;
@@ -469,20 +471,26 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         return "changements";
             }
 
+
+
+
         @RequestMapping(value="/listBatASelectionner",method = RequestMethod.GET)
     public String listBatASelectionner1(final lstBateauAchoisirForm batForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="terme",defaultValue = "") String terme){
         lstBateauAchoisirForm lstBat=new lstBateauAchoisirForm();
-        int[] pages;
-        Page<qNavireLegale>   pgBat=registrenavireService.findAllLegal(page,20,terme);
-        pages=new int[pgBat.getTotalPages()];
-        for(int i=0;i<pgBat.getTotalPages();i++) pages[i]=i;
-        lstBat.setLstBat(pgBat);
-        lstBat.setPageCount(pgBat.getTotalPages());
-        lstBat.setNumPages(pages);
-        lstBat.setPageCourante(page);
-        lstBat.setSearchName(terme);
-        model.addAttribute("lstBat",lstBat);
-         return "qlistBat";
+            int[] pages;
+            Page<qNavireLegale>   pgBat=registrenavireService.findAllLegal(page,20,terme);
+            PageWrapper<qNavireLegale> pageC = new PageWrapper<qNavireLegale>(pgBat);
+            pages=new int[pgBat.getTotalPages()];
+            for(int i=0;i<pgBat.getTotalPages();i++) pages[i]=i;
+            lstBat.setLstBat(pgBat);
+            lstBat.setPageCount(pgBat.getTotalPages());
+            lstBat.setNumPages(pages);
+            lstBat.setPageCourante(page);
+            lstBat.setSearchName(terme);
+            model.addAttribute("pageC",pageC);
+            model.addAttribute("lstBat",lstBat);
+
+         return "qListBat";
     }
 
 
@@ -550,9 +558,11 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     @RequestMapping(value="/NouvLicenceBatExistant", params={"addLicenceLibre"},method = RequestMethod.POST)
     public String validatelibre(final   @ModelAttribute("LicForm")  creationLicForm LicForm, final BindingResult bindingresult,final ModelMap model) {
         String validateURL=null;
-        qNavireLegale currentnav=registrenavireService.findLegalById(LicForm.getNumSelected());
-        List<qEnginAuthorisee> engins=engAuth.getEnginsAuthorisees(currentnav);
-        List<qCategRessource> categs=engAuth.getCategoriesRattachees(currentnav);
+
+   //     qNavireLegale currentnav=registrenavireService.findLegalById(LicForm.getNumSelected());
+     //   List<qEnginAuthorisee> engins=engAuth.getEnginsAuthorisees(currentnav);
+       // List<qCategRessource> categs=engAuth.getCategoriesRattachees(currentnav);
+
         qLic licAct=LicForm.getLicence();
         licValidatorBE.validate(licAct, bindingresult);
         if(bindingresult.hasErrors()) {
@@ -560,14 +570,12 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
                 System.out.println(obj);
             }
             System.out.println(bindingresult.getAllErrors().size());
-            LicForm.setCategoriesRattaches(categs);
-            LicForm.setEnginsAuthorisees(engins);
+         //   LicForm.setCategoriesRattaches(categs);
+           // LicForm.setEnginsAuthorisees(engins);
             model.addAttribute("LicForm",LicForm);
-            validateURL="qshowNewLicLibre";
+            validateURL="qShowNewLicLibre";
         }
         else        {
-
-
             // trouver le numimm et le mettre a jour
             qNavireLegale currnv=registrenavireService.findLegalById(LicForm.getLicence().getNumimm());
             currnv.setNomnav(LicForm.getLicence().getNomnav());
@@ -708,9 +716,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         if(LicForm.getEnginsAuthorisees()!=null) {LicForm.getEnginsAuthorisees().remove(rowId.intValue());
         }
         model.addAttribute("LicForm",LicForm);
-        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNationalNewBat";
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qShowNewLicNationalNewBat";
         else {
-            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibreNewBat";
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qShowNewLicLibreNewBat";
             else   System.out.println("jjjj");
         }
         return url;
@@ -724,9 +732,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         if(LicForm.getEnginsAuthorisees()!=null) {LicForm.getEnginsAuthorisees().remove(rowId.intValue());
         }
         model.addAttribute("LicForm",LicForm);
-        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qShowNewLicNational";
         else {
-            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibre";
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qShowNewLicLibre";
             else   System.out.println("jjjj");
         }
         return url;
@@ -751,9 +759,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
         }
         model.addAttribute("LicForm",LicForm);
-        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qShowNewLicNational";
         else {
-            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibre";
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qShowNewLicLibre";
             else   System.out.println("jjjj");
         }
         return url;
@@ -789,9 +797,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
             }
         model.addAttribute("LicForm",LicForm);
-        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNational";
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qShowNewLicNational";
         else {
-            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibre";
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qShowNewLicLibre";
             else   System.out.println("jjjj");
         }
         return url;
@@ -815,14 +823,55 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
 
     }
+    @RequestMapping(value="/afficherLstLicence",method = RequestMethod.POST)
+    public String listLicenceASelectionner(final lstLicForm licForm , final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page){
+        return "redirect:afficherLstLicence?pag="+page+"&terme="+licForm.getSearchNomNav().toString();
+    }
 
+    @RequestMapping(value="/modifierLicence", method = RequestMethod.GET)
+    public String modifierLicence(final ModelMap model,@RequestParam("numlic") int numlic) {
+       // verifier si le seul licence liee a ce bateau
+                return "qlistLic";
+    }
+
+    @RequestMapping(value="/supprimerLicence", method = RequestMethod.GET)
+    public String supprimerLicence(final ModelMap model,@RequestParam("numlic") int numlic) {
+        // verifier si c est  le seul licence liee a ce bateau, et dans ce cas il faut les deux supprimer
+        // verifie si la licence dispose des documents saisie
+        Integer nbrDoc=retCountDoc(String numlic);
+        // si non calculer le kk
+        if(nbrDoc>0)  // can t delete lic. in use by some document.
+        else {
+            Integer nbrLicOfCurrentBat=retNbrLicOfCurrentBat(String numlic);
+            if (nbrLicOfCurrentBat == 1) {
+                deleteBoth();
+            } else {
+                qLic previouslic = findMaxDateLicence(numlic);
+                qBat updatedNav = updateNavWithPreviousLicInformations(previouslic);// link prev lic with bat.
+                deleteLic(numlic); // delete current lic
+                save(updatedNav) // persist nez bat
+            }
+        }
+     //   le nombre de licences accocie a ce nimimm kk
+        //kk==1   supprimer les deux
+        //kk>1 mettre  a jour le bat par les infos de licence avec max date et apres on supprime la licence
+       // pour bien supprimer il faut disassocier la liceces avec ses connexion.
+        // si oui , la suppression est impossible.contactez l administrateur.
+        return "qlistLic";
+    }
 
     @RequestMapping(value="/afficherLstLicence", method = RequestMethod.GET)
-    public String afficherListLicence(final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page) {
+    public String afficherListLicence(final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="terme",defaultValue = "") String terme) {
+        //
+
+        //1\
         lstLicForm lst1=new lstLicForm();
         int[] pages;
+        Page<qLic>  pgLic=licenceService.findAllLic(page,20,terme);
+        PageWrapper<qLic> pageC = new PageWrapper<qLic>(pgLic);
 
-    Page<qLic>   pgLic=licenceService.findAll(page,20);
+        model.addAttribute("pageC",pageC);
+        // Page<qLic>   pgLic=licenceService.findAll(page,20);
 
         pages=new int[pgLic.getTotalPages()];
         for(int i=0;i<pgLic.getTotalPages();i++) pages[i]=i;
@@ -830,6 +879,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         lst1.setPageCount(pgLic.getTotalPages());
         lst1.setNumPages(pages);
         lst1.setPageCourante(page);
+        lst1.setSearchNomNav(terme);
         System.out.println(" Total est : "+lst1.getLicences().getTotalElements());
         model.addAttribute("lstLicForm",lst1);
         return "qlistLic";
@@ -1019,7 +1069,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
             // chercher les licences actives pour ce navire pour les afficher et choisisser une
             List<enumTypeDoc> ltsTypeDoc=new ArrayList<enumTypeDoc>();
             if(((qBateau)selectedNavire).getTypb().equals(enumTypeBat.PIROG))  ltsTypeDoc.add(enumTypeDoc.Fiche_Debarquement);
-            else   ltsTypeDoc.add(enumTypeDoc.Journal_Peche);
+            else   ltsTypeDoc.add(enumTypeDoc.Journal_Peche);ltsTypeDoc.add(enumTypeDoc.Journal_Annexe);
             attrCrn.setLstTypeDoc(ltsTypeDoc);
             model.addAttribute("CarnetAttribue",attrCrn);
             model.addAttribute("TypesDo",ltsTypeDoc);
@@ -1098,7 +1148,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
            licform.setLicence(currentLicence);
 
            model.addAttribute("LicForm",licform);
-           forwardURL="qshowNewLicLibre";
+           forwardURL="qShowNewLicLibre";
        }
         return forwardURL;
     }
@@ -1179,9 +1229,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         }
 
         model.addAttribute("LicForm",LicForm);
-        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNationalNewBat";
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qShowNewLicNationalNewBat";
         else {
-            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibreNewBat";
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qShowNewLicLibreNewBat";
             else   System.out.println("jjjj");
         }
         return url;
@@ -1208,9 +1258,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
         }
 
         model.addAttribute("LicForm",LicForm);
-        if(LicForm.getLicence() instanceof qLicenceNational) url="qshowNewLicNationalNewBat";
+        if(LicForm.getLicence() instanceof qLicenceNational) url="qShowNewLicNationalNewBat";
         else {
-            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qshowNewLicLibreNewBat";
+            if (LicForm.getLicence() instanceof qLicenceLibre) url = "qShowNewLicLibreNewBat";
             else   System.out.println("jjjj");
         }
         return url;
@@ -1227,7 +1277,8 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
             currentConcession = concessionService.findById(((qLicenceNational) LicForm.getLicence()).getQconcession().getRefConcession());
             ((qLicenceNational) LicForm.getLicence()).setQconcession(currentConcession);
         }
-      licValidator.validate(licAct, bindingresult);
+
+         licValidator.validate(licAct, bindingresult);
 
         if(bindingresult.hasErrors()) {
            for(ObjectError obj:bindingresult.getFieldErrors()) {
@@ -1236,7 +1287,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
             System.out.println(bindingresult.getAllErrors().size());
             model.addAttribute("LicForm",LicForm);
-            validateURL="qshowNewLicNationalNewBat";
+            validateURL="qShowNewLicNationalNewBat";
         }
         else    {
             List<qCategRessource> VV=new ArrayList<qCategRessource>();
@@ -1281,7 +1332,7 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
                 System.out.println(obj);
             }
             System.out.println(bindingresult.getAllErrors().size());
-            validateURL="qshowNewLicLibreNewBat";
+            validateURL="qShowNewLicLibreNewBat";
         }
         else        {
             qNavireLegale navireLegale=new qNavireLegale(LicForm.getLicence().getNumimm(), LicForm.getLicence().getNomnav(),  LicForm.getLicence().getLongg(), LicForm.getLicence().getPuimot(), LicForm.getLicence().getNation(), LicForm.getLicence().getLarg(), LicForm.getLicence().getCount(), LicForm.getLicence().getNbrhomm(), LicForm.getLicence().getEff(), LicForm.getLicence().getAnneeconstr(), LicForm.getLicence().getCalpoids(), LicForm.getLicence().getGt(),LicForm.getLicence().getKw(), LicForm.getLicence().getTjb(), LicForm.getLicence().getImo(), LicForm.getLicence().getPort(),
@@ -1299,38 +1350,104 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
                     }
         return validateURL;
     }
-
+// pour le modesearch si =0- par defaut 1-pour le prmier 2-pour les deux dates 3- pour les traitement 4-pour approfondu
     @RequestMapping(value="/createDocument",method = RequestMethod.GET)
-    public String creerDocument(final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page) {
-      List<qDoc> lstDoc=new ArrayList<qDoc>();
-      frmSearchPgsForDocCrea frmSearchPgsForDocCrea1=new frmSearchPgsForDocCrea();
+    public String creerDocument(final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="validation",defaultValue = "0") int validation,@RequestParam(name="date1",defaultValue = "null") String date1,@RequestParam(name="date2",defaultValue = "null") String date2,@RequestParam(name="searchnavire",defaultValue = "") String searchnavire,@RequestParam(name="searchusine",defaultValue = "") String searchusine,@RequestParam(name="flagdetail",defaultValue = "0") Integer flagdetail,@RequestParam(name="modesearch",defaultValue = "0") Integer modesearch) {
+        List<qDoc> lstDoc=new ArrayList<qDoc>();
+        Page<qDoc>  pgDoc=null;
+        Date date11=null;
+        Date date22=null;
+        SimpleDateFormat sdfmt1 = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy", Locale.US);
+        if(!date1.equals("null")) {
+            try {
+              java.util.Date fecha = new java.util.Date(date1);
+              date11 = (Date)sdfmt1 .parse(fecha.toString());
+               // date11 = sdfmt1.parse(date1);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        else date11=null;
+        if(!date2.equals("null")) {
+            try {
+                java.util.Date fecha1 = new java.util.Date(date2);
+                date22 = (Date)sdfmt1.parse(fecha1.toString());
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        else date22=null;
+
+        System.out.println("date22 "+date22);
+        frmSearchPgsForDocCrea frmSearchPgsForDocCrea1=new frmSearchPgsForDocCrea();
        int[] pages;
         //HttpSession httpSession=request.getSession();
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        String username = auth.getName();
+      String username = auth.getName();
   //  public String  listCarnets(final lstCarnetsAchoisirForm carnetForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="searchCarnet",defaultValue = "") String searchCarnet) {
       qTaskProgressBar currentprog=progressService.findById(username);
-        frmSearchPgsForDocCrea1.setCurrentBar(currentprog);
-       Page<qDoc>  pgDoc=docService.findAll(page,20);
-       pages=new int[pgDoc.getTotalPages()];
-        for(int i=0;i<pgDoc.getTotalPages();i++) pages[i]=i;
+      frmSearchPgsForDocCrea1.setCurrentBar(currentprog);
+
+      if(modesearch==0)  { pgDoc=docService.findAll(page,20,validation);}
+      if(modesearch==1)  { pgDoc=docService.findAllMatchedDocs(date11,searchnavire,page);
+         // searchAccueil sacc=new searchAccueil();
+          //searchBetweenTwoDates searchBetweenTwoDates1=new searchBetweenTwoDates();
+
+      }
+      if(modesearch==2)  { pgDoc=docService.findAllMatchedDocsBetweenDates(date11,date22,searchnavire,page);}
+      if(modesearch==3)  { pgDoc=docService.findAllMatchedDocsBetweenDatesTr(date11,date22,searchnavire,page);}
+
+        PageWrapper<qDoc> pageC = new PageWrapper<qDoc>(pgDoc);
+        pages=new int[pgDoc.getTotalPages()];
+      //  for(int i=0;i<pgDoc.getTotalPages();i++) pages[i]=i;
+        if(validation==0) frmSearchPgsForDocCrea1.setTypeForm("P");
+        if(validation==1) frmSearchPgsForDocCrea1.setTypeForm("A");
         frmSearchPgsForDocCrea1.setLstDocuments(pgDoc);
-        frmSearchPgsForDocCrea1.setPageCount(pgDoc.getTotalPages());
-        frmSearchPgsForDocCrea1.setNumPages(pages);
+        frmSearchPgsForDocCrea1.setPageCount(0);
+        frmSearchPgsForDocCrea1.setNumPages(null);
         frmSearchPgsForDocCrea1.setPageCourante(page);
         frmSearchPgsForDocCrea1.setDisplaydatefrg(true);
         frmSearchPgsForDocCrea1.setDisplayFinListfrg(true);
         frmSearchPgsForDocCrea1.setDisplayFinListfrg(true);
         frmSearchPgsForDocCrea1.setDisplaydateRetourfrg(true);
         frmSearchPgsForDocCrea1.setDisplayButton(true);
-
-        //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
+        pageC.setDate1(date11);
+        pageC.setDate2(date22);
+        pageC.setSearchnavire(searchnavire);
+        pageC.setSearchusine(searchusine);
+        pageC.setFlagdetail(flagdetail);
+        pageC.setModesearch(modesearch);// set to 1
+       //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
        // frmSearchPgsForDocCrea1.setFailedAnnulation("");
-         model.addAttribute("frmSearchPgsForDocCrea",frmSearchPgsForDocCrea1);
+
+        searchBetweenTwoDatesByConcession searchBetweenTwoDatesByConcession=new searchBetweenTwoDatesByConcession();
+        searchBetweenTwoDatesByConcession.setExclureDetails(false);
+        List<choixTypeConcession> types=new ArrayList<choixTypeConcession>();
+        choixTypeConcession h=null;
+        for(qTypeConcession tc:typeconcessionService.findAll()){
+            h=new choixTypeConcession();
+            h.setChoix(false);
+            h.setTypeConcession(tc);
+
+            types.add(h);
+        }
+        searchBetweenTwoDatesByConcession.setTypes(types);
+
+
+        // this.task=taskbarService.findById(username);
+        searchBetweenTwoDatesByConcession.setProgressBar(currentprog);
+
+
+
+        model.addAttribute("frmSearchPgsForDocCrea",frmSearchPgsForDocCrea1);
          model.addAttribute("page","");
-     //   frmSearchPgsForDocCrea1.setLstDocuments();
+         model.addAttribute("pageC",pageC);
+
+        //frmSearchPgsForDocCrea1.setLstDocuments();
         return "Documents/listDocuments";
    }
 
@@ -1421,12 +1538,39 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
     @RequestMapping(value="/validateDocument", params={"valider"},method = RequestMethod.POST)
     @Transactional
     public String validerDocument(final  frmSearchPgsForDocCrea frmSearchPgsForDocCrea,final ModelMap model) {
-       List<qDoc>  docs=frmSearchPgsForDocCrea.getLstDocuments().getContent();
-        for(qDoc currDoc:docs) {
+    //   List<qDoc>  docs=frmSearchPgsForDocCrea.getLstDocuments().getContent();
+        Page<qDoc>  pgDoc=frmSearchPgsForDocCrea.getLstDocuments();
+        frmSearchPgsForDocCrea.setTypeForm("P");
+
+
+        for(qDoc currDoc:pgDoc) {
            if(currDoc.isValidation()==true) docService.save(currDoc);
         }
+        PageWrapper<qDoc> pageC = new PageWrapper<qDoc>(docService.findAll(0,20,0));
+        model.addAttribute("pageC",pageC);
+       // Page<qDoc>  pgDoc=docService.findAll(page,20,validation);
+
         return "Documents/listDocuments";
     }
+
+
+    @RequestMapping(value="/validateDocument", params={"devalider"},method = RequestMethod.POST)
+    @Transactional
+    public String devaliderDocument(final  frmSearchPgsForDocCrea frmSearchPgsForDocCrea,final ModelMap model) {
+        //   List<qDoc>  docs=frmSearchPgsForDocCrea.getLstDocuments().getContent();
+        Page<qDoc>  pgDoc=frmSearchPgsForDocCrea.getLstDocuments();
+        frmSearchPgsForDocCrea.setTypeForm("A");
+
+        for(qDoc currDoc:pgDoc) {
+            if(currDoc.isValidation()==false) {docService.save(currDoc);}
+        }
+        PageWrapper<qDoc> pageC = new PageWrapper<qDoc>(docService.findAll(0,20,1));
+        model.addAttribute("pageC",pageC);
+        // Page<qDoc>  pgDoc=docService.findAll(page,20,validation);
+
+        return "Documents/listDocuments";
+    }
+
    @RequestMapping(value="/createDocumentSave",method = RequestMethod.POST)
     @Transactional
     public String saveDocument(final  frmSearchPgsForDocCrea frmSearchPgsForDocCrea, final BindingResult result,final ModelMap model) {
@@ -1436,7 +1580,9 @@ public List<enumTypePecheHautiriere> populateTypesPecheHautiriere() {
 
         List<Integer>  nbrJours=new ArrayList<Integer>();
         Integer nbrCaptures=0;
-        qDoc currentDoc=frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc();
+       qDoc currentDoc=docService.findById(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getqDocPK());
+
+      currentDoc=frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc();
         String urlNav=null;
         List<qLic> lics=new ArrayList<qLic>();
         System.out.println("date de depart");
@@ -1488,9 +1634,10 @@ for(qJourDeb jd:ju.getListJours()) {
         }
 
         if(currentDoc instanceof qMarree)  {
-          qMarreeAnnexe annex=((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getMarreeAnnexe();
-         lics=docService.retLicences(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getQseq(),frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getEnumtypedoc());
+            qMarreeAnnexe annex=((qMarree) frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc()).getMarreeAnnexe();
+            lics=docService.retLicences(frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getQseq(),frmSearchPgsForDocCrea.getCreateDocFormm().getCurrentDoc().getEnumtypedoc());
             currentDoc=docService.treatEspDynamic(currentDoc);
+
             nbrCaptures=  ((qMarree) currentDoc).getPages().get(0).getListJours().get(0).getCapturesDuMarree().size();
             for (qPageMarree ju : ((qMarree) currentDoc).getPages()) {
                 System.out.println(ju.getNumeroPage().toString());
@@ -1565,12 +1712,7 @@ for(qJourDeb jd:ju.getListJours()) {
         return  urlNav;
     }
 
-    @RequestMapping(value="/createAnnexe",method = RequestMethod.POST)
-    public String createAnnexe(final frmAnnexe frmAnnexe,final ModelMap model) {
-          System.out.println(frmAnnexe.getDateDepartAnnexe());
-     //   model.addAttribute("frmAnnexe", frmAnnexe1);
-        return "Documents/Annexe";
-    }
+
     @RequestMapping(value="/ajouterAnnexe",method = RequestMethod.GET)
     public String ajouterAnnexe(@RequestParam(name="numimm") String numimm, @RequestParam(name="depart") String depart,@RequestParam(name="typeDoc") String typeDoc,final ModelMap model) {
         frmAnnexe  frmAnnexe1=new frmAnnexe();
@@ -1723,20 +1865,26 @@ for(qJourDeb jd:ju.getListJours()) {
         return "concessions/concessions";
 
     }
-        @RequestMapping(value="/createAnnexe",params = {"creerAnnexe"},method = RequestMethod.POST)
-    //public String creerDocument(final frmSearchPgsForDocCrea frmSearchPgsForDocCrea ,final ModelMap model, @RequestParam(name="numeroDebut") String debut, @RequestParam(name="numeroFin") String fin,@RequestParam(name="dateDebut") String dateDepart1,@RequestParam(name="dateRetour") String dateRetour1,BindingResult bindingresult) {
-    public String creerAnnexe(final frmAnnexe frmAnnexe,final ModelMap model,BindingResult bindingresult) {
+
+   @RequestMapping(value="/createAnnexe",method = RequestMethod.POST)
+     public String creerAnnexe(final frmAnnexe frmAnnexe,final ModelMap model,BindingResult bindingresult) {
+            System.out.println("bismillahi");
         qMarreeAnnexe currentDoc=null;
         Date dateDepart=null;
         SimpleDateFormat sdfmt1 = new SimpleDateFormat("yyyy-MM-dd");
+
         try {
             dateDepart = sdfmt1.parse(frmAnnexe.getDateDepartAnnexe());
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        creerAnnexeValidateur.validate(frmAnnexe, bindingresult);
+            } catch (ParseException e) {
+             e.printStackTrace();
+             }
 
+        System.out.println("avant");
+        System.out.println("NUM FINNER");
+        System.out.println(frmAnnexe.getNumeroDebutAnnexe());
+        creerAnnexeValidateur.validate(frmAnnexe, bindingresult);
+        System.out.println("apres");
         if(!bindingresult.hasErrors()) {
             qDocPK pkk=new qDocPK(frmAnnexe.getNumImmAnnexe(),dateDepart);
 
@@ -1883,9 +2031,6 @@ for(qJourDeb jd:ju.getListJours()) {
                     }
                 }
 
-
-
-
             docForm.setCurrentPage(0);
             docForm.setPageFin(frmSearchPgsForDocCrea.getNumeroFin());
             docForm.setCurrentDoc(currentDoc);
@@ -1903,7 +2048,38 @@ for(qJourDeb jd:ju.getListJours()) {
         }
 
     else {
-            return "Documents/listDocuments";
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+            String username = auth.getName();
+            //  public String  listCarnets(final lstCarnetsAchoisirForm carnetForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="searchCarnet",defaultValue = "") String searchCarnet) {
+            qTaskProgressBar currentprog=progressService.findById(username);
+            frmSearchPgsForDocCrea.setCurrentBar(currentprog);
+            Page<qDoc>  pgDoc=docService.findAll(0,20,0);
+            PageWrapper<qDoc> pageC = new PageWrapper<qDoc>(pgDoc);
+
+            //  for(int i=0;i<pgDoc.getTotalPages();i++) pages[i]=i;
+
+            frmSearchPgsForDocCrea.setTypeForm("P");
+            frmSearchPgsForDocCrea.setLstDocuments(pgDoc);
+            frmSearchPgsForDocCrea.setPageCount(0);
+            frmSearchPgsForDocCrea.setNumPages(null);
+
+            frmSearchPgsForDocCrea.setDisplaydatefrg(true);
+            frmSearchPgsForDocCrea.setDisplayFinListfrg(true);
+            frmSearchPgsForDocCrea.setDisplayFinListfrg(true);
+            frmSearchPgsForDocCrea.setDisplaydateRetourfrg(true);
+            frmSearchPgsForDocCrea.setDisplayButton(true);
+
+            //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
+            // frmSearchPgsForDocCrea1.setFailedAnnulation("");
+            model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea);
+
+            model.addAttribute("pageC",pageC);
+            model.addAttribute("firstEtp",0);
+            model.addAttribute("validation",0);
+
+          return "Documents/listDocuments"; // createDocument(firstEtp=0,validation=0)
+          //  return null;
         }
 
     }
@@ -3394,12 +3570,18 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
 
     @RequestMapping(value="/findDocsByPage",method = RequestMethod.POST)
     public String findDocsByPage(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("page") String page) {
-        String urlnext=null;
+        String urlnext=null;int[] pages;
         List<qDoc> lstDoc=new ArrayList<qDoc>();
         frmSearchPgsForDocCrea frmSearchPgsForDocCrea1=new frmSearchPgsForDocCrea();
-        int[] pages;
-
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        qTaskProgressBar currentprog=progressService.findById(username);
+        frmSearchPgsForDocCrea1.setCurrentBar(currentprog);
            Page<qDoc>  pgDoc=docService.findAllMatcheds(page);
+
+      //  frmSearchPgsForDocCrea.setTypeForm("P");
+        PageWrapper<qDoc> pageC = new PageWrapper<qDoc>(pgDoc);
+
         if(pgDoc.getContent().size()!=0) {
             pages = new int[pgDoc.getTotalPages()];
             for (int i = 0; i < pgDoc.getTotalPages(); i++) pages[i] = i;
@@ -3419,6 +3601,7 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
             frmSearchPgsForDocCrea1.setPageCourante(0);
         }
         model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea1);
+        model.addAttribute("pageC",pageC);
           return "Documents/listDocuments";
     }
 
@@ -3428,8 +3611,14 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
         List<qDoc> lstDoc=new ArrayList<qDoc>();
         frmSearchPgsForDocCrea frmSearchPgsForDocCrea1=new frmSearchPgsForDocCrea();
         int[] pages;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        qTaskProgressBar currentprog=progressService.findById(username);
+        frmSearchPgsForDocCrea1.setCurrentBar(currentprog);
         //  public String  listCarnets(final lstCarnetsAchoisirForm carnetForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="searchCarnet",defaultValue = "") String searchCarnet) {
-        Page<qDoc>  pgDoc=docService.findAllMatchedDocsBetweenDatesConcession(searchBetweenTwoDatesByConcession.getSearchDateCapture1(),searchBetweenTwoDatesByConcession.getSearchDateCapture2(),searchBetweenTwoDatesByConcession.getTypes());
+        Page<qDoc>  pgDoc=docService.findAllMatchedDocsBetweenDatesConcession(searchBetweenTwoDatesByConcession.getSearchDateCapture1(),searchBetweenTwoDatesByConcession.getSearchDateCapture2(),searchBetweenTwoDatesByConcession.getNom(),searchBetweenTwoDatesByConcession.getTypes(),0);
+        PageWrapper<qDoc> pageC = new PageWrapper<qDoc>(pgDoc);
+
         if(pgDoc.getContent().size()!=0) {
             pages = new int[pgDoc.getTotalPages()];
             for (int i = 0; i < pgDoc.getTotalPages(); i++) pages[i] = i;
@@ -3437,11 +3626,21 @@ qPrefixPK prefPK=new qPrefixPK(newModel.getPrefix(),newModel.getTypeDoc());
             frmSearchPgsForDocCrea1.setPageCount(pgDoc.getTotalPages());
             frmSearchPgsForDocCrea1.setNumPages(pages);
             frmSearchPgsForDocCrea1.setPageCourante(0);
+            Integer id=0;
+            if(searchBetweenTwoDatesByConcession.getExclureDetails()) id=1;
+            else id=0;
             //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
             // frmSearchPgsForDocCrea1.setFailedAnnulation("");
-            model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea1);
+            pageC.setDate1(searchBetweenTwoDatesByConcession.getSearchDateCapture1());
+            pageC.setDate2(searchBetweenTwoDatesByConcession.getSearchDateCapture2());
+            pageC.setSearchnavire(searchBetweenTwoDatesByConcession.getNom());
+            pageC.setSearchusine(null);
+            pageC.setFlagdetail(id);
+            pageC.setModesearch(4);// set to 4
 
-            //   frmSearchPgsForDocCrea1.setLstDocuments();
+            model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea1);
+            model.addAttribute("pageC", pageC);
+            // frmSearchPgsForDocCrea1.setLstDocuments();
             urlnext="Documents/listDocuments";
 
         }
@@ -3468,18 +3667,18 @@ return yyi;
     @RequestMapping(value = "/progress", method = RequestMethod.GET)
     public  @ResponseBody  int getProgress() {
         int u=0;
-System.out.println(progressService.findById(taskCommander.getProgressBar().getIdProgressBar()).getProgress());
+
+        System.out.println(progressService.findById(taskCommander.getProgressBar().getIdProgressBar()).getProgress());
         if(taskCommander!=null) {
-            if(taskCommander.getProgressBar()!=null)
-     u=progressService.findById(taskCommander.getProgressBar().getIdProgressBar()).getProgress();
-        }
-return u;
+        if(taskCommander.getProgressBar()!=null)
+        u=progressService.findById(taskCommander.getProgressBar().getIdProgressBar()).getProgress();
+                               }
+         return u;
     }
 
-    @RequestMapping(value="/searchBetweenTwoDatesByConcession", params={"consulterCaptures"},method = RequestMethod.POST)
-    public void  searchBetweenTwoDatesByConcessionCaptures(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("searchBetweenTwoDatesByConcession")  searchBetweenTwoDatesByConcession  searchBetweenTwoDatesByConcession,final @RequestParam(name="PARAMETER_TYPE",defaultValue = "pdf") String PARAMETER_TYPE,HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException , Exception {
+    @RequestMapping(value="/searchBetweenTwoDatesByConcession", params={"consulterCapturesPDF"},method = RequestMethod.POST)
+    public void  searchBetweenTwoDatesByConcessionCapturesPDF(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("searchBetweenTwoDatesByConcession")  searchBetweenTwoDatesByConcession  searchBetweenTwoDatesByConcession,final @RequestParam(name="PARAMETER_TYPE",defaultValue = "pdf") String PARAMETER_TYPE,HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException , Exception {
         String urlnext=null;
-
         List<qDoc> lstDoc=new ArrayList<qDoc>();
         resultatsCapturesByConcession  captures=null;
         resultatsCapturesByConcession[] list = new resultatsCapturesByConcession[1];
@@ -3492,13 +3691,59 @@ return u;
         SimpleDateFormat sdfmt1 = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, Object> dataForReport = new HashMap<String, Object>();
         Date dateDepart = null;
-        try{
+        try {
             this.taskCommander=new taskCommander();
 
 
             System.out.println("trst"+searchBetweenTwoDatesByConcession.getProgressBar().getIdProgressBar());
          this.taskCommander.setProgressBar(progressService.findById(searchBetweenTwoDatesByConcession.getProgressBar().getIdProgressBar()));
-            captures=docService.findAllMatchedDocsBetweenDatesConcessionCap(searchBetweenTwoDatesByConcession.getSearchDateCapture1(),searchBetweenTwoDatesByConcession.getSearchDateCapture2(),searchBetweenTwoDatesByConcession.getTypes(),PARAMETER_TYPE,searchBetweenTwoDatesByConcession.getProgressBar());
+            captures=docService.findAllMatchedDocsBetweenDatesConcessionCap(searchBetweenTwoDatesByConcession.getSearchDateCapture1(),searchBetweenTwoDatesByConcession.getSearchDateCapture2(), searchBetweenTwoDatesByConcession.getNom(),searchBetweenTwoDatesByConcession.getTypes(),PARAMETER_TYPE,searchBetweenTwoDatesByConcession.getProgressBar());
+            list[0]=   captures;
+
+
+//          out = response.getOutputStream();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        response.setContentType(FILE_TYPE_2_CONTENT_TYPE.get(fileType));
+
+        reportDetailCapture rept=null;
+
+        System.out.println(" lehbib "+searchBetweenTwoDatesByConcession.getExclureDetails());
+        if(searchBetweenTwoDatesByConcession.getSearchDateCapture1()!=null && searchBetweenTwoDatesByConcession.getSearchDateCapture2()!=null)
+        rept=new reportDetailCapture(list,fileType,searchBetweenTwoDatesByConcession.getExclureDetails(),request,response);
+
+        qTaskProgressBar bar=progressService.findById(searchBetweenTwoDatesByConcession.getProgressBar().getIdProgressBar());
+        bar.setNbrTaitee(0);
+        bar.setTotal(100);
+        bar.setProgress(0);
+
+        progressService.save(bar);
+        //out.close();
+       // return rept;
+    }
+
+    @RequestMapping(value="/searchBetweenTwoDatesByConcession", params={"consulterCapturesXLS"},method = RequestMethod.POST)
+    public void  searchBetweenTwoDatesByConcessionCapturesXLS(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("searchBetweenTwoDatesByConcession")  searchBetweenTwoDatesByConcession  searchBetweenTwoDatesByConcession,final @RequestParam(name="PARAMETER_TYPE",defaultValue = "xls") String PARAMETER_TYPE,HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException , Exception {
+        String urlnext=null;
+        List<qDoc> lstDoc=new ArrayList<qDoc>();
+        resultatsCapturesByConcession  captures=null;
+        resultatsCapturesByConcession[] list = new resultatsCapturesByConcession[1];
+        //resultatsCapturesByConcession     resultatsCapturesByConcession=new resultatsCapturesByConcession();
+        String fileType = PARAMETER_TYPE;List<Object> pgs=new ArrayList<Object>();
+        reportDetailCapture currentrep=null;
+        List<String> colsPage=new ArrayList<String>();List<String> colsHPage=new ArrayList<String>();
+        Map<String,List<String>> colspagemap=new HashMap<String,List<String>>();
+        BeanGenerator beanGenerator = new BeanGenerator();
+        SimpleDateFormat sdfmt1 = new SimpleDateFormat("yyyy-MM-dd");
+        Map<String, Object> dataForReport = new HashMap<String, Object>();
+        Date dateDepart = null;
+        try {
+            this.taskCommander=new taskCommander();
+            System.out.println("trst"+searchBetweenTwoDatesByConcession.getProgressBar().getIdProgressBar());
+            this.taskCommander.setProgressBar(progressService.findById(searchBetweenTwoDatesByConcession.getProgressBar().getIdProgressBar()));
+            captures=docService.findAllMatchedDocsBetweenDatesConcessionCap(searchBetweenTwoDatesByConcession.getSearchDateCapture1(),searchBetweenTwoDatesByConcession.getSearchDateCapture2(), searchBetweenTwoDatesByConcession.getNom(),searchBetweenTwoDatesByConcession.getTypes(),PARAMETER_TYPE,searchBetweenTwoDatesByConcession.getProgressBar());
             list[0]=   captures;
 
 
@@ -3510,10 +3755,10 @@ return u;
         response.setContentType(FILE_TYPE_2_CONTENT_TYPE.get(fileType));
 
 
+        reportDetailCapture rept=null;
+        if(searchBetweenTwoDatesByConcession.getSearchDateCapture1()!=null && searchBetweenTwoDatesByConcession.getSearchDateCapture2()!=null)
 
-
-
-        reportDetailCapture rept=new reportDetailCapture(list,fileType,request,response);
+        rept=new reportDetailCapture(list,fileType,searchBetweenTwoDatesByConcession.getExclureDetails(),request,response);
 
         qTaskProgressBar bar=progressService.findById(searchBetweenTwoDatesByConcession.getProgressBar().getIdProgressBar());
         bar.setNbrTaitee(0);
@@ -3522,9 +3767,12 @@ return u;
 
         progressService.save(bar);
         //out.close();
-       // return rept;
+        // return rept;
     }
-        @RequestMapping(value="/searchBetweenTwoDatesByConcessionOLD", params={"consulterCaptures"},method = RequestMethod.POST)
+
+
+
+    @RequestMapping(value="/searchBetweenTwoDatesByConcessionOLD", params={"consulterCaptures"},method = RequestMethod.POST)
     public void  searchBetweenTwoDatesByConcessionCapturesOLD(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("searchBetweenTwoDatesByConcession")  searchBetweenTwoDatesByConcession  searchBetweenTwoDatesByConcession,final @RequestParam(name="PARAMETER_TYPE",defaultValue = "pdf") String PARAMETER_TYPE,HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException , Exception {
         String urlnext=null;
         List<qDoc> lstDoc=new ArrayList<qDoc>();
@@ -3540,7 +3788,7 @@ return u;
             Date dateDepart = null;
                 try{
                     this.taskCommander.setProgressBar(searchBetweenTwoDatesByConcession.getProgressBar());
-                     captures=docService.findAllMatchedDocsBetweenDatesConcessionCap(searchBetweenTwoDatesByConcession.getSearchDateCapture1(),searchBetweenTwoDatesByConcession.getSearchDateCapture2(),searchBetweenTwoDatesByConcession.getTypes(),PARAMETER_TYPE, searchBetweenTwoDatesByConcession.getProgressBar());
+                     captures=docService.findAllMatchedDocsBetweenDatesConcessionCap(searchBetweenTwoDatesByConcession.getSearchDateCapture1(),searchBetweenTwoDatesByConcession.getSearchDateCapture2(), searchBetweenTwoDatesByConcession.getNom(),searchBetweenTwoDatesByConcession.getTypes(),PARAMETER_TYPE, searchBetweenTwoDatesByConcession.getProgressBar());
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -3577,11 +3825,8 @@ System.out.print(captures.getResultatsEntetesCol().size());
    //     SubreportBuilder subreport = cmp.subreport(createSubreport(colspagemap))
       //.setDataSource(exp.subDatasourceBeanCollection("pages"));
 
-
-
         StyleBuilder columnStyle = stl.style(Templates.columnStyle)
                        .setBorder(stl.pen1Point());
-
 
         JasperReportBuilder report = report();
         report
@@ -3596,22 +3841,15 @@ System.out.print(captures.getResultatsEntetesCol().size());
         }
         report.addColumn(  col.column("Expression column", new ExpressionColumn()));
 
-
         return  report;
-
     }
+
     private class ExpressionColumn extends AbstractSimpleExpression<BigDecimal>{
-
         private static final long serialVersionUID = 1L;
-
         @Override
-
         public BigDecimal evaluate(ReportParameters reportParameters) {
-
-            return new BigDecimal(12) ;
-
+           return new BigDecimal(12) ;
         }
-
     }
 
     @RequestMapping(value="/searchDocTraitement",method = RequestMethod.POST)
@@ -3622,7 +3860,9 @@ System.out.print(captures.getResultatsEntetesCol().size());
         frmSearchPgsForDocCrea frmSearchPgsForDocCrea1=new frmSearchPgsForDocCrea();
         int[] pages;
         //  public String  listCarnets(final lstCarnetsAchoisirForm carnetForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="searchCarnet",defaultValue = "") String searchCarnet) {
-        Page<qDoc>  pgDoc=docService.findAllMatchedDocsBetweenDatesTr(searchBetweenTwoDates.getSearchDateCapture1(),searchBetweenTwoDates.getSearchDateCapture2(),searchBetweenTwoDates.getSearchBat());
+        Page<qDoc>  pgDoc=docService.findAllMatchedDocsBetweenDatesTr(searchBetweenTwoDates.getSearchDateCapture1(),searchBetweenTwoDates.getSearchDateCapture2(),searchBetweenTwoDates.getSearchBat(),0);
+        PageWrapper<qDoc> pageC = new PageWrapper<qDoc>(pgDoc);
+
         if(pgDoc.getContent().size()!=0) {
             pages = new int[pgDoc.getTotalPages()];
             for (int i = 0; i < pgDoc.getTotalPages(); i++) pages[i] = i;
@@ -3630,29 +3870,44 @@ System.out.print(captures.getResultatsEntetesCol().size());
             frmSearchPgsForDocCrea1.setPageCount(pgDoc.getTotalPages());
             frmSearchPgsForDocCrea1.setNumPages(pages);
             frmSearchPgsForDocCrea1.setPageCourante(0);
-            //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
+
+            pageC.setDate1(searchBetweenTwoDates.getSearchDateCapture1());
+            pageC.setDate2(searchBetweenTwoDates.getSearchDateCapture2());
+            pageC.setSearchnavire("");
+            pageC.setSearchusine(searchBetweenTwoDates.getSearchBat());
+            pageC.setFlagdetail(0);
+            pageC.setModesearch(3); // set to 1
+
+            // frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
             // frmSearchPgsForDocCrea1.setFailedAnnulation("");
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            qTaskProgressBar currentprog=progressService.findById(username);
+            frmSearchPgsForDocCrea1.setCurrentBar(currentprog);
             model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea1);
 
             //   frmSearchPgsForDocCrea1.setLstDocuments();
             urlnext="Documents/listDocuments";
-
         }
         else {
             urlnext="redirect:start";
             redirectAttributes.addFlashAttribute("notfounddoc","Aucun document trouvé");
         }
+        model.addAttribute("pageC",pageC);
         return urlnext;
 
     }
-        @RequestMapping(value="/searchBetweenTwoDates",method = RequestMethod.POST)
-    public String  searchBetweenTwoDates(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("searchBetweenTwoDates")  searchBetweenTwoDates  searchBetweenTwoDates) {
+
+    @RequestMapping(value="/searchBetweenTwoDatesGET",method = RequestMethod.GET)
+    public String  searchBetweenTwoDatesGET(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("searchBetweenTwoDates")  searchBetweenTwoDates  searchBetweenTwoDates,@RequestParam(name="page",defaultValue = "0") Integer page) {
         String urlnext=null;
         List<qDoc> lstDoc=new ArrayList<qDoc>();
         frmSearchPgsForDocCrea frmSearchPgsForDocCrea1=new frmSearchPgsForDocCrea();
         int[] pages;
         //  public String  listCarnets(final lstCarnetsAchoisirForm carnetForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="searchCarnet",defaultValue = "") String searchCarnet) {
-        Page<qDoc>  pgDoc=docService.findAllMatchedDocsBetweenDates(searchBetweenTwoDates.getSearchDateCapture1(),searchBetweenTwoDates.getSearchDateCapture2(),searchBetweenTwoDates.getSearchBat());
+        Page<qDoc>  pgDoc=docService.findAllMatchedDocsBetweenDates(searchBetweenTwoDates.getSearchDateCapture1(),searchBetweenTwoDates.getSearchDateCapture2(),searchBetweenTwoDates.getSearchBat(),page);
+        PageWrapper<qDoc> pageC = new PageWrapper<qDoc>(pgDoc);
+
         if(pgDoc.getContent().size()!=0) {
             pages = new int[pgDoc.getTotalPages()];
             for (int i = 0; i < pgDoc.getTotalPages(); i++) pages[i] = i;
@@ -3660,6 +3915,11 @@ System.out.print(captures.getResultatsEntetesCol().size());
             frmSearchPgsForDocCrea1.setPageCount(pgDoc.getTotalPages());
             frmSearchPgsForDocCrea1.setNumPages(pages);
             frmSearchPgsForDocCrea1.setPageCourante(0);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            qTaskProgressBar currentprog=progressService.findById(username);
+            frmSearchPgsForDocCrea1.setCurrentBar(currentprog);
+
             //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
             // frmSearchPgsForDocCrea1.setFailedAnnulation("");
             model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea1);
@@ -3672,38 +3932,154 @@ System.out.print(captures.getResultatsEntetesCol().size());
             urlnext="redirect:start";
             redirectAttributes.addFlashAttribute("notfounddoc","Aucun document trouvé");
         }
+        model.addAttribute("pageC",pageC);
         return urlnext;
 
     }
-        @RequestMapping(value="/searchDocCapture",method = RequestMethod.POST)
-    public String searchDocCapture(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("sacc") searchAccueil searchAccueil) {
+
+
+    @RequestMapping(value="/searchBetweenTwoDates",method = RequestMethod.POST)
+    public String  searchBetweenTwoDates(final RedirectAttributes redirectAttributes,final ModelMap model, @ModelAttribute("searchBetweenTwoDates")  searchBetweenTwoDates  searchBetweenTwoDates,@RequestParam(name="page",defaultValue = "0") Integer page) {
+        String urlnext=null;
+        List<qDoc> lstDoc=new ArrayList<qDoc>();
+        frmSearchPgsForDocCrea frmSearchPgsForDocCrea1=new frmSearchPgsForDocCrea();
+        int[] pages;
+        //  public String  listCarnets(final lstCarnetsAchoisirForm carnetForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="searchCarnet",defaultValue = "") String searchCarnet) {
+        Page<qDoc>  pgDoc=docService.findAllMatchedDocsBetweenDates(searchBetweenTwoDates.getSearchDateCapture1(),searchBetweenTwoDates.getSearchDateCapture2(),searchBetweenTwoDates.getSearchBat(),page);
+            PageWrapper<qDoc> pageC = new PageWrapper<qDoc>(pgDoc);
+
+        if(pgDoc.getContent().size()!=0) {
+            pages = new int[pgDoc.getTotalPages()];
+            for (int i = 0; i < pgDoc.getTotalPages(); i++) pages[i] = i;
+            frmSearchPgsForDocCrea1.setLstDocuments(pgDoc);
+            frmSearchPgsForDocCrea1.setPageCount(pgDoc.getTotalPages());
+            frmSearchPgsForDocCrea1.setNumPages(pages);
+            frmSearchPgsForDocCrea1.setPageCourante(0);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            qTaskProgressBar currentprog=progressService.findById(username);
+            frmSearchPgsForDocCrea1.setCurrentBar(currentprog);
+            //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
+            // frmSearchPgsForDocCrea1.setFailedAnnulation("");
+            pageC.setDate1(searchBetweenTwoDates.getSearchDateCapture1());
+            pageC.setDate2(searchBetweenTwoDates.getSearchDateCapture2());
+            pageC.setSearchnavire(searchBetweenTwoDates.getSearchBat());
+            pageC.setSearchusine(null);
+            pageC.setFlagdetail(0);
+            pageC.setModesearch(2);// set to 1
+            model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea1);
+            //   frmSearchPgsForDocCrea1.setLstDocuments();
+
+
+            searchAccueil sacc=new searchAccueil();
+         //   searchBetweenTwoDates searchBetweenTwoDates=new searchBetweenTwoDates();
+            searchBetweenTwoDatesByConcession searchBetweenTwoDatesByConcession=new searchBetweenTwoDatesByConcession();
+            searchBetweenTwoDatesByConcession.setExclureDetails(false);
+            List<choixTypeConcession> types=new ArrayList<choixTypeConcession>();
+            choixTypeConcession h=null;
+            for(qTypeConcession tc:typeconcessionService.findAll()){
+                h=new choixTypeConcession();
+                h.setChoix(false);
+                h.setTypeConcession(tc);
+
+                types.add(h);
+            }
+            searchBetweenTwoDatesByConcession.setTypes(types);
+
+
+            // this.task=taskbarService.findById(username);
+            searchBetweenTwoDatesByConcession.setProgressBar(currentprog);
+
+
+            model.addAttribute("sacc",sacc);
+            model.addAttribute("searchBetweenTwoDates",searchBetweenTwoDates);
+            model.addAttribute("searchBetweenTwoDatesByConcession",searchBetweenTwoDatesByConcession);
+
+            urlnext="Documents/listDocuments";
+
+        }
+        else {
+            urlnext="redirect:start";
+            redirectAttributes.addFlashAttribute("notfounddoc","Aucun document trouvé");
+        }
+            model.addAttribute("pageC",pageC);
+        return urlnext;
+
+    }
+
+    @RequestMapping(value="/searchDocCapture",method = RequestMethod.POST)
+    public String searchDocCapture(final RedirectAttributes redirectAttributes,final ModelMap model,@ModelAttribute("sacc") searchAccueil searchAccueil ) {
        //
         String urlnext=null;
         List<qDoc> lstDoc=new ArrayList<qDoc>();
         frmSearchPgsForDocCrea frmSearchPgsForDocCrea1=new frmSearchPgsForDocCrea();
         int[] pages;
         //  public String  listCarnets(final lstCarnetsAchoisirForm carnetForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page,@RequestParam(name="searchCarnet",defaultValue = "") String searchCarnet) {
-        Page<qDoc>  pgDoc=docService.findAllMatchedDocs(searchAccueil.getSearchDateCapture(),searchAccueil.getSearchBat());
-        if(pgDoc.getContent().size()!=0) {
+            Page<qDoc>  pgDoc=docService.findAllMatchedDocs(searchAccueil.getSearchDateCapture(),searchAccueil.getSearchBat(),0);
+            PageWrapper<qDoc> pageC = new PageWrapper<qDoc>(pgDoc);
+            if(pgDoc.getContent().size()!=0) {
             pages = new int[pgDoc.getTotalPages()];
             for (int i = 0; i < pgDoc.getTotalPages(); i++) pages[i] = i;
             frmSearchPgsForDocCrea1.setLstDocuments(pgDoc);
             frmSearchPgsForDocCrea1.setPageCount(pgDoc.getTotalPages());
             frmSearchPgsForDocCrea1.setNumPages(pages);
             frmSearchPgsForDocCrea1.setPageCourante(0);
-            //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
-            // frmSearchPgsForDocCrea1.setFailedAnnulation("");
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            qTaskProgressBar currentprog=progressService.findById(username);
+            frmSearchPgsForDocCrea1.setCurrentBar(currentprog);
+             frmSearchPgsForDocCrea1.setTypeForm("A");
+                frmSearchPgsForDocCrea1.setLstDocuments(pgDoc);
+
+                //  frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
+                // frmSearchPgsForDocCrea1.setFailedAnnulation("");
+
+                //frmSearchPgsForDocCrea1.setSearchCarnet(searchCarnet);
+            //frmSearchPgsForDocCrea1.setFailedAnnulation("");
+            pageC.setDate1(searchAccueil.getSearchDateCapture());
+            pageC.setDate2(null);
+            pageC.setSearchnavire(searchAccueil.getSearchBat());
+            pageC.setSearchusine(null);
+            pageC.setFlagdetail(0);
+            pageC.setModesearch(1);// set to 1
+
             model.addAttribute("frmSearchPgsForDocCrea", frmSearchPgsForDocCrea1);
 
-            //   frmSearchPgsForDocCrea1.setLstDocuments();
-            urlnext="Documents/listDocuments";
 
-        }
+
+                searchAccueil sacc=new searchAccueil();
+                searchBetweenTwoDates searchBetweenTwoDates=new searchBetweenTwoDates();
+                searchBetweenTwoDatesByConcession searchBetweenTwoDatesByConcession=new searchBetweenTwoDatesByConcession();
+                searchBetweenTwoDatesByConcession.setExclureDetails(false);
+                List<choixTypeConcession> types=new ArrayList<choixTypeConcession>();
+                choixTypeConcession h=null;
+                for(qTypeConcession tc:typeconcessionService.findAll()){
+                    h=new choixTypeConcession();
+                    h.setChoix(false);
+                    h.setTypeConcession(tc);
+
+                    types.add(h);
+                }
+                searchBetweenTwoDatesByConcession.setTypes(types);
+
+
+                // this.task=taskbarService.findById(username);
+                searchBetweenTwoDatesByConcession.setProgressBar(currentprog);
+
+                model.addAttribute("sacc",sacc);
+                model.addAttribute("searchBetweenTwoDates",searchBetweenTwoDates);
+                model.addAttribute("searchBetweenTwoDatesByConcession",searchBetweenTwoDatesByConcession);
+
+
+                //frmSearchPgsForDocCrea1.setLstDocuments();
+            urlnext="Documents/listDocuments";
+    }
         else {
             urlnext="redirect:start";
             redirectAttributes.addFlashAttribute("notfounddoc","Aucun document trouvé");
         }
-   return urlnext;
+       model.addAttribute("pageC",pageC);
+       return urlnext;
     }
 
     @RequestMapping(value="/importerDocuments",method = RequestMethod.GET)
@@ -4181,8 +4557,7 @@ System.out.print(captures.getResultatsEntetesCol().size());
         report
                 .setTemplate(Templates.reportTemplate)
                 .title(cmp.text("pages").setStyle(Templates.boldCenteredStyle))
-                .columns(
-                       col.column("depart", "depart", type.dateType()))
+                .columns(col.column("depart", "depart", type.dateType()))
                 .title(Templates.createTitleComponent("Marree"))
                 .detail(subreport)
                 .pageFooter(cmp.pageXofY());
@@ -4372,7 +4747,17 @@ System.out.print(captures.getResultatsEntetesCol().size());
     }
 
 
-
+    @RequestMapping(value="/listUsers",method = RequestMethod.GET)
+    public String listUsers(final lstUsersForm  usrForm ,final ModelMap model,@RequestParam(name="page",defaultValue = "0") int page){
+        lstUsersForm lstUser=new lstUsersForm();
+        int[] pages;
+        Page<User>   pgUsr=userService. findAllUsers(page,20);
+                lstUser.setLstUsers(pgUsr);
+        lstUser.setPageCount(pgUsr.getTotalPages());
+        lstUser.setPageCourante(page);
+        model.addAttribute("listUsersfrm",lstUser);
+        return "users/usersList";
+    }
 
 
 }

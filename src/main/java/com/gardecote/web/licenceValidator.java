@@ -74,7 +74,7 @@ public class licenceValidator implements Validator {
         if (lic instanceof qLicenceNational ) {
             if(((qLicenceNational) lic).getQconcession()==null ) {
                 errors.rejectValue("licence.qconcession.refConcession","licence.qconcession");
-                System.out.println("concession Null :"+((qLicenceNational) lic).getQconcession());
+//                System.out.println("concession Null :"+((qLicenceNational) lic).getQconcession());
             }
             if(((qLicenceNational) lic).getQconcession()==null ) {
                 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "licence.qconcession.refConcession", "licence.qconcession");

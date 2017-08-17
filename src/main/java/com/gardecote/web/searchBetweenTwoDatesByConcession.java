@@ -18,6 +18,8 @@ public class searchBetweenTwoDatesByConcession {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date searchDateCapture2;
 
+    private  Boolean exclureDetails;
+    private String nom;
     private qTaskProgressBar progressBar;
 
     private List<choixTypeConcession> types;
@@ -56,5 +58,21 @@ public class searchBetweenTwoDatesByConcession {
 
     public searchBetweenTwoDatesByConcession() {
 
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public Boolean getExclureDetails() {
+        return exclureDetails;
+    }
+
+    public void setExclureDetails(Boolean exclureDetails) {
+        this.exclureDetails = exclureDetails;
     }
 }

@@ -36,7 +36,7 @@ public interface qDocService {
      * @return all entities
      */
     List<qLic> retLicences(qSeq seqActive1,enumTypeDoc typeDoc);
-    Page<qDoc> findAll(int p, int size);
+    Page<qDoc> findAll(int p, int size,int validation);
     String importerDocuments(MultipartFile file, String fullpatchname);
  String importerMarrees(MultipartFile file, String fullpatchname);
  String importerNationalites(MultipartFile file, String fullpatchname);
@@ -84,16 +84,17 @@ public interface qDocService {
     // si les docs==null on cree un nouveau document
     // si les docs n sont pas null, retourner la liste de ces documents avec leurs sequences et demander de l administrateur de supprimer un document si necessaire
     qDoc verifierAncienDoc(qSeqPK sequencepk);
-    Page<qDoc> findAllMatchedDocs(Date searchDateCapture,String searchBat);
-    Page<qDoc> findAllMatchedDocsBetweenDates(Date searchDateCapture1,Date searchDateCapture2,String searchBat);
-    Page<qDoc> findAllMatchedDocsBetweenDatesTr(Date searchDateCapture1,Date searchDateCapture2,String searchBat);
-    Page<qDoc> findAllMatchedDocsBetweenDatesConcession(Date searchDateCapture1, Date searchDateCapture2, List<choixTypeConcession> types);
+    Page<qDoc> findAllMatchedDocs(Date searchDateCapture,String searchBat,Integer page);
+    Page<qDoc> findAllMatchedDocsBetweenDates(Date searchDateCapture1,Date searchDateCapture2,String searchBat,Integer page);
+    Page<qDoc> findAllMatchedDocsBetweenDatesTr(Date searchDateCapture1,Date searchDateCapture2,String searchBat,Integer page);
+    Page<qDoc> findAllMatchedDocsBetweenDatesConcession(Date searchDateCapture1, Date searchDateCapture2, String nomNavie,List<choixTypeConcession> types,Integer page);
 
     qDebarquement creerDebarquement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
     qDebarquement creerDebarquementByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsDeb,List<Boolean> categDebs,Map<String,Map<Integer,List<Float>>> quantities);
     qMarree creerMarree(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
-    qMarree creerMarreesByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP typeJP,Map<String,Map<Integer,List<Float>>> quantities,String typeM,Set<String> numeros);
+    qMarree creerMarreesByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP typeJP,Map<String,Map<String,List<Float>>> quantities,String typeM,Set<String> numeros);
         //   qSeq seqActive=qseqRepository.findOne(seqActive1.getSeqPK());
+    void creerMarreesByImportDup(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP typeJP,Map<String,Map<String,List<Float>>> quantities,String typeM,Set<String> numeros);
 
     qTraitement creerTraitement(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc);
     qTraitement creerTraitementByImport(Date dateDepart, Date dateRetour, qSeq seqActive1,enumTypeDoc typeDoc,List<Boolean> enginsMarree,enumJP typeJP,Map<String,Map<Integer,List<Double>>> quantities);
@@ -113,7 +114,7 @@ public interface qDocService {
     qModelJP checkIfModelExist(Date dateDepart,Date dateRetour,qSeq seqActive1,enumTypeDoc typeDoc);
     boolean checkIfValidSeq(qSeq seqActive1);
     boolean checkIfNavAnnexIsSameAsNavPrincipal(Date dateDepart, qSeqPK spk, qMarree currentMaree,enumTypeDoc typeDoc);
-    resultatsCapturesByConcession findAllMatchedDocsBetweenDatesConcessionCap(Date searchDateCapture1, Date searchDateCapture2, List<choixTypeConcession> types, final @RequestParam(name="PARAMETER_TYPE") String PARAMETER_TYPE,qTaskProgressBar task)  throws IOException, ServletException, Exception;
+    resultatsCapturesByConcession findAllMatchedDocsBetweenDatesConcessionCap(Date searchDateCapture1, Date searchDateCapture2,String nomNavire, List<choixTypeConcession> types, final @RequestParam(name="PARAMETER_TYPE") String PARAMETER_TYPE,qTaskProgressBar task)  throws IOException, ServletException, Exception;
     List<printedDocument> printDocument(qDoc currentDoc, String PARAMETER_TYPE, HttpServletRequest request, HttpServletResponse response,qTaskProgressBar currentpro,String paperType) throws IOException, ServletException, Exception;
     public String[][] traiterConcessions(MultipartFile file, String fullpatchname);
     public String[][] genererDocumentsImport(MultipartFile file, String fullpatchname);

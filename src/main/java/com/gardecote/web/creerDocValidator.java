@@ -36,12 +36,12 @@ public class creerDocValidator implements Validator {
         frmSearchPgsForDocCrea frmValidated = (frmSearchPgsForDocCrea) o;
         Date dateDepart = null, dateRetour = null;
         SimpleDateFormat sdfmt1 = new SimpleDateFormat("yyyy-MM-dd");
-        qSeqPK spk = new qSeqPK(frmValidated.getNumeroDebut(), frmValidated.getNumeroFin());
-        qSeq se = seqService.findById(spk);
-        if (se == null)
-            se = new qSeq(frmValidated.getNumeroDebut(), frmValidated.getNumeroFin(), null);
-        else
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numeroDebut", "frmSearchPgsForDocCrea.invalidseq");
+       // qSeqPK spk = new qSeqPK(frmValidated.getNumeroDebut(), frmValidated.getNumeroFin());
+       // qSeq se = seqService.findById(spk);
+       // if (se == null)
+        qSeq    se = new qSeq(frmValidated.getNumeroDebut(), frmValidated.getNumeroFin(), null);
+       // else
+        //    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numeroDebut", "frmSearchPgsForDocCrea.invalidseq");
         qDoc documentDoublon=null;
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numeroDebut", "frmSearchPgsForDocCrea.numeroDebut.empty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "numeroFin", "frmSearchPgsForDocCrea.numeroFin.empty");

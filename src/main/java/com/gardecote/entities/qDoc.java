@@ -81,7 +81,6 @@ public class qDoc implements Serializable , Comparable<qDoc> {
     }
 
 
-
     public void setValidation(boolean validation) {
         this.validation = validation;
     }

@@ -1,18 +1,24 @@
-<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/sitelayout">
+<html xmlns:th="http://www.thymleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorator="layout/sitelayout">
 
 <head>
     <meta charset="UTF-8" />
     <title>Gestion des documents</title>
 </head>
 <body>
+<input type="hidden" th:field="${modePage}" th:value="${modePage}" />
 
 <div   layout:fragment="content">
     <div class="panel panel-default">
         <div class="panel-heading panel-heading-custom">Gestion des documents</div>
         <div class="panel-body">
+
+            <div class="tab-content">
+               <div id="menu00" class="tab-pane fade in active">
     <span class="label label-danger" th:text="${deletefeedback}"></span>
     <span class="label label-danger" th:text="${deblocagefeedback}"></span>
-    <form th:action="@{createDocument}" method="post"  th:object="${frmSearchPgsForDocCrea}" class="form-inline" >
+    <form th:action="@{createDocument}" method="post"  th:object="${frmSearchPgsForDocCrea}" class="form-inline" th:if="${frmSearchPgsForDocCrea.typeForm=='P'}">
 
     <div class=" jumbotron jumbotron-custom  text-left ">
         <div class="row">
@@ -21,15 +27,12 @@
              <option th:each="i : ${allTypesDoc}"
                      th:value="${i}"
                      th:text="${i}">
-
              </option>
   </select>
          <label>Numéro de debut:</label>
          <input type="text"  th:field="${frmSearchPgsForDocCrea.numeroDebut}" onchange="clearFields()"/>
          <span class="label label-danger" th:errors="${frmSearchPgsForDocCrea.numeroDebut}"></span>
          <button type="button" id="but" name="but" ><span class="glyphicon glyphicon-search"></span></button>
-
-
 
 
     <div id="dependentContent">
@@ -48,11 +51,8 @@
         <input  th:disabled="${frmSearchPgsForDocCrea.displaydatefrg}" type="date" class="form-control " th:field="${frmSearchPgsForDocCrea.dateDebut}"   th:fragment="finListFrag"/>
         <span class="label label-danger" th:errors="${frmSearchPgsForDocCrea.dateDebut}"></span>
         <label th:fragment="finListFrag" >Date de retour :</label>
-
-
         <input  th:disabled="${frmSearchPgsForDocCrea.displaydateRetourfrg}" type="date" class="form-control " th:field="${frmSearchPgsForDocCrea.dateRetour}"   th:fragment="finListFrag"/>
         <span class="label label-danger" th:errors="${frmSearchPgsForDocCrea.dateRetour}"></span>
-        <label th:text="${frmSearchPgsForDocCrea.displaydateRetourfrg}" th:fragment="finListFrag"></label>
 
        <button type="submit"  id="creer" name="creer" th:disabled="${frmSearchPgsForDocCrea.displayButton}" class="btn btn-lg btn-primary"  th:fragment="finListFrag" onsubmit="return confirm('Are you sure?');"> creer document &raquo; </button>
 
@@ -70,21 +70,24 @@
         </div>
             </div>
 
-
-
 </form>
+</div>
 
 
-            <form th:action="@{validateDocument}" method="post"  th:object="${frmSearchPgsForDocCrea.lstDocuments}" class="form-inline" >
-                <button type="submit"  id="valider" name="valider"  class="btn btn-lg btn-primary"  onsubmit="return confirm('Etes vous sûre de vouloir valider les documents selectionnées?');"> Valider les selections &raquo; </button>
 
-                    <table class="table table-striped table-bordered table-hover">
+          <form th:action="@{validateDocument}" method="post"  th:object="${frmSearchPgsForDocCrea.lstDocuments}" class="form-inline"   >
+
+              <button   th:if="${#strings.equals(frmSearchPgsForDocCrea.typeForm,'P')}" type="submit" sec:authorize="hasRole('ROLE_admin')" id="valider" name="valider"  class="btn btn-lg btn-primary"  onsubmit="return confirm('Etes vous sûre de vouloir valider les documents selectionnées?');"> Valider les selections &raquo; </button>
+              <button   th:if="${#strings.equals(frmSearchPgsForDocCrea.typeForm,'A')}" type="submit" sec:authorize="hasRole('ROLE_admin')" id="devalider" name="devalider"  class="btn btn-lg btn-primary"  onsubmit="return confirm('Etes vous sûre de vouloir de devalider les documents selectionnées?');"> Devalider les selections &raquo; </button>
+
+              <table class="table table-striped table-bordered table-hover">
         <thead>
+
         <tr>
             <th></th>
             <th></th>
-            <th>Depart</th>
-            <th>Retour</th>
+            <th>D. Depart</th>
+            <th>D. Retour</th>
             <th>Navire</th>
             <th>Page de Debut</th>
             <th>Page de Fin</th>
@@ -96,7 +99,7 @@
         <tbody>
         <tr th:each="b, stat:${frmSearchPgsForDocCrea.lstDocuments}" th:class="${#strings.equals(b.enumtypedoc,'Journal_Peche')}?success:(${#strings.equals(b.enumtypedoc,'Fiche_Debarquement')}?warning:(${#strings.equals(b.enumtypedoc,'Fiche_Traitement')}?danger:''))">
             <td>
-                <input type="checkbox" th:field="${frmSearchPgsForDocCrea.lstDocuments.content[__${stat.index}__].validation}"    />
+                <input sec:authorize="hasAnyRole('ROLE_admin')" type="checkbox" th:field="${frmSearchPgsForDocCrea.lstDocuments.content[__${stat.index}__].validation}"    />
             </td>
           <td>  <div class="dropdown">  <button th:field="${frmSearchPgsForDocCrea.numSelected}" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
                 <span class="caret"></span></button>
@@ -104,37 +107,39 @@
                     <li th:if="${#strings.equals(b.enumtypedoc,'Journal_Peche')}" >
                         <a  th:href="@{ajouterAnnexe(numimm=${b.numImm},typeDoc=${b.enumtypedoc},depart=${b.depart},action='ajouterAnnexe')}"   onclick="return confirm('Are you sure?');" >JP Annexe</a>
                     </li>
+
                     <li th:if="${b.debloquerModification}">
                      <a  th:href="@{editDoc(numimm=${b.numImm},typeDoc=${b.enumtypedoc},depart=${b.depart},action='modifyDoc')}" onclick="return confirm('Are you sure?');" >Editer</a>
                     </li>
+
                     <li th:if="${b.bloquerDeletion}">
-                      <a   th:href="@{deleteDoc(numimm=${b.numImm},depart=${b.depart},action='deleteDoc')}" onclick="return confirm('Are you sure?');">Supprimer</a>
+                      <a   th:href="@{deleteDoc(numimm=${b.numImm},depart=${b.depart},action='deleteDoc')}" sec:authorize="hasAnyRole('ROLE_admin')" onclick="return confirm('Are you sure?');">Supprimer</a>
                    </li>
 
                     <li>
-                    <a th:if="${b.bloquerDeletion}" th:href="@{bloquerSuppression(numimm=${b.numImm},depart=${b.depart},action='bloquerDoc')}" onclick="return confirm('Are you sure?');">bloquer  la suppression</a>
-                    <a th:unless="${b.bloquerDeletion}" th:href="@{debloquerSuppression(numimm=${b.numImm},depart=${b.depart},action='bloquerDoc')}" onclick="return confirm('Are you sure?');">Débloquer la suppression</a>
+                    <a th:if="${b.bloquerDeletion}" sec:authorize="hasAnyRole('ROLE_admin')" th:href="@{bloquerSuppression(numimm=${b.numImm},depart=${b.depart},action='bloquerDoc')}" onclick="return confirm('Are you sure?');">bloquer  la suppression</a>
+                    <a th:unless="${b.bloquerDeletion}" sec:authorize="hasAnyRole('ROLE_admin')" th:href="@{debloquerSuppression(numimm=${b.numImm},depart=${b.depart},action='bloquerDoc')}" onclick="return confirm('Are you sure?');">Débloquer la suppression</a>
                 </li>
+
                     <li>
                         <a th:if="${b.debloquerModification}" th:href="@{debloquerModification(numimm=${b.numImm},depart=${b.depart},action='bloquerDoc')}" onclick="return confirm('Are you sure?');">bloquer  la modification</a>
                         <a th:unless="${b.debloquerModification}" th:href="@{bloquerModification(numimm=${b.numImm},depart=${b.depart},action='bloquerDoc')}" onclick="return confirm('Are you sure?');">Débloquer la modification</a>
                     </li>
+
                 </ul>
 
 
           </div></td>
 
-            <td th:text="${b.depart}"></td>
-            <td th:text="${b.retour}"></td>
+            <td th:text="${#dates.format(b.depart, 'dd-MM-yy')}"></td>
+            <td th:text="${#dates.format(b.retour, 'dd-MM-yy')}"></td>
             <td th:text="${b.qnavire!=null?b.qnavire.nomnav:b.qusine.nomUsine}"></td>
             <td th:text="${b.qseq.debut}"></td>
             <td th:text="${b.qseq.fin}"></td>
-
             <td th:text="${b.enumtypedoc}"></td>
             <td th:text="${b.totalCapturs}"></td>
 
             <td>
-
                 <div class="dropdown">
                     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Imprimer
                         <span class="caret"></span></button>
@@ -159,11 +164,56 @@
 
         <div class="container">
 
-            <ul class="nav nav-pills">
-                <li th:each="p:${frmSearchPgsForDocCrea.numPages}"  th:class="${p==frmSearchPgsForDocCrea.pageCourante}?active:''">
-                    <a th:text="${p}" th:href="@{createDocument(page=${p})}"></a>
-                </li>
-            </ul>
+                      <!-- Pagination Bar -->
+
+                    <ul class="nav nav-pills">
+
+                        <li th:class="${pageC.firstPage} ? 'disabled' : '' ">
+
+                        <span th:if='${pageC.firstPage}'>← Premier</span>
+
+                        <a th:if='${not pageC.firstPage}' th:href='@{createDocument(page=1,date1=${pageC.date1},date2=${pageC.date2},searchnavire=${pageC.searchnavire},searchusine=${pageC.searchusine},flagdetail=${pageC.flagdetail},modesearch=${pageC.modesearch})}'>← Premier</a>
+
+                        </li>
+
+                        <li th:class="${pageC.hasPreviousPage}? '' : 'disabled'">
+
+                        <span th:if='${not pageC.hasPreviousPage}'>«</span>
+
+                        <a th:if='${pageC.hasPreviousPage}' th:href='@{createDocument(page=${pageC.number-1},date1=${pageC.date1},date2=${pageC.date2},searchnavire=${pageC.searchnavire},searchusine=${pageC.searchusine},flagdetail=${pageC.flagdetail},modesearch=${pageC.modesearch})}' title='Go to previous page'>«</a>
+
+                        </li>
+
+                        <li th:each='item : ${pageC.items}' th:class="${item.current}? active : ''">
+
+                        <span th:if='${item.current}'  th:text='${item.number}'>0</span>
+
+                        <a th:if='${not item.current}' th:href='@{createDocument(page=${item.number},date1=${pageC.date1},date2=${pageC.date2},searchnavire=${pageC.searchnavire},searchusine=${pageC.searchusine},flagdetail=${pageC.flagdetail},modesearch=${pageC.modesearch})}'><span th:text='${item.number}'>0</span></a>
+
+                        </li>
+
+                        <li th:class="${pageC.hasNextPage}? '' : 'disabled'">
+
+                        <span th:if='${not pageC.hasNextPage}'>»</span>
+
+                        <a th:if='${pageC.hasNextPage}' th:href='@{createDocument(page=${pageC.number},date1=${pageC.date1},date2=${pageC.date2},searchnavire=${pageC.searchnavire},searchusine=${pageC.searchusine},flagdetail=${pageC.flagdetail},modesearch=${pageC.modesearch})}' title='Go to next page'>»</a>
+
+                        </li>
+
+                        <li th:class="${pageC.lastPage}? 'disabled' : ''">
+
+                        <span th:if='${pageC.lastPage}'>Dernier →</span>
+
+                        <a th:if='${not pageC.lastPage}' th:href='@{createDocument(page=${pageC.totalPages},date1=${pageC.date1},date2=${pageC.date2},searchnavire=${pageC.searchnavire},searchusine=${pageC.searchusine},flagdetail=${pageC.flagdetail},modesearch=${pageC.modesearch})}'>Dernier →</a>
+
+                        </li>
+
+                    </ul>
+
+
+
+
+
         </div>
 
 </div>
@@ -172,6 +222,6 @@
         </div>
     </div>
 
-</div>
+</div></div>
 </body>
 </html>

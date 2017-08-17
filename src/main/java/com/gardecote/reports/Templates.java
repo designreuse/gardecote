@@ -88,7 +88,7 @@ public class Templates {
 
         bold22CenteredStyle = stl.style(boldCenteredStyle)
 
-                .setFontSize(22);
+                .setFontSize(14);
 
         columnStyle         = stl.style(rootStyle).setVerticalAlignment(VerticalAlignment.MIDDLE);
 
@@ -166,13 +166,13 @@ public class Templates {
 
         cmp.horizontalList(
 
-                cmp.image(Templates.class.getResource("images/dynamicreports.png")).setFixedDimension(60, 60),
+           /*     cmp.image(Templates.class.getResource("images/dynamicreports.png")).setFixedDimension(60, 60),*/
 
                 cmp.verticalList(
 
-                        cmp.text("DynamicReports").setStyle(bold22CenteredStyle).setHorizontalAlignment(HorizontalAlignment.LEFT),
+                        cmp.text("Ministère des Pêches et de l'Economie Maritime").setStyle(bold22CenteredStyle).setHorizontalAlignment(HorizontalAlignment.LEFT),
 
-                        cmp.text("http://www.dynamicreports.org").setStyle(italicStyle).setHyperLink(link))).setFixedWidth(300);
+                        cmp.text("La Garde Côte Mauritanienne").setStyle(bold22CenteredStyle).setHorizontalAlignment(HorizontalAlignment.LEFT)));
 
         footerComponent = cmp.pageXofY()
 

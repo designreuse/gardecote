@@ -46,8 +46,7 @@
         <label class="col-sm-2 control-label">Prefix de numerotation de carnet</label>
         <div id="divpref">
         <select th:field="${CarnetAttribue.carnetSelected.prefixNumerotation}" th:fragment="renderPrefixes">
-
-            <option th:each="var : ${selectedPrefixes}"
+          <option th:each="var : ${selectedPrefixes}"
                     th:value="${var.prefix}"
                     th:text= "${var.prefix}">hhh</option>
         </select>

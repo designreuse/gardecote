@@ -17,7 +17,7 @@
                 <link href="gcmcss/style1.css" rel="stylesheet" />
             </head>
             <body >
-            <div class="container-fluid spacer"  >
+            <div class="container-fluid spacer">
                 <header class="row col-sm-12" >
                    <nav role="navigation" class="navbar navbar-default ">
                         <!-- Brand and toggle get grouped for better mobile display -->
@@ -34,46 +34,50 @@
                         <div id="navbarCollapse" class="collapse navbar-collapse">
                             <ul class="nav navbar-nav">
                                 <li class="dropdown">
-                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" sec:authorize="hasRole('ROLE_admin')">Consultation<b class="caret"></b></a>
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" sec:authorize="hasAnyRole('ROLE_admin')">Consultation<b class="caret"></b></a>
                                     <ul role="menu" class="dropdown-menu">
-                                        <li><a href="#" class="active">Activite de pêche</a></li>
+                                        <li><a th:href="@{start}" class="active">Activite de pêche</a></li>
                                         <li><a href="#">Activité usine</a></li>
 
                                     </ul>
                                 </li>
                                 <li class="dropdown">
-                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" sec:authorize="hasRole('ROLE_admin')">Documents de captures <b class="caret"></b></a>
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" sec:authorize="hasAnyRole('ROLE_admin','ROLE_saisie')">Gestion des Documents <b class="caret"></b></a>
                                    <ul role="menu" class="dropdown-menu">
-                                        <li>  <a th:href="@{createDocument(firstEtp=0)}" >Saisie</a></li>
-                                        <li><a th:href="@{parametrerModels}" >Parametrage de models de captures</a></li>
+
+
+                                       <li>  <a th:href="@{createDocument(firstEtp=0,validation=0,date1='null',date2='null',searchnavire='',searchusine='',flagdetail=0,modesearch=0)}" >Parafeur des instances</a></li>
+                                       <li>  <a th:href="@{createDocument(firstEtp=0,validation=1)}" >Documents archivés </a></li>
+                                        <li><a th:href="@{parametrerModels}" sec:authorize="hasAnyRole('ROLE_admin')" >Parametrage de models de captures</a></li>
                                     </ul>
                                 </li>
-                              <li class="dropdown">
-                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" sec:authorize="hasRole('ROLE_admin')">Registre de navire <b class="caret"></b></a>
+                                <li class="dropdown">
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" sec:authorize="hasAnyRole('ROLE_admin')">Registre de navire <b class="caret"></b></a>
                                     <ul role="menu" class="dropdown-menu">
                                         <li><a th:href="@{listCarnets}" class="active">Liste des carnets</a></li>
                                         <li><a th:href="@{afficherLstLicence}" class="active">Liste des licences</a></li>
-                                               <li><a th:href="@{listBatASelectionner}" class="active">Creer une licence pour un bâteau existant</a></li>
-                                               <li><a th:href="@{NouvLicenceBatNouveau1(zeroEtape=true)}" class="active">Creer une Licence pour un nouveau bâteau</a></li>
-                                               <li><a th:href="@{listBatASelectionner}" class="active">Liste de  bâteau</a></li>
-                                               <li><a th:href="@{listUsines}" class="active">Liste des  usines</a></li>
+                                        <li><a th:href="@{listBatASelectionner}" class="active">Creer une licence pour un bâteau existant</a></li>
+                                       <li><a th:href="@{NouvLicenceBatNouveau1(zeroEtape=true)}" class="active">Creer une Licence pour un nouveau bâteau</a></li>
+                                      <li><a th:href="@{listBatASelectionner}" class="active">Liste de  bâteau</a></li>
+                                       <li><a th:href="@{listUsines}" class="active">Liste des  usines</a></li>
                                     </ul>
                                 </li>
 
                                 <li class="dropdown">
-                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" sec:authorize="hasRole('ROLE_admin')">Divers <b class="caret"></b></a>
+                                    <a data-toggle="dropdown" class="dropdown-toggle" sec:authorize="hasAnyRole('ROLE_admin','ROLE_saisie')">Divers tâches <b class="caret"></b></a>
                                   <ul role="menu" class="dropdown-menu">
-                                        <li><a th:href="@{listConcessions}" class="active">Saisie des Concession</a></li>
-                                        <li><a th:href="@{listConcessionnaires}">Saisie des Concessionnaires</a></li>
-                                        <li><a th:href="@{listPrefixes}" class="active">Liste prefixes</a></li>
-                                        <li><a th:href="@{listTypesConcession}" class="active">Liste des types de concession</a></li>
-                                        <li><a th:href="@{listCategRessources}" class="active">Liste des categories de ressources</a></li>
-                                        <li><a th:href="@{listModels}" class="active">Liste des models</a></li>
-                                        <li><a th:href="@{listEspeces}" class="active">Liste des especes</a></li>
-                                        <li><a th:href="@{listZones}" class="active">Liste des zones de peches</a></li>
-                                        <li><a th:href="@{listNationalites}" class="active">Liste des zones de nationalités</a></li>
-                                        <li><a th:href="@{listTypesLicences}" class="active">Liste des type licences</a></li>
-                                        <li><a th:href="@{genererCATEGMODELS}" class="active">Initialiser la base  </a></li>
+                                        <li><a th:href="@{listUsers}" class="active" sec:authorize="hasAnyRole('ROLE_admin')">Gestion des utilisateurs</a></li>
+                                        <li><a th:href="@{listConcessions}" class="active" sec:authorize="hasAnyRole('ROLE_admin')">Saisie des Concession</a></li>
+                                        <li><a th:href="@{listConcessionnaires}" sec:authorize="hasAnyRole('ROLE_admin','ROLE_saisie')">Saisie des Concessionnaires</a></li>
+                                        <li><a th:href="@{listPrefixes}" class="active" sec:authorize="hasAnyRole('ROLE_admin')">Liste prefixes</a></li>
+                                        <li><a th:href="@{listTypesConcession}" class="active" sec:authorize="hasAnyRole('ROLE_admin')">Liste des types de concession</a></li>
+                                        <li><a th:href="@{listCategRessources}" class="active" sec:authorize="hasAnyRole('ROLE_admin')">Liste des categories de ressources</a></li>
+                                        <li><a th:href="@{listModels}" class="active" sec:authorize="hasAnyRole('ROLE_admin')">Liste des models</a></li>
+                                        <li><a th:href="@{listEspeces}" class="active" sec:authorize="hasAnyRole('ROLE_admin')">Liste des especes</a></li>
+                                        <li><a th:href="@{listZones}" class="active" sec:authorize="hasAnyRole('ROLE_admin')">Liste des zones de peches</a></li>
+                                        <li><a th:href="@{listNationalites}" class="active" sec:authorize="hasAnyRole('ROLE_admin')">Liste des zones de nationalités</a></li>
+                                        <li><a th:href="@{listTypesLicences}" class="active" sec:authorize="hasAnyRole('ROLE_admin')" >Liste des type licences</a></li>
+                                        <li><a th:href="@{genererCATEGMODELS}" class="active" sec:authorize="hasAnyRole('ROLE_admin')">Initialiser la base  </a></li>
 
                                   </ul>
                                 </li>
@@ -109,7 +113,7 @@
                             </form>
                             <ul class="nav navbar-nav navbar-right">
                                 <li>
-                                    <button id="generate" name="generate"  class="btn btn-warning">MAJ</button>
+                                    <button id="generate" name="generate"  class="btn btn-warning" sec:authorize="hasRole('ROLE_MAJ')">MAJ</button>
                      <form th:action="@{logout}">
 
                          <button type="submit"  class="btn btn-warning">Déconnexion</button>
@@ -127,7 +131,7 @@
                 </header>
                 <div id="login" name="login"></div>
 
-                <div class="row col-sm-12 panel panel-primary" layout:fragment="content"  >
+                <div class="row col-sm-12 panel panel-primary" layout:fragment="content">
                </div>
 
 
@@ -169,13 +173,34 @@
                     var selectedState;
 
                     $(".dropdown-toggle").dropdown();
+                    $("#searchNomNav" ).autocomplete({
+                        minLength: 1,
+                        delay: 500,
+                        //define callback to format results
+                        source: function (request, response) {
+                            $.getJSON("/gcm/autocomnomnav", request, function(result) {
+                                response($.map(result, function(item) {
+                                    return {
+                                        // following property gets displayed in drop down
+                                        label: item,
+                                        // following property gets entered in the textbox
+                                        value: item
+                                        // following property is added for our own use
+                                        //   tag_url: "http://" + window.location.host + "/tags/" + item.tagId + "/" + item.name
+                                    }
+                                }));
+                            });
+                        }
 
+                        //define select handler
+
+                    });
                     $("#searchName" ).autocomplete({
                         minLength: 1,
                         delay: 500,
                         //define callback to format results
                         source: function (request, response) {
-                            $.getJSON("/autocomnomnav", request, function(result) {
+                            $.getJSON("/gcm/autocomnomnav", request, function(result) {
                                 response($.map(result, function(item) {
                                     return {
                                         // following property gets displayed in drop down
@@ -327,7 +352,7 @@ alert("hhhhh")
                     });
                     $("#butAnnexe").click( function()
                             {
-                                var url = /*[[@{/finList}]]*/ "/finListAnnexe";
+                                var url = /*[[@{/finListAnnexe}]]*/ "/finListAnnexe";
                                 if ($('#numeroDebutAnnexe').val() !== '') {
                                     url = url + '?debut=' +$("#prefixeAnnexe").val()+ $('#numeroDebutAnnexe').val()+"\u0026typeDoc="+$('#typeDocAnnexe').val();
 

@@ -10,11 +10,13 @@
 <div class="row">
 
     <a th:href="@{/launchjob}">Exporter vers Excel</a>
-    <form  th:action="@{/lstLic}"   method="post" th:object="${lstLicForm}">
+    <form  th:action="@{/afficherLstLicence}"   method="post" th:object="${lstLicForm}">
         <h2 ><p class="spacer"><kbd>Registre des licences</kbd></p> </h2>
+        <input type="text" th:field="*{searchNomNav}" />  <button type="submit" >Chercher</button>
         <table class="table table-striped table-bordered table-hover spacer">
             <thead>
             <tr class="warning">
+                <td>...</td>
                 <th>Numéro </th>
                 <th>Matricule</th>
                 <th>Navire</th>
@@ -29,7 +31,15 @@
                           </tr>
             </thead>
             <tbody>
+
             <tr th:each="b:${lstLicForm.licences.content}">
+                <td><div class="dropdown">  <button th:field="${lstLicForm.numLicSelected}" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li ><a th:href="@{modifierLicence(numlic=${b.numlic})}">Modifier</a></li>
+                        <li ><a th:href="@{supprimerLicence(numlic=${b.numlic}}">Supprimer</a></li>
+
+                    </ul></div></td>
                 <td class="danger" th:text="${b.numlic}"></td>
                 <td th:text="${b.qnavire.numimm}"></td>
                 <td th:text="${b.nomnav}"></td>
@@ -39,10 +49,12 @@
                 <td th:text="${#dates.format(b.dateFinAuth, 'yyyy-MM-dd')}" ></td>
 
                 <td class="danger">
-
+                    <div th:if="${#lists.isEmpty(b.qcatressources)}">Aucun cat.Ancien licence</div>
                     <table>
                         <tr  th:each="cat,catStat :${b.qcatressources}">
-                           <td ><span class="badge"  th:text="${catStat.index+1}"></span></td> <td   th:text="${b.qcatressources[__${catStat.index}__].typeconcessionConcernee}" ></td></tr>
+                           <td ><span class="badge"  th:text="${catStat.index+1}"></span></td> <td   th:text="${b.qcatressources[__${catStat.index}__].typeconcessionConcernee}" ></td>
+
+                        </tr>
 
                     </table>
                     <label th:text="${b.qtypnav!=null ? b.qtypnav.descr:''}" />
@@ -60,27 +72,54 @@
 </div>
 
 
-    <div class="table-pagination">
-        <ul class="pagination">
-            <li th:class="${lstLicForm.licences.number eq 0} ? 'disabled' : ''">
-                <a th:if="${not lstLicForm.licences.first}" th:href="@{${'/afficherLstLicence'}(page=${lstLicForm.licences.number-1})}">Previous</a>
-                <a th:if="${lstLicForm.licences.first}" href="javascript:void(0);">Previous</a>
-            </li>
+    <div class="container">
+        <!-- Pagination Bar -->
 
-            <li th:each="pageNo : ${#numbers.sequence(0, lstLicForm.licences.totalPages - 1)}" th:class="${lstLicForm.licences.number eq pageNo}? 'active' : ''">
-                <a th:if="${lstLicForm.licences.number  eq pageNo}" href="javascript:void(0);">
-                    <span th:text="${pageNo + 1}"></span>
-                </a>
-                <a th:if="${not (lstLicForm.licences.number  eq pageNo)}" th:href="@{${'/afficherLstLicence'}(page=${pageNo},size=${lstLicForm.licences.size})}">
-                    <span th:text="${pageNo + 1}"></span>
-                </a>
+        <ul class="nav nav-pills">
+
+            <li th:class="${pageC.firstPage} ? 'disabled' : '' ">
+
+                <span th:if='${pageC.firstPage}'>← Premier</span>
+
+                <a th:if='${not pageC.firstPage}' th:href='@{afficherLstLicence(page=1,terme=${lstLicForm.searchNomNav})}'>← Premier</a>
 
             </li>
-            <li th:class="${lstLicForm.licences.number + 1 ge lstLicForm.licences.totalPages} ? 'disabled' : ''">
-                <a th:if="${not lstLicForm.licences.last}" th:href="@{${'/afficherLstLicence'}(page=${lstLicForm.licences.number+1},size=${lstLicForm.licences.size})}">Next</a>
-                <a th:if="${lstLicForm.licences.last}" href="javascript:void(0);">Next</a>
+
+            <li th:class="${pageC.hasPreviousPage}? '' : 'disabled'">
+
+                <span th:if='${not pageC.hasPreviousPage}'>«</span>
+
+                <a th:if='${pageC.hasPreviousPage}' th:href='@{afficherLstLicence(page=${pageC.number-1},terme=${lstLicForm.searchNomNav})}' title='Go to previous page'>«</a>
+
             </li>
+
+            <li th:each='item : ${pageC.items}' th:class="${item.current}? active : ''">
+
+                <span th:if='${item.current}'  th:text='${item.number}'>0</span>
+
+                <a th:if='${not item.current}' th:href='@{afficherLstLicence(page=${item.number},terme=${lstLicForm.searchNomNav})}'><span th:text='${item.number}'>0</span></a>
+
+            </li>
+
+            <li th:class="${pageC.hasNextPage}? '' : 'disabled'">
+
+                <span th:if='${not pageC.hasNextPage}'>»</span>
+
+                <a th:if='${pageC.hasNextPage}' th:href='@{afficherLstLicence(page=${pageC.number},terme=${lstLicForm.searchNomNav})}' title='Go to next page'>»</a>
+
+            </li>
+
+            <li th:class="${pageC.lastPage}? 'disabled' : ''">
+
+                <span th:if='${pageC.lastPage}'>Dernier →</span>
+
+                <a th:if='${not pageC.lastPage}' th:href='@{afficherLstLicence(page=${pageC.totalPages},terme=${lstLicForm.searchNomNav})}'>Dernier →</a>
+
+            </li>
+
         </ul>
+
+
     </div>
 
 

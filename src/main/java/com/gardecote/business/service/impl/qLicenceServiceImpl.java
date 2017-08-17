@@ -556,5 +556,10 @@ if(Integer.parseInt(XX)>182){
 		}
 	}
 
+	@Override
+	public Page<qLic> findAllLic(int p, int size, String terme) {
+	    	Page<qLic> entities = codauthJpaRepository.findAllLic(new PageRequest(p, size),terme);
+            return entities;
+	}
 
 }

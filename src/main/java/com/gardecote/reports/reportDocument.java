@@ -672,11 +672,12 @@ public class reportDocument {
     private class PageBreakExpression extends AbstractSimpleExpression<Boolean> {
         public Boolean evaluate(ReportParameters reportParameters) {
             //Only having a page break after the first subreport
-            if (reportParameters.getReportRowNumber() == 1) {
-                return true;
-            } else {
-                return false;
-            }
+            //if (reportParameters.getReportRowNumber() == 1) {
+              //  return true;
+            //} else {
+          //      return false;
+        //    }
+            return true;
         }
     }
     private class RetTypePH extends AbstractSimpleExpression<String> {

@@ -45,7 +45,7 @@
 
         <ul class="nav nav-pills">
             <li th:each="p:${listCarnets.numPages}"  th:class="${p==listCarnets.pageCourante}?active:''">
-                <a th:text="${p}" th:href="@{listCarnetASelectionner(page=${p},terme=${listCarnets.searchCarnet})}"></a>
+                <a th:text="${p}" th:href="@{listCarnets(page=${p})}"></a>
             </li>
         </ul>
     </div>

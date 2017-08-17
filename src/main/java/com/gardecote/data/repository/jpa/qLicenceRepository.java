@@ -30,5 +30,8 @@ public interface qLicenceRepository extends PagingAndSortingRepository<qLic, Str
     @Query("select l from qLic  l  order by l.createdAt DESC")
     List<qLic>  lstLicences();
 
+    @Query("select l from qLic  l where TRIM(l.qnavire.nomnav) like %:terme% order by l.nomnav")
+    Page<qLic> findAllLic(Pageable pageable, @Param("terme") String terme);
+
 
 }

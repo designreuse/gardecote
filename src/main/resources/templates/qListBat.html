@@ -48,7 +48,7 @@
                 <li th:if="${#strings.equals(b.class.name,'com.gardecote.entities.qNavireLegale') and #strings.equals(b.modePeche,'NATIONAL')}"><a th:href="@{NouvLicenceBatExistant(numimm=${b.numimm},action='createlicenceNational')}">Creer une Licence en Regime National</a></li>
                 <li th:if="${#strings.equals(b.class.name,'com.gardecote.entities.qNavireLegale') and #strings.equals(b.modePeche,'ETRANGER')}"><a th:href="@{NouvLicenceBatExistant(numimm=${b.numimm},action='createlicenceLibre')}">Creer une Licence en Regime Etranger</a></li>
                 <li th:if="${#strings.equals(b.class.name,'com.gardecote.entities.qNavireLegale') }"><a th:href="@{AttribuerCarnet(numimm=${b.numimm},action='attribuerCarnet')}">Attribuer un nouveau carnet</a></li>
-                <li th:if="${#strings.equals(b.class.name,'com.gardecote.entities.qNavireLegale') }"><a th:href="@{AttribuerCarnet(numimm=${b.numimm},action='historiqueNavire')}">Consulter les changements d'état </a></li>
+
 
             </ul></div></td>
         <td th:text="${b.numimm}"></td>
@@ -75,12 +75,53 @@
 
 </form>
     <div class="container">
+        <!-- Pagination Bar -->
 
         <ul class="nav nav-pills">
-            <li th:each="p:${lstBat.numPages}"  th:class="${p==lstBat.pageCourante}?active:''">
-                <a th:text="${p}" th:href="@{listBatASelectionner(page=${p},terme=${lstBat.searchName})}"></a>
+
+            <li th:class="${pageC.firstPage} ? 'disabled' : '' ">
+
+                <span th:if='${pageC.firstPage}'>← Premier</span>
+
+                <a th:if='${not pageC.firstPage}' th:href='@{listBatASelectionner(page=1,terme=${lstBat.searchName})}'>← Premier</a>
+
             </li>
+
+            <li th:class="${pageC.hasPreviousPage}? '' : 'disabled'">
+
+                <span th:if='${not pageC.hasPreviousPage}'>«</span>
+
+                <a th:if='${pageC.hasPreviousPage}' th:href='@{listBatASelectionner(page=${pageC.number-1},terme=${lstBat.searchName})}' title='Go to previous page'>«</a>
+
+            </li>
+
+            <li th:each='item : ${pageC.items}' th:class="${item.current}? active : ''">
+
+                <span th:if='${item.current}'  th:text='${item.number}'>0</span>
+
+                <a th:if='${not item.current}' th:href='@{listBatASelectionner(page=${item.number},terme=${lstBat.searchName})}'><span th:text='${item.number}'>0</span></a>
+
+            </li>
+
+            <li th:class="${pageC.hasNextPage}? '' : 'disabled'">
+
+                <span th:if='${not pageC.hasNextPage}'>»</span>
+
+                <a th:if='${pageC.hasNextPage}' th:href='@{listBatASelectionner(page=${pageC.number},terme=${lstBat.searchName})}' title='Go to next page'>»</a>
+
+            </li>
+
+            <li th:class="${pageC.lastPage}? 'disabled' : ''">
+
+                <span th:if='${pageC.lastPage}'>Dernier →</span>
+
+                <a th:if='${not pageC.lastPage}' th:href='@{listBatASelectionner(page=${pageC.totalPages},terme=${lstBat.searchName})}'>Dernier →</a>
+
+            </li>
+
         </ul>
+
+
     </div>
 </div>
 

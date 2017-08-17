@@ -39,6 +39,8 @@ public class creerAnnexeValidateur implements Validator {
         System.out.println(frmValidated.getNumImmAnnexe()+"!"+frmValidated.getDateDepartAnnexe());
         qDocPK dpk=new qDocPK(frmValidated.getNumImmAnnexe(), depart);
         qDoc currentDoc=docService.findById(dpk);
+        System.out.println("fin");
+        System.out.println(frmValidated.getNumeroFinAnnexe());
         qSeqPK spk = new qSeqPK(frmValidated.getNumeroDebutAnnexe(), frmValidated.getNumeroFinAnnexe());
         boolean isSameNav=docService.checkIfNavAnnexIsSameAsNavPrincipal(depart,spk,(qMarree) currentDoc,enumTypeDoc.Journal_Annexe);
 

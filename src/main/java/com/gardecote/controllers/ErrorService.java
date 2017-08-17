@@ -33,6 +33,7 @@ public class ErrorService {
             default:message=env.getProperty("50x");
                 break;
         }
+        System.out.println("error_code :"+error_code);
         return message;
     }
 }

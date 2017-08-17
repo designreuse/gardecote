@@ -25,7 +25,7 @@
             </thead>
             <tbody>
             <tr th:each="m:${models}">
-                <td>
+                <td>/
                     <a th:href="@{ModifierModel(modelPK=${m.prefix},typeDoc=${m.typeDoc})}">Modifier</a>
                     <a th:href="@{DeleteModel(modelPK=${m.prefix},typeDoc=${m.typeDoc})}">Supprimer</a>
                 </td>
@@ -34,7 +34,7 @@
                 <td >
         <table class="table"><tr th:each="espt:${m.especestypees}">
                         <td th:text="${espt.qespeceId}"></td><td th:text="${espt.enumesptype}"></td>
-                        <td th:text="${espt.qespece.nomFr}"></td><td></td>
+                        <td th:text="${espt.qespece!=null?espt.qespece.nomFr:''}"></td><td></td>
                     </tr></table>
                 </td>
 
